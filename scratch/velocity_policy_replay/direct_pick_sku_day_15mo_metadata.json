@@ -1,0 +1,31 @@
+{
+  "generated_at_utc": "2026-06-02T16:25:58.695387+00:00",
+  "mode": "shadow_only",
+  "production_logic_changed": false,
+  "window": {
+    "start_date": "2025-03-04",
+    "end_date_exclusive": "2026-06-03"
+  },
+  "archive_boundary": "2026-05-30",
+  "rows": {
+    "sku_days": 2929501,
+    "distinct_skus": 41562
+  },
+  "outputs": {
+    "parquet": {
+      "path": "scratch\\velocity_policy_replay\\direct_pick_sku_day_15mo.parquet",
+      "bytes": 9550051,
+      "sha256": "edbe7a4640fadd93b5ca793bf53e465f14619f62481c75f6925c806ea5ca31aa"
+    },
+    "summary": {
+      "path": "scratch\\velocity_policy_replay\\direct_pick_sku_day_15mo_summary.csv",
+      "bytes": 152,
+      "sha256": "0f29c5f6c316b7776b892cc3962d3a91f059a155f99ce115d116d21fe0bf9e43"
+    }
+  },
+  "notes": [
+    "Persisted grain is SKU-day.",
+    "No work IDs, sales-order IDs, or demand-work IDs are persisted.",
+    "DistinctOrders is distinct within SKU-day and is not additive across SKUs."
+  ]
+}

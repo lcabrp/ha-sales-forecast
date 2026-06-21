@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-06-18T09:21:53",
+  "forecast_start": "2026-06-18",
+  "forecast_end": "2026-07-01",
+  "partial_actuals": true,
+  "actuals_available_through": "2026-06-18",
+  "reused_frozen_forecast": true,
+  "forecast_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_shadow\\shadow_2026-06-18_2026-07-01\\shadow_daily_forecasts.parquet",
+  "threads_requested": 8,
+  "model": "hgb_absolute_log",
+  "ml_threshold_units": 20.0,
+  "recent_fallback_weights": [
+    0.05,
+    0.1
+  ],
+  "recent_volume_caps": [
+    0.85,
+    1.0,
+    1.1
+  ],
+  "train_rows": 0,
+  "calibration_rows": 0,
+  "future_rows": 0,
+  "future_inputs": {
+    "status": "reused_frozen_forecast"
+  },
+  "recent_direct_pick": {
+    "status": "reused_frozen_forecast"
+  },
+  "corporate": {
+    "status": "reused_frozen_forecast"
+  },
+  "score_grain": "SKU/day"
+}

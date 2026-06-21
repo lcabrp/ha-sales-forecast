@@ -1,0 +1,79 @@
+{
+  "assumptions": [
+    "Target SoldUnits is fulfilled DirectPick demand by modified actual date.",
+    "Sales-order OrderDateUTC features are same-day diagnostics in the panel; backtest baselines use lagged demand to avoid leakage.",
+    "Daily promotion features are calendar-level; SKU-specific PDL features use item-color offer codes joined to all known SKU sizes.",
+    "Unparseable or correction-only PDL workbook rows stay out of SKU-specific promotion features.",
+    "Product hierarchy/slotting attributes use the latest corporate forecast snapshot on or before the panel end date.",
+    "Panel is sparse: it includes SKU/date rows with actual demand, ordered demand, or corporate forecast demand."
+  ],
+  "backtest": {
+    "by_category_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\baseline_backtest_by_category_top1000.csv",
+    "by_promo_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\baseline_backtest_by_promo_flag.csv",
+    "holdout_date_range": [
+      "2026-05-12",
+      "2026-06-08"
+    ],
+    "holdout_rows": 298056,
+    "holdout_sold_units": 569111.0,
+    "summary_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\baseline_backtest_summary.csv"
+  },
+  "corporate_forecast_units": 13108934.0,
+  "date_range": [
+    "2025-01-01",
+    "2026-06-08"
+  ],
+  "distinct_skus": 47445,
+  "generated_at_utc": "2026-06-15T16:48:16.689880+00:00",
+  "inbound_feature_rows_in_window": 1140727,
+  "inbound_feature_skus_in_window": 20137,
+  "inputs": {
+    "actuals": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\actual_sku_day_modified.parquet",
+    "corporate_forecast_day": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\forecast_sku_day.parquet",
+    "corporate_forecast_snapshot": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\forecast_sku_snapshot.parquet",
+    "inbound_features": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inbound\\product_info_inbound_snapshots.parquet",
+    "inventory_features": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inventory\\ax_inventory_history_sku_day.parquet",
+    "pdl_sku_features": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_features.parquet",
+    "promotions": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\promotions\\combined_daily_promo_features.parquet",
+    "sales_orders": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\sales_orders\\sales_order_sku_day.parquet",
+    "warehouse_supply_features": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\warehouse_supply\\warehouse_supply_sku_day.parquet"
+  },
+  "inventory_feature_rows_in_window": 3206474,
+  "inventory_feature_skus_in_window": 51247,
+  "ordered_units": 10887386.0,
+  "outputs": {
+    "model_panel_summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\model_panel_summary.json",
+    "model_sku_day_panel": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\model_sku_day_panel.parquet",
+    "model_sku_day_panel_sample": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\model_sku_day_panel_sample.csv"
+  },
+  "panel_rows_with_inbound_next90": 28907,
+  "panel_rows_with_inventory_lag1": 709765,
+  "panel_rows_with_sellable_floor_supply_lag1": 33315,
+  "panel_rows_with_sku_pdl": 3363927,
+  "pdl_sku_feature_rows_in_window": 5765671,
+  "pdl_sku_feature_skus_in_window": 50227,
+  "promo_days": 524,
+  "row_count": 5457830,
+  "sold_units": 11046664.0,
+  "source_date_ranges": {
+    "actuals_date_range": [
+      "2022-08-01",
+      "2026-06-08"
+    ],
+    "corporate_forecast_date_range": [
+      "2022-08-01",
+      "2026-06-15"
+    ],
+    "sales_order_date_range": [
+      "2025-01-01",
+      "2026-06-08"
+    ],
+    "selected_panel_date_range": [
+      "2025-01-01",
+      "2026-06-08"
+    ]
+  },
+  "warehouse_supply_feature_rows_in_window": 61907,
+  "warehouse_supply_feature_skus_in_window": 14087,
+  "workers": 8
+}

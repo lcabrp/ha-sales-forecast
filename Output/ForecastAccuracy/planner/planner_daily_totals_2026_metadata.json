@@ -1,0 +1,27 @@
+{
+  "outbound_sheet": "Outbound",
+  "date_row_excel": 3,
+  "date_min": "2026-02-01",
+  "date_max": "2027-02-06",
+  "row_count": 371,
+  "metric_rows_excel": {
+    "Remaining Volume (Units)": 5,
+    "Units Shipped Goal": 6,
+    "Shipped Units (PowerBi)": 7,
+    "OPS (8/18 and earlier) or IMF Plan Forecasted (Units)": 8,
+    "Actual Demand (units)": 9,
+    "Percentage demand vs. forecast": 10
+  },
+  "missing_output_columns": [
+    "forecasted_demand_units"
+  ],
+  "generated_at": "2026-06-16T15:11:58",
+  "source_file": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Source\\Planner\\2026 Planner.xlsx",
+  "source_mtime": "2026-06-16T13:57:01",
+  "output_parquet": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\planner_daily_totals_2026.parquet",
+  "output_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\planner_daily_totals_2026.csv",
+  "snapshot_parquet": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\snapshots\\planner_daily_totals_2026_snapshot_20260616_151158.parquet",
+  "snapshot_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\snapshots\\planner_daily_totals_2026_snapshot_20260616_151158.csv",
+  "kpi_sheet": "KPI DC Forecast link file",
+  "kpi_rows": 364
+}

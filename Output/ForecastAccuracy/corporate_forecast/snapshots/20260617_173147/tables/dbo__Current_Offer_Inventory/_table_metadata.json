@@ -1,0 +1,25 @@
+{
+  "table": "dbo.Current_Offer_Inventory",
+  "status": "ok",
+  "error": "",
+  "estimated_rows": 7669,
+  "estimated_columns": 8,
+  "rows_written": 1000,
+  "parts": 2,
+  "output_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\corporate_forecast\\snapshots\\20260617_173147\\tables\\dbo__Current_Offer_Inventory",
+  "parquet_bytes": 26840,
+  "filters": {
+    "max_rows_per_table": 1000
+  },
+  "columns": [
+    "OfferID",
+    "Total_Inv",
+    "Avail_Inv",
+    "Retail_Store_Inv",
+    "Outlet_Store_Inv",
+    "LandedCost",
+    "UnitPrice",
+    "LastUpdatedDate"
+  ],
+  "elapsed_seconds": 0.16
+}

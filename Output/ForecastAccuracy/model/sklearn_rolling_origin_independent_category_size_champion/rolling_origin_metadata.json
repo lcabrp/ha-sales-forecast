@@ -1,0 +1,48 @@
+{
+  "calibration_mode": "global",
+  "date_column": "Date",
+  "exclude_corporate_features": true,
+  "generated_at_utc": "2026-06-15T16:58:37.003022+00:00",
+  "include_product_identity_features": true,
+  "learning_rate": 0.06,
+  "max_iter": 180,
+  "max_train_rows": 500000,
+  "models": [
+    "hgb_absolute_log"
+  ],
+  "output_dir": "Output\\ForecastAccuracy\\model\\sklearn_rolling_origin_independent_category_size_champion",
+  "panel": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\model_sku_day_panel.parquet",
+  "target": "SoldUnits",
+  "windows": [
+    {
+      "end": "2026-01-31",
+      "label": "y2026_m01",
+      "start": "2026-01-01"
+    },
+    {
+      "end": "2026-02-28",
+      "label": "y2026_m02",
+      "start": "2026-02-01"
+    },
+    {
+      "end": "2026-03-31",
+      "label": "y2026_m03",
+      "start": "2026-03-01"
+    },
+    {
+      "end": "2026-04-30",
+      "label": "y2026_m04",
+      "start": "2026-04-01"
+    },
+    {
+      "end": "2026-05-31",
+      "label": "y2026_m05",
+      "start": "2026-05-01"
+    },
+    {
+      "end": "2026-06-08",
+      "label": "y2026_w23",
+      "start": "2026-06-02"
+    }
+  ]
+}

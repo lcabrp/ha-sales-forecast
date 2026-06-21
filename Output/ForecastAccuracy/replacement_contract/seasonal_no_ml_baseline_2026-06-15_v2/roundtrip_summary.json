@@ -1,0 +1,32 @@
+{
+  "candidate_id": "seasonal_no_ml_baseline_2026-06-15_v2",
+  "candidate_type": "seasonal_no_ml_baseline",
+  "candidate_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2",
+  "contract": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\candidate_contract.json",
+  "roundtrip": {
+    "roundtrip_status": "pass",
+    "command": [
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\scripts\\python\\ingestion_pipeline.py",
+      "--source-file",
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\input\\Product Info for BRG_2026-06-01__seasonal_no_ml_baseline_2026-06-15_v2.xlsx",
+      "--output-dir",
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\ingestion_output"
+    ],
+    "ingestion_output_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\ingestion_output",
+    "forward_demand_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\ingestion_output\\FwdDemandCSV_2026-06-15.csv",
+    "required_slots_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\ingestion_output\\RequiredSlots_2026-06-15.csv",
+    "forward_demand_rows": 43481,
+    "forward_demand_columns": 36,
+    "missing_forward_demand_columns": [],
+    "extra_forward_demand_columns": [],
+    "duplicate_item_color_size_keys": 0,
+    "fd1_to_fd14_units": 471847.0,
+    "required_slot_tiers": 232,
+    "required_slots_total": 26091.1,
+    "logs": {
+      "stdout": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\logs\\ingestion_stdout.log",
+      "stderr": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\logs\\ingestion_stderr.log"
+    }
+  }
+}

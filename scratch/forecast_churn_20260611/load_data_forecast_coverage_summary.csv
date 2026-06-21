@@ -1,0 +1,6 @@
+Metric,Value
+source_file,Product Info for BRG_20260610.xlsx
+load_data_unique_skus,47413
+load_data_skus_in_fwd_demand,23135
+load_data_skus_missing_fwd_demand,24278
+missing_rate,0.5120536561702487

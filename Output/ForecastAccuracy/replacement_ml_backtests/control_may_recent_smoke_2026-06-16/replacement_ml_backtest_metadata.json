@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-06-16T14:17:05",
+  "threads_requested": 8,
+  "windows": 1,
+  "window_start_min": "2026-05-19",
+  "window_start_max": "2026-05-19",
+  "panel_start_date": "2025-05-01",
+  "models": [
+    "hgb_absolute_log"
+  ],
+  "sku_total_thresholds": [
+    20.0
+  ],
+  "hybrid_recent_fallback_weights": [
+    0.1
+  ],
+  "hybrid_recent_volume_caps": [
+    0.85
+  ],
+  "max_train_rows": 100000,
+  "max_iter": 180,
+  "calibration_mode": "category-velocity-promo",
+  "exclude_corporate_features": true,
+  "include_product_identity_features": true,
+  "seasonal_features": {
+    "included": false,
+    "years": 3,
+    "window_days": 7,
+    "columns": []
+  },
+  "inputs": {
+    "panel": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\model_sku_day_panel.parquet",
+    "snapshot_summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\forecast_accuracy_snapshot_summary.parquet",
+    "forecast_snapshot": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\forecast_sku_snapshot.parquet",
+    "actuals": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\actual_sku_day_modified.parquet",
+    "pdl_sku_features": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_features.parquet",
+    "promo_daily": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\promotions\\combined_daily_promo_features.parquet"
+  },
+  "caveats": [
+    "This is stricter than the old sparse-panel ML score: future rows are generated without future actual demand.",
+    "Target/order/inventory/supply lag features are frozen at latest prestart values across the 14-day horizon.",
+    "Future PDL promotion features are included because planned promos should be knowable before the forecast starts.",
+    "Optional same-season features use prior-year same-calendar windows only and do not expand the SKU universe.",
+    "Training still uses the current model panel contract; point-in-time product attributes are improved only for generated holdout rows."
+  ]
+}

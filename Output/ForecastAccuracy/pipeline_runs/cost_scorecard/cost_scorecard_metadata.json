@@ -1,0 +1,22 @@
+{
+  "costs": {
+    "c_over": 1.0,
+    "c_under": 3.0,
+    "c_zero": 6.0
+  },
+  "focus_candidates": [
+    "self_calibrating_recency_brake",
+    "hybrid_ml_cold_start_raw_min_20p0_units_recent_w0p1_cap_recent_x0p85",
+    "recent_no_ml_no_promo_floor",
+    "corporate"
+  ],
+  "generated_at_utc": "2026-06-18T09:43:14.808831+00:00",
+  "notes": [
+    "ExpectedCost charges over-forecast, covered shortfall, and zero-forecast misses at separate unit costs so the coverage-vs-WAPE tradeoff is decided in cost terms.",
+    "Break-even sweeps the shortfall/excess cost ratio; the ratio where Winner flips is the decision boundary between the low-WAPE and high-coverage candidates."
+  ],
+  "score_files": [
+    "Output\\ForecastAccuracy\\pipeline_runs\\backtest\\combined_scores.csv"
+  ],
+  "zero_multiple_of_under": 2.0
+}

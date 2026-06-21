@@ -1,0 +1,32 @@
+{
+  "candidate_id": "parallel_shadow_forecast",
+  "candidate_type": "quantile_hybrid_ml_baseline",
+  "candidate_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast",
+  "contract": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\candidate_contract.json",
+  "roundtrip": {
+    "roundtrip_status": "pass",
+    "command": [
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\scripts\\python\\ingestion_pipeline.py",
+      "--source-file",
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\input\\Product Info for BRG_2026-06-15__parallel_shadow_forecast.xlsx",
+      "--output-dir",
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\ingestion_output"
+    ],
+    "ingestion_output_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\ingestion_output",
+    "forward_demand_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\ingestion_output\\FwdDemandCSV_2026-06-17.csv",
+    "required_slots_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\ingestion_output\\RequiredSlots_2026-06-17.csv",
+    "forward_demand_rows": 17794,
+    "forward_demand_columns": 36,
+    "missing_forward_demand_columns": [],
+    "extra_forward_demand_columns": [],
+    "duplicate_item_color_size_keys": 0,
+    "fd1_to_fd14_units": 431708.0,
+    "required_slot_tiers": 191,
+    "required_slots_total": 10819.0,
+    "logs": {
+      "stdout": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\logs\\ingestion_stdout.log",
+      "stderr": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\logs\\ingestion_stderr.log"
+    }
+  }
+}

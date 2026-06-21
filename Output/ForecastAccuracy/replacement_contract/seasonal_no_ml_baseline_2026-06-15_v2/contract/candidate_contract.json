@@ -1,0 +1,290 @@
+{
+  "candidate_id": "seasonal_no_ml_baseline_2026-06-15_v2",
+  "candidate_type": "seasonal_no_ml_baseline",
+  "created_at": "2026-06-15T08:33:53",
+  "source_workbook": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Source\\Product Info for BRG_2026-06-01.xlsx",
+  "source_workbook_name": "Product Info for BRG_2026-06-01.xlsx",
+  "source_workbook_sha256": "dbf8d653a66647a06897f7c861dcfa144d85dd95adc5ed943d663b4040cf4daf",
+  "clone_workbook": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\input\\Product Info for BRG_2026-06-01__seasonal_no_ml_baseline_2026-06-15_v2.xlsx",
+  "clone_workbook_sha256": "91edad3f41e4ab38942db95307e06b64f65d6c37b57fafc857ba170ff2f8b2e2",
+  "forecast_start_date": "2026-06-16",
+  "required_candidate_tables": {
+    "daily_forecast": [
+      "CandidateID",
+      "SourceWorkbook",
+      "ForecastStartDate",
+      "SKU",
+      "ForecastDay",
+      "ForecastDate",
+      "ForecastUnits"
+    ],
+    "weekly_forecast": [
+      "CandidateID",
+      "SourceWorkbook",
+      "SKU",
+      "WeekIndex",
+      "WeekStartDate",
+      "ForecastUnits",
+      "IsFirst13Weeks"
+    ],
+    "signal_sku_summary": [
+      "SKU",
+      "DirectPickLookbackUnits",
+      "DirectPickDemandDays",
+      "DailyBaseUnits",
+      "WeeklyBaseUnits",
+      "ValidReservationUnits",
+      "ReservationPhysicalTotal",
+      "ReservationSalesAllocatedPhysicalTotal",
+      "InboundTotalUnits",
+      "InboundNext14Units",
+      "InboundNext30Units",
+      "HasDirectPickHistory",
+      "HasValidReservation",
+      "HasInbound",
+      "InSourceProductInfoUniverse",
+      "Future14DayPromoDays",
+      "FutureWeeklyPromoWeeks",
+      "HasFuturePromo",
+      "Seasonal14DayUnits",
+      "SeasonalFirst13WeekUnits",
+      "HasSeasonalHistory",
+      "FD1ToFD14Units",
+      "First13WeekUnits"
+    ]
+  },
+  "ax_forward_demand_columns": [
+    "Division",
+    "Department",
+    "Class",
+    "Subclass",
+    "KeyCategoryView",
+    "SKU",
+    "Item",
+    "Color",
+    "Size",
+    "ProductGroupCode",
+    "SizeGroupCode",
+    "Velocity",
+    "SlotTier",
+    "ReplenishmentThreshold",
+    "PutawayIndicator",
+    "ProductStatus",
+    "ProductStatusDate",
+    "ProductStage",
+    "ReturnAction",
+    "ReturnActionDate",
+    "NVARExpectedQty",
+    "ForecastStartDate",
+    "FD1",
+    "FD2",
+    "FD3",
+    "FD4",
+    "FD5",
+    "FD6",
+    "FD7",
+    "FD8",
+    "FD9",
+    "FD10",
+    "FD11",
+    "FD12",
+    "FD13",
+    "FD14"
+  ],
+  "baseline_method": {
+    "method": "seasonal_no_ml_baseline",
+    "forecast_start_date": "2026-06-16",
+    "weekly_first_date": "2026-06-14",
+    "weekly_weeks": 26,
+    "lookback_days": 56,
+    "seasonal": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\actual_sku_day_modified.parquet",
+      "status": "loaded",
+      "historical_years": [
+        2025,
+        2024,
+        2023
+      ],
+      "seasonal_window_days_each_side": 7,
+      "actual_rows_available": 8784391,
+      "actual_date_min": "2022-08-01",
+      "actual_date_max": "2026-06-08",
+      "daily_rows": 458261,
+      "daily_skus": 35904,
+      "weekly_rows": 932693,
+      "weekly_skus": 66833,
+      "daily_seasonal_units_14d": 267442.86666666664,
+      "weekly_seasonal_units_26w": 5460593.444444444
+    },
+    "seasonal_blend": {
+      "enabled": true,
+      "recent_weight_when_both_exist": 0.65,
+      "seasonal_weight_when_both_exist": 0.35
+    },
+    "direct_pick": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\actual_sku_day_modified.parquet",
+      "status": "loaded",
+      "window_start": "2026-04-21",
+      "window_end_exclusive": "2026-06-16",
+      "lookback_days": 56,
+      "rows_in_window": 331273,
+      "distinct_skus": 16220,
+      "sold_units": 1030297.0,
+      "dow_factors": {
+        "0": 1.3285635112981986,
+        "1": 1.1733170144142904,
+        "2": 0.9763815676450577,
+        "3": 1.028302518594153,
+        "4": 0.9760622422466532,
+        "5": 0.65,
+        "6": 0.8826697544494452
+      }
+    },
+    "promotions": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_features.parquet",
+      "status": "loaded",
+      "horizon_start": "2026-06-16",
+      "horizon_end": "2026-12-12",
+      "rows_in_horizon": 35578,
+      "daily_rows": 35578,
+      "weekly_rows": 17789,
+      "distinct_skus": 17789,
+      "future_14_day_skus": 17789
+    },
+    "inbound": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inbound\\ax_open_inbound_sku_day.parquet",
+      "status": "loaded",
+      "snapshot_date": "2026-06-14",
+      "distinct_skus": 16751,
+      "inbound_total_units": 6035555.0,
+      "inbound_next14_units": 931575.0
+    },
+    "reservations": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\reservations\\ax_reservation_sku_day.parquet",
+      "status": "loaded",
+      "snapshot_date": "2026-06-15",
+      "distinct_skus": 7982,
+      "valid_reservation_units": 54632.0,
+      "blank_location_units": 31689.0,
+      "pickface_allocated_units": 22943.0,
+      "excluded_w001_units": 11.0,
+      "excluded_reserve_or_bulk_units": 3483.0,
+      "excluded_operational_located_units": 6213.0
+    },
+    "universe": {
+      "distinct_skus": 45687,
+      "in_source_product_info_universe": 32787,
+      "with_direct_pick_history": 16220,
+      "with_seasonal_history": 12020,
+      "with_future_promo": 17789,
+      "with_inbound": 16751,
+      "with_valid_reservation": 7982
+    },
+    "forecast_totals": {
+      "fd1_to_fd14_units": 474310.0,
+      "first_13_week_units": 2542949.801438333
+    },
+    "notes": [
+      "DirectPick actuals are the base fulfilled-demand rate.",
+      "Seasonal history blends same-calendar prior-year DirectPick demand when enabled.",
+      "PDL promotion rows apply a simple discount-based uplift and last-week-sales floor.",
+      "Valid reservation demand is limited to blank-location open-order proxy plus pickface allocation.",
+      "W001, reserve/bulk, and process-area reservations are excluded from demand.",
+      "Inbound is a coverage/universe signal only; it does not create demand units by itself."
+    ]
+  },
+  "outputs": {
+    "daily_forecast": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\daily_forecast.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\daily_forecast_sample.csv",
+      "rows": 639618,
+      "columns": [
+        "CandidateID",
+        "SourceWorkbook",
+        "ForecastStartDate",
+        "SKU",
+        "ForecastDay",
+        "ForecastDate",
+        "ForecastUnits"
+      ]
+    },
+    "weekly_forecast": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\weekly_forecast.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\weekly_forecast_sample.csv",
+      "rows": 1187862,
+      "columns": [
+        "CandidateID",
+        "SourceWorkbook",
+        "SKU",
+        "WeekIndex",
+        "WeekStartDate",
+        "ForecastUnits",
+        "IsFirst13Weeks"
+      ]
+    },
+    "product_hierarchy": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\product_hierarchy.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\product_hierarchy_sample.csv",
+      "rows": 238210,
+      "columns": [
+        "Offer",
+        "SKU",
+        "Division",
+        "Department",
+        "Class",
+        "KeyCategoryView",
+        "SizeGroup",
+        "GoLiveDate",
+        "OfferCount",
+        "Item",
+        "Color"
+      ]
+    },
+    "product_status": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\product_status.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\product_status_sample.csv",
+      "rows": 57351,
+      "columns": [
+        "StatusSKU",
+        "ProductStatus",
+        "ProductStatusDate"
+      ]
+    },
+    "signal_sku_summary": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\signal_sku_summary.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\seasonal_no_ml_baseline_2026-06-15_v2\\contract\\signal_sku_summary_sample.csv",
+      "rows": 45687,
+      "columns": [
+        "SKU",
+        "DirectPickLookbackUnits",
+        "DirectPickDemandDays",
+        "DailyBaseUnits",
+        "WeeklyBaseUnits",
+        "ValidReservationUnits",
+        "ReservationPhysicalTotal",
+        "ReservationSalesAllocatedPhysicalTotal",
+        "InboundTotalUnits",
+        "InboundNext14Units",
+        "InboundNext30Units",
+        "HasDirectPickHistory",
+        "HasValidReservation",
+        "HasInbound",
+        "InSourceProductInfoUniverse",
+        "Future14DayPromoDays",
+        "FutureWeeklyPromoWeeks",
+        "HasFuturePromo",
+        "Seasonal14DayUnits",
+        "SeasonalFirst13WeekUnits",
+        "HasSeasonalHistory",
+        "FD1ToFD14Units",
+        "First13WeekUnits"
+      ]
+    }
+  },
+  "notes": [
+    "This package is a deterministic no-ML baseline for the reset replacement harness.",
+    "It is not a model comparison artifact; it only proves a baseline candidate can produce the BRG-like contract.",
+    "Seasonal history can shape current/recent/forward-signal SKUs but cannot add SKU rows by itself.",
+    "The generated workbook is local/generated output and should not be committed."
+  ]
+}

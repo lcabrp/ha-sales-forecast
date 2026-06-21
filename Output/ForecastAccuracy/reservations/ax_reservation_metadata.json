@@ -1,0 +1,32 @@
+{
+  "generated_at": "2026-06-15T06:33:23",
+  "server": "prodaxsql2",
+  "database": "DAX_PROD",
+  "source": "DAX_PROD.dbo.WHSINVENTRESERVE/INVENTDIM/WMSLOCATION",
+  "snapshot_date": "2026-06-15",
+  "warehouse": "4010",
+  "site": "HA USA",
+  "data_area": "ha",
+  "partition_id": 5637144576,
+  "detail_rows": 16031,
+  "sku_day_rows_for_snapshot": 8339,
+  "sku_day_history_rows": 8339,
+  "distinct_skus_for_snapshot": 8339,
+  "outputs": {
+    "dated_detail": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\reservations\\ax_reservation_snapshot_detail_2026-06-15.parquet",
+    "latest_detail": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\reservations\\ax_reservation_snapshot_detail.parquet",
+    "sku_day": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\reservations\\ax_reservation_sku_day.parquet",
+    "summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\reservations\\ax_reservation_snapshot_summary.csv"
+  },
+  "notes": [
+    "Uses WHSINVENTRESERVE hierarchy level 3 for blank-location reservations.",
+    "Uses WHSINVENTRESERVE hierarchy level 4 for located reservations.",
+    "Hierarchy levels are not additive; do not sum all WHSINVENTRESERVE levels together.",
+    "ReservationPhysicalTotal is the level-3 BlankLocation open-order demand proxy.",
+    "ReservationSalesAllocatedPhysicalTotal is pickface located reservations only.",
+    "W001 reservations are retained as an excluded diagnostic because W001 is not replenished.",
+    "ReservationOperationalLocatedPhysicalTotal includes reserve/bulk and process-area reservations; do not use it as sales demand.",
+    "ReservationLocatedPhysicalTotal is retained as a broad diagnostic total, not model demand.",
+    "BlankLocation is preserved as its own bucket for pre-work reservation signal."
+  ]
+}

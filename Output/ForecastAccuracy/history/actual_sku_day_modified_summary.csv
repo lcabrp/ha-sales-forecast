@@ -1,0 +1,2 @@
+DateBasis,StartDate,EndDate,Rows,DistinctSKUs,SoldUnits,OutputPath
+modified,2025-11-01,2026-06-18,1469198,28337,5124018.0,C:\Users\labreu\Documents\Projects\ha-zoning-slotting\Output\ForecastAccuracy\history\parquet\actual_sku_day_modified.parquet

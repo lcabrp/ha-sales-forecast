@@ -1,0 +1,43 @@
+# Python/runtime
+__pycache__/
+*.py[codz]
+.venv/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.coverage*
+htmlcov/
+
+# Secrets and local auth
+.env
+.env.*
+*.env
+.auth/
+credentials.json
+*.pem
+*.key
+.credentials
+
+# Local databases and database sidecars
+*.db
+*.sqlite
+*.db-shm
+*.db-wal
+*.db-journal
+
+# Excel lock/temp files. Source workbooks are trackable when under the 90 MB practical limit.
+~$*.xlsx
+
+# GitHub hard-stop / local-only large files. Prefer split Parquet parts when useful.
+Output/ForecastAccuracy/model/model_sku_day_panel.parquet
+Output/ForecastAccuracy/promotions/pdl_offer_rows.csv
+Output/ForecastAccuracy/promotions/promotions.db
+Source/Promotions/6.18.26 Hanna Sale PDL.xlsx
+
+# Generated environments/caches/logs
+*.log
+tmp/
+
+# Keep forecast artifacts trackable by default, including Parquet/CSV/JSON/MD outputs,
+# as long as individual files remain below the practical 90 MB push ceiling.
+

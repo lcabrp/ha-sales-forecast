@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-06-15T11:44:44",
+  "threads_requested": 8,
+  "windows": 26,
+  "window_start_min": "2025-11-25",
+  "window_start_max": "2026-05-19",
+  "lookback_days": 56,
+  "seasonal_years": 3,
+  "seasonal_window_days_each_side": 7,
+  "seasonal_recent_weight": 0.65,
+  "inputs": {
+    "forecast_day": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\forecast_sku_day.parquet",
+    "forecast_snapshot": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\forecast_sku_snapshot.parquet",
+    "snapshot_summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\forecast_accuracy_snapshot_summary.parquet",
+    "actuals": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\history\\parquet\\actual_sku_day_modified.parquet",
+    "pdl_sku_features": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_features.parquet"
+  },
+  "caveats": [
+    "Historical no-ML candidates exclude reservation and inbound floors because point-in-time history is not available for the selected windows.",
+    "PDL future promotion features are used when rows exist for the forecast horizon; this assumes those promotion rows would have been knowable before the forecast start.",
+    "This backtest scores 14-day SKU demand, not full ingestion SlotTier or RequiredSlots churn."
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "generated_at_utc": "2026-06-02T16:32:06.308387+00:00",
+  "mode": "shadow_only",
+  "production_logic_changed": false,
+  "inputs": {
+    "source_workbooks": [
+      {
+        "path": "Source\\Product Info for BRG_20260330.xlsx",
+        "bytes": 55783237,
+        "sha256": "a6b43ecba391dc4ec220704c3fd13e071bd2b454c81b2dda7c81f4bae4e5c3bf"
+      },
+      {
+        "path": "Source\\Product Info for BRG_20260413.xlsx",
+        "bytes": 57018368,
+        "sha256": "89acad312dc31fa084f6bc806eb6f51760c810e4c235a9cf82090e865d338c28"
+      },
+      {
+        "path": "Source\\Product Info for BRG_20260421.xlsx",
+        "bytes": 56785994,
+        "sha256": "2bcca07070b2b66b0934aed9df1d4bdde174473e28ac5d2485c2a761d95c6d52"
+      },
+      {
+        "path": "Source\\Product Info for BRG_20260427.xlsx",
+        "bytes": 56844016,
+        "sha256": "e38ca411e0d5756043794b34ad3529c2d8773bc0a6e5b8ae1775c219d61aafc1"
+      },
+      {
+        "path": "Source\\Product Info for BRG_20260504.xlsx",
+        "bytes": 56062878,
+        "sha256": "3ea9cb892445064da88e728b4bc8d1d707262222ae1c1e52ed1c239e16b8c15e"
+      },
+      {
+        "path": "Source\\Product Info for BRG_20260511.xlsx",
+        "bytes": 56671083,
+        "sha256": "aeb7059cbfc113e5aaa59574128cb6a6753b03a7fde6c0f2767e1519a3f72859"
+      },
+      {
+        "path": "Source\\Product Info for BRG_20260518.xlsx",
+        "bytes": 56898093,
+        "sha256": "d44a051d5e970777d8ad6377a92bdad7128c3461abd7fd03174c612f8450611d"
+      },
+      {
+        "path": "Source\\Product Info for BRG_20260526.xlsx",
+        "bytes": 56774554,
+        "sha256": "1c582f92488c8d6eca0da4995bcf0e2e32d89348dfbf9b0bcfa8111c54eb3cf7"
+      }
+    ],
+    "inventory_detail_csvs": [
+      {
+        "path": "Output\\Monitoring\\reports\\inventory_zone_compliance_2026-05-13_detail.csv",
+        "bytes": 2601133,
+        "sha256": "daa8c4cb62db4de88a27cf013e33cff52d4b31e04db3cabd9518696ccd1a0709"
+      },
+      {
+        "path": "Output\\Monitoring\\reports\\inventory_zone_compliance_2026-05-18_detail.csv",
+        "bytes": 2604890,
+        "sha256": "f8212d9842b4ae0e065ec4ab489ee33f048d8b267df5f196ef26538f2d0fb365"
+      },
+      {
+        "path": "Output\\Monitoring\\reports\\inventory_zone_compliance_2026-05-19_detail.csv",
+        "bytes": 2557407,
+        "sha256": "0fa76591e59b5e3bf966e1918a8487638cce9a4d6294385d65ddd356364b5441"
+      },
+      {
+        "path": "Output\\Monitoring\\reports\\inventory_zone_compliance_2026-05-27_detail.csv",
+        "bytes": 2474136,
+        "sha256": "4ca84c730742e38ffc340feb62549e9454382ec1d4fef222179c07a8a5d9ade9"
+      },
+      {
+        "path": "Output\\Monitoring\\reports\\inventory_zone_compliance_2026-06-01_detail.csv",
+        "bytes": 2387859,
+        "sha256": "deed10f5e98d6c13c7daef09f4198a025f770257e11fd5f753227a1fc61b037c"
+      },
+      {
+        "path": "Output\\Monitoring\\reports\\inventory_zone_compliance_2026-06-02_detail.csv",
+        "bytes": 2365358,
+        "sha256": "3e41e2470b10cd8c3fc55a413b77aeb5fec913e1bece2825c114dfb219294c82"
+      }
+    ]
+  },
+  "outputs": {
+    "planning_case_qty": {
+      "path": "scratch\\velocity_policy_replay\\planning_case_qty_history.parquet",
+      "bytes": 961281,
+      "sha256": "a3eb451c294bd980b41b89964128839f6cf64134cc7a97f1d76fda853c36a545"
+    },
+    "planning_case_qty_summary": {
+      "path": "scratch\\velocity_policy_replay\\planning_case_qty_history_summary.csv",
+      "bytes": 1135,
+      "sha256": "7b84757443943f557ef8cb8b749830c7be41be658b5b0fe4b92fa14ca36f638d"
+    },
+    "inventory_snapshots": {
+      "path": "scratch\\velocity_policy_replay\\sku_location_inventory_snapshots.parquet",
+      "bytes": 677987,
+      "sha256": "0060a1356dd7faacff1e32f3a05e12d662804165becc946ef522bb5e861dc3e1"
+    },
+    "inventory_snapshots_summary": {
+      "path": "scratch\\velocity_policy_replay\\sku_location_inventory_snapshots_summary.csv",
+      "bytes": 365,
+      "sha256": "7d6039e24691268712c31b1dffcf72b31f5bd20c069054c65539725c6af1608c"
+    }
+  },
+  "rows": {
+    "planning_case_qty": 294447,
+    "sku_location_inventory_snapshots": 91987
+  },
+  "notes": [
+    "Planning CaseQty is calculated from each workbook using ingestion helper semantics.",
+    "Planning CaseQty is not the authoritative quantity physically moved into the pick face.",
+    "Inventory snapshots are historical live-state observations, not work events."
+  ]
+}

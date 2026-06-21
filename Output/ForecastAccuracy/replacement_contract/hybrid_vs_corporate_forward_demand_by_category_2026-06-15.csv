@@ -1,0 +1,395 @@
+Division,Department,Class,CorporateRows,CorporateFDUnits,HybridRows,HybridFDUnits,Candidate,FDUnitDeltaVsCorporate,RowDeltaVsCorporate
+Kids Unders,U G underwear,U G unders bottom,172.0,19314.0,108.0,5091.0,hybrid_10pct,-14223.0,-64.0
+Kids Unders,U B underwear,U B unders bottom,185.0,15139.0,109.0,3717.0,hybrid_10pct,-11422.0,-76.0
+Girls,G short,G k short,318.0,12761.0,275.0,4757.0,hybrid_10pct,-8004.0,-43.0
+Girls,G pant,G k pant,792.0,6213.0,272.0,1953.0,hybrid_10pct,-4260.0,-520.0
+Girls,G dress,G LS dress,1798.0,5624.0,628.0,1414.0,hybrid_10pct,-4210.0,-1170.0
+Boys,B pant,B k pant,290.0,3913.0,160.0,463.0,hybrid_10pct,-3450.0,-130.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU LJ,1024.0,4204.0,421.0,2167.0,hybrid_10pct,-2037.0,-603.0
+Girls,G top,G LS top,650.0,1914.0,155.0,490.0,hybrid_10pct,-1424.0,-495.0
+Collab Accessories,CA underwear,CA G underwear,92.0,1591.0,40.0,365.0,hybrid_10pct,-1226.0,-52.0
+Kids Unisex Sleep,S KU LJ,S KU LJ print,1739.0,5302.0,1036.0,4120.0,hybrid_10pct,-1182.0,-703.0
+Kids Unisex,KU outerwear,KU jkt,270.0,1229.0,101.0,114.0,hybrid_10pct,-1115.0,-169.0
+Baby Apparel,Bby pant,Bby k pant,279.0,1324.0,151.0,460.0,hybrid_10pct,-864.0,-128.0
+Kids Unisex,KU short,KU k short,102.0,1985.0,112.0,1228.0,hybrid_10pct,-757.0,10.0
+Collab Apparel,C Kids Unisex,C KU jkt-vest,74.0,868.0,39.0,180.0,hybrid_10pct,-688.0,-35.0
+Boys,B top,B LS top,913.0,1766.0,365.0,1116.0,hybrid_10pct,-650.0,-548.0
+Kids Unisex,KU pant,KU k pant,257.0,1833.0,112.0,1241.0,hybrid_10pct,-592.0,-145.0
+Baby Apparel,Bby swimwear,Bby swim 2pc,155.0,1252.0,144.0,671.0,hybrid_10pct,-581.0,-11.0
+Baby Apparel,Bby outerwear,Bby jkt,237.0,856.0,112.0,331.0,hybrid_10pct,-525.0,-125.0
+Baby Accessories,BA sock,BA sock misc,22.0,553.0,20.0,187.0,hybrid_10pct,-366.0,-2.0
+Baby Apparel,Bby bundle,Bby bundle misc,96.0,479.0,95.0,126.0,hybrid_10pct,-353.0,-1.0
+Baby Sleepwear,BS footed sleeper,BS footed print,94.0,435.0,39.0,83.0,hybrid_10pct,-352.0,-55.0
+Collab Sleepwear,CS AU sleep,CS AU top,251.0,461.0,120.0,116.0,hybrid_10pct,-345.0,-131.0
+Boys,B short,B w short,139.0,1973.0,144.0,1654.0,hybrid_10pct,-319.0,5.0
+Baby Apparel,Bby dress,Bby LS dress set,350.0,794.0,123.0,493.0,hybrid_10pct,-301.0,-227.0
+Baby Apparel,Bby 1pc,Bby SL 1pc,214.0,1335.0,149.0,1043.0,hybrid_10pct,-292.0,-65.0
+Adult Sleep,S W sleepwear,S W LJ top,124.0,443.0,76.0,154.0,hybrid_10pct,-289.0,-48.0
+Baby Apparel,Bby bodysuit,Bby SS bodysuit,34.0,542.0,33.0,274.0,hybrid_10pct,-268.0,-1.0
+Adult Sleep,S AU sleepwear,S AU LJ top,424.0,495.0,243.0,229.0,hybrid_10pct,-266.0,-181.0
+Kids Unisex,KU outerwear,KU ow,66.0,339.0,64.0,112.0,hybrid_10pct,-227.0,-2.0
+Collab Accessories,CA underwear,CA B underwear,33.0,275.0,10.0,50.0,hybrid_10pct,-225.0,-23.0
+Collab Apparel,C Girl,C G swimwear,61.0,503.0,53.0,295.0,hybrid_10pct,-208.0,-8.0
+Collab Sleepwear,CS Baby sleep,CS Bby footless,346.0,947.0,156.0,743.0,hybrid_10pct,-204.0,-190.0
+Baby Accessories,BA hats,BA pilot-knot hat,45.0,317.0,26.0,124.0,hybrid_10pct,-193.0,-19.0
+Collab Apparel,C Girl,C G set,8.0,196.0,11.0,8.0,hybrid_10pct,-188.0,3.0
+Collab Accessories,CA non clothing,CA nc misc,68.0,253.0,24.0,96.0,hybrid_10pct,-157.0,-44.0
+Kids Unisex Sleep,S KU LJ,S KU LJ stripe,60.0,358.0,36.0,206.0,hybrid_10pct,-152.0,-24.0
+Girls,G pant,G w pant,321.0,566.0,164.0,421.0,hybrid_10pct,-145.0,-157.0
+Collab Apparel,C Baby,C Bby jkt-vest,17.0,174.0,8.0,31.0,hybrid_10pct,-143.0,-9.0
+Collab Apparel,C Baby-Toddler,C BT top,48.0,285.0,35.0,164.0,hybrid_10pct,-121.0,-13.0
+Other,S Pet Johns,S pet johns print,241.0,199.0,81.0,85.0,hybrid_10pct,-114.0,-160.0
+Boys,B pant,B w pant,330.0,681.0,170.0,582.0,hybrid_10pct,-99.0,-160.0
+Adult Sleep,S AU sleepwear,S AU LJ bottom,401.0,479.0,199.0,391.0,hybrid_10pct,-88.0,-202.0
+Collab Apparel,C Baby-Toddler,C BT set,104.0,168.0,47.0,82.0,hybrid_10pct,-86.0,-57.0
+Adult Sleep,S W sleepwear,S W LJ bottom,143.0,266.0,63.0,189.0,hybrid_10pct,-77.0,-80.0
+Baby Apparel,Bby outerwear,Bby OW,35.0,96.0,9.0,31.0,hybrid_10pct,-65.0,-26.0
+Collab Sleepwear,CS W sleep,CS W top,39.0,92.0,18.0,28.0,hybrid_10pct,-64.0,-21.0
+Adult Sleep,S W sleepwear,S W nightgown,102.0,82.0,39.0,28.0,hybrid_10pct,-54.0,-63.0
+Collab Sleepwear,CS AU sleep,CS AU bottom,248.0,249.0,85.0,202.0,hybrid_10pct,-47.0,-163.0
+Collab Accessories,CA underwear,CA BT underwear,8.0,202.0,5.0,162.0,hybrid_10pct,-40.0,-3.0
+Collab Sleepwear,CS W sleep,CS W pajama,258.0,161.0,105.0,123.0,hybrid_10pct,-38.0,-153.0
+Baby Accessories,BA moc-slipper,BA moc-slipper-misc,38.0,43.0,14.0,7.0,hybrid_10pct,-36.0,-24.0
+Baby Sleepwear,BS 1pc,BS misc,59.0,227.0,23.0,196.0,hybrid_10pct,-31.0,-36.0
+Adult Sleep,S AU sleepwear,S AU misc,62.0,53.0,24.0,28.0,hybrid_10pct,-25.0,-38.0
+Baby Apparel,Bby sets,Bby LS set,864.0,1014.0,265.0,991.0,hybrid_10pct,-23.0,-599.0
+Collab Apparel,C Baby,C Bby dress,18.0,14.0,4.0,1.0,hybrid_10pct,-13.0,-14.0
+Collab Apparel,C Kids Unisex,C KU pant,4.0,10.0,2.0,2.0,hybrid_10pct,-8.0,-2.0
+Girls,G sets,G LS set,188.0,62.0,66.0,54.0,hybrid_10pct,-8.0,-122.0
+Adult Apparel,O womens apparel,O womens apparel dress,24.0,0.0,0.0,0.0,hybrid_10pct,0.0,-24.0
+Adult Sleep,S W sleepwear,S W misc,14.0,0.0,2.0,0.0,hybrid_10pct,0.0,-12.0
+Baby Accessories,BA hats,BA misc hat,19.0,0.0,0.0,0.0,hybrid_10pct,0.0,-19.0
+Baby Accessories,BA non clothing,BA nc blankets,3.0,0.0,2.0,0.0,hybrid_10pct,0.0,-1.0
+Baby Accessories,BA non clothing,BA nc misc,1.0,0.0,1.0,0.0,hybrid_10pct,0.0,0.0
+Baby Accessories,BA tight,BA tight footed,2.0,0.0,0.0,0.0,hybrid_10pct,0.0,-2.0
+Baby Apparel,Bby swimwear,Bby swim trunk,13.0,0.0,13.0,0.0,hybrid_10pct,0.0,0.0
+Baby Sleepwear,BS footless sleeper,BS footless solid,3.0,0.0,0.0,0.0,hybrid_10pct,0.0,-3.0
+Boys,B sets,B LS set,16.0,0.0,0.0,0.0,hybrid_10pct,0.0,-16.0
+Collab Apparel,C Baby,C Bby sweater,3.0,0.0,3.0,0.0,hybrid_10pct,0.0,0.0
+Collab Apparel,C Girl,C G jkt-vest,7.0,0.0,0.0,0.0,hybrid_10pct,0.0,-7.0
+Collab Apparel,C Girl,C G sweater,16.0,0.0,0.0,0.0,hybrid_10pct,0.0,-16.0
+Collab Apparel,C Kids Unisex,C KU 1pc,4.0,0.0,0.0,0.0,hybrid_10pct,0.0,-4.0
+Collab Apparel,C Kids Unisex,C KU sweater,24.0,0.0,0.0,0.0,hybrid_10pct,0.0,-24.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU 1pc,5.0,0.0,5.0,0.0,hybrid_10pct,0.0,0.0
+Girls,G 1pc,G SS 1pc,8.0,0.0,0.0,0.0,hybrid_10pct,0.0,-8.0
+Girls,G outerwear,G vest,0.0,0.0,2.0,0.0,hybrid_10pct,0.0,2.0
+Girls,G skirt,G w skirt,8.0,0.0,13.0,0.0,hybrid_10pct,0.0,5.0
+Kids Accessories,KA moc-slipper,KA slipper,2.0,0.0,2.0,0.0,hybrid_10pct,0.0,0.0
+Kids Unders,U B underwear,U B unders top,5.0,0.0,0.0,0.0,hybrid_10pct,0.0,-5.0
+Kids Unders,U G underwear,U G unders top,7.0,0.0,0.0,0.0,hybrid_10pct,0.0,-7.0
+Kids Unisex Sleep,S KU 1pc,S KU 1pc misc,18.0,0.0,0.0,0.0,hybrid_10pct,0.0,-18.0
+Kids Unisex Sleep,S KU non cotton,S KU non cttn 1pc,58.0,0.0,0.0,0.0,hybrid_10pct,0.0,-58.0
+LEGBaby Accessorie,LEGBA glove-mitten-sca,LEGBA glove-mitten,1.0,0.0,1.0,0.0,hybrid_10pct,0.0,0.0
+LEGBaby Accessorie,LEGBA hats,LEGBA hat,1.0,0.0,1.0,0.0,hybrid_10pct,0.0,0.0
+LEGKids Unisex Sle,LEGS KU print,LEGS KU pr LJ,1.0,0.0,1.0,0.0,hybrid_10pct,0.0,0.0
+LEGLicense Accesso,LEGLA misc,LEGLA misc hat-glove,2.0,0.0,2.0,0.0,hybrid_10pct,0.0,0.0
+W Baby Apparel,WBby dress,WBby LS dress,1.0,0.0,1.0,0.0,hybrid_10pct,0.0,0.0
+W Baby Apparel,WBby dress,WBby SS dress,5.0,0.0,5.0,0.0,hybrid_10pct,0.0,0.0
+W Baby Apparel,WBby sets,WBby SL set,21.0,0.0,21.0,0.0,hybrid_10pct,0.0,0.0
+W Baby Apparel,WBby swimwear,WBby swim rash guard,1.0,0.0,1.0,0.0,hybrid_10pct,0.0,0.0
+W Baby Sleepwear,WBS footless sleeper,WBS footless print,8.0,0.0,8.0,0.0,hybrid_10pct,0.0,0.0
+W Kids Unders,WU B underwear,WU B unders top,1.0,0.0,1.0,0.0,hybrid_10pct,0.0,0.0
+W Kids Unisex Slee,WS KU LJ,WS KU LJ stripe,1.0,0.0,1.0,0.0,hybrid_10pct,0.0,0.0
+W Kids Unisex Slee,WS KU SJ,WS KU SJ print,6.0,0.0,6.0,0.0,hybrid_10pct,0.0,0.0
+W Kids Unisex Slee,WS KU non cotton,WS KU non cttn PJ,5.0,0.0,5.0,0.0,hybrid_10pct,0.0,0.0
+Kids Accessories,KA costume accessories,KA costume accessories misc,16.0,0.0,13.0,1.0,hybrid_10pct,1.0,-3.0
+Collab Sleepwear,CS AU sleep,CS AU misc,33.0,57.0,33.0,59.0,hybrid_10pct,2.0,0.0
+Kids Unisex,KU outerwear,KU vest,8.0,0.0,8.0,2.0,hybrid_10pct,2.0,0.0
+Boys,B outerwear,B ow,6.0,0.0,6.0,3.0,hybrid_10pct,3.0,0.0
+Collab Sleepwear,CS Baby sleep,CS Bby footed,5.0,0.0,6.0,3.0,hybrid_10pct,3.0,1.0
+Kids Accessories,KA tight,KA tight footed,40.0,0.0,6.0,4.0,hybrid_10pct,4.0,-34.0
+Collab Apparel,C Boy,C B sweater,8.0,0.0,8.0,5.0,hybrid_10pct,5.0,0.0
+Girls,G outerwear,G jkt,60.0,125.0,25.0,142.0,hybrid_10pct,17.0,-35.0
+Collab Apparel,C Girl,C G top,88.0,0.0,1.0,20.0,hybrid_10pct,20.0,-87.0
+Boys,B outerwear,B jkt,47.0,10.0,17.0,34.0,hybrid_10pct,24.0,-30.0
+Collab Sleepwear,CS AU sleep,CS AU Pajama,176.0,134.0,52.0,161.0,hybrid_10pct,27.0,-124.0
+Adult Apparel,O unisex apparel,O unisex apparel top,54.0,0.0,15.0,28.0,hybrid_10pct,28.0,-39.0
+Baby Accessories,BA hats,BA sweater hat,3.0,0.0,2.0,28.0,hybrid_10pct,28.0,-1.0
+Collab Accessories,CA misc,CA misc sock-tight,112.0,0.0,2.0,28.0,hybrid_10pct,28.0,-110.0
+Collab Apparel,C Baby,C Bby 1pc,35.0,0.0,2.0,28.0,hybrid_10pct,28.0,-33.0
+Collab Apparel,C Baby-Toddler,C BT swimwear,7.0,0.0,7.0,28.0,hybrid_10pct,28.0,0.0
+Kids Unisex,KU sweater,KU swtr cardigan,29.0,0.0,3.0,28.0,hybrid_10pct,28.0,-26.0
+Kids Unisex,KU top,KU SL top,49.0,0.0,16.0,28.0,hybrid_10pct,28.0,-33.0
+Baby Accessories,BA hats,BA sun hat,2.0,0.0,1.0,29.0,hybrid_10pct,29.0,-1.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU nightgown,64.0,0.0,5.0,29.0,hybrid_10pct,29.0,-59.0
+Collab Accessories,CA misc,CA misc hat-glove,17.0,0.0,17.0,32.0,hybrid_10pct,32.0,0.0
+Boys,B sweater,B swtr cardigan,76.0,0.0,23.0,37.0,hybrid_10pct,37.0,-53.0
+Collab Apparel,C Boy,C B set,8.0,0.0,8.0,39.0,hybrid_10pct,39.0,0.0
+Collab Sleepwear,CS AU sleep,CS AU SJ,20.0,0.0,14.0,39.0,hybrid_10pct,39.0,-6.0
+Other,S Pet Johns,S pet johns stripe,3.0,0.0,2.0,43.0,hybrid_10pct,43.0,-1.0
+Kids Accessories,KA hats,KA sun hat,10.0,0.0,4.0,53.0,hybrid_10pct,53.0,-6.0
+Collab Apparel,C Girl,C G short,24.0,0.0,24.0,54.0,hybrid_10pct,54.0,0.0
+Collab Apparel,C Boy,C B jkt-vest,5.0,10.0,5.0,67.0,hybrid_10pct,57.0,0.0
+Kids Accessories,KA hats,KA sweater hat,4.0,0.0,6.0,57.0,hybrid_10pct,57.0,2.0
+Baby Apparel,Bby sweater,Bby swtr pullover,68.0,73.0,47.0,131.0,hybrid_10pct,58.0,-21.0
+Boys,B sweater,B swtr pullover,106.0,30.0,58.0,88.0,hybrid_10pct,58.0,-48.0
+Collab Apparel,C Baby-Toddler,C BT pant,10.0,0.0,11.0,59.0,hybrid_10pct,59.0,1.0
+Collab Apparel,C Girl,C G skirt,38.0,0.0,5.0,60.0,hybrid_10pct,60.0,-33.0
+Collab Apparel,C Boy,C B top,12.0,0.0,12.0,61.0,hybrid_10pct,61.0,0.0
+Collab Apparel,C Kids Unisex,C KU swimwear,28.0,0.0,21.0,61.0,hybrid_10pct,61.0,-7.0
+Adult Apparel,O womens apparel,O womens apparel top,64.0,0.0,14.0,63.0,hybrid_10pct,63.0,-50.0
+Girls,G sweater,G swtr cardigan,137.0,95.0,81.0,164.0,hybrid_10pct,69.0,-56.0
+Baby Apparel,Bby top,Bby SL top,0.0,0.0,2.0,70.0,hybrid_10pct,70.0,2.0
+Collab Apparel,C Boy,C B swimwear,23.0,0.0,18.0,74.0,hybrid_10pct,74.0,-5.0
+Baby Apparel,Bby 1pc,Bby LS 1pc,173.0,106.0,36.0,184.0,hybrid_10pct,78.0,-137.0
+Baby Apparel,Bby sets,Bby SL set,24.0,200.0,42.0,279.0,hybrid_10pct,79.0,18.0
+Collab Sleepwear,CS W sleep,CS W SJ,9.0,0.0,3.0,84.0,hybrid_10pct,84.0,-6.0
+Collab Apparel,C Adult,C Womens,35.0,0.0,11.0,86.0,hybrid_10pct,86.0,-24.0
+Baby Apparel,Bby dress,Bby SS dress,259.0,190.0,114.0,278.0,hybrid_10pct,88.0,-145.0
+Collab Sleepwear,CS W sleep,CS W bottom,64.0,29.0,22.0,117.0,hybrid_10pct,88.0,-42.0
+Kids Unisex,KU sweater,KU swtr pullover,96.0,0.0,43.0,89.0,hybrid_10pct,89.0,-53.0
+Baby Apparel,Bby dress,Bby LS dress,480.0,379.0,185.0,470.0,hybrid_10pct,91.0,-295.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU set,162.0,200.0,52.0,296.0,hybrid_10pct,96.0,-110.0
+Adult Sleep,S AU sleepwear,S AU Pajama,268.0,64.0,120.0,179.0,hybrid_10pct,115.0,-148.0
+Baby Apparel,Bby bodysuit,Bby LS bodysuit,112.0,454.0,61.0,571.0,hybrid_10pct,117.0,-51.0
+Baby Apparel,Bby top,Bby LS top,212.0,187.0,62.0,317.0,hybrid_10pct,130.0,-150.0
+Collab Apparel,C Kids Unisex,C KU set,32.0,0.0,23.0,163.0,hybrid_10pct,163.0,-9.0
+Kids Unisex,KU short,KU w short,40.0,24.0,40.0,196.0,hybrid_10pct,172.0,0.0
+Collab Apparel,C Girl,C G dress,279.0,766.0,157.0,946.0,hybrid_10pct,180.0,-122.0
+Adult Sleep,S W sleepwear,S W pajama,977.0,527.0,371.0,710.0,hybrid_10pct,183.0,-606.0
+Baby Apparel,Bby short,Bby k short,31.0,56.0,29.0,247.0,hybrid_10pct,191.0,-2.0
+Baby Apparel,Bby pant,Bby w pant,117.0,359.0,65.0,555.0,hybrid_10pct,196.0,-52.0
+Baby Sleepwear,BS footless sleeper,BS footless stripe,236.0,84.0,50.0,302.0,hybrid_10pct,218.0,-186.0
+Kids Unisex,KU sets,KU SS set,60.0,391.0,74.0,613.0,hybrid_10pct,222.0,14.0
+Adult Apparel,O womens apparel,O womens apparel swim,24.0,0.0,22.0,227.0,hybrid_10pct,227.0,-2.0
+Collab Apparel,C Girl,C G pant,48.0,0.0,26.0,230.0,hybrid_10pct,230.0,-22.0
+Collab Apparel,C Adult,C Adult Unisex,117.0,0.0,28.0,249.0,hybrid_10pct,249.0,-89.0
+Boys,B sets,B SS set,37.0,0.0,62.0,253.0,hybrid_10pct,253.0,25.0
+Girls,G sweater,G swtr pullover,187.0,95.0,100.0,349.0,hybrid_10pct,254.0,-87.0
+Adult Sleep,S AU sleepwear,S AU SJ,7.0,0.0,40.0,270.0,hybrid_10pct,270.0,33.0
+Girls,G 1pc,G SL 1pc,149.0,240.0,105.0,510.0,hybrid_10pct,270.0,-44.0
+Boys,B swimwear,B swim cover up,27.0,0.0,8.0,283.0,hybrid_10pct,283.0,-19.0
+Collab Apparel,C Baby,C Bby set,109.0,41.0,55.0,325.0,hybrid_10pct,284.0,-54.0
+Baby Apparel,Bby sweater,Bby swtr cardigan,165.0,90.0,87.0,384.0,hybrid_10pct,294.0,-78.0
+Girls,G top,G SS top,258.0,838.0,176.0,1134.0,hybrid_10pct,296.0,-82.0
+Kids Unisex Sleep,S KU non cotton,S KU non cttn nightgown,262.0,369.0,96.0,677.0,hybrid_10pct,308.0,-166.0
+Baby Apparel,Bby dress,Bby SL dress set,54.0,136.0,52.0,454.0,hybrid_10pct,318.0,-2.0
+Girls,G sets,G SS set,260.0,496.0,199.0,822.0,hybrid_10pct,326.0,-61.0
+Kids Unisex Sleep,S KU SJ,S KU SJ stripe,13.0,0.0,31.0,335.0,hybrid_10pct,335.0,18.0
+Baby Apparel,Bby dress,Bby SS dress set,167.0,0.0,79.0,385.0,hybrid_10pct,385.0,-88.0
+Kids Unisex,KU pant,KU w pant,151.0,140.0,96.0,525.0,hybrid_10pct,385.0,-55.0
+Baby Apparel,Bby swimwear,Bby swim 1pc,60.0,70.0,63.0,573.0,hybrid_10pct,503.0,3.0
+Girls,G skirt,G k skirt,114.0,167.0,88.0,686.0,hybrid_10pct,519.0,-26.0
+Baby Apparel,Bby top,Bby SS top,140.0,398.0,121.0,933.0,hybrid_10pct,535.0,-19.0
+Boys,B short,B k short,88.0,632.0,101.0,1185.0,hybrid_10pct,553.0,13.0
+Baby Apparel,Bby 1pc,Bby SS 1pc,113.0,0.0,70.0,558.0,hybrid_10pct,558.0,-43.0
+Kids Unisex Sleep,S KU non cotton,S KU non cttn PJ,755.0,608.0,355.0,1219.0,hybrid_10pct,611.0,-400.0
+Boys,B swimwear,B swim rash guard,171.0,3300.0,185.0,3913.0,hybrid_10pct,613.0,14.0
+Kids Unisex,KU top,KU LS top,1209.0,1948.0,595.0,2574.0,hybrid_10pct,626.0,-614.0
+Girls,G top,G SL top,131.0,647.0,101.0,1333.0,hybrid_10pct,686.0,-30.0
+Girls,G swimwear,G swim cover up,63.0,546.0,56.0,1283.0,hybrid_10pct,737.0,-7.0
+Kids Accessories,KA sock,KA sock misc,229.0,70.0,72.0,849.0,hybrid_10pct,779.0,-157.0
+Girls,G short,G w short,32.0,312.0,32.0,1131.0,hybrid_10pct,819.0,0.0
+Girls,G sets,G SL set,120.0,158.0,149.0,1002.0,hybrid_10pct,844.0,29.0
+Girls,G dress,G SL dress,774.0,10728.0,647.0,11736.0,hybrid_10pct,1008.0,-127.0
+Baby Apparel,Bby swimwear,Bby swim rash guard,131.0,549.0,120.0,1602.0,hybrid_10pct,1053.0,-11.0
+Baby Apparel,Bby dress,Bby SL dress,283.0,373.0,166.0,1463.0,hybrid_10pct,1090.0,-117.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU SJ,313.0,665.0,244.0,1843.0,hybrid_10pct,1178.0,-69.0
+Collab Apparel,C Kids Unisex,C KU top,368.0,80.0,83.0,1264.0,hybrid_10pct,1184.0,-285.0
+Boys,B top,B SS top,647.0,1636.0,547.0,2951.0,hybrid_10pct,1315.0,-100.0
+Girls,G swimwear,G swim rash guard,113.0,416.0,140.0,1856.0,hybrid_10pct,1440.0,27.0
+Girls,G dress,G SS dress,994.0,2067.0,580.0,3721.0,hybrid_10pct,1654.0,-414.0
+Girls,G swimwear,G swim 1pc,243.0,1252.0,268.0,3008.0,hybrid_10pct,1756.0,25.0
+Baby Apparel,Bby sets,Bby SS set,374.0,1014.0,290.0,3248.0,hybrid_10pct,2234.0,-84.0
+Kids Unisex,KU top,KU SS top,568.0,3711.0,518.0,6596.0,hybrid_10pct,2885.0,-50.0
+Boys,B swimwear,B swim trunk,241.0,1176.0,265.0,4154.0,hybrid_10pct,2978.0,24.0
+Baby Sleepwear,BS footless sleeper,BS footless print,1411.0,4499.0,764.0,8551.0,hybrid_10pct,4052.0,-647.0
+Girls,G swimwear,G swim 2pc,305.0,2312.0,338.0,6420.0,hybrid_10pct,4108.0,33.0
+Kids Unisex Sleep,S KU SJ,S KU SJ print,1153.0,11950.0,955.0,17037.0,hybrid_10pct,5087.0,-198.0
+Kids Unders,U G underwear,U G unders bottom,172.0,19314.0,108.0,5040.0,hybrid_5pct,-14274.0,-64.0
+Kids Unders,U B underwear,U B unders bottom,185.0,15139.0,109.0,3650.0,hybrid_5pct,-11489.0,-76.0
+Girls,G short,G k short,318.0,12761.0,275.0,4539.0,hybrid_5pct,-8222.0,-43.0
+Girls,G pant,G k pant,792.0,6213.0,272.0,1764.0,hybrid_5pct,-4449.0,-520.0
+Girls,G dress,G LS dress,1798.0,5624.0,628.0,1299.0,hybrid_5pct,-4325.0,-1170.0
+Boys,B pant,B k pant,290.0,3913.0,160.0,365.0,hybrid_5pct,-3548.0,-130.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU LJ,1024.0,4204.0,421.0,2061.0,hybrid_5pct,-2143.0,-603.0
+Kids Unisex Sleep,S KU LJ,S KU LJ print,1739.0,5302.0,1036.0,3754.0,hybrid_5pct,-1548.0,-703.0
+Girls,G top,G LS top,650.0,1914.0,155.0,441.0,hybrid_5pct,-1473.0,-495.0
+Collab Accessories,CA underwear,CA G underwear,92.0,1591.0,40.0,334.0,hybrid_5pct,-1257.0,-52.0
+Kids Unisex,KU outerwear,KU jkt,270.0,1229.0,101.0,77.0,hybrid_5pct,-1152.0,-169.0
+Baby Apparel,Bby pant,Bby k pant,279.0,1324.0,151.0,379.0,hybrid_5pct,-945.0,-128.0
+Kids Unisex,KU short,KU k short,102.0,1985.0,112.0,1144.0,hybrid_5pct,-841.0,10.0
+Boys,B top,B LS top,913.0,1766.0,365.0,1003.0,hybrid_5pct,-763.0,-548.0
+Collab Apparel,C Kids Unisex,C KU jkt-vest,74.0,868.0,39.0,166.0,hybrid_5pct,-702.0,-35.0
+Kids Unisex,KU pant,KU k pant,257.0,1833.0,112.0,1149.0,hybrid_5pct,-684.0,-145.0
+Baby Apparel,Bby swimwear,Bby swim 2pc,155.0,1252.0,144.0,592.0,hybrid_5pct,-660.0,-11.0
+Baby Apparel,Bby outerwear,Bby jkt,237.0,856.0,112.0,283.0,hybrid_5pct,-573.0,-125.0
+Boys,B short,B w short,139.0,1973.0,144.0,1538.0,hybrid_5pct,-435.0,5.0
+Baby Accessories,BA sock,BA sock misc,22.0,553.0,20.0,177.0,hybrid_5pct,-376.0,-2.0
+Baby Apparel,Bby bundle,Bby bundle misc,96.0,479.0,95.0,108.0,hybrid_5pct,-371.0,-1.0
+Baby Apparel,Bby 1pc,Bby SL 1pc,214.0,1335.0,149.0,967.0,hybrid_5pct,-368.0,-65.0
+Baby Sleepwear,BS footed sleeper,BS footed print,94.0,435.0,39.0,73.0,hybrid_5pct,-362.0,-55.0
+Collab Sleepwear,CS AU sleep,CS AU top,251.0,461.0,120.0,115.0,hybrid_5pct,-346.0,-131.0
+Baby Apparel,Bby dress,Bby LS dress set,350.0,794.0,123.0,471.0,hybrid_5pct,-323.0,-227.0
+Baby Apparel,Bby bodysuit,Bby SS bodysuit,34.0,542.0,33.0,240.0,hybrid_5pct,-302.0,-1.0
+Adult Sleep,S W sleepwear,S W LJ top,124.0,443.0,76.0,149.0,hybrid_5pct,-294.0,-48.0
+Adult Sleep,S AU sleepwear,S AU LJ top,424.0,495.0,243.0,217.0,hybrid_5pct,-278.0,-181.0
+Collab Sleepwear,CS Baby sleep,CS Bby footless,346.0,947.0,156.0,686.0,hybrid_5pct,-261.0,-190.0
+Kids Unisex,KU outerwear,KU ow,66.0,339.0,64.0,98.0,hybrid_5pct,-241.0,-2.0
+Collab Accessories,CA underwear,CA B underwear,33.0,275.0,10.0,41.0,hybrid_5pct,-234.0,-23.0
+Collab Apparel,C Girl,C G swimwear,61.0,503.0,53.0,276.0,hybrid_5pct,-227.0,-8.0
+Girls,G pant,G w pant,321.0,566.0,164.0,356.0,hybrid_5pct,-210.0,-157.0
+Baby Accessories,BA hats,BA pilot-knot hat,45.0,317.0,26.0,113.0,hybrid_5pct,-204.0,-19.0
+Collab Apparel,C Girl,C G set,8.0,196.0,11.0,4.0,hybrid_5pct,-192.0,3.0
+Kids Unisex Sleep,S KU LJ,S KU LJ stripe,60.0,358.0,36.0,192.0,hybrid_5pct,-166.0,-24.0
+Collab Accessories,CA non clothing,CA nc misc,68.0,253.0,24.0,88.0,hybrid_5pct,-165.0,-44.0
+Boys,B pant,B w pant,330.0,681.0,170.0,520.0,hybrid_5pct,-161.0,-160.0
+Collab Apparel,C Baby,C Bby jkt-vest,17.0,174.0,8.0,30.0,hybrid_5pct,-144.0,-9.0
+Collab Apparel,C Baby-Toddler,C BT top,48.0,285.0,35.0,150.0,hybrid_5pct,-135.0,-13.0
+Other,S Pet Johns,S pet johns print,241.0,199.0,81.0,84.0,hybrid_5pct,-115.0,-160.0
+Adult Sleep,S AU sleepwear,S AU LJ bottom,401.0,479.0,199.0,372.0,hybrid_5pct,-107.0,-202.0
+Collab Apparel,C Baby-Toddler,C BT set,104.0,168.0,47.0,66.0,hybrid_5pct,-102.0,-57.0
+Adult Sleep,S W sleepwear,S W LJ bottom,143.0,266.0,63.0,181.0,hybrid_5pct,-85.0,-80.0
+Baby Apparel,Bby sets,Bby LS set,864.0,1014.0,265.0,934.0,hybrid_5pct,-80.0,-599.0
+Baby Apparel,Bby outerwear,Bby OW,35.0,96.0,9.0,28.0,hybrid_5pct,-68.0,-26.0
+Collab Sleepwear,CS W sleep,CS W top,39.0,92.0,18.0,28.0,hybrid_5pct,-64.0,-21.0
+Adult Sleep,S W sleepwear,S W nightgown,102.0,82.0,39.0,28.0,hybrid_5pct,-54.0,-63.0
+Collab Sleepwear,CS AU sleep,CS AU bottom,248.0,249.0,85.0,195.0,hybrid_5pct,-54.0,-163.0
+Collab Sleepwear,CS W sleep,CS W pajama,258.0,161.0,105.0,115.0,hybrid_5pct,-46.0,-153.0
+Baby Accessories,BA moc-slipper,BA moc-slipper-misc,38.0,43.0,14.0,1.0,hybrid_5pct,-42.0,-24.0
+Collab Accessories,CA underwear,CA BT underwear,8.0,202.0,5.0,161.0,hybrid_5pct,-41.0,-3.0
+Baby Sleepwear,BS 1pc,BS misc,59.0,227.0,23.0,190.0,hybrid_5pct,-37.0,-36.0
+Girls,G sets,G LS set,188.0,62.0,66.0,32.0,hybrid_5pct,-30.0,-122.0
+Adult Sleep,S AU sleepwear,S AU misc,62.0,53.0,24.0,28.0,hybrid_5pct,-25.0,-38.0
+Collab Apparel,C Baby,C Bby dress,18.0,14.0,4.0,0.0,hybrid_5pct,-14.0,-14.0
+Collab Apparel,C Kids Unisex,C KU pant,4.0,10.0,2.0,0.0,hybrid_5pct,-10.0,-2.0
+Adult Apparel,O womens apparel,O womens apparel dress,24.0,0.0,0.0,0.0,hybrid_5pct,0.0,-24.0
+Adult Sleep,S W sleepwear,S W misc,14.0,0.0,2.0,0.0,hybrid_5pct,0.0,-12.0
+Baby Accessories,BA hats,BA misc hat,19.0,0.0,0.0,0.0,hybrid_5pct,0.0,-19.0
+Baby Accessories,BA non clothing,BA nc blankets,3.0,0.0,2.0,0.0,hybrid_5pct,0.0,-1.0
+Baby Accessories,BA non clothing,BA nc misc,1.0,0.0,1.0,0.0,hybrid_5pct,0.0,0.0
+Baby Accessories,BA tight,BA tight footed,2.0,0.0,0.0,0.0,hybrid_5pct,0.0,-2.0
+Baby Apparel,Bby swimwear,Bby swim trunk,13.0,0.0,13.0,0.0,hybrid_5pct,0.0,0.0
+Baby Sleepwear,BS footless sleeper,BS footless solid,3.0,0.0,0.0,0.0,hybrid_5pct,0.0,-3.0
+Boys,B outerwear,B ow,6.0,0.0,6.0,0.0,hybrid_5pct,0.0,0.0
+Boys,B sets,B LS set,16.0,0.0,0.0,0.0,hybrid_5pct,0.0,-16.0
+Collab Apparel,C Baby,C Bby sweater,3.0,0.0,3.0,0.0,hybrid_5pct,0.0,0.0
+Collab Apparel,C Boy,C B sweater,8.0,0.0,8.0,0.0,hybrid_5pct,0.0,0.0
+Collab Apparel,C Girl,C G jkt-vest,7.0,0.0,0.0,0.0,hybrid_5pct,0.0,-7.0
+Collab Apparel,C Girl,C G sweater,16.0,0.0,0.0,0.0,hybrid_5pct,0.0,-16.0
+Collab Apparel,C Kids Unisex,C KU 1pc,4.0,0.0,0.0,0.0,hybrid_5pct,0.0,-4.0
+Collab Apparel,C Kids Unisex,C KU sweater,24.0,0.0,0.0,0.0,hybrid_5pct,0.0,-24.0
+Collab Sleepwear,CS AU sleep,CS AU misc,33.0,57.0,33.0,57.0,hybrid_5pct,0.0,0.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU 1pc,5.0,0.0,5.0,0.0,hybrid_5pct,0.0,0.0
+Girls,G 1pc,G SS 1pc,8.0,0.0,0.0,0.0,hybrid_5pct,0.0,-8.0
+Girls,G outerwear,G vest,0.0,0.0,2.0,0.0,hybrid_5pct,0.0,2.0
+Girls,G skirt,G w skirt,8.0,0.0,13.0,0.0,hybrid_5pct,0.0,5.0
+Kids Accessories,KA costume accessories,KA costume accessories misc,16.0,0.0,13.0,0.0,hybrid_5pct,0.0,-3.0
+Kids Accessories,KA moc-slipper,KA slipper,2.0,0.0,2.0,0.0,hybrid_5pct,0.0,0.0
+Kids Unders,U B underwear,U B unders top,5.0,0.0,0.0,0.0,hybrid_5pct,0.0,-5.0
+Kids Unders,U G underwear,U G unders top,7.0,0.0,0.0,0.0,hybrid_5pct,0.0,-7.0
+Kids Unisex,KU outerwear,KU vest,8.0,0.0,8.0,0.0,hybrid_5pct,0.0,0.0
+Kids Unisex Sleep,S KU 1pc,S KU 1pc misc,18.0,0.0,0.0,0.0,hybrid_5pct,0.0,-18.0
+Kids Unisex Sleep,S KU non cotton,S KU non cttn 1pc,58.0,0.0,0.0,0.0,hybrid_5pct,0.0,-58.0
+LEGBaby Accessorie,LEGBA glove-mitten-sca,LEGBA glove-mitten,1.0,0.0,1.0,0.0,hybrid_5pct,0.0,0.0
+LEGBaby Accessorie,LEGBA hats,LEGBA hat,1.0,0.0,1.0,0.0,hybrid_5pct,0.0,0.0
+LEGKids Unisex Sle,LEGS KU print,LEGS KU pr LJ,1.0,0.0,1.0,0.0,hybrid_5pct,0.0,0.0
+LEGLicense Accesso,LEGLA misc,LEGLA misc hat-glove,2.0,0.0,2.0,0.0,hybrid_5pct,0.0,0.0
+W Baby Apparel,WBby dress,WBby LS dress,1.0,0.0,1.0,0.0,hybrid_5pct,0.0,0.0
+W Baby Apparel,WBby dress,WBby SS dress,5.0,0.0,5.0,0.0,hybrid_5pct,0.0,0.0
+W Baby Apparel,WBby sets,WBby SL set,21.0,0.0,21.0,0.0,hybrid_5pct,0.0,0.0
+W Baby Apparel,WBby swimwear,WBby swim rash guard,1.0,0.0,1.0,0.0,hybrid_5pct,0.0,0.0
+W Baby Sleepwear,WBS footless sleeper,WBS footless print,8.0,0.0,8.0,0.0,hybrid_5pct,0.0,0.0
+W Kids Unders,WU B underwear,WU B unders top,1.0,0.0,1.0,0.0,hybrid_5pct,0.0,0.0
+W Kids Unisex Slee,WS KU LJ,WS KU LJ stripe,1.0,0.0,1.0,0.0,hybrid_5pct,0.0,0.0
+W Kids Unisex Slee,WS KU SJ,WS KU SJ print,6.0,0.0,6.0,0.0,hybrid_5pct,0.0,0.0
+W Kids Unisex Slee,WS KU non cotton,WS KU non cttn PJ,5.0,0.0,5.0,0.0,hybrid_5pct,0.0,0.0
+Kids Accessories,KA tight,KA tight footed,40.0,0.0,6.0,1.0,hybrid_5pct,1.0,-34.0
+Collab Sleepwear,CS Baby sleep,CS Bby footed,5.0,0.0,6.0,2.0,hybrid_5pct,2.0,1.0
+Girls,G outerwear,G jkt,60.0,125.0,25.0,135.0,hybrid_5pct,10.0,-35.0
+Kids Unisex,KU top,KU SL top,49.0,0.0,16.0,15.0,hybrid_5pct,15.0,-33.0
+Collab Sleepwear,CS AU sleep,CS AU Pajama,176.0,134.0,52.0,152.0,hybrid_5pct,18.0,-124.0
+Collab Apparel,C Girl,C G top,88.0,0.0,1.0,20.0,hybrid_5pct,20.0,-87.0
+Boys,B outerwear,B jkt,47.0,10.0,17.0,31.0,hybrid_5pct,21.0,-30.0
+Adult Apparel,O unisex apparel,O unisex apparel top,54.0,0.0,15.0,28.0,hybrid_5pct,28.0,-39.0
+Baby Accessories,BA hats,BA sweater hat,3.0,0.0,2.0,28.0,hybrid_5pct,28.0,-1.0
+Collab Accessories,CA misc,CA misc sock-tight,112.0,0.0,2.0,28.0,hybrid_5pct,28.0,-110.0
+Collab Apparel,C Baby,C Bby 1pc,35.0,0.0,2.0,28.0,hybrid_5pct,28.0,-33.0
+Collab Apparel,C Baby-Toddler,C BT swimwear,7.0,0.0,7.0,28.0,hybrid_5pct,28.0,0.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU nightgown,64.0,0.0,5.0,28.0,hybrid_5pct,28.0,-59.0
+Kids Unisex,KU sweater,KU swtr cardigan,29.0,0.0,3.0,28.0,hybrid_5pct,28.0,-26.0
+Baby Accessories,BA hats,BA sun hat,2.0,0.0,1.0,29.0,hybrid_5pct,29.0,-1.0
+Boys,B sweater,B swtr cardigan,76.0,0.0,23.0,29.0,hybrid_5pct,29.0,-53.0
+Collab Accessories,CA misc,CA misc hat-glove,17.0,0.0,17.0,30.0,hybrid_5pct,30.0,0.0
+Collab Apparel,C Boy,C B set,8.0,0.0,8.0,32.0,hybrid_5pct,32.0,0.0
+Collab Sleepwear,CS AU sleep,CS AU SJ,20.0,0.0,14.0,33.0,hybrid_5pct,33.0,-6.0
+Other,S Pet Johns,S pet johns stripe,3.0,0.0,2.0,43.0,hybrid_5pct,43.0,-1.0
+Boys,B sweater,B swtr pullover,106.0,30.0,58.0,80.0,hybrid_5pct,50.0,-48.0
+Baby Apparel,Bby sweater,Bby swtr pullover,68.0,73.0,47.0,124.0,hybrid_5pct,51.0,-21.0
+Collab Apparel,C Kids Unisex,C KU swimwear,28.0,0.0,21.0,52.0,hybrid_5pct,52.0,-7.0
+Kids Accessories,KA hats,KA sun hat,10.0,0.0,4.0,53.0,hybrid_5pct,53.0,-6.0
+Collab Apparel,C Girl,C G short,24.0,0.0,24.0,54.0,hybrid_5pct,54.0,0.0
+Girls,G sweater,G swtr cardigan,137.0,95.0,81.0,150.0,hybrid_5pct,55.0,-56.0
+Collab Apparel,C Baby-Toddler,C BT pant,10.0,0.0,11.0,56.0,hybrid_5pct,56.0,1.0
+Collab Apparel,C Boy,C B jkt-vest,5.0,10.0,5.0,66.0,hybrid_5pct,56.0,0.0
+Kids Accessories,KA hats,KA sweater hat,4.0,0.0,6.0,57.0,hybrid_5pct,57.0,2.0
+Collab Apparel,C Boy,C B top,12.0,0.0,12.0,58.0,hybrid_5pct,58.0,0.0
+Baby Apparel,Bby dress,Bby SS dress,259.0,190.0,114.0,249.0,hybrid_5pct,59.0,-145.0
+Collab Apparel,C Girl,C G skirt,38.0,0.0,5.0,59.0,hybrid_5pct,59.0,-33.0
+Adult Apparel,O womens apparel,O womens apparel top,64.0,0.0,14.0,60.0,hybrid_5pct,60.0,-50.0
+Baby Apparel,Bby sets,Bby SL set,24.0,200.0,42.0,261.0,hybrid_5pct,61.0,18.0
+Collab Apparel,C Boy,C B swimwear,23.0,0.0,18.0,66.0,hybrid_5pct,66.0,-5.0
+Baby Apparel,Bby top,Bby SL top,0.0,0.0,2.0,70.0,hybrid_5pct,70.0,2.0
+Baby Apparel,Bby 1pc,Bby LS 1pc,173.0,106.0,36.0,182.0,hybrid_5pct,76.0,-137.0
+Baby Apparel,Bby dress,Bby LS dress,480.0,379.0,185.0,457.0,hybrid_5pct,78.0,-295.0
+Collab Sleepwear,CS W sleep,CS W SJ,9.0,0.0,3.0,84.0,hybrid_5pct,84.0,-6.0
+Collab Apparel,C Adult,C Womens,35.0,0.0,11.0,86.0,hybrid_5pct,86.0,-24.0
+Kids Unisex,KU sweater,KU swtr pullover,96.0,0.0,43.0,87.0,hybrid_5pct,87.0,-53.0
+Baby Apparel,Bby bodysuit,Bby LS bodysuit,112.0,454.0,61.0,542.0,hybrid_5pct,88.0,-51.0
+Collab Sleepwear,CS W sleep,CS W bottom,64.0,29.0,22.0,117.0,hybrid_5pct,88.0,-42.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU set,162.0,200.0,52.0,293.0,hybrid_5pct,93.0,-110.0
+Adult Sleep,S AU sleepwear,S AU Pajama,268.0,64.0,120.0,171.0,hybrid_5pct,107.0,-148.0
+Collab Apparel,C Girl,C G dress,279.0,766.0,157.0,878.0,hybrid_5pct,112.0,-122.0
+Adult Sleep,S W sleepwear,S W pajama,977.0,527.0,371.0,649.0,hybrid_5pct,122.0,-606.0
+Baby Apparel,Bby top,Bby LS top,212.0,187.0,62.0,309.0,hybrid_5pct,122.0,-150.0
+Kids Unisex,KU short,KU w short,40.0,24.0,40.0,177.0,hybrid_5pct,153.0,0.0
+Collab Apparel,C Kids Unisex,C KU set,32.0,0.0,23.0,156.0,hybrid_5pct,156.0,-9.0
+Baby Apparel,Bby pant,Bby w pant,117.0,359.0,65.0,516.0,hybrid_5pct,157.0,-52.0
+Baby Apparel,Bby short,Bby k short,31.0,56.0,29.0,224.0,hybrid_5pct,168.0,-2.0
+Girls,G top,G SS top,258.0,838.0,176.0,1028.0,hybrid_5pct,190.0,-82.0
+Baby Sleepwear,BS footless sleeper,BS footless stripe,236.0,84.0,50.0,276.0,hybrid_5pct,192.0,-186.0
+Kids Unisex,KU sets,KU SS set,60.0,391.0,74.0,583.0,hybrid_5pct,192.0,14.0
+Adult Apparel,O womens apparel,O womens apparel swim,24.0,0.0,22.0,211.0,hybrid_5pct,211.0,-2.0
+Girls,G 1pc,G SL 1pc,149.0,240.0,105.0,460.0,hybrid_5pct,220.0,-44.0
+Collab Apparel,C Girl,C G pant,48.0,0.0,26.0,228.0,hybrid_5pct,228.0,-22.0
+Boys,B sets,B SS set,37.0,0.0,62.0,233.0,hybrid_5pct,233.0,25.0
+Girls,G sets,G SS set,260.0,496.0,199.0,729.0,hybrid_5pct,233.0,-61.0
+Collab Apparel,C Adult,C Adult Unisex,117.0,0.0,28.0,242.0,hybrid_5pct,242.0,-89.0
+Girls,G sweater,G swtr pullover,187.0,95.0,100.0,337.0,hybrid_5pct,242.0,-87.0
+Adult Sleep,S AU sleepwear,S AU SJ,7.0,0.0,40.0,252.0,hybrid_5pct,252.0,33.0
+Collab Apparel,C Baby,C Bby set,109.0,41.0,55.0,315.0,hybrid_5pct,274.0,-54.0
+Baby Apparel,Bby dress,Bby SL dress set,54.0,136.0,52.0,413.0,hybrid_5pct,277.0,-2.0
+Boys,B swimwear,B swim cover up,27.0,0.0,8.0,279.0,hybrid_5pct,279.0,-19.0
+Kids Unisex Sleep,S KU non cotton,S KU non cttn nightgown,262.0,369.0,96.0,648.0,hybrid_5pct,279.0,-166.0
+Baby Apparel,Bby sweater,Bby swtr cardigan,165.0,90.0,87.0,372.0,hybrid_5pct,282.0,-78.0
+Kids Unisex,KU pant,KU w pant,151.0,140.0,96.0,453.0,hybrid_5pct,313.0,-55.0
+Kids Unisex Sleep,S KU SJ,S KU SJ stripe,13.0,0.0,31.0,321.0,hybrid_5pct,321.0,18.0
+Baby Apparel,Bby dress,Bby SS dress set,167.0,0.0,79.0,363.0,hybrid_5pct,363.0,-88.0
+Kids Unisex,KU top,KU LS top,1209.0,1948.0,595.0,2376.0,hybrid_5pct,428.0,-614.0
+Baby Apparel,Bby top,Bby SS top,140.0,398.0,121.0,845.0,hybrid_5pct,447.0,-19.0
+Girls,G skirt,G k skirt,114.0,167.0,88.0,614.0,hybrid_5pct,447.0,-26.0
+Baby Apparel,Bby swimwear,Bby swim 1pc,60.0,70.0,63.0,543.0,hybrid_5pct,473.0,3.0
+Boys,B short,B k short,88.0,632.0,101.0,1125.0,hybrid_5pct,493.0,13.0
+Girls,G dress,G SL dress,774.0,10728.0,647.0,11222.0,hybrid_5pct,494.0,-127.0
+Baby Apparel,Bby 1pc,Bby SS 1pc,113.0,0.0,70.0,506.0,hybrid_5pct,506.0,-43.0
+Kids Unisex Sleep,S KU non cotton,S KU non cttn PJ,755.0,608.0,355.0,1119.0,hybrid_5pct,511.0,-400.0
+Boys,B swimwear,B swim rash guard,171.0,3300.0,185.0,3815.0,hybrid_5pct,515.0,14.0
+Girls,G top,G SL top,131.0,647.0,101.0,1261.0,hybrid_5pct,614.0,-30.0
+Girls,G swimwear,G swim cover up,63.0,546.0,56.0,1246.0,hybrid_5pct,700.0,-7.0
+Kids Accessories,KA sock,KA sock misc,229.0,70.0,72.0,806.0,hybrid_5pct,736.0,-157.0
+Girls,G sets,G SL set,120.0,158.0,149.0,899.0,hybrid_5pct,741.0,29.0
+Girls,G short,G w short,32.0,312.0,32.0,1101.0,hybrid_5pct,789.0,0.0
+Baby Apparel,Bby swimwear,Bby swim rash guard,131.0,549.0,120.0,1522.0,hybrid_5pct,973.0,-11.0
+Baby Apparel,Bby dress,Bby SL dress,283.0,373.0,166.0,1369.0,hybrid_5pct,996.0,-117.0
+Boys,B top,B SS top,647.0,1636.0,547.0,2642.0,hybrid_5pct,1006.0,-100.0
+Collab Sleepwear,CS Kids Unisex sleep,CS KU SJ,313.0,665.0,244.0,1742.0,hybrid_5pct,1077.0,-69.0
+Collab Apparel,C Kids Unisex,C KU top,368.0,80.0,83.0,1238.0,hybrid_5pct,1158.0,-285.0
+Girls,G dress,G SS dress,994.0,2067.0,580.0,3410.0,hybrid_5pct,1343.0,-414.0
+Girls,G swimwear,G swim rash guard,113.0,416.0,140.0,1795.0,hybrid_5pct,1379.0,27.0
+Girls,G swimwear,G swim 1pc,243.0,1252.0,268.0,2851.0,hybrid_5pct,1599.0,25.0
+Baby Apparel,Bby sets,Bby SS set,374.0,1014.0,290.0,3054.0,hybrid_5pct,2040.0,-84.0
+Kids Unisex,KU top,KU SS top,568.0,3711.0,518.0,6186.0,hybrid_5pct,2475.0,-50.0
+Boys,B swimwear,B swim trunk,241.0,1176.0,265.0,4049.0,hybrid_5pct,2873.0,24.0
+Baby Sleepwear,BS footless sleeper,BS footless print,1411.0,4499.0,764.0,8153.0,hybrid_5pct,3654.0,-647.0
+Girls,G swimwear,G swim 2pc,305.0,2312.0,338.0,6272.0,hybrid_5pct,3960.0,33.0
+Kids Unisex Sleep,S KU SJ,S KU SJ print,1153.0,11950.0,955.0,16516.0,hybrid_5pct,4566.0,-198.0

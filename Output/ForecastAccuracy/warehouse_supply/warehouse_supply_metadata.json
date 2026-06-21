@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-06-12T13:58:20",
+  "source": "DAX_PROD.dbo.WHSWORKTABLE/WHSWORKLINE",
+  "date_range": [
+    "2026-03-30",
+    "2026-06-12"
+  ],
+  "detail_rows": 92190,
+  "sku_day_rows": 67901,
+  "distinct_skus": 14611,
+  "outputs": {
+    "detail": "",
+    "sku_day": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\warehouse_supply\\warehouse_supply_sku_day.parquet",
+    "summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\warehouse_supply\\warehouse_supply_daily_summary.csv"
+  },
+  "notes": [
+    "Washed, Rags, and Quarantine destinations are classified as non-sellable.",
+    "Use sellable-floor supply separately from replenishment and non-sellable returns."
+  ]
+}

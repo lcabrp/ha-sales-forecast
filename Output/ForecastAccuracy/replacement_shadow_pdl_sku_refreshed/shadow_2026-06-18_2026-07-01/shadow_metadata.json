@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-06-18T09:40:41",
+  "forecast_start": "2026-06-18",
+  "forecast_end": "2026-07-01",
+  "partial_actuals": true,
+  "actuals_available_through": "2026-06-18",
+  "reused_frozen_forecast": false,
+  "forecast_path": "Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\shadow_daily_forecasts.parquet",
+  "frozen_forecast_generated_at": null,
+  "threads_requested": 8,
+  "model": "hgb_absolute_log",
+  "ml_threshold_units": 20.0,
+  "recent_fallback_weights": [
+    0.05,
+    0.1
+  ],
+  "recent_volume_caps": [
+    0.85,
+    1.0,
+    1.1
+  ],
+  "train_rows": 500000,
+  "calibration_rows": 195998,
+  "future_rows": 3387986,
+  "future_inputs": {
+    "candidate_universe_skus": 241999,
+    "snapshot_attribute_skus": 241500,
+    "direct_pick_signal": {
+      "window_start": "2026-04-23",
+      "window_end_exclusive": "2026-06-18",
+      "rows": 363966,
+      "distinct_skus": 16336,
+      "sold_units": 1114780.0
+    },
+    "promo_horizon_skus": 48738,
+    "future_rows": 3387986,
+    "feature_policy": "Rows are generated from snapshot, prior DirectPick, and known PDL SKU universe. Demand/inventory/supply lag features are frozen at latest prestart values; future actual/order rows are not used to create holdout rows."
+  },
+  "recent_direct_pick": {
+    "window_start": "2026-04-23",
+    "window_end_exclusive": "2026-06-18",
+    "rows": 363966,
+    "distinct_skus": 16336,
+    "sold_units": 1114780.0
+  },
+  "corporate": {
+    "status": "missing_exact_start"
+  },
+  "score_grain": "SKU/day"
+}

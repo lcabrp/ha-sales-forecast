@@ -1,0 +1,519 @@
+date,pdl_active_events,pdl_offer_cc_count,pdl_style_count,pdl_total_avail_inv,pdl_scopes
+2023-12-08,1,1549,613,1890090.0,New Arrivals|Sitewide
+2023-12-09,1,1549,613,1890090.0,New Arrivals|Sitewide
+2023-12-10,1,1549,613,1890090.0,New Arrivals|Sitewide
+2023-12-11,1,1549,613,1890090.0,New Arrivals|Sitewide
+2023-12-20,1,1622,621,1621969.0,Holiday
+2023-12-21,1,1622,621,1621969.0,Holiday
+2023-12-22,1,1622,621,1621969.0,Holiday
+2023-12-23,1,1622,621,1621969.0,Holiday
+2023-12-24,1,1622,621,1621969.0,Holiday
+2023-12-25,1,1622,621,1621969.0,Holiday
+2023-12-26,1,2194,839,791151.0,Clearance
+2024-07-30,1,553,141,728030.0,Sleep/PJs
+2024-07-31,1,553,141,728030.0,Sleep/PJs
+2024-08-01,1,553,141,728030.0,Sleep/PJs
+2024-08-02,1,553,141,728030.0,Sleep/PJs
+2024-08-03,1,553,141,728030.0,Sleep/PJs
+2024-08-04,1,553,141,728030.0,Sleep/PJs
+2024-08-05,1,553,141,728030.0,Sleep/PJs
+2024-09-11,2,267,114,516483.0,Dresses|Halloween
+2024-09-12,2,267,114,516483.0,Dresses|Halloween
+2024-09-13,3,389,157,708683.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2024-09-14,3,389,157,708683.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2024-09-15,3,389,157,708683.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2024-09-16,3,389,157,708683.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2024-09-17,2,267,114,516483.0,Dresses|Halloween
+2024-09-18,2,1658,677,2567608.0,Clearance
+2024-09-19,1,1270,516,2411060.0,Clearance
+2024-09-20,1,1270,516,2411060.0,Clearance
+2024-09-21,1,1270,516,2411060.0,Clearance
+2024-09-22,1,1270,516,2411060.0,Clearance
+2024-09-23,4,2351,837,4297386.0,Dresses|Sleep/PJs|Clearance
+2024-09-24,4,2351,837,4297386.0,Dresses|Sleep/PJs|Clearance
+2024-09-25,4,2351,837,4297386.0,Dresses|Sleep/PJs|Clearance
+2024-09-26,4,2351,837,4297386.0,Dresses|Sleep/PJs|Clearance
+2024-09-27,4,2351,837,4297386.0,Dresses|Sleep/PJs|Clearance
+2024-09-28,4,2351,837,4297386.0,Dresses|Sleep/PJs|Clearance
+2024-09-29,4,2351,837,4297386.0,Dresses|Sleep/PJs|Clearance
+2024-09-30,4,2351,837,4297386.0,Dresses|Sleep/PJs|Clearance
+2024-10-22,3,1103,447,2428707.0,Dresses|Sleep/PJs|Holiday|Dresses|Sleep/PJs|Clearance|Holiday
+2024-10-23,2,961,374,2375964.0,Dresses|Sleep/PJs|Holiday
+2024-10-24,2,961,374,2375964.0,Dresses|Sleep/PJs|Holiday
+2024-10-25,2,961,374,2375964.0,Dresses|Sleep/PJs|Holiday
+2024-10-26,2,961,374,2375964.0,Dresses|Sleep/PJs|Holiday
+2024-10-27,2,961,374,2375964.0,Dresses|Sleep/PJs|Holiday
+2024-10-28,2,961,374,2375964.0,Dresses|Sleep/PJs|Holiday
+2024-10-29,2,288,134,395699.0,Dresses
+2024-10-30,2,288,134,395699.0,Dresses
+2024-10-31,2,288,134,395699.0,Dresses
+2024-11-01,2,288,134,395699.0,Dresses
+2024-11-02,1,1580,598,3553269.0,Sitewide
+2024-11-03,1,1580,598,3553269.0,Sitewide
+2024-11-04,2,1112,420,2736971.0,Sleep/PJs|Sitewide|Dresses|Sleep/PJs|Holiday|Sitewide
+2024-11-05,2,1112,420,2736971.0,Sleep/PJs|Sitewide|Dresses|Sleep/PJs|Holiday|Sitewide
+2024-11-06,2,1112,420,2736971.0,Sleep/PJs|Sitewide|Dresses|Sleep/PJs|Holiday|Sitewide
+2024-11-07,2,1112,420,2736971.0,Sleep/PJs|Sitewide|Dresses|Sleep/PJs|Holiday|Sitewide
+2024-11-08,2,1112,420,2736971.0,Sleep/PJs|Sitewide|Dresses|Sleep/PJs|Holiday|Sitewide
+2024-11-09,2,1112,420,2736971.0,Sleep/PJs|Sitewide|Dresses|Sleep/PJs|Holiday|Sitewide
+2024-11-10,2,1112,420,2736971.0,Sleep/PJs|Sitewide|Dresses|Sleep/PJs|Holiday|Sitewide
+2024-11-11,2,1112,420,2736971.0,Sleep/PJs|Sitewide|Dresses|Sleep/PJs|Holiday|Sitewide
+2024-11-12,3,1167,460,2892981.0,Dresses|Dresses|Sleep/PJs
+2024-11-13,3,1167,460,2892981.0,Dresses|Dresses|Sleep/PJs
+2024-11-14,3,1167,460,2892981.0,Dresses|Dresses|Sleep/PJs
+2024-11-15,3,1167,460,2892981.0,Dresses|Dresses|Sleep/PJs
+2024-11-16,1,1590,602,3864663.0,Holiday|Sitewide
+2024-11-17,1,1590,602,3864663.0,Holiday|Sitewide
+2024-11-18,1,1590,602,3864663.0,Holiday|Sitewide
+2024-11-19,2,2222,834,6195985.0,Sleep/PJs|Holiday|Sitewide
+2024-11-20,2,2222,834,6195985.0,Sleep/PJs|Holiday|Sitewide
+2024-11-21,2,2222,834,6195985.0,Sleep/PJs|Holiday|Sitewide
+2024-11-22,2,2222,834,6195985.0,Sleep/PJs|Holiday|Sitewide
+2024-11-23,2,2222,834,6195985.0,Sleep/PJs|Holiday|Sitewide
+2024-11-24,2,2222,834,6195985.0,Sleep/PJs|Holiday|Sitewide
+2024-11-25,1,1590,602,3864663.0,Holiday|Sitewide
+2024-11-26,1,1590,602,3864663.0,Holiday|Sitewide
+2024-11-27,1,1590,602,3864663.0,Holiday|Sitewide
+2024-11-28,1,1590,602,3864663.0,Holiday|Sitewide
+2024-11-29,1,1590,602,3864663.0,Holiday|Sitewide
+2024-11-30,1,1590,602,3864663.0,Holiday|Sitewide
+2024-12-01,1,1590,602,3864663.0,Holiday|Sitewide
+2024-12-02,1,1590,602,3864663.0,Holiday|Sitewide
+2024-12-03,1,1590,602,3864663.0,Holiday|Sitewide
+2024-12-04,2,1694,644,3420216.0,Dresses|Sleep/PJs
+2024-12-05,2,1694,644,3420216.0,Dresses|Sleep/PJs
+2024-12-06,2,1694,644,3420216.0,Dresses|Sleep/PJs
+2024-12-07,2,1694,644,3420216.0,Dresses|Sleep/PJs
+2024-12-08,2,1694,644,3420216.0,Dresses|Sleep/PJs
+2024-12-09,2,1694,644,3420216.0,Dresses|Sleep/PJs
+2024-12-10,2,1694,644,3420216.0,Dresses|Sleep/PJs
+2024-12-11,2,1694,644,3420216.0,Dresses|Sleep/PJs
+2024-12-12,3,1454,578,2126507.0,Sitewide|Sleep/PJs|Holiday|Sitewide
+2024-12-13,3,1454,578,2126507.0,Sitewide|Sleep/PJs|Holiday|Sitewide
+2024-12-14,3,1454,578,2126507.0,Sitewide|Sleep/PJs|Holiday|Sitewide
+2024-12-15,3,1454,578,2126507.0,Sitewide|Sleep/PJs|Holiday|Sitewide
+2024-12-16,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-17,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-18,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-19,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-20,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-21,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-22,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-23,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-24,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-25,2,1079,445,1237623.0,Holiday|Sleep/PJs|Holiday
+2024-12-26,1,1180,530,886859.0,Clearance
+2025-01-02,1,1438,618,1081139.0,Clearance
+2025-01-04,1,48,32,174222.0,Sleep/PJs|Clearance
+2025-01-05,1,48,32,174222.0,Sleep/PJs|Clearance
+2025-01-06,1,730,360,511642.0,Clearance
+2025-01-21,2,271,127,331353.0,Valentine|Dresses|Valentine
+2025-01-22,2,271,127,331353.0,Valentine|Dresses|Valentine
+2025-01-23,2,271,127,331353.0,Valentine|Dresses|Valentine
+2025-01-24,2,271,127,331353.0,Valentine|Dresses|Valentine
+2025-01-25,2,271,127,331353.0,Valentine|Dresses|Valentine
+2025-01-26,2,271,127,331353.0,Valentine|Dresses|Valentine
+2025-01-27,2,271,127,331353.0,Valentine|Dresses|Valentine
+2025-01-28,2,873,275,1344228.0,Kids|Sleep/PJs|Kids
+2025-01-29,2,873,275,1344228.0,Kids|Sleep/PJs|Kids
+2025-01-30,2,873,275,1344228.0,Kids|Sleep/PJs|Kids
+2025-01-31,2,873,275,1344228.0,Kids|Sleep/PJs|Kids
+2025-02-01,2,873,275,1344228.0,Kids|Sleep/PJs|Kids
+2025-02-02,2,873,275,1344228.0,Kids|Sleep/PJs|Kids
+2025-02-03,2,873,275,1344228.0,Kids|Sleep/PJs|Kids
+2025-02-10,1,244,66,440274.0,Sleep/PJs
+2025-02-11,1,244,66,440274.0,Sleep/PJs
+2025-02-12,1,244,66,440274.0,Sleep/PJs
+2025-02-13,1,244,66,440274.0,Sleep/PJs
+2025-02-19,3,1073,338,1757076.0,Sleep/PJs|Swim|Baby|Sleep/PJs|Kids
+2025-02-20,3,1073,338,1757076.0,Sleep/PJs|Swim|Baby|Sleep/PJs|Kids
+2025-02-21,3,1073,338,1757076.0,Sleep/PJs|Swim|Baby|Sleep/PJs|Kids
+2025-02-22,3,1073,338,1757076.0,Sleep/PJs|Swim|Baby|Sleep/PJs|Kids
+2025-02-23,3,1073,338,1757076.0,Sleep/PJs|Swim|Baby|Sleep/PJs|Kids
+2025-02-24,3,1073,338,1757076.0,Sleep/PJs|Swim|Baby|Sleep/PJs|Kids
+2025-02-25,4,389,135,578701.0,Dresses|Sleep/PJs|Baby|Dresses|Swim|Baby|Dresses|Swim
+2025-02-26,4,389,135,578701.0,Dresses|Sleep/PJs|Baby|Dresses|Swim|Baby|Dresses|Swim
+2025-02-27,4,389,135,578701.0,Dresses|Sleep/PJs|Baby|Dresses|Swim|Baby|Dresses|Swim
+2025-02-28,4,389,135,578701.0,Dresses|Sleep/PJs|Baby|Dresses|Swim|Baby|Dresses|Swim
+2025-03-01,4,389,135,578701.0,Dresses|Sleep/PJs|Baby|Dresses|Swim|Baby|Dresses|Swim
+2025-03-02,4,389,135,578701.0,Dresses|Sleep/PJs|Baby|Dresses|Swim|Baby|Dresses|Swim
+2025-03-03,4,389,135,578701.0,Dresses|Sleep/PJs|Baby|Dresses|Swim|Baby|Dresses|Swim
+2025-03-04,4,1318,461,1458385.0,Easter|Baby|Swim|Baby|Easter|Swim|Easter
+2025-03-05,4,1318,461,1458385.0,Easter|Baby|Swim|Baby|Easter|Swim|Easter
+2025-03-06,4,1318,461,1458385.0,Easter|Baby|Swim|Baby|Easter|Swim|Easter
+2025-03-07,4,1318,461,1458385.0,Easter|Baby|Swim|Baby|Easter|Swim|Easter
+2025-03-08,4,1318,461,1458385.0,Easter|Baby|Swim|Baby|Easter|Swim|Easter
+2025-03-09,4,1318,461,1458385.0,Easter|Baby|Swim|Baby|Easter|Swim|Easter
+2025-03-10,4,1318,461,1458385.0,Easter|Baby|Swim|Baby|Easter|Swim|Easter
+2025-03-11,4,454,109,888215.0,Sleep/PJs|Easter|Baby|Kids|Sleep/PJs|Swim|Baby|Kids
+2025-03-12,4,454,109,888215.0,Sleep/PJs|Easter|Baby|Kids|Sleep/PJs|Swim|Baby|Kids
+2025-03-13,4,454,109,888215.0,Sleep/PJs|Easter|Baby|Kids|Sleep/PJs|Swim|Baby|Kids
+2025-03-14,4,454,109,888215.0,Sleep/PJs|Easter|Baby|Kids|Sleep/PJs|Swim|Baby|Kids
+2025-03-15,4,454,109,888215.0,Sleep/PJs|Easter|Baby|Kids|Sleep/PJs|Swim|Baby|Kids
+2025-03-16,4,454,109,888215.0,Sleep/PJs|Easter|Baby|Kids|Sleep/PJs|Swim|Baby|Kids
+2025-03-17,4,454,109,888215.0,Sleep/PJs|Easter|Baby|Kids|Sleep/PJs|Swim|Baby|Kids
+2025-03-18,4,395,154,427735.0,Dresses|Sleep/PJs|Easter|Baby|Dresses|Sleep/PJs|Swim|Baby|Dresses|Sleep/PJs
+2025-03-19,4,395,154,427735.0,Dresses|Sleep/PJs|Easter|Baby|Dresses|Sleep/PJs|Swim|Baby|Dresses|Sleep/PJs
+2025-03-20,4,395,154,427735.0,Dresses|Sleep/PJs|Easter|Baby|Dresses|Sleep/PJs|Swim|Baby|Dresses|Sleep/PJs
+2025-03-21,2,44,18,44334.0,Easter|Baby|Swim|Baby
+2025-03-22,2,44,18,44334.0,Easter|Baby|Swim|Baby
+2025-03-23,2,44,18,44334.0,Easter|Baby|Swim|Baby
+2025-03-24,2,44,18,44334.0,Easter|Baby|Swim|Baby
+2025-03-25,6,2254,781,2655175.0,Swim|Clearance|Easter|Clearance|Easter|Baby|Swim|Clearance|Easter|Baby|Clearance|Easter
+2025-03-26,6,2254,781,2655175.0,Swim|Clearance|Easter|Clearance|Easter|Baby|Swim|Clearance|Easter|Baby|Clearance|Easter
+2025-03-27,6,2254,781,2655175.0,Swim|Clearance|Easter|Clearance|Easter|Baby|Swim|Clearance|Easter|Baby|Clearance|Easter
+2025-03-28,6,2254,781,2655175.0,Swim|Clearance|Easter|Clearance|Easter|Baby|Swim|Clearance|Easter|Baby|Clearance|Easter
+2025-03-29,6,2254,781,2655175.0,Swim|Clearance|Easter|Clearance|Easter|Baby|Swim|Clearance|Easter|Baby|Clearance|Easter
+2025-03-30,6,2254,781,2655175.0,Swim|Clearance|Easter|Clearance|Easter|Baby|Swim|Clearance|Easter|Baby|Clearance|Easter
+2025-03-31,6,2254,781,2655175.0,Swim|Clearance|Easter|Clearance|Easter|Baby|Swim|Clearance|Easter|Baby|Clearance|Easter
+2025-04-01,6,2847,969,3648443.0,Dresses|Sleep/PJs|Clearance|Dresses|Clearance|Easter|Baby|Dresses|Sleep/PJs|Clearance|Baby|Dresses|Clearance
+2025-04-02,5,2779,928,3622166.0,Dresses|Sleep/PJs|Clearance|Dresses|Clearance|Easter|Baby|Dresses|Sleep/PJs|Clearance|Baby
+2025-04-03,5,2779,928,3622166.0,Dresses|Sleep/PJs|Clearance|Dresses|Clearance|Easter|Baby|Dresses|Sleep/PJs|Clearance|Baby
+2025-04-04,5,2779,928,3622166.0,Dresses|Sleep/PJs|Clearance|Dresses|Clearance|Easter|Baby|Dresses|Sleep/PJs|Clearance|Baby
+2025-04-05,5,2779,928,3622166.0,Dresses|Sleep/PJs|Clearance|Dresses|Clearance|Easter|Baby|Dresses|Sleep/PJs|Clearance|Baby
+2025-04-06,5,2779,928,3622166.0,Dresses|Sleep/PJs|Clearance|Dresses|Clearance|Easter|Baby|Dresses|Sleep/PJs|Clearance|Baby
+2025-04-07,5,2779,928,3622166.0,Dresses|Sleep/PJs|Clearance|Dresses|Clearance|Easter|Baby|Dresses|Sleep/PJs|Clearance|Baby
+2025-04-08,1,67,46,51270.0,Easter
+2025-04-09,1,67,46,51270.0,Easter
+2025-04-10,1,67,46,51270.0,Easter
+2025-04-11,2,544,220,193131.0,Easter|New Arrivals|Easter
+2025-04-12,2,544,220,193131.0,Easter|New Arrivals|Easter
+2025-04-13,2,544,220,193131.0,Easter|New Arrivals|Easter
+2025-04-14,1,67,46,51270.0,Easter
+2025-04-15,2,1664,519,2909137.0,Sleep/PJs
+2025-04-16,2,1664,519,2909137.0,Sleep/PJs
+2025-04-17,2,1664,519,2909137.0,Sleep/PJs
+2025-04-18,2,1664,519,2909137.0,Sleep/PJs
+2025-04-19,2,1664,519,2909137.0,Sleep/PJs
+2025-04-20,2,1664,519,2909137.0,Sleep/PJs
+2025-04-23,1,1775,582,2951527.0,Sitewide
+2025-04-24,1,1775,582,2951527.0,Sitewide
+2025-04-25,1,1775,582,2951527.0,Sitewide
+2025-04-26,1,1775,582,2951527.0,Sitewide
+2025-04-27,1,1775,582,2951527.0,Sitewide
+2025-04-28,1,1775,582,2951527.0,Sitewide
+2025-04-29,1,1775,582,2951527.0,Sitewide
+2025-04-30,1,1775,582,2951527.0,Sitewide
+2025-05-01,1,1775,582,2951527.0,Sitewide
+2025-05-02,1,1775,582,2951527.0,Sitewide
+2025-05-03,1,1775,582,2951527.0,Sitewide
+2025-05-04,1,1775,582,2951527.0,Sitewide
+2025-05-05,1,1775,582,2951527.0,Sitewide
+2025-05-06,1,1775,582,2951527.0,Sitewide
+2025-05-07,3,2666,862,4539651.0,Dresses|Sleep/PJs
+2025-05-08,3,2666,862,4539651.0,Dresses|Sleep/PJs
+2025-05-09,3,2666,862,4539651.0,Dresses|Sleep/PJs
+2025-05-10,3,2666,862,4539651.0,Dresses|Sleep/PJs
+2025-05-11,3,2666,862,4539651.0,Dresses|Sleep/PJs
+2025-05-12,3,2666,862,4539651.0,Dresses|Sleep/PJs
+2025-05-13,3,2307,725,3791938.0,Swim|Baby
+2025-05-14,3,2307,725,3791938.0,Swim|Baby
+2025-05-15,3,2307,725,3791938.0,Swim|Baby
+2025-05-16,3,2307,725,3791938.0,Swim|Baby
+2025-05-17,2,2185,815,2744946.0,Clearance
+2025-05-18,2,2185,815,2744946.0,Clearance
+2025-05-19,2,2185,815,2744946.0,Clearance
+2025-05-20,2,2185,815,2744946.0,Clearance
+2025-05-21,2,2185,815,2744946.0,Clearance
+2025-05-22,2,2185,815,2744946.0,Clearance
+2025-05-23,2,2185,815,2744946.0,Clearance
+2025-05-24,2,2185,815,2744946.0,Clearance
+2025-05-25,2,2185,815,2744946.0,Clearance
+2025-05-26,2,2185,815,2744946.0,Clearance
+2025-05-27,3,2093,684,3041228.0,Dresses|Kids|Dresses|New Arrivals|Kids
+2025-05-28,3,2093,684,3041228.0,Dresses|Kids|Dresses|New Arrivals|Kids
+2025-05-29,3,2093,684,3041228.0,Dresses|Kids|Dresses|New Arrivals|Kids
+2025-05-30,3,2093,684,3041228.0,Dresses|Kids|Dresses|New Arrivals|Kids
+2025-05-31,3,2093,684,3041228.0,Dresses|Kids|Dresses|New Arrivals|Kids
+2025-06-01,3,2093,684,3041228.0,Dresses|Kids|Dresses|New Arrivals|Kids
+2025-06-02,3,2093,684,3041228.0,Dresses|Kids|Dresses|New Arrivals|Kids
+2025-06-03,4,2860,1007,4042101.0,Dresses|Sleep/PJs|Dresses|Sleep/PJs|Clearance
+2025-06-04,4,2860,1007,4042101.0,Dresses|Sleep/PJs|Dresses|Sleep/PJs|Clearance
+2025-06-05,4,2860,1007,4042101.0,Dresses|Sleep/PJs|Dresses|Sleep/PJs|Clearance
+2025-06-06,4,2860,1007,4042101.0,Dresses|Sleep/PJs|Dresses|Sleep/PJs|Clearance
+2025-06-07,4,2860,1007,4042101.0,Dresses|Sleep/PJs|Dresses|Sleep/PJs|Clearance
+2025-06-08,4,2860,1007,4042101.0,Dresses|Sleep/PJs|Dresses|Sleep/PJs|Clearance
+2025-06-09,4,2860,1007,4042101.0,Dresses|Sleep/PJs|Dresses|Sleep/PJs|Clearance
+2025-06-10,2,1955,622,2794423.0,Swim
+2025-06-11,2,1955,622,2794423.0,Swim
+2025-06-12,2,1955,622,2794423.0,Swim
+2025-06-13,2,1955,622,2794423.0,Swim
+2025-06-14,2,1955,622,2794423.0,Swim
+2025-06-15,2,1955,622,2794423.0,Swim
+2025-06-16,2,1955,622,2794423.0,Swim
+2025-06-17,3,2624,841,3735345.0,Dresses|Sleep/PJs
+2025-06-18,3,2624,841,3735345.0,Dresses|Sleep/PJs
+2025-06-19,3,2624,841,3735345.0,Dresses|Sleep/PJs
+2025-06-20,3,2624,841,3735345.0,Dresses|Sleep/PJs
+2025-06-21,8,5943,2177,7899123.0,Dresses|Sleep/PJs|Clearance
+2025-06-22,4,2561,1052,3746689.0,Clearance
+2025-06-23,4,2561,1052,3746689.0,Clearance
+2025-06-24,4,2561,1052,3746689.0,Clearance
+2025-06-25,4,2561,1052,3746689.0,Clearance
+2025-06-26,4,2561,1052,3746689.0,Clearance
+2025-06-27,4,2561,1052,3746689.0,Clearance
+2025-06-28,4,2561,1052,3746689.0,Clearance
+2025-06-29,2,1147,406,1853764.0,Clearance
+2025-06-30,1,1040,363,1787998.0,Clearance
+2025-07-01,1,27,16,44587.0,Clearance
+2025-07-02,1,27,16,44587.0,Clearance
+2025-07-04,1,866,320,475989.0,Clearance
+2025-07-09,3,1024,373,1859579.0,Sleep/PJs|Baby|Kids
+2025-07-10,3,1024,373,1859579.0,Sleep/PJs|Baby|Kids
+2025-07-11,3,1001,371,1812144.0,Sleep/PJs|Baby|Kids
+2025-07-12,3,1001,371,1812144.0,Sleep/PJs|Baby|Kids
+2025-07-13,2,994,368,1798058.0,Sleep/PJs|Baby|Kids
+2025-07-14,2,994,368,1798058.0,Sleep/PJs|Baby|Kids
+2025-07-15,5,2673,932,2815220.0,Kids|Clearance|Kids|Dresses|Kids|Swim|Kids
+2025-07-16,5,2673,932,2815220.0,Kids|Clearance|Kids|Dresses|Kids|Swim|Kids
+2025-07-17,5,2673,932,2815220.0,Kids|Clearance|Kids|Dresses|Kids|Swim|Kids
+2025-07-18,5,2673,932,2815220.0,Kids|Clearance|Kids|Dresses|Kids|Swim|Kids
+2025-07-19,5,2673,932,2815220.0,Kids|Clearance|Kids|Dresses|Kids|Swim|Kids
+2025-07-20,5,2673,932,2815220.0,Kids|Clearance|Kids|Dresses|Kids|Swim|Kids
+2025-07-21,5,2673,932,2815220.0,Kids|Clearance|Kids|Dresses|Kids|Swim|Kids
+2025-07-22,4,3334,1108,3711774.0,Sleep/PJs|Swim|Sleep/PJs|Swim|Clearance
+2025-07-23,4,3334,1108,3711774.0,Sleep/PJs|Swim|Sleep/PJs|Swim|Clearance
+2025-07-24,4,3334,1108,3711774.0,Sleep/PJs|Swim|Sleep/PJs|Swim|Clearance
+2025-07-25,4,3334,1108,3711774.0,Sleep/PJs|Swim|Sleep/PJs|Swim|Clearance
+2025-07-26,4,3334,1108,3711774.0,Sleep/PJs|Swim|Sleep/PJs|Swim|Clearance
+2025-07-27,4,3334,1108,3711774.0,Sleep/PJs|Swim|Sleep/PJs|Swim|Clearance
+2025-07-28,4,3334,1108,3711774.0,Sleep/PJs|Swim|Sleep/PJs|Swim|Clearance
+2025-07-29,3,2014,654,2647693.0,Sleep/PJs|Dresses|Sleep/PJs
+2025-07-30,3,2014,654,2647693.0,Sleep/PJs|Dresses|Sleep/PJs
+2025-07-31,3,2014,654,2647693.0,Sleep/PJs|Dresses|Sleep/PJs
+2025-08-01,3,2014,654,2647693.0,Sleep/PJs|Dresses|Sleep/PJs
+2025-08-02,3,2014,654,2647693.0,Sleep/PJs|Dresses|Sleep/PJs
+2025-08-03,3,2014,654,2647693.0,Sleep/PJs|Dresses|Sleep/PJs
+2025-08-04,3,2014,654,2647693.0,Sleep/PJs|Dresses|Sleep/PJs
+2025-08-05,1,1673,555,2609619.0,Kids
+2025-08-06,1,1673,555,2609619.0,Kids
+2025-08-07,1,1673,555,2609619.0,Kids
+2025-08-08,1,1673,555,2609619.0,Kids
+2025-08-09,1,1673,555,2609619.0,Kids
+2025-08-10,1,1673,555,2609619.0,Kids
+2025-08-11,1,1673,555,2609619.0,Kids
+2025-08-12,3,1965,681,1885038.0,Sleep/PJs|Halloween|Dresses|Sleep/PJs|Halloween
+2025-08-13,3,1965,681,1885038.0,Sleep/PJs|Halloween|Dresses|Sleep/PJs|Halloween
+2025-08-14,3,1965,681,1885038.0,Sleep/PJs|Halloween|Dresses|Sleep/PJs|Halloween
+2025-08-15,3,1965,681,1885038.0,Sleep/PJs|Halloween|Dresses|Sleep/PJs|Halloween
+2025-08-16,3,1965,681,1885038.0,Sleep/PJs|Halloween|Dresses|Sleep/PJs|Halloween
+2025-08-17,3,1965,681,1885038.0,Sleep/PJs|Halloween|Dresses|Sleep/PJs|Halloween
+2025-08-18,1,347,71,717547.0,Sleep/PJs
+2025-08-19,1,347,71,717547.0,Sleep/PJs
+2025-08-20,1,347,71,717547.0,Sleep/PJs
+2025-08-24,1,1500,506,2940247.0,
+2025-08-25,2,1649,582,3013695.0,Clearance
+2025-08-26,1,1500,506,2940247.0,
+2025-08-27,1,1500,506,2940247.0,
+2025-08-28,1,1500,506,2940247.0,
+2025-08-29,1,1500,506,2940247.0,
+2025-08-30,1,1500,506,2940247.0,
+2025-08-31,1,1500,506,2940247.0,
+2025-09-01,1,1500,506,2940247.0,
+2025-09-02,1,1500,506,2940247.0,
+2025-09-03,2,956,266,1640642.0,Sleep/PJs|Baby|Sleep/PJs
+2025-09-06,1,13,13,34167.0,Sleep/PJs|Holiday
+2025-09-07,1,13,13,34167.0,Sleep/PJs|Holiday
+2025-09-08,1,13,13,34167.0,Sleep/PJs|Holiday
+2025-09-09,2,256,110,597787.0,Dresses|Halloween|Halloween
+2025-09-18,1,69,30,100958.0,Clearance
+2025-09-24,2,570,140,1195747.0,Sleep/PJs|Halloween|Sleep/PJs
+2025-09-25,2,570,140,1195747.0,Sleep/PJs|Halloween|Sleep/PJs
+2025-09-26,2,570,140,1195747.0,Sleep/PJs|Halloween|Sleep/PJs
+2025-09-27,2,570,140,1195747.0,Sleep/PJs|Halloween|Sleep/PJs
+2025-09-28,2,570,140,1195747.0,Sleep/PJs|Halloween|Sleep/PJs
+2025-09-29,2,570,140,1195747.0,Sleep/PJs|Halloween|Sleep/PJs
+2025-09-30,2,570,140,1195747.0,Sleep/PJs|Halloween|Sleep/PJs
+2025-10-01,3,1148,362,1693453.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2025-10-02,3,1148,362,1693453.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2025-10-03,3,1148,362,1693453.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2025-10-04,3,1148,362,1693453.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2025-10-05,3,1148,362,1693453.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2025-10-06,3,1148,362,1693453.0,Dresses|Halloween|Dresses|Sleep/PJs|Halloween
+2025-10-09,7,165,82,104424.0,Clearance|Sitewide|Clearance|Holiday|Sleep/PJs|Clearance|Holiday|Sitewide|Valentine|Sleep/PJs|Clearance|Sitewide|Valentine|Clearance|Sitewide|Sleep/PJs|Clearance|Holiday|Clearance|New Arrivals|Holiday
+2025-10-13,1,83,55,101710.0,Halloween|Sitewide
+2025-10-14,1,50,33,86146.0,Holiday|Sitewide
+2025-10-15,1,50,37,132198.0,Holiday|Sitewide
+2025-10-22,2,943,356,1215979.0,Dresses|Holiday|Baby|Dresses|Clearance|Holiday
+2025-10-23,1,810,278,1128751.0,Dresses|Holiday|Baby
+2025-10-24,1,810,278,1128751.0,Dresses|Holiday|Baby
+2025-12-01,2,286,78,719677.0,Sleep/PJs|Holiday|Sitewide
+2025-12-02,2,286,78,719677.0,Sleep/PJs|Holiday|Sitewide
+2025-12-03,3,871,288,1673240.0,Valentine|Sleep/PJs|Clearance|Sitewide|Sleep/PJs|New Arrivals|Holiday|Clearance|New Arrivals|Holiday
+2025-12-04,1,760,233,1581873.0,Sleep/PJs|New Arrivals|Holiday
+2025-12-05,1,760,233,1581873.0,Sleep/PJs|New Arrivals|Holiday
+2025-12-06,1,760,233,1581873.0,Sleep/PJs|New Arrivals|Holiday
+2025-12-07,1,760,233,1581873.0,Sleep/PJs|New Arrivals|Holiday
+2025-12-08,1,760,233,1581873.0,Sleep/PJs|New Arrivals|Holiday
+2025-12-09,1,760,233,1581873.0,Sleep/PJs|New Arrivals|Holiday
+2025-12-10,2,1257,420,2175887.0,Valentine|Sleep/PJs|Sitewide|Valentine|Dresses|Sleep/PJs|Holiday|Sitewide
+2025-12-11,2,1257,420,2175887.0,Valentine|Sleep/PJs|Sitewide|Valentine|Dresses|Sleep/PJs|Holiday|Sitewide
+2025-12-12,2,1257,420,2175887.0,Valentine|Sleep/PJs|Sitewide|Valentine|Dresses|Sleep/PJs|Holiday|Sitewide
+2025-12-13,2,104,33,174392.0,Valentine|Sitewide|Sleep/PJs|Holiday
+2025-12-14,2,104,33,174392.0,Valentine|Sitewide|Sleep/PJs|Holiday
+2025-12-15,2,104,33,174392.0,Valentine|Sitewide|Sleep/PJs|Holiday
+2025-12-16,2,104,33,174392.0,Valentine|Sitewide|Sleep/PJs|Holiday
+2025-12-17,2,533,291,254476.0,Sleep/PJs|Holiday|Sleep/PJs|Clearance|Holiday
+2025-12-18,2,533,291,254476.0,Sleep/PJs|Holiday|Sleep/PJs|Clearance|Holiday
+2025-12-19,2,533,291,254476.0,Sleep/PJs|Holiday|Sleep/PJs|Clearance|Holiday
+2025-12-26,2,864,353,576894.0,Clearance
+2025-12-27,1,56,22,110363.0,Clearance
+2025-12-30,1,211,107,197366.0,Clearance
+2026-01-02,2,1011,438,1543897.0,Clearance
+2026-01-03,1,923,392,1467606.0,Clearance
+2026-01-04,1,923,392,1467606.0,Clearance
+2026-01-05,2,1081,456,1560441.0,Clearance
+2026-01-06,2,1313,548,1617249.0,Clearance|Clearance|New Arrivals
+2026-01-07,1,928,396,1470181.0,Clearance
+2026-01-08,1,928,396,1470181.0,Clearance
+2026-01-09,1,928,396,1470181.0,Clearance
+2026-01-10,1,928,396,1470181.0,Clearance
+2026-01-11,1,928,396,1470181.0,Clearance
+2026-01-12,1,83,48,80542.0,Valentine
+2026-01-13,1,83,48,80542.0,Valentine
+2026-01-14,1,83,48,80542.0,Valentine
+2026-01-15,1,83,48,80542.0,Valentine
+2026-01-16,1,83,48,80542.0,Valentine
+2026-01-17,1,83,48,80542.0,Valentine
+2026-01-18,1,83,48,80542.0,Valentine
+2026-01-19,1,83,48,80542.0,Valentine
+2026-01-20,2,284,130,261573.0,Valentine|Dresses|Valentine
+2026-01-21,2,284,130,261573.0,Valentine|Dresses|Valentine
+2026-01-22,2,284,130,261573.0,Valentine|Dresses|Valentine
+2026-01-23,2,284,130,261573.0,Valentine|Dresses|Valentine
+2026-01-24,2,284,130,261573.0,Valentine|Dresses|Valentine
+2026-01-25,2,284,130,261573.0,Valentine|Dresses|Valentine
+2026-01-26,2,284,130,261573.0,Valentine|Dresses|Valentine
+2026-01-27,2,469,163,698331.0,Dresses|New Arrivals|New Arrivals
+2026-01-28,2,469,163,698331.0,Dresses|New Arrivals|New Arrivals
+2026-01-29,2,469,163,698331.0,Dresses|New Arrivals|New Arrivals
+2026-01-30,2,469,163,698331.0,Dresses|New Arrivals|New Arrivals
+2026-01-31,2,469,163,698331.0,Dresses|New Arrivals|New Arrivals
+2026-02-01,2,469,163,698331.0,Dresses|New Arrivals|New Arrivals
+2026-02-02,2,455,162,490604.0,Sleep/PJs|Baby|New Arrivals|Baby
+2026-02-03,2,455,162,490604.0,Sleep/PJs|Baby|New Arrivals|Baby
+2026-02-04,4,1005,360,1161748.0,Sleep/PJs|Baby|New Arrivals|Baby|Baby|Sitewide|Baby
+2026-02-05,4,1005,360,1161748.0,Sleep/PJs|Baby|New Arrivals|Baby|Baby|Sitewide|Baby
+2026-02-06,4,1005,360,1161748.0,Sleep/PJs|Baby|New Arrivals|Baby|Baby|Sitewide|Baby
+2026-02-07,4,1005,360,1161748.0,Sleep/PJs|Baby|New Arrivals|Baby|Baby|Sitewide|Baby
+2026-02-08,4,1005,360,1161748.0,Sleep/PJs|Baby|New Arrivals|Baby|Baby|Sitewide|Baby
+2026-02-09,2,455,162,490604.0,Sleep/PJs|Baby|New Arrivals|Baby
+2026-02-10,2,455,162,490604.0,Sleep/PJs|Baby|New Arrivals|Baby
+2026-02-11,2,455,162,490604.0,Sleep/PJs|Baby|New Arrivals|Baby
+2026-02-12,2,314,96,563412.0,Sleep/PJs|Baby|Sitewide|New Arrivals|Sitewide
+2026-02-13,2,314,96,563412.0,Sleep/PJs|Baby|Sitewide|New Arrivals|Sitewide
+2026-02-14,2,314,96,563412.0,Sleep/PJs|Baby|Sitewide|New Arrivals|Sitewide
+2026-02-15,2,314,96,563412.0,Sleep/PJs|Baby|Sitewide|New Arrivals|Sitewide
+2026-02-16,2,314,96,563412.0,Sleep/PJs|Baby|Sitewide|New Arrivals|Sitewide
+2026-02-17,3,645,230,991279.0,Sleep/PJs|Easter|Sleep/PJs|Easter|Baby
+2026-02-18,3,645,230,991279.0,Sleep/PJs|Easter|Sleep/PJs|Easter|Baby
+2026-02-19,3,645,230,991279.0,Sleep/PJs|Easter|Sleep/PJs|Easter|Baby
+2026-02-20,3,645,230,991279.0,Sleep/PJs|Easter|Sleep/PJs|Easter|Baby
+2026-02-21,3,645,230,991279.0,Sleep/PJs|Easter|Sleep/PJs|Easter|Baby
+2026-02-22,3,645,230,991279.0,Sleep/PJs|Easter|Sleep/PJs|Easter|Baby
+2026-02-23,2,77,38,75227.0,Sleep/PJs|Easter|Sleep/PJs|Easter|Baby
+2026-03-10,6,1634,732,1429175.0,Sleep/PJs|Clearance|Baby|Kids|Sleep/PJs|Baby|Kids|Sleep/PJs|Swim|Baby|Kids|Dresses|Swim|Swim|Clearance|Sitewide|Swim|Easter
+2026-03-11,6,1634,732,1429175.0,Sleep/PJs|Clearance|Baby|Kids|Sleep/PJs|Baby|Kids|Sleep/PJs|Swim|Baby|Kids|Dresses|Swim|Swim|Clearance|Sitewide|Swim|Easter
+2026-03-12,6,1634,732,1429175.0,Sleep/PJs|Clearance|Baby|Kids|Sleep/PJs|Baby|Kids|Sleep/PJs|Swim|Baby|Kids|Dresses|Swim|Swim|Clearance|Sitewide|Swim|Easter
+2026-03-13,6,1634,732,1429175.0,Sleep/PJs|Clearance|Baby|Kids|Sleep/PJs|Baby|Kids|Sleep/PJs|Swim|Baby|Kids|Dresses|Swim|Swim|Clearance|Sitewide|Swim|Easter
+2026-03-14,6,1387,679,897974.0,Sleep/PJs|Swim|Baby|Kids|Dresses|Swim|Swim|Clearance|Sitewide|Swim|Easter|Dresses|Dresses|Clearance
+2026-03-15,6,1387,679,897974.0,Sleep/PJs|Swim|Baby|Kids|Dresses|Swim|Swim|Clearance|Sitewide|Swim|Easter|Dresses|Dresses|Clearance
+2026-03-16,2,1016,548,537006.0,Dresses|Dresses|Clearance
+2026-03-17,2,1016,548,537006.0,Dresses|Dresses|Clearance
+2026-03-18,4,2338,1070,2508813.0,Clearance|Sitewide
+2026-03-19,3,2153,949,2448346.0,Clearance|Sitewide
+2026-03-20,3,2153,949,2448346.0,Clearance|Sitewide
+2026-03-21,3,2153,949,2448346.0,Clearance|Sitewide
+2026-03-22,3,2153,949,2448346.0,Clearance|Sitewide
+2026-03-23,3,2153,949,2448346.0,Clearance|Sitewide
+2026-03-24,2,871,495,307515.0,Clearance|Easter|Easter
+2026-03-25,2,871,495,307515.0,Clearance|Easter|Easter
+2026-03-26,2,871,495,307515.0,Clearance|Easter|Easter
+2026-03-27,2,871,495,307515.0,Clearance|Easter|Easter
+2026-03-28,2,871,495,307515.0,Clearance|Easter|Easter
+2026-03-29,2,871,495,307515.0,Clearance|Easter|Easter
+2026-03-30,2,871,495,307515.0,Clearance|Easter|Easter
+2026-03-31,3,1576,738,1354503.0,Dresses|Clearance|Dresses|Dresses|Sleep/PJs
+2026-04-01,3,1576,738,1354503.0,Dresses|Clearance|Dresses|Dresses|Sleep/PJs
+2026-04-02,3,1576,738,1354503.0,Dresses|Clearance|Dresses|Dresses|Sleep/PJs
+2026-04-03,3,1576,738,1354503.0,Dresses|Clearance|Dresses|Dresses|Sleep/PJs
+2026-04-04,3,1576,738,1354503.0,Dresses|Clearance|Dresses|Dresses|Sleep/PJs
+2026-04-05,3,1576,738,1354503.0,Dresses|Clearance|Dresses|Dresses|Sleep/PJs
+2026-04-06,3,1576,738,1354503.0,Dresses|Clearance|Dresses|Dresses|Sleep/PJs
+2026-04-07,6,3024,1421,2562489.0,Sleep/PJs|Clearance|New Arrivals|Sleep/PJs|New Arrivals|Swim|Clearance|Swim|New Arrivals|Swim
+2026-04-08,6,3024,1421,2562489.0,Sleep/PJs|Clearance|New Arrivals|Sleep/PJs|New Arrivals|Swim|Clearance|Swim|New Arrivals|Swim
+2026-04-09,6,3024,1421,2562489.0,Sleep/PJs|Clearance|New Arrivals|Sleep/PJs|New Arrivals|Swim|Clearance|Swim|New Arrivals|Swim
+2026-04-10,6,3024,1421,2562489.0,Sleep/PJs|Clearance|New Arrivals|Sleep/PJs|New Arrivals|Swim|Clearance|Swim|New Arrivals|Swim
+2026-04-11,6,3024,1421,2562489.0,Sleep/PJs|Clearance|New Arrivals|Sleep/PJs|New Arrivals|Swim|Clearance|Swim|New Arrivals|Swim
+2026-04-12,6,3024,1421,2562489.0,Sleep/PJs|Clearance|New Arrivals|Sleep/PJs|New Arrivals|Swim|Clearance|Swim|New Arrivals|Swim
+2026-04-13,6,3024,1421,2562489.0,Sleep/PJs|Clearance|New Arrivals|Sleep/PJs|New Arrivals|Swim|Clearance|Swim|New Arrivals|Swim
+2026-04-21,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-04-22,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-04-23,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-04-24,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-04-25,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-04-26,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-04-27,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-04-28,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-04-29,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-04-30,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-05-01,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-05-02,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-05-03,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-05-04,3,796,483,387570.0,Clearance|Sitewide|Sitewide
+2026-05-05,3,1570,706,1464503.0,Sleep/PJs|Swim|Clearance|Sleep/PJs|Swim
+2026-05-06,3,1570,706,1464503.0,Sleep/PJs|Swim|Clearance|Sleep/PJs|Swim
+2026-05-07,3,1570,706,1464503.0,Sleep/PJs|Swim|Clearance|Sleep/PJs|Swim
+2026-05-08,3,1570,706,1464503.0,Sleep/PJs|Swim|Clearance|Sleep/PJs|Swim
+2026-05-09,3,1274,634,882759.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-05-10,3,1274,634,882759.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-05-11,3,1274,634,882759.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-05-12,3,1274,634,882759.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-05-13,3,1274,634,882759.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-05-14,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-15,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-16,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-17,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-18,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-19,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-20,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-21,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-22,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-23,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-24,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-25,4,1172,671,311617.0,Clearance|Sitewide|Dresses|Sitewide|Sitewide
+2026-05-26,8,2531,1324,1696011.0,Dresses|Clearance|Dresses|Dresses|New Arrivals|Sleep/PJs|Clearance|Sleep/PJs|New Arrivals|Sleep/PJs
+2026-05-27,8,2531,1324,1696011.0,Dresses|Clearance|Dresses|Dresses|New Arrivals|Sleep/PJs|Clearance|Sleep/PJs|New Arrivals|Sleep/PJs
+2026-05-28,8,2531,1324,1696011.0,Dresses|Clearance|Dresses|Dresses|New Arrivals|Sleep/PJs|Clearance|Sleep/PJs|New Arrivals|Sleep/PJs
+2026-05-29,8,2531,1324,1696011.0,Dresses|Clearance|Dresses|Dresses|New Arrivals|Sleep/PJs|Clearance|Sleep/PJs|New Arrivals|Sleep/PJs
+2026-05-30,8,2531,1324,1696011.0,Dresses|Clearance|Dresses|Dresses|New Arrivals|Sleep/PJs|Clearance|Sleep/PJs|New Arrivals|Sleep/PJs
+2026-05-31,8,2531,1324,1696011.0,Dresses|Clearance|Dresses|Dresses|New Arrivals|Sleep/PJs|Clearance|Sleep/PJs|New Arrivals|Sleep/PJs
+2026-06-01,8,2531,1324,1696011.0,Dresses|Clearance|Dresses|Dresses|New Arrivals|Sleep/PJs|Clearance|Sleep/PJs|New Arrivals|Sleep/PJs
+2026-06-09,3,1052,555,421860.0,Dresses|Swim|Clearance|Dresses|Swim|Dresses|Sleep/PJs|Swim
+2026-06-10,3,1052,555,421860.0,Dresses|Swim|Clearance|Dresses|Swim|Dresses|Sleep/PJs|Swim
+2026-06-11,3,1052,555,421860.0,Dresses|Swim|Clearance|Dresses|Swim|Dresses|Sleep/PJs|Swim
+2026-06-12,3,1052,555,421860.0,Dresses|Swim|Clearance|Dresses|Swim|Dresses|Sleep/PJs|Swim
+2026-06-13,3,1027,559,476296.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-06-14,3,1027,559,476296.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-06-15,3,1027,559,476296.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-06-16,3,1027,559,476296.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-06-17,3,1027,559,476296.0,Dresses|Swim|Clearance|Dresses|Swim
+2026-06-18,5,12202,5367,2186530.0,Clearance
+2026-06-19,4,11433,5048,1761424.0,Clearance
+2026-06-20,4,11433,5048,1761424.0,Clearance
+2026-06-21,4,11433,5048,1761424.0,Clearance
+2026-06-22,4,11433,5048,1761424.0,Clearance
+2026-06-23,4,11433,5048,1761424.0,Clearance
+2026-06-24,4,11433,5048,1761424.0,Clearance
+2026-06-25,2,849,371,1366450.0,Clearance
+2026-06-26,1,735,311,1267323.0,Clearance
+2026-06-27,1,753,315,1289152.0,Clearance
+2026-06-28,1,753,315,1289152.0,Clearance
+2026-06-29,1,753,315,1289152.0,Clearance
+2026-06-30,1,753,315,1289152.0,Clearance
+2026-07-01,2,879,381,1495244.0,Clearance
+2026-07-02,1,753,315,1289152.0,Clearance
+2026-07-03,1,753,315,1289152.0,Clearance
+2026-07-04,1,753,315,1289152.0,Clearance
+2026-07-05,1,753,315,1289152.0,Clearance
+2026-07-06,1,753,315,1289152.0,Clearance

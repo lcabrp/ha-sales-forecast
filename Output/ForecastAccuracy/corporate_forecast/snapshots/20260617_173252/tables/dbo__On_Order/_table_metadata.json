@@ -1,0 +1,26 @@
+{
+  "table": "dbo.On_Order",
+  "status": "ok",
+  "error": "",
+  "estimated_rows": 23413,
+  "estimated_columns": 11,
+  "rows_written": 23413,
+  "parts": 1,
+  "output_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\corporate_forecast\\snapshots\\20260617_173252\\tables\\dbo__On_Order",
+  "parquet_bytes": 359482,
+  "filters": {},
+  "columns": [
+    "CalendarDate",
+    "ActualDeliveryDate",
+    "Channel",
+    "Offer",
+    "SKU",
+    "Total_Line_Amount",
+    "Total_Ordered_Qty",
+    "Total_Remaining_Order_Qty",
+    "Total_Remaining_Order_Amt",
+    "FiscalYear",
+    "FiscalWeek"
+  ],
+  "elapsed_seconds": 0.38
+}

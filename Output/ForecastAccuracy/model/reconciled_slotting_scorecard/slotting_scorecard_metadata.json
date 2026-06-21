@@ -1,0 +1,29 @@
+{
+  "forecast_input": "Output\\ForecastAccuracy\\model\\reconciled\\reconciled_forecast_sku_day.parquet",
+  "forecasts_scored": [
+    "HorizonConsistentMLForecastQty",
+    "FrozenChampionMLForecastQty",
+    "CorporateForecastQty",
+    "CorporateBaselineQty",
+    "Recent7BaselineQty",
+    "Recent28BaselineQty",
+    "HybridBaselineQty",
+    "BottomUp",
+    "TopDown",
+    "MiddleOut"
+  ],
+  "generated_at_utc": "2026-06-17T20:07:19.798394+00:00",
+  "notes": [
+    "Tier is derived from each forecast's 14-day total x thirteen_week_factor, bucketed with the inherited BRG/Ankura cutoffs.",
+    "ExactTierAccuracy and UnitsWeightedMisallocationPct measure whether the forecast would slot SKUs into the correct velocity zone.",
+    "TierChangePct / ThreeRankJumpPct measure zone-map stability across windows; a lower-churn forecast keeps the physical layout from thrashing."
+  ],
+  "output_dir": "Output\\ForecastAccuracy\\model\\reconciled_slotting_scorecard",
+  "thirteen_week_factor": 6.5,
+  "tier_thresholds_13wk_units": {
+    "A": "41-100",
+    "AA": ">100",
+    "B": "21-40",
+    "C": "<=20"
+  }
+}

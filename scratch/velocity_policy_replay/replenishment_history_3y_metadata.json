@@ -1,0 +1,17 @@
+{
+  "extracted_at_utc": "2026-06-02T14:48:25.510778+00:00",
+  "sql_path": "scratch\\velocity_policy_sales_order_replen_extract.sql",
+  "sql_sha256": "e27c278d688956418b71c22408ec36fac6b85e7f2d87df7a45c50bcfb7ce43cd",
+  "allocation_rows": 1096914,
+  "physical_touches": 189273,
+  "first_replen_created_utc": "2023-06-02T00:08:37+00:00",
+  "last_replen_created_utc": "2026-06-02T10:24:27+00:00",
+  "missing_final_put_line": 0,
+  "missing_final_put_qty": 0,
+  "missing_final_target_location": 0,
+  "quantity_semantics": {
+    "FinalPutInventQty": "Authoritative historical quantity moved into forward pick.",
+    "ReplenTouchInventQty": "Linked reserve-pick line quantity retained for reconciliation.",
+    "AllocatedInventQty": "Raw sales-order allocation quantity retained only in allocation fact."
+  }
+}

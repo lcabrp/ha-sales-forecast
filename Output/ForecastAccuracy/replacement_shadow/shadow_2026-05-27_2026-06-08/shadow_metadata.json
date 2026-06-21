@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-06-15T16:47:45",
+  "forecast_start": "2026-05-27",
+  "forecast_end": "2026-06-08",
+  "threads_requested": 8,
+  "model": "hgb_absolute_log",
+  "ml_threshold_units": 20.0,
+  "recent_fallback_weights": [
+    0.05,
+    0.1
+  ],
+  "recent_volume_caps": [
+    0.85,
+    1.0,
+    1.1
+  ],
+  "train_rows": 500000,
+  "calibration_rows": 322096,
+  "future_rows": 3381252,
+  "future_inputs": {
+    "candidate_universe_skus": 241518,
+    "snapshot_attribute_skus": 241459,
+    "direct_pick_signal": {
+      "window_start": "2026-04-01",
+      "window_end_exclusive": "2026-05-27",
+      "rows": 363982,
+      "distinct_skus": 16747,
+      "sold_units": 1065315.0
+    },
+    "promo_horizon_skus": 18902,
+    "future_rows": 3381252,
+    "feature_policy": "Rows are generated from snapshot, prior DirectPick, and known PDL SKU universe. Demand/inventory/supply lag features are frozen at latest prestart values; future actual/order rows are not used to create holdout rows."
+  },
+  "recent_direct_pick": {
+    "window_start": "2026-04-01",
+    "window_end_exclusive": "2026-05-27",
+    "rows": 363982,
+    "distinct_skus": 16747,
+    "sold_units": 1065315.0
+  },
+  "corporate": {
+    "status": "loaded",
+    "snapshot_id": "e9af1f9de307e0d419cd0d20cded35b0d3bee6cbebc13b92572c42a681366838",
+    "source_file": "2026-05-28_5c86e49387c9_2026-05-28_5c86e49387c9_FwdDemandCSV_2026-05-28.csv",
+    "complete_actual_window": false
+  },
+  "score_grain": "SKU/day",
+  "actuals_available_through": "2026-06-08"
+}

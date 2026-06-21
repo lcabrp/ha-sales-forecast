@@ -1,0 +1,6 @@
+Candidate,Path,Rows,PositiveFDSKUs,FDUnits,VsPlannerPct,Active,Reserve,Offsite
+corporate_raw,C:\Users\labreu\Documents\Projects\ha-zoning-slotting\Output\Ingestion\FwdDemandCSV_2026-06-16.csv,31720,7113,432863.0,1.0668962362550736,87,23733,7900
+planner_scaled_corp_100,C:\Users\labreu\Documents\Projects\ha-zoning-slotting\Output\ForecastAccuracy\replacement_contract\planner_scaled_corporate_100_2026-06-16_v2\FwdDemandCSV_2026-06-16.csv,31720,7108,405722.0,1.000000634764073,87,23733,7900
+planner_scaled_corp_95,C:\Users\labreu\Documents\Projects\ha-zoning-slotting\Output\ForecastAccuracy\replacement_contract\planner_scaled_corporate_95_2026-06-16_v2\FwdDemandCSV_2026-06-16.csv,31720,7095,385435.0,0.9499983847567806,87,23733,7900
+planner95_hybrid,C:\Users\labreu\Documents\Projects\ha-zoning-slotting\Output\ForecastAccuracy\replacement_contract\planner_anchored_hybrid_95_2026-06-16_v2\ingestion_output\FwdDemandCSV_2026-06-16.csv,18634,10846,385426.0,0.9499762020658915,3135,15499,0
+hybrid_capped,C:\Users\labreu\Documents\Projects\ha-zoning-slotting\Output\ForecastAccuracy\replacement_contract\hybrid_ml_capped_conservative_2026-06-15_v1\ingestion_output\FwdDemandCSV_2026-06-15.csv,18620,8247,140360.0,0.3459513881314923,2469,16151,0

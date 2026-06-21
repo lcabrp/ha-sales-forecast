@@ -1,0 +1,2 @@
+SnapshotDate,Rows,DistinctSKUs,ReservationPhysicalTotal,ReservationBlankLocation,ReservationPickFace,ReservationW001,ReservationReserveOrBulk,ReservationStagingOrProcessing,ReservationOtherLocated,ReservationLocatedPhysicalTotal,ReservationSalesAllocatedPhysicalTotal,ReservationOperationalLocatedPhysicalTotal
+2026-06-15,8339,8339,31608.0,31608.0,22943.0,11.0,3483.0,12309.0,5081.0,43827.0,22943.0,20873.0

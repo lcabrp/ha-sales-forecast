@@ -1,0 +1,32 @@
+{
+  "candidate_id": "hybrid_ml_more_conservative_2026-06-15_v1",
+  "candidate_type": "hybrid_ml_baseline",
+  "candidate_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\hybrid_ml_more_conservative_2026-06-15_v1",
+  "contract": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\hybrid_ml_more_conservative_2026-06-15_v1\\contract\\candidate_contract.json",
+  "roundtrip": {
+    "roundtrip_status": "pass",
+    "command": [
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\scripts\\python\\ingestion_pipeline.py",
+      "--source-file",
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\hybrid_ml_more_conservative_2026-06-15_v1\\input\\Product Info for BRG_2026-06-01__hybrid_ml_more_conservative_2026-06-15_v1.xlsx",
+      "--output-dir",
+      "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\hybrid_ml_more_conservative_2026-06-15_v1\\ingestion_output"
+    ],
+    "ingestion_output_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\hybrid_ml_more_conservative_2026-06-15_v1\\ingestion_output",
+    "forward_demand_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\hybrid_ml_more_conservative_2026-06-15_v1\\ingestion_output\\FwdDemandCSV_2026-06-15.csv",
+    "required_slots_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\hybrid_ml_more_conservative_2026-06-15_v1\\ingestion_output\\RequiredSlots_2026-06-15.csv",
+    "forward_demand_rows": 18620,
+    "forward_demand_columns": 36,
+    "missing_forward_demand_columns": [],
+    "extra_forward_demand_columns": [],
+    "duplicate_item_color_size_keys": 0,
+    "fd1_to_fd14_units": 140360.0,
+    "required_slot_tiers": 192,
+    "required_slots_total": 9076.7,
+    "logs": {
+      "stdout": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\hybrid_ml_more_conservative_2026-06-15_v1\\logs\\ingestion_stdout.log",
+      "stderr": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\hybrid_ml_more_conservative_2026-06-15_v1\\logs\\ingestion_stderr.log"
+    }
+  }
+}

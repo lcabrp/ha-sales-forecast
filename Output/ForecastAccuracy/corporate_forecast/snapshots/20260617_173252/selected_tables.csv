@@ -1,0 +1,14 @@
+table,estimated_rows,estimated_columns,exists
+dbo.Channel_Offer_SKU_Forecast,11538283,21,True
+dbo.Channel_Offer_Forecast,1568932,20,True
+dbo.Offer_SKU_Inventory_Forecast,4186131,15,True
+dbo.Offer_Inventory_Forecast,5163971,14,True
+dbo.Channel_Offer_Demand_History,798916,18,True
+dbo.Channel_SKU_SIZE_Weekly_Demand_History,1367399,11,True
+dbo.Product_Dimensions_Hierarchy_Attributes,477206,45,True
+dbo.Offer_Control_Table,41531,59,True
+dbo.Offers,93435,21,True
+dbo.Current_SKU_Available_DC_Inventory,34388,6,True
+dbo.Current_Offer_Inventory,7669,8,True
+dbo.On_Order,23413,11,True
+dbo.Forecast_Job_Log,221038,2,True

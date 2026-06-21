@@ -1,0 +1,3 @@
+ForecastStartDate,LowestWAPECandidate,WAPE,BiasPctForecastMinusActual
+2026-05-12,hybrid_ml_hgb_absolute_log_raw_min_20p0_units_recent_w0p5,0.7564395792542271,-0.49647948583222234
+2026-05-19,hybrid_ml_hgb_absolute_log_raw_min_20p0_units_recent_w0p5,0.6467385229321824,-0.3669567076104575

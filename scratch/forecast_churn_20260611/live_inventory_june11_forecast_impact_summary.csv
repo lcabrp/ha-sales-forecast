@@ -1,0 +1,10 @@
+cohort,count_inventory_rows,count_occupied_locations,count_unique_skus,count_physical_qty
+live_scope,13976.0,13976.0,12457.0,547814.0
+has_both_forecasts,13936.0,13936.0,12417.0,546821.0
+new_forecast_changed_slottier,1140.0,1140.0,1044.0,45058.0
+would_lose_exact_match,328.0,328.0,328.0,14434.0
+would_gain_exact_match,78.0,78.0,78.0,3427.0
+old_exact_match,3292.0,3292.0,3278.0,148875.0
+new_exact_match,3042.0,3042.0,3028.0,137868.0
+no_new_forecast,19.0,19.0,19.0,254.0
+new_only_forecast_on_floor,21.0,21.0,21.0,739.0

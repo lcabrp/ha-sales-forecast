@@ -1,0 +1,10 @@
+OldVelocity,NewVelocity,InventoryRows,OccupiedLocations,UniqueSKUs,PhysicalQty,WouldLoseExactRows,WouldGainExactRows
+B,C,352,352,331,10865.0,52,16
+A,B,335,335,317,13918.0,122,17
+AA,A,262,262,235,13687.0,123,17
+B,A,68,68,60,1950.0,11,7
+A,AA,54,54,42,2554.0,12,2
+C,B,53,53,46,1534.0,4,4
+A,C,11,11,9,405.0,3,0
+AA,B,3,3,2,70.0,1,0
+C,A,2,2,2,75.0,0,0

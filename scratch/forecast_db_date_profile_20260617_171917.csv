@@ -1,0 +1,18 @@
+schema_name,table_name,column_name,min_value,max_value,status
+dbo,Channel_Offer_SKU_Forecast,CalendarDate,1900-01-01,2028-12-24,ok
+dbo,Channel_Offer_SKU_Forecast_Archive,CalendarDate,1900-01-01,2026-09-27,ok
+dbo,Channel_Offer_SKU_Forecast_Archive,Archive_Date,2022-03-28 11:00:54.383000,2026-04-18 18:00:00.990000,ok
+dbo,Channel_Offer_Forecast,CalendarDate,1900-01-01,2028-12-24,ok
+dbo,Channel_Offer_Forecast_Frozen,CalendarDate,2020-01-12,2028-12-24,ok
+dbo,Channel_Offer_Forecast_Frozen,Frozen_Date,2020-01-09 15:08:40.083000,2026-06-11 12:02:27.910000,ok
+dbo,Offer_SKU_Inventory_Forecast,CalendarDate,2026-06-14,2027-12-12,ok
+dbo,Offer_SKU_Inventory_Forecast,Last_Updated_Date,2026-06-16 20:09:26.567000,2026-06-17 13:30:20.320000,ok
+dbo,Offer_Inventory_Forecast,CalendarDate,2019-09-29,2027-12-12,ok
+dbo,Offer_Inventory_Forecast_Frozen,Frozen_Date,2020-01-09 15:08:58.840000,2026-06-11 12:02:28.340000,ok
+dbo,Channel_Offer_Demand_History,CalendarDate,2025-05-11,2026-06-07,ok
+dbo,Channel_SKU_SIZE_Weekly_Demand_History,FISCALWEEKSTARTDATE,2024-06-09 00:00:00,2026-06-14 00:00:00,ok
+dbo,Product_Dimensions_Hierarchy_Attributes,dbt_loaded_at,2026-06-10 11:00:51.961000,2026-06-10 11:00:51.961000,ok
+dbo,Current_SKU_Available_DC_Inventory,CalendarDate,,,"error: ('42S22', ""[42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Invalid column name 'CalendarDate'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Invalid column name 'CalendarDate'. (207)"")"
+dbo,Current_Offer_Inventory,CalendarDate,,,"error: ('42S22', ""[42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Invalid column name 'CalendarDate'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Invalid column name 'CalendarDate'. (207)"")"
+dbo,On_Order,CalendarDate,2018-02-25,2027-01-17,ok
+dbo,Forecast_Job_Log,Process_Date,2019-08-11 19:00:05.917000,2026-06-17 14:00:02.273000,ok

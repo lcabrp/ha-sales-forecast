@@ -1,0 +1,24 @@
+{
+  "outbound_sheet": "Outbound",
+  "date_row_excel": 3,
+  "date_min": "2024-02-04",
+  "date_max": "2025-02-04",
+  "row_count": 367,
+  "metric_rows_excel": {
+    "Remaining Volume (Units)": 5,
+    "Units Shipped Goal": 6,
+    "Shipped Units (PowerBi)": 7,
+    "Forecasted Demand (Units)": 8,
+    "OPS (8/18 and earlier) or IMF Plan Forecasted (Units)": 9,
+    "Actual Demand (units)": 10,
+    "Percentage demand vs. forecast": 11
+  },
+  "missing_output_columns": [],
+  "generated_at": "2026-06-16T15:10:40",
+  "source_file": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Source\\Planner\\2024 Planner.xlsx",
+  "source_mtime": "2026-06-16T14:02:14",
+  "output_parquet": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\planner_daily_totals_2024.parquet",
+  "output_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\planner_daily_totals_2024.csv",
+  "kpi_sheet": "KPI DC Forecast link file",
+  "kpi_rows": 364
+}

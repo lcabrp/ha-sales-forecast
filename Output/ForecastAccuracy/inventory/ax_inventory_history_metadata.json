@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-06-14T18:34:57",
+  "server": "prodaxsql2",
+  "database": "DAX_PROD",
+  "source_table": "dbo.HAINVENTDETAILREPORTBATCHTMPHISTORY",
+  "requested_start_date": "2026-03-30",
+  "requested_end_date": "2026-06-14",
+  "actual_start_date": "2026-04-01",
+  "actual_end_date": "2026-06-14",
+  "rows": 3541676,
+  "snapshot_days": 75,
+  "distinct_skus": 51435,
+  "outputs": {
+    "ax_inventory_history_sku_day": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inventory\\ax_inventory_history_sku_day.parquet",
+    "ax_inventory_history_sku_day_summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inventory\\ax_inventory_history_sku_day_summary.csv"
+  },
+  "notes": [
+    "Limited AX SKU-level snapshot history, not full multi-year BigQuery inventory history.",
+    "Downstream model panel uses these rows as one-day-lagged features to avoid same-day target leakage."
+  ]
+}

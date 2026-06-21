@@ -1,0 +1,29 @@
+{
+  "table": "dbo.Offer_Inventory_Forecast",
+  "status": "ok",
+  "error": "",
+  "estimated_rows": 5163971,
+  "estimated_columns": 14,
+  "rows_written": 5163971,
+  "parts": 21,
+  "output_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\corporate_forecast\\snapshots\\20260617_173252\\tables\\dbo__Offer_Inventory_Forecast",
+  "parquet_bytes": 93034989,
+  "filters": {},
+  "columns": [
+    "OfferID",
+    "CalendarDate",
+    "BOP_Inventory_Units",
+    "Planned_Receipts",
+    "Direct_Planned_Receipts",
+    "Retail_Planned_Receipts",
+    "Other_Planned_Receipts",
+    "Actual_On_Order",
+    "EOP_Inventory_Units",
+    "Pure_Inventory_Shortage",
+    "WOS_Inventory_Target",
+    "WOS_Inventory_Shortage",
+    "Last_Updated_Date",
+    "Last_Updated_User"
+  ],
+  "elapsed_seconds": 54.96
+}

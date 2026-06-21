@@ -1,0 +1,117 @@
+{
+  "generated_at_utc": "2026-06-19T13:37:07.313896+00:00",
+  "mode": "forecast_training_direct_pick_history",
+  "source": "DAX_Archive.arc/DAX_PROD.dbo WHSWORKTABLE/WHSWORKLINE/INVENTDIM",
+  "date_basis": "modified",
+  "window": {
+    "start_date": "2022-01-01",
+    "end_date_exclusive": "2026-06-19"
+  },
+  "archive_boundary": "2026-06-13",
+  "filters": {
+    "DATAAREAID": "ha",
+    "PARTITION": 5637144576,
+    "INVENTLOCATIONID": "4010",
+    "WHSWORKTABLE.WORKTRANSTYPE": 2,
+    "WHSWORKTABLE.WORKSTATUS": 4,
+    "WHSWORKLINE.WORKSTATUS": 4,
+    "WHSWORKLINE.WORKTYPE": 1,
+    "WHSWORKLINE.WORKCLASSID": "DirectPick",
+    "Included.WMSLOCATION.LOCPROFILEID": [
+      "Picking",
+      "Picking A",
+      "PalletPicking",
+      "Picking D",
+      "invalid"
+    ],
+    "Excluded.WMSLOCATION.LOCPROFILEID": [
+      "W001",
+      "No LP Track"
+    ],
+    "Excluded.WHSWORKLINE.WMSLOCATIONID": [
+      "Bander",
+      "AutoBagger"
+    ]
+  },
+  "location_profile_source": "DAX_PROD.dbo.WMSLOCATION",
+  "location_profile_assumption": "Location profiles are treated as stable enough to classify archived picks.",
+  "grain": "SKU/day",
+  "privacy_scope": [
+    "No work IDs persisted.",
+    "No sales-order IDs persisted.",
+    "No operator/user fields persisted.",
+    "DistinctOrders is distinct within SKU/day and is not additive across SKUs."
+  ],
+  "shards": [
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2022.parquet",
+      "bytes": 6895277,
+      "sha256": "58c41e3d681ea93da66d1eedf734b944d57740ce5aadf00778db6a6b21a54813",
+      "rows": 2119178,
+      "distinct_skus": 31381,
+      "pick_units": 9298381.0,
+      "pick_lines": 8924531,
+      "start_date": "2022-01-02",
+      "end_date": "2022-12-31",
+      "year": 2022
+    },
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2023.parquet",
+      "bytes": 7132792,
+      "sha256": "8fe74ecdb1be7d977badfa5dc4f17a9fd2ddc1d76ac80877026b755b9215b1cb",
+      "rows": 2154543,
+      "distinct_skus": 32348,
+      "pick_units": 9021926.0,
+      "pick_lines": 8669791,
+      "start_date": "2023-01-02",
+      "end_date": "2023-12-31",
+      "year": 2023
+    },
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2024.parquet",
+      "bytes": 7493913,
+      "sha256": "1cf85bace815307bf345f1cec2c269fa2d00749c42a14c267e85525b8b341f6c",
+      "rows": 2289654,
+      "distinct_skus": 36340,
+      "pick_units": 9085238.0,
+      "pick_lines": 8812646,
+      "start_date": "2024-01-02",
+      "end_date": "2024-12-31",
+      "year": 2024
+    },
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2025.parquet",
+      "bytes": 7580333,
+      "sha256": "c630a3ac63ab13b1e1f5beeb5242728b0d7be74eab98cef846e3109275ef8923",
+      "rows": 2366162,
+      "distinct_skus": 36963,
+      "pick_units": 8440037.0,
+      "pick_lines": 8210558,
+      "start_date": "2025-01-02",
+      "end_date": "2025-12-31",
+      "year": 2025
+    },
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2026.parquet",
+      "bytes": 3339734,
+      "sha256": "392d664fc9c07848e4e3c42c9f8b6257e5218f90c941515ebf7390250d52e3d0",
+      "rows": 985883,
+      "distinct_skus": 24569,
+      "pick_units": 2728805.0,
+      "pick_lines": 2685382,
+      "start_date": "2026-01-02",
+      "end_date": "2026-06-18",
+      "year": 2026
+    }
+  ],
+  "totals": {
+    "rows": 9915420,
+    "pick_units": 38574387.0,
+    "pick_lines": 37302908
+  },
+  "outputs": {
+    "manifest": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\direct_pick_history_manifest.json",
+    "summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\direct_pick_history_year_summary.csv",
+    "parquet_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet"
+  }
+}

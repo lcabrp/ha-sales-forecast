@@ -1,0 +1,7 @@
+Metric,Value
+old_required_slots,18995.9
+new_required_slots,18689.300000000003
+required_slot_delta,-306.59999999999854
+old_slot_tiers,206.0
+new_slot_tiers,207.0
+slot_tiers_with_nonzero_delta,168.0

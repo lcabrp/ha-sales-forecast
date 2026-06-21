@@ -1,0 +1,88 @@
+{
+  "source_file": "model_sku_day_panel.parquet",
+  "rows_per_part_target": 350000,
+  "parts": [
+    {
+      "file": "part-0000.parquet",
+      "rows": 350000,
+      "size_mb": 19.18
+    },
+    {
+      "file": "part-0001.parquet",
+      "rows": 350000,
+      "size_mb": 19.52
+    },
+    {
+      "file": "part-0002.parquet",
+      "rows": 350000,
+      "size_mb": 19.97
+    },
+    {
+      "file": "part-0003.parquet",
+      "rows": 350000,
+      "size_mb": 18.75
+    },
+    {
+      "file": "part-0004.parquet",
+      "rows": 350000,
+      "size_mb": 17.96
+    },
+    {
+      "file": "part-0005.parquet",
+      "rows": 350000,
+      "size_mb": 17.94
+    },
+    {
+      "file": "part-0006.parquet",
+      "rows": 350000,
+      "size_mb": 18.46
+    },
+    {
+      "file": "part-0007.parquet",
+      "rows": 350000,
+      "size_mb": 18.9
+    },
+    {
+      "file": "part-0008.parquet",
+      "rows": 350000,
+      "size_mb": 18.31
+    },
+    {
+      "file": "part-0009.parquet",
+      "rows": 350000,
+      "size_mb": 19.32
+    },
+    {
+      "file": "part-0010.parquet",
+      "rows": 350000,
+      "size_mb": 18.98
+    },
+    {
+      "file": "part-0011.parquet",
+      "rows": 350000,
+      "size_mb": 17.73
+    },
+    {
+      "file": "part-0012.parquet",
+      "rows": 350000,
+      "size_mb": 17.14
+    },
+    {
+      "file": "part-0013.parquet",
+      "rows": 350000,
+      "size_mb": 17.96
+    },
+    {
+      "file": "part-0014.parquet",
+      "rows": 350000,
+      "size_mb": 19.78
+    },
+    {
+      "file": "part-0015.parquet",
+      "rows": 207830,
+      "size_mb": 12.75
+    }
+  ],
+  "total_rows": 5457830,
+  "max_part_size_mb": 19.97
+}

@@ -1,0 +1,63 @@
+{
+  "generated_at": "2026-06-18T14:04:25",
+  "forecast_start": "2026-06-18",
+  "forecast_end": "2026-07-01",
+  "partial_actuals": true,
+  "actuals_available_through": "2026-06-18",
+  "reused_frozen_forecast": false,
+  "loaded_external_frozen_forecast": true,
+  "base_frozen_forecast_path": "Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\shadow_daily_forecasts.parquet",
+  "forecast_path": "Output\\ForecastAccuracy\\replacement_shadow_yoy_overlay_capped\\shadow_2026-06-18_2026-07-01\\shadow_daily_forecasts.parquet",
+  "frozen_forecast_generated_at": null,
+  "threads_requested": 8,
+  "model": "hgb_absolute_log",
+  "ml_threshold_units": 20.0,
+  "recent_fallback_weights": [
+    0.05,
+    0.1
+  ],
+  "recent_volume_caps": [],
+  "train_rows": 0,
+  "calibration_rows": 0,
+  "future_rows": 0,
+  "future_inputs": {
+    "status": "loaded_external_frozen_forecast"
+  },
+  "recent_direct_pick": {
+    "status": "loaded_external_frozen_forecast"
+  },
+  "corporate": {
+    "status": "loaded_external_frozen_forecast"
+  },
+  "yoy_sale_lift_overlay": {
+    "analog_sale_start": "2025-06-21",
+    "analog_sale_end": "2025-07-04",
+    "analog_sale_days": 14,
+    "analog_sale_units": 473431.0,
+    "analog_baseline_start": "2025-05-24",
+    "analog_baseline_end": "2025-06-20",
+    "analog_baseline_days": 27,
+    "analog_baseline_expected_units": 221822.74074074073,
+    "overall_lift": 2.1342762172131438,
+    "lift_floor": 0.75,
+    "lift_cap": 3.0,
+    "shrink_units": 500.0,
+    "candidate": "july_sale_yoy_lift_overlay",
+    "shape_candidate": "hybrid_ml_raw_min20_recent_w0p1_cap_recent_x0p85",
+    "current_baseline_start": "2026-04-23",
+    "current_baseline_end": "2026-06-17",
+    "current_baseline_days": 55,
+    "current_baseline_units": 1114780.0,
+    "overall_lift_cap_units": 605626.8759990574,
+    "total_cap_mode": "overall-lift",
+    "total_cap_units": 605626.8759990574,
+    "total_cap_scale": 0.6419642523894605,
+    "target_categories": 174,
+    "overlay_skus": 49270,
+    "overlay_sku_days": 469280,
+    "overlay_units": 605626.8759990574,
+    "uncapped_overlay_units": 943396.5734771813,
+    "notes": "Shadow-only sale-regime overlay. Category targets use prior-year DirectPick sale lift, capped/shrunk, then allocate onto current hybrid/recent/PDL SKU-day shape."
+  },
+  "score_grain": "SKU/day"
+}

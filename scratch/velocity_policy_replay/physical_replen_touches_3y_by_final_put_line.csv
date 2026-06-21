@@ -1,0 +1,4 @@
+ReplenCategory,FinalPutLineNum,PhysicalTouches,ActualLastPutInventQty
+Demand,5,164172,7841235.0
+MinMaxUsedBySalesOrder,5,24126,1134246.0
+ResetUsedBySalesOrder,5,975,43792.0

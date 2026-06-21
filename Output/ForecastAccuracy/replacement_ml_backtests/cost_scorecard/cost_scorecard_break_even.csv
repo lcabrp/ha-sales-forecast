@@ -1,0 +1,8 @@
+ShortfallToExcessRatio,Winner,cost__self_calibrating_recency_brake,cost__hybrid_ml_hgb_absolute_log_raw_min_20p0_units_recent_w0p1_cap_recent_x0p85,cost__recent_no_ml_no_promo_floor,cost__corporate
+1,hybrid_ml_hgb_absolute_log_raw_min_20p0_units_recent_w0p1_cap_recent_x0p85,6329474.460270071,6092454.181351108,8357353.0,11705977.0
+2,hybrid_ml_hgb_absolute_log_raw_min_20p0_units_recent_w0p1_cap_recent_x0p85,9561386.811941644,9482940.855102936,11183203.0,19054044.0
+3,self_calibrating_recency_brake,12793299.163613217,12873427.528854763,14009053.0,26402111.0
+4,self_calibrating_recency_brake,16025211.51528479,16263914.20260659,16834903.0,33750178.0
+6,recent_no_ml_no_promo_floor,22489036.218627933,23044887.550110247,22486603.0,48446312.0
+8,recent_no_ml_no_promo_floor,28952860.92197108,29825860.8976139,28138303.0,63142446.0
+12,recent_no_ml_no_promo_floor,41880510.328657374,43387807.592621215,39441703.0,92534714.0

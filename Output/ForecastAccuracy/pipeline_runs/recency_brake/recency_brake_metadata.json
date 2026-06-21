@@ -1,0 +1,33 @@
+{
+  "cap_variants": [
+    {
+      "candidate": "hybrid_ml_cold_start_raw_min_20p0_units_recent_w0p1_cap_recent_x1p25",
+      "cap": 1.25
+    },
+    {
+      "candidate": "hybrid_ml_cold_start_raw_min_20p0_units_recent_w0p1_cap_recent_x1p1",
+      "cap": 1.1
+    },
+    {
+      "candidate": "hybrid_ml_cold_start_raw_min_20p0_units_recent_w0p1_cap_recent_x1p0",
+      "cap": 1.0
+    },
+    {
+      "candidate": "hybrid_ml_cold_start_raw_min_20p0_units_recent_w0p1_cap_recent_x0p85",
+      "cap": 0.85
+    }
+  ],
+  "floor_candidate": "recent_no_ml_no_promo_floor",
+  "generated_at_utc": "2026-06-18T03:48:15.650390+00:00",
+  "lookback": 2,
+  "min_cap": 0.6,
+  "min_coverage": 0.8,
+  "notes": [
+    "The brake is chosen from prior-window realized over/under-forecast only, so the evaluation is honest out-of-sample.",
+    "A coverage guard prevents the brake from collapsing sold-unit coverage the way a corporate-style under-forecast does."
+  ],
+  "reference": "hybrid_ml_cold_start_raw_min_20p0_units_recent_w0p1",
+  "score_files": [
+    "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\pipeline_runs\\backtest\\replacement_ml_backtest_window_scores.csv"
+  ]
+}

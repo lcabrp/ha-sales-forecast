@@ -1,0 +1,28 @@
+{
+  "table": "dbo.Channel_SKU_SIZE_Weekly_Demand_History",
+  "status": "ok",
+  "error": "",
+  "estimated_rows": 1367399,
+  "estimated_columns": 11,
+  "rows_written": 1000,
+  "parts": 2,
+  "output_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\corporate_forecast\\snapshots\\20260617_173147\\tables\\dbo__Channel_SKU_SIZE_Weekly_Demand_History",
+  "parquet_bytes": 18407,
+  "filters": {
+    "max_rows_per_table": 1000
+  },
+  "columns": [
+    "CHANNEL",
+    "DIVISION",
+    "DEPARTMENT",
+    "CLASS",
+    "ITEMID",
+    "OFFER",
+    "SKU",
+    "SIZEID",
+    "FISCALWEEKSTARTDATE",
+    "UNIT_SALES_QTY",
+    "SALES_WEEK_ROW_NUMBER"
+  ],
+  "elapsed_seconds": 0.16
+}

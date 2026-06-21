@@ -1,0 +1,33 @@
+{
+  "generated_at_utc": "2026-06-19T00:32:18.559990+00:00",
+  "window": {
+    "start_date": "2022-01-01",
+    "end_date_exclusive": "2026-06-19"
+  },
+  "archive_boundary": "2026-06-13",
+  "strict_scope": {
+    "warehouse": "4010",
+    "work_trans_type": 2,
+    "work_class_id": "DirectPick",
+    "work_type": 1,
+    "work_status": 4,
+    "loc_profiles": [
+      "Picking",
+      "Picking A",
+      "PalletPicking",
+      "Picking D"
+    ],
+    "excluded_locations": [
+      "Bander",
+      "AutoBagger"
+    ],
+    "date_basis": "WHSWORKLINE.MODIFIEDDATETIME",
+    "location_profile_source": "DAX_PROD.dbo.WMSLOCATION",
+    "location_profile_assumption": "Location profiles are treated as stable enough to classify archived picks."
+  },
+  "broad_direct_pick_units": 38735335.0,
+  "strict_sales_pickable_units": 38075573.0,
+  "excluded_units": 659762.0,
+  "strict_sales_pickable_pick_lines": 36821445,
+  "strict_sales_pickable_unit_pct": 0.9829674378703579
+}

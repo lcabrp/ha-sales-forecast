@@ -1,0 +1,8 @@
+Warehouse,WorkTransType,LocProfileId,IsPickableProfile,IsExcludedLocation,MeetsStrictSalesPickableScope,PickLines,DistinctOrders,PickUnits
+4010,2,Picking,1,0,True,24710088,7643427,25443507.0
+4010,2,Picking A,1,0,True,10754780,5265032,11224888.0
+4010,2,PalletPicking,1,0,True,885925,694810,934676.0
+4010,2,invalid,0,0,False,476901,403073,494203.0
+4010,2,Picking D,1,0,True,470652,411007,472502.0
+4010,2,W001,0,0,False,158325,126375,165557.0
+4010,2,No LP Track,0,0,False,2,2,2.0

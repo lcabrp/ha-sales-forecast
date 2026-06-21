@@ -1,0 +1,3 @@
+Source,SaleStart,SaleEnd,SaleDays,SaleUnits,BaselineStart,BaselineEnd,BaselineObservedDays,BaselineDailyUnits,BaselineExpectedUnits,LiftVsBaseline
+2025 analog DirectPick,2025-06-21,2025-07-04,14,473431.0,2025-05-24,2025-06-20,27,15844.481481481482,221822.74074074073,2.1342762172131438
+2026 current pre-sale DirectPick,2026-06-18,2026-07-01,14,,2026-05-21,2026-06-17,28,18616.678571428572,260633.5,

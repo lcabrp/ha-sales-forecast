@@ -1,0 +1,20 @@
+{
+  "base_forecast": "HorizonConsistentMLForecastQty",
+  "blend_alpha": 0.5,
+  "category_levels": [
+    "Division",
+    "Department",
+    "Class"
+  ],
+  "forecast_input": "Output\\ForecastAccuracy\\model\\horizon_consistent\\forecast_sku_day.parquet",
+  "generated_at_utc": "2026-06-17T20:07:27.364399+00:00",
+  "max_factor": 4.0,
+  "notes": [
+    "BottomUp is the base model forecast unchanged.",
+    "TopDown rescales all SKUs per day so the grand total matches the target.",
+    "MiddleOut rescales SKUs within each category per day to match category totals, preserving the model's in-category SKU shape.",
+    "target=blend mixes the corporate aggregate with the base model aggregate by blend-alpha; use it when corporate totals are directionally trustworthy but not fully."
+  ],
+  "target_column": "Recent7BaselineQty",
+  "target_mode": "recent7"
+}

@@ -1,0 +1,23 @@
+{
+  "table": "dbo.Current_SKU_Available_DC_Inventory",
+  "status": "ok",
+  "error": "",
+  "estimated_rows": 34388,
+  "estimated_columns": 6,
+  "rows_written": 1000,
+  "parts": 2,
+  "output_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\corporate_forecast\\snapshots\\20260617_173147\\tables\\dbo__Current_SKU_Available_DC_Inventory",
+  "parquet_bytes": 18673,
+  "filters": {
+    "max_rows_per_table": 1000
+  },
+  "columns": [
+    "SKU",
+    "Total_Inv",
+    "Avail_Inv",
+    "Retail_Store_Inv",
+    "Outlet_Store_Inv",
+    "LastUpdatedDate"
+  ],
+  "elapsed_seconds": 0.15
+}

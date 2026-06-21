@@ -1,0 +1,758 @@
+file_id,source_file,sheet_name,read_status,height,width,header_row_zero_based,event_name,effective_date_text,start_date,end_date,is_product_offer_sheet,is_aggregate_offer_sheet,sheet_type,extracted_row_count
+8dff65eafd94,04.24.25 Friends + Family Sitewide up to 40% off PDL.xlsx,All Promo Discounts,ok,2068,28,3.0,4.23.25 Friends + Family sitewide up to 40% off,4.23.25-5.6.25,2025-04-23,2025-05-06,True,True,aggregate_promo_offers,1775
+8dff65eafd94,04.24.25 Friends + Family Sitewide up to 40% off PDL.xlsx,Marketing Dropdown,ok,4,1,,4.23.25 Friends + Family sitewide up to 40% off,4.23.25-5.6.25,2025-04-23,2025-05-06,False,False,support,0
+8dff65eafd94,04.24.25 Friends + Family Sitewide up to 40% off PDL.xlsx,Offer In Stock,ok,40,16,,4.23.25 Friends + Family sitewide up to 40% off,4.23.25-5.6.25,2025-04-23,2025-05-06,False,False,non_offer,0
+8dff65eafd94,04.24.25 Friends + Family Sitewide up to 40% off PDL.xlsx,Sales & Inv,ok,40,30,,4.23.25 Friends + Family sitewide up to 40% off,4.23.25-5.6.25,2025-04-23,2025-05-06,False,False,non_offer,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,1.12-1.19,2026-01-12,2026-01-19,False,False,zero_percent_offers,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Data,ok,40,8,,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,False,False,support,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,MSRPs,ok,40,2,,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,False,False,non_offer,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Marketing Dropdown,ok,4,1,,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,False,False,support,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Promo 3,ok,1200,50,4.0,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,False,False,empty_placeholder,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Promo 4,ok,1958,50,4.0,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,False,False,empty_placeholder,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Promo 5,ok,1200,50,4.0,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,False,False,empty_placeholder,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Promo Offers,ok,1981,49,4.0,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,True,True,aggregate_promo_offers,937
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Roll Up,ok,39,33,,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,False,False,rollup_or_pivot,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Sales & Inv,ok,40,27,,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,False,False,non_offer,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,Valentine's Collection Up to 30% off & Clearance up to 75% off,1.12-1.19,2026-01-12,2026-01-19,False,False,tier1_recommendation,0
+6b24489305f2,1.12 Valentine's Collection Up to 30% Off PDL.xlsx,Vday,ok,1981,49,4.0,Vday Up to 30%,1.12-1.19,2026-01-12,2026-01-19,True,False,promo_detail,83
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,1.20.26-1.26.26,2026-01-20,2026-01-26,False,False,zero_percent_offers,0
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Data,ok,40,8,,All Vday Up to 40% Off + All Dresses Up to 30% Off PDL,1.20.26-1.26.26,2026-01-20,2026-01-26,False,False,support,0
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Dresses Up to 30%,ok,1188,50,4.0,Dresses Up to 30%,1.20.26-1.26.26,2026-01-20,2026-01-26,True,False,promo_detail,191
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,MSRPs,ok,40,2,,All Vday Up to 40% Off + All Dresses Up to 30% Off PDL,1.20.26-1.26.26,2026-01-20,2026-01-26,False,False,non_offer,0
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Marketing Dropdown,ok,4,1,,All Vday Up to 40% Off + All Dresses Up to 30% Off PDL,1.20.26-1.26.26,2026-01-20,2026-01-26,False,False,support,0
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Promo 4,ok,1958,50,4.0,All Vday Up to 40% Off + All Dresses Up to 30% Off PDL,1.20.26-1.26.26,2026-01-20,2026-01-26,False,False,empty_placeholder,0
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Promo 5,ok,1200,50,4.0,All Vday Up to 40% Off + All Dresses Up to 30% Off PDL,1.20.26-1.26.26,2026-01-20,2026-01-26,False,False,empty_placeholder,0
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Promo Offers,ok,1981,49,4.0,All Vday Up to 40% Off + All Dresses Up to 30% Off PDL,1.20.26-1.26.26,2026-01-20,2026-01-26,True,True,aggregate_promo_offers,1272
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Roll Up,ok,40,33,,All Vday Up to 40% Off + All Dresses Up to 30% Off PDL,1.20.26-1.26.26,2026-01-20,2026-01-26,False,False,rollup_or_pivot,0
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Sales & Inv,ok,40,27,,All Vday Up to 40% Off + All Dresses Up to 30% Off PDL,1.20.26-1.26.26,2026-01-20,2026-01-26,False,False,non_offer,0
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,All Vday Up to 40% Off + All Dresses Up to 30% Off PDL,1.20.26-1.26.26,2026-01-20,2026-01-26,False,False,tier1_recommendation,0
+edd39f42083c,1.20.26 All Vday Up to 40 Off PDL.xlsx,Vday Up to 40%,ok,1981,49,4.0,Vday Up to 40%,1.20.26-1.26.26,2026-01-20,2026-01-26,True,False,promo_detail,93
+fff1bad2ef6c,1.21.25 All Vday up to 40 off.xlsx,All Promo Discounts,ok,1848,25,3.0,1.21.25 All Vday up to 40% off + Dresses up to 30% off,1.21.25-1.27.25,2025-01-21,2025-01-27,True,True,aggregate_promo_offers,1711
+fff1bad2ef6c,1.21.25 All Vday up to 40 off.xlsx,Dresses,ok,306,25,3.0,1.21.25 Dresses up to 30% off,1.21.25-1.27.25,2025-01-21,2025-01-27,True,False,promo_detail,169
+fff1bad2ef6c,1.21.25 All Vday up to 40 off.xlsx,Marketing Dropdown,ok,4,1,,1.21.25 All Vday up to 40% off + Dresses up to 30% off,1.21.25-1.27.25,2025-01-21,2025-01-27,False,False,support,0
+fff1bad2ef6c,1.21.25 All Vday up to 40 off.xlsx,Offer In Stock,ok,40,16,,1.21.25 All Vday up to 40% off + Dresses up to 30% off,1.21.25-1.27.25,2025-01-21,2025-01-27,False,False,non_offer,0
+fff1bad2ef6c,1.21.25 All Vday up to 40 off.xlsx,Sales & Inv,ok,40,30,,1.21.25 All Vday up to 40% off + Dresses up to 30% off,1.21.25-1.27.25,2025-01-21,2025-01-27,False,False,non_offer,0
+fff1bad2ef6c,1.21.25 All Vday up to 40 off.xlsx,Vday,ok,239,25,3.0,1.21.25 All Vday up to 40% off,1.21.25-1.27.25,2025-01-21,2025-01-27,True,False,promo_detail,102
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,1.27.26-2.1.26,2026-01-27,2026-02-01,False,False,zero_percent_offers,0
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Data,ok,40,8,,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,False,False,support,0
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,MSRPs,ok,40,2,,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,False,False,non_offer,0
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Marketing Dropdown,ok,4,1,,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,False,False,support,0
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Promo #2,ok,1200,50,4.0,Dresses Up to 30%,1.27.26-2.1.26,2026-01-27,2026-02-01,True,False,promo_detail,172
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Promo 4,ok,1958,50,4.0,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,False,False,empty_placeholder,0
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Promo 5,ok,1200,50,4.0,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,False,False,empty_placeholder,0
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Promo Offers,ok,1981,49,4.0,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,True,True,aggregate_promo_offers,1230
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Roll Up,ok,40,33,,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,False,False,rollup_or_pivot,0
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Sales & Inv,ok,40,27,,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,False,False,non_offer,0
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Spring New Arrivals up to 30%,ok,1048,49,4.0,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,True,False,promo_detail,297
+b0f86e88dde5,1.27.26 Spring New Arrivals up to 30% Off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,Spring New Arrivals up to 30% Off,1.27.26-2.1.26,2026-01-27,2026-02-01,False,False,tier1_recommendation,0
+cb3de7e16fc9,1.28.25 Kids Outfitting Mix & Match 30 off.xlsx,All Promo Discounts,ok,1856,25,3.0,1.28.25 Kids Outfitting Mix & Match 30% off + Sleep up to 30% off,1.28.25-2.3.25,2025-01-28,2025-02-03,True,True,aggregate_promo_offers,1713
+cb3de7e16fc9,1.28.25 Kids Outfitting Mix & Match 30 off.xlsx,Marketing Dropdown,ok,4,1,,1.28.25 Kids Outfitting Mix & Match 30% off + Sleep up to 30% off,1.28.25-2.3.25,2025-01-28,2025-02-03,False,False,support,0
+cb3de7e16fc9,1.28.25 Kids Outfitting Mix & Match 30 off.xlsx,Mix & Match,ok,378,25,3.0,1.28.25 Kids Outfitting Mix & Match 2+ for 30% off,1.28.25-2.3.25,2025-01-28,2025-02-03,True,False,promo_detail,235
+cb3de7e16fc9,1.28.25 Kids Outfitting Mix & Match 30 off.xlsx,Offer In Stock,ok,40,16,,1.28.25 Kids Outfitting Mix & Match 30% off + Sleep up to 30% off,1.28.25-2.3.25,2025-01-28,2025-02-03,False,False,non_offer,0
+cb3de7e16fc9,1.28.25 Kids Outfitting Mix & Match 30 off.xlsx,Sales & Inv,ok,40,30,,1.28.25 Kids Outfitting Mix & Match 30% off + Sleep up to 30% off,1.28.25-2.3.25,2025-01-28,2025-02-03,False,False,non_offer,0
+cb3de7e16fc9,1.28.25 Kids Outfitting Mix & Match 30 off.xlsx,Sleep,ok,781,25,3.0,1.28.25 Kids Outfitting Mix & Match 30% off + Sleep up to 30% off,1.28.25-2.3.25,2025-01-28,2025-02-03,True,False,promo_detail,638
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,0% Offers,ok,40,50,4.0,0% Offers,10.1-10.6,2025-10-01,2025-10-06,False,False,zero_percent_offers,0
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,Data,ok,40,8,,10.1.25 Hannaween @ $25 & Dresses up to 40% & PJs up to 30%,10.1-10.6,2025-10-01,2025-10-06,False,False,support,0
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,Dresses up to 40%,ok,1974,50,4.0,Dresses up to 40%,10.1-10.6,2025-10-01,2025-10-06,True,False,promo_detail,188
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,Hannaween @ $25,ok,1999,55,4.0,Hannaween Starting @ $25,10.1-10.6,2025-10-01,2025-10-06,True,False,promo_detail,64
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,Marketing Dropdown,ok,4,1,,10.1.25 Hannaween @ $25 & Dresses up to 40% & PJs up to 30%,10.1-10.6,2025-10-01,2025-10-06,False,False,support,0
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,PJs up to 30%,ok,1958,50,4.0,PJs up to 30%,10.1-10.6,2025-10-01,2025-10-06,True,False,promo_detail,896
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,Promo Offers,ok,1859,50,4.0,10.1.25 Hannaween @ $25 & Dresses up to 40% & PJs up to 30%,10.1-10.6,2025-10-01,2025-10-06,True,True,aggregate_promo_offers,1711
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,Roll Up,ok,40,26,,10.1.25 Hannaween @ $25 & Dresses up to 40% & PJs up to 30%,10.1-10.6,2025-10-01,2025-10-06,False,False,rollup_or_pivot,0
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,Sales & Inv,ok,40,27,,10.1.25 Hannaween @ $25 & Dresses up to 40% & PJs up to 30%,10.1-10.6,2025-10-01,2025-10-06,False,False,non_offer,0
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,Sheet1,ok,40,2,,10.1.25 Hannaween @ $25 & Dresses up to 40% & PJs up to 30%,10.1-10.6,2025-10-01,2025-10-06,False,False,non_offer,0
+4dc96859e9c1,10.1.25 Hannaween @ $25 & Dresses up to 40 PDL.xlsx,Sheet2,ok,12,13,,10.1.25 Hannaween @ $25 & Dresses up to 40% & PJs up to 30%,10.1-10.6,2025-10-01,2025-10-06,False,False,non_offer,0
+436286bc001f,10.22.24 Sleep from $25 + Holiday Dress Up up to 40% off PDL.xlsx,All Promo Discounts,ok,1548,26,3.0,Sleep from $25 + Holiday Dress Up up to 40% off,10.22.24-10.28.24,2024-10-22,2024-10-28,True,True,aggregate_promo_offers,1544
+436286bc001f,10.22.24 Sleep from $25 + Holiday Dress Up up to 40% off PDL.xlsx,Holiday Dress Up,ok,322,25,3.0,Holiday Dress Up up to 40% off,10.22.24-10.28.24,2024-10-22,2024-10-28,True,False,promo_detail,318
+436286bc001f,10.22.24 Sleep from $25 + Holiday Dress Up up to 40% off PDL.xlsx,Marketing Dropdown,ok,4,1,,Sleep from $25 + Holiday Dress Up up to 40% off,10.22.24-10.28.24,2024-10-22,2024-10-28,False,False,support,0
+436286bc001f,10.22.24 Sleep from $25 + Holiday Dress Up up to 40% off PDL.xlsx,New Markdowns,ok,146,25,3.0,New Markdowns,10.22.24,2024-10-22,2024-10-22,True,False,markdown,142
+436286bc001f,10.22.24 Sleep from $25 + Holiday Dress Up up to 40% off PDL.xlsx,Offer In Stock,ok,40,15,,Sleep from $25 + Holiday Dress Up up to 40% off,10.22.24-10.28.24,2024-10-22,2024-10-28,False,False,non_offer,0
+436286bc001f,10.22.24 Sleep from $25 + Holiday Dress Up up to 40% off PDL.xlsx,Sales & Inv,ok,40,30,,Sleep from $25 + Holiday Dress Up up to 40% off,10.22.24-10.28.24,2024-10-22,2024-10-28,False,False,non_offer,0
+436286bc001f,10.22.24 Sleep from $25 + Holiday Dress Up up to 40% off PDL.xlsx,Sleep from $25,ok,647,26,3.0,Sleep from $25,10.22.24-10.28.24,2024-10-22,2024-10-28,True,False,promo_detail,643
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,0% Offers,ok,40,50,4.0,0% Offers,10.22-10.24,2025-10-22,2025-10-24,False,False,zero_percent_offers,0
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,3,ok,2000,49,4.0,10.22.25 Holiday Dress-up up to 40%,10.22-10.24,2025-10-22,2025-10-24,False,False,empty_placeholder,0
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,Data,ok,40,8,,10.22.25 Holiday Dress-up up to 40%,10.22-10.24,2025-10-22,2025-10-24,False,False,support,0
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,Holiday Dress-up,ok,1931,50,4.0,"Holiday Dress-up (Dresses, Baby/pants & sweaters)",10.22-10.24,2025-10-22,2025-10-24,True,False,promo_detail,810
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,Marketing Dropdown,ok,4,1,,10.22.25 Holiday Dress-up up to 40%,10.22-10.24,2025-10-22,2025-10-24,False,False,support,0
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,New Markdowns,ok,1999,50,4.0,New Markdowns,10.22,2025-10-22,2025-10-22,True,False,markdown,133
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,Promo Offers,ok,1895,50,4.0,10.22.25 Holiday Dress-up up to 40%,10.22-10.24,2025-10-22,2025-10-24,True,True,aggregate_promo_offers,1715
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,Roll Up,ok,40,26,,10.22.25 Holiday Dress-up up to 40%,10.22-10.24,2025-10-22,2025-10-24,False,False,rollup_or_pivot,0
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,Sales & Inv,ok,40,27,,10.22.25 Holiday Dress-up up to 40%,10.22-10.24,2025-10-22,2025-10-24,False,False,non_offer,0
+85fb45295828,10.22.25 Holiday Dress-up up to 40% PDL.xlsx,Sheet1,ok,40,2,,10.22.25 Holiday Dress-up up to 40%,10.22-10.24,2025-10-22,2025-10-24,False,False,non_offer,0
+e812c87a45fd,10.29.24 Dresses up to 40 off PDL.xlsx,All Promo Discounts,ok,1732,25,3.0,Dresses up to 40% off + Cozy Layers up to 40% off,10.29.24-11.1.24,2024-10-29,2024-11-01,True,True,aggregate_promo_offers,1004
+e812c87a45fd,10.29.24 Dresses up to 40 off PDL.xlsx,Cozy Layers up to 40% off,ok,134,25,3.0,Cozy Layers up to 40% off,10.29.24-11.1.24,2024-10-29,2024-11-01,True,False,promo_detail,130
+e812c87a45fd,10.29.24 Dresses up to 40 off PDL.xlsx,Dresses up to 40% off,ok,162,25,3.0,Dresses up to 40% off,10.29.24-11.1.24,2024-10-29,2024-11-01,True,False,promo_detail,158
+e812c87a45fd,10.29.24 Dresses up to 40 off PDL.xlsx,Marketing Dropdown,ok,4,1,,Dresses up to 40% off + Cozy Layers up to 40% off,10.29.24-11.1.24,2024-10-29,2024-11-01,False,False,support,0
+e812c87a45fd,10.29.24 Dresses up to 40 off PDL.xlsx,Offer In Stock,ok,40,15,,Dresses up to 40% off + Cozy Layers up to 40% off,10.29.24-11.1.24,2024-10-29,2024-11-01,False,False,non_offer,0
+e812c87a45fd,10.29.24 Dresses up to 40 off PDL.xlsx,Sales & Inv,ok,40,30,,Dresses up to 40% off + Cozy Layers up to 40% off,10.29.24-11.1.24,2024-10-29,2024-11-01,False,False,non_offer,0
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,0% Offers,ok,40,50,4.0,0% Offers,10.7-10.21,2025-10-07,2025-10-21,False,False,zero_percent_offers,0
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,10.13 Halloween 60% Off,ok,1997,50,4.0,Halloween 60% Off,10.13 ONLY,2025-10-13,2025-10-13,True,False,promo_detail,83
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,10.14 Grinch 50% Off,ok,1981,50,4.0,Grinch 50% Off,10.14 ONLY,2025-10-14,2025-10-14,True,False,promo_detail,50
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,10.15 Dear Deer 50% Off,ok,1979,50,4.0,Dear Deer 50% Off,10.15 ONLY,2025-10-15,2025-10-15,True,False,promo_detail,50
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,Data,ok,40,8,,Friends & Family 40% Off Everything,10.7-10.21,2025-10-07,2025-10-21,False,False,support,0
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,Marketing Dropdown,ok,4,1,,Friends & Family 40% Off Everything,10.7-10.21,2025-10-07,2025-10-21,False,False,support,0
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,New Markdowns,ok,1953,50,4.0,New Markdowns,10.9,2025-10-09,2025-10-09,True,False,markdown,159
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,Promo Offers,ok,1981,53,4.0,Friends & Family 40% Off Everything,10.7-10.21,2025-10-07,2025-10-21,True,True,aggregate_promo_offers,1936
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,Roll Up,ok,40,26,,Friends & Family 40% Off Everything,10.7-10.21,2025-10-07,2025-10-21,False,False,rollup_or_pivot,0
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,Sales & Inv,ok,40,27,,Friends & Family 40% Off Everything,10.7-10.21,2025-10-07,2025-10-21,False,False,non_offer,0
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,Sheet1,ok,40,2,,Friends & Family 40% Off Everything,10.7-10.21,2025-10-07,2025-10-21,False,False,non_offer,0
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,Sheet2,ok,40,6,,Friends & Family 40% Off Everything,10.7-10.21,2025-10-07,2025-10-21,False,False,non_offer,0
+f7b5d67e994f,10.7.25 Friends & Family 40% Off PDL.xlsx,Tier 1 Recommendations,ok,49,11,16.0,Friends & Family 40% Off Everything,10.7-10.21,2025-10-07,2025-10-21,True,False,tier1_recommendation,17
+02e7a1ddfa70,11.12.24 Dress-Up Event up to 40 off PDL.xlsx,All Promo Discounts,ok,1504,25,3.0,11.12.24 Dress-Up Event up to 40% off + Sleep up to 40% off,11.12.24-11.15.24,2024-11-12,2024-11-15,True,True,aggregate_promo_offers,1499
+02e7a1ddfa70,11.12.24 Dress-Up Event up to 40 off PDL.xlsx,Dress-Up (Dresses Only),ok,150,25,3.0,11.12.24 Dress-Up Event up to 40% off,11.12.24-11.15.24,2024-11-12,2024-11-15,True,False,promo_detail,146
+02e7a1ddfa70,11.12.24 Dress-Up Event up to 40 off PDL.xlsx,Dress-Up (expanded),ok,394,25,3.0,11.12.24 Dress-Up Event up to 40% off + Sleep up to 40% off,11.12.24-11.15.24,2024-11-12,2024-11-15,True,False,promo_detail,390
+02e7a1ddfa70,11.12.24 Dress-Up Event up to 40 off PDL.xlsx,Marketing Dropdown,ok,4,1,,11.12.24 Dress-Up Event up to 40% off + Sleep up to 40% off,11.12.24-11.15.24,2024-11-12,2024-11-15,False,False,support,0
+02e7a1ddfa70,11.12.24 Dress-Up Event up to 40 off PDL.xlsx,Offer In Stock,ok,40,15,,11.12.24 Dress-Up Event up to 40% off + Sleep up to 40% off,11.12.24-11.15.24,2024-11-12,2024-11-15,False,False,non_offer,0
+02e7a1ddfa70,11.12.24 Dress-Up Event up to 40 off PDL.xlsx,Sales & Inv,ok,40,30,,11.12.24 Dress-Up Event up to 40% off + Sleep up to 40% off,11.12.24-11.15.24,2024-11-12,2024-11-15,False,False,non_offer,0
+02e7a1ddfa70,11.12.24 Dress-Up Event up to 40 off PDL.xlsx,Sleep,ok,635,25,3.0,11.12.24 Sleep up to 40% off,11.12.24-11.15.24,2024-11-12,2024-11-15,True,False,promo_detail,631
+b9149e29bc83,11.16.24 + 11.19.24 Early Black Friday PDL.xlsx,Early BF Pt. 1 (Total List),ok,1604,25,3.0,11.16.24 Early BF: 40% off Sitewide*,11.16.24-11.18.24,2024-11-16,2024-11-18,True,False,promo_detail,1590
+b9149e29bc83,11.16.24 + 11.19.24 Early Black Friday PDL.xlsx,Early BF Pt. 2 (PJs only),ok,646,25,3.0,11.19.24 Early BF: 50% off All Pajamas + 40% off Everything Else,11.19.24-11.24.24,2024-11-19,2024-11-24,True,False,promo_detail,632
+b9149e29bc83,11.16.24 + 11.19.24 Early Black Friday PDL.xlsx,Early BF Pt. 2 (Total List),ok,1604,25,3.0,11.19.24 Early BF: 50% off All Pajamas + 40% off Everything Else,11.19.24-11.24.24,2024-11-19,2024-11-24,True,False,promo_detail,1590
+b9149e29bc83,11.16.24 + 11.19.24 Early Black Friday PDL.xlsx,Marketing Dropdown,ok,4,1,,11.16.24 Early BF: 40% off Sitewide*,11.16.24-11.18.24,2024-11-16,2024-11-18,False,False,support,0
+b9149e29bc83,11.16.24 + 11.19.24 Early Black Friday PDL.xlsx,Offer In Stock,ok,40,15,,11.16.24 Early BF: 40% off Sitewide*,11.16.24-11.18.24,2024-11-16,2024-11-18,False,False,non_offer,0
+b9149e29bc83,11.16.24 + 11.19.24 Early Black Friday PDL.xlsx,Sales & Inv,ok,40,30,,11.16.24 Early BF: 40% off Sitewide*,11.16.24-11.18.24,2024-11-16,2024-11-18,False,False,non_offer,0
+7430e2657366,11.2.24 40% off Sitewide PDL.xlsx,All Promo Discounts,ok,1584,25,3.0,11.2.24 40% off Sitewide,11.2.24-11.3.24,2024-11-02,2024-11-03,True,True,aggregate_promo_offers,1580
+7430e2657366,11.2.24 40% off Sitewide PDL.xlsx,Marketing Dropdown,ok,4,1,,11.2.24 40% off Sitewide,11.2.24-11.3.24,2024-11-02,2024-11-03,False,False,support,0
+7430e2657366,11.2.24 40% off Sitewide PDL.xlsx,Offer In Stock,ok,40,15,,11.2.24 40% off Sitewide,11.2.24-11.3.24,2024-11-02,2024-11-03,False,False,non_offer,0
+7430e2657366,11.2.24 40% off Sitewide PDL.xlsx,Sales & Inv,ok,40,30,,11.2.24 40% off Sitewide,11.2.24-11.3.24,2024-11-02,2024-11-03,False,False,non_offer,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,11.24 - 11.28,2025-11-24,2025-11-28,False,False,zero_percent_offers,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Data,ok,40,8,,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,False,False,support,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,MSRPs,ok,40,2,,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,False,False,non_offer,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Marketing Dropdown,ok,4,1,,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,False,False,support,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,New Markdowns,ok,1958,50,4.0,New Markdowns,10.9,2025-10-09,2025-10-09,True,False,markdown,1
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Promo 1,ok,1981,49,4.0,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,False,False,empty_placeholder,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Promo 2,ok,1200,50,4.0,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,False,False,empty_placeholder,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Promo 3,ok,1200,50,4.0,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,False,False,empty_placeholder,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Promo Offers 11.24-11.28,ok,1981,49,4.0,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,True,True,aggregate_promo_offers,1747
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Roll Up,ok,40,33,,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,False,False,rollup_or_pivot,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Sales & Inv,ok,40,27,,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,False,False,non_offer,0
+2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,False,False,tier1_recommendation,0
+177456b23626,11.25.24 Black Friday + 11.30.24 Cyber Event PDL.xlsx,Black Friday (Total List),ok,1604,25,3.0,11.25.24 Black Friday Starts Here: 50% off Everything,11.25.24-11.29.24,2024-11-25,2024-11-29,True,False,promo_detail,1590
+177456b23626,11.25.24 Black Friday + 11.30.24 Cyber Event PDL.xlsx,Cyber Event (Total List),ok,1604,25,3.0,11.30.24 Cyber Event: 50% off Everything,11.30.24-12.3.24,2024-11-30,2024-12-03,True,False,promo_detail,1590
+177456b23626,11.25.24 Black Friday + 11.30.24 Cyber Event PDL.xlsx,Marketing Dropdown,ok,4,1,,11.25.24 Black Friday Starts Here: 50% off Everything,11.25.24-11.29.24,2024-11-25,2024-11-29,False,False,support,0
+177456b23626,11.25.24 Black Friday + 11.30.24 Cyber Event PDL.xlsx,Offer In Stock,ok,40,15,,11.25.24 Black Friday Starts Here: 50% off Everything,11.25.24-11.29.24,2024-11-25,2024-11-29,False,False,non_offer,0
+177456b23626,11.25.24 Black Friday + 11.30.24 Cyber Event PDL.xlsx,Sales & Inv,ok,40,30,,11.25.24 Black Friday Starts Here: 50% off Everything,11.25.24-11.29.24,2024-11-25,2024-11-29,False,False,non_offer,0
+57034aa7be2b,11.4.24 All Family Match (Sleep) on Sale up to 40 off PDL.xlsx,All Promo Discounts,ok,1504,25,3.0,11.4.24 All Family Match (Sleep) on Sale up to 40% off + Holiday Comfy Dress Up up to 40% off,11.4.24-11.11.24,2024-11-04,2024-11-11,True,True,aggregate_promo_offers,1500
+57034aa7be2b,11.4.24 All Family Match (Sleep) on Sale up to 40 off PDL.xlsx,Family Match Sleep,ok,602,25,3.0,11.4.24 All Family Match (Sleep) on Sale up to 40% off,11.4.24-11.11.24,2024-11-04,2024-11-11,True,False,promo_detail,598
+57034aa7be2b,11.4.24 All Family Match (Sleep) on Sale up to 40 off PDL.xlsx,Holiday Comfy Dress Up,ok,518,25,3.0,11.4.24 Holiday Comfy Dress Up up to 40% off,11.4.24-11.11.24,2024-11-04,2024-11-11,True,False,promo_detail,514
+57034aa7be2b,11.4.24 All Family Match (Sleep) on Sale up to 40 off PDL.xlsx,Marketing Dropdown,ok,4,1,,11.4.24 All Family Match (Sleep) on Sale up to 40% off + Holiday Comfy Dress Up up to 40% off,11.4.24-11.11.24,2024-11-04,2024-11-11,False,False,support,0
+57034aa7be2b,11.4.24 All Family Match (Sleep) on Sale up to 40 off PDL.xlsx,Offer In Stock,ok,40,15,,11.4.24 All Family Match (Sleep) on Sale up to 40% off + Holiday Comfy Dress Up up to 40% off,11.4.24-11.11.24,2024-11-04,2024-11-11,False,False,non_offer,0
+57034aa7be2b,11.4.24 All Family Match (Sleep) on Sale up to 40 off PDL.xlsx,Sales & Inv,ok,40,30,,11.4.24 All Family Match (Sleep) on Sale up to 40% off + Holiday Comfy Dress Up up to 40% off,11.4.24-11.11.24,2024-11-04,2024-11-11,False,False,non_offer,0
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,$20 Sleep Offers,ok,1981,49,4.0,$20 Sleep Offers,12.1-12.2,2025-12-01,2025-12-02,True,False,promo_detail,37
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,12.1-12.2,2025-12-01,2025-12-02,False,False,zero_percent_offers,0
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,Data,ok,40,8,,CYBER MONDAY 50% OFF EVERYTHING w/ $20 Sleep,12.1-12.2,2025-12-01,2025-12-02,False,False,support,0
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,MSRPs,ok,40,2,,CYBER MONDAY 50% OFF EVERYTHING w/ $20 Sleep,12.1-12.2,2025-12-01,2025-12-02,False,False,non_offer,0
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,Marketing Dropdown,ok,4,1,,CYBER MONDAY 50% OFF EVERYTHING w/ $20 Sleep,12.1-12.2,2025-12-01,2025-12-02,False,False,support,0
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,New Markdowns,ok,1958,50,4.0,New Markdowns,10.9,2025-10-09,2025-10-09,True,False,markdown,1
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,Promo 3,ok,1200,50,4.0,CYBER MONDAY 50% OFF EVERYTHING w/ $20 Sleep,12.1-12.2,2025-12-01,2025-12-02,False,False,empty_placeholder,0
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,Promo Offers,ok,1981,49,4.0,CYBER MONDAY 50% OFF EVERYTHING w/ $20 Sleep,12.1-12.2,2025-12-01,2025-12-02,True,True,aggregate_promo_offers,1756
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,Roll Up,ok,40,33,,CYBER MONDAY 50% OFF EVERYTHING w/ $20 Sleep,12.1-12.2,2025-12-01,2025-12-02,False,False,rollup_or_pivot,0
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,Sales & Inv,ok,40,27,,CYBER MONDAY 50% OFF EVERYTHING w/ $20 Sleep,12.1-12.2,2025-12-01,2025-12-02,False,False,non_offer,0
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,Sleep Under $25,ok,1200,50,4.0,Sleep Under $25,12.1-12.2,2025-12-01,2025-12-02,True,False,promo_detail,249
+e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,CYBER MONDAY 50% OFF EVERYTHING w/ $20 Sleep,12.1-12.2,2025-12-01,2025-12-02,False,False,tier1_recommendation,0
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,$25 Sleep,ok,1981,49,4.0,$25 Sleep,12.10-12.12,2025-12-10,2025-12-12,True,False,promo_detail,763
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,12.10-12.12,2025-12-10,2025-12-12,False,False,zero_percent_offers,0
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,Data,ok,40,8,,Family Match PJs Up to 50% Off & Holiday Dress-up 50% off ($25 Sleep will Continue) (excl vday & peppa),12.10-12.12,2025-12-10,2025-12-12,False,False,support,0
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,Family Match PJs up to 50%,ok,1180,50,4.0,New Markdowns,12.3,2025-12-03,2025-12-03,True,False,markdown,1
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,Holiday Dress-up 50%,ok,1193,50,4.0,Holiday Dress-up 50%,12.10-12.12,2025-12-10,2025-12-12,True,False,promo_detail,494
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,MSRPs,ok,40,2,,Family Match PJs Up to 50% Off & Holiday Dress-up 50% off ($25 Sleep will Continue) (excl vday & peppa),12.10-12.12,2025-12-10,2025-12-12,False,False,non_offer,0
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,Marketing Dropdown,ok,4,1,,Family Match PJs Up to 50% Off & Holiday Dress-up 50% off ($25 Sleep will Continue) (excl vday & peppa),12.10-12.12,2025-12-10,2025-12-12,False,False,support,0
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,New Markdowns,ok,1958,50,4.0,New Markdowns,10.9,2025-10-09,2025-10-09,True,False,markdown,1
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,Promo Offers 12.10-12.12,ok,1644,49,4.0,Family Match PJs Up to 50% Off & Holiday Dress-up 50% off ($25 Sleep will Continue) (excl vday & peppa),12.10-12.12,2025-12-10,2025-12-12,True,True,aggregate_promo_offers,1639
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,Roll Up,ok,40,33,,Family Match PJs Up to 50% Off & Holiday Dress-up 50% off ($25 Sleep will Continue) (excl vday & peppa),12.10-12.12,2025-12-10,2025-12-12,False,False,rollup_or_pivot,0
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,Sales & Inv,ok,40,27,,Family Match PJs Up to 50% Off & Holiday Dress-up 50% off ($25 Sleep will Continue) (excl vday & peppa),12.10-12.12,2025-12-10,2025-12-12,False,False,non_offer,0
+9f8230b3a5f7,12.10.25 Family Match PJs Up to 50 off ($25 Sleep will Continue) (excl vday & peppa) PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,Family Match PJs Up to 50% Off & Holiday Dress-up 50% off ($25 Sleep will Continue) (excl vday & peppa),12.10-12.12,2025-12-10,2025-12-12,False,False,tier1_recommendation,0
+621357bce887,12.12.24 50 off Sitewide + Farewell Prints $15 PDL.xlsx,$15 Farewell Prints,ok,44,25,3.0,12.12.24 Farewell Prints $15 PDL,12.12.24-12.15.24,2024-12-12,2024-12-15,True,False,promo_detail,40
+621357bce887,12.12.24 50 off Sitewide + Farewell Prints $15 PDL.xlsx,40% off Sitewide,ok,966,25,3.0,12.12.24 40% off Sitewide*,12.12.24-12.15.24,2024-12-12,2024-12-15,True,False,promo_detail,962
+621357bce887,12.12.24 50 off Sitewide + Farewell Prints $15 PDL.xlsx,50% off Holiday PJs,ok,457,25,3.0,12.12.24 50% off Holiday PJs,12.12.24-12.15.24,2024-12-12,2024-12-15,True,False,promo_detail,452
+621357bce887,12.12.24 50 off Sitewide + Farewell Prints $15 PDL.xlsx,All Promo Discounts,ok,1727,25,3.0,12.12.24 50% off Holiday PJs + 40% off Sitewide* + Farewell Prints $15 PDL,12.12.24-12.15.24,2024-12-12,2024-12-15,True,True,aggregate_promo_offers,1644
+621357bce887,12.12.24 50 off Sitewide + Farewell Prints $15 PDL.xlsx,Marketing Dropdown,ok,4,1,,12.12.24 50% off Holiday PJs + 40% off Sitewide* + Farewell Prints $15 PDL,12.12.24-12.15.24,2024-12-12,2024-12-15,False,False,support,0
+621357bce887,12.12.24 50 off Sitewide + Farewell Prints $15 PDL.xlsx,Offer In Stock,ok,40,15,,12.12.24 50% off Holiday PJs + 40% off Sitewide* + Farewell Prints $15 PDL,12.12.24-12.15.24,2024-12-12,2024-12-15,False,False,non_offer,0
+621357bce887,12.12.24 50 off Sitewide + Farewell Prints $15 PDL.xlsx,Sales & Inv,ok,40,30,,12.12.24 50% off Holiday PJs + 40% off Sitewide* + Farewell Prints $15 PDL,12.12.24-12.15.24,2024-12-12,2024-12-15,False,False,non_offer,0
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,12.13-12.15,2025-12-13,2025-12-15,False,False,zero_percent_offers,0
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,Data,ok,40,8,,12.13.25 FLASH SALE Farewell Prints $20 & 50% off ALL Hol PJs & 40% Sitewide (excl vday & Peppa) PDL,12.13-12.15,2025-12-13,2025-12-15,False,False,support,0
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,Farewell Prints,ok,1981,49,4.0,Farewell Prints,12.13-12.16,2025-12-13,2025-12-16,True,False,promo_detail,67
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,MSRPs,ok,40,2,,12.13.25 FLASH SALE Farewell Prints $20 & 50% off ALL Hol PJs & 40% Sitewide (excl vday & Peppa) PDL,12.13-12.15,2025-12-13,2025-12-15,False,False,non_offer,0
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,Marketing Dropdown,ok,4,1,,12.13.25 FLASH SALE Farewell Prints $20 & 50% off ALL Hol PJs & 40% Sitewide (excl vday & Peppa) PDL,12.13-12.15,2025-12-13,2025-12-15,False,False,support,0
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,New Markdowns,ok,1958,50,4.0,New Markdowns,10.9,2025-10-09,2025-10-09,True,False,markdown,1
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,Promo 2,ok,1200,50,4.0,12.13.25 FLASH SALE Farewell Prints $20 & 50% off ALL Hol PJs & 40% Sitewide (excl vday & Peppa) PDL,12.13-12.15,2025-12-13,2025-12-15,False,False,empty_placeholder,0
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,Promo 3,ok,1200,50,4.0,12.13.25 FLASH SALE Farewell Prints $20 & 50% off ALL Hol PJs & 40% Sitewide (excl vday & Peppa) PDL,12.13-12.15,2025-12-13,2025-12-15,False,False,empty_placeholder,0
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,Promo Offers 12.13-12.15,ok,1981,49,4.0,12.13.25 FLASH SALE Farewell Prints $20 & 50% off ALL Hol PJs & 40% Sitewide (excl vday & Peppa) PDL,12.13-12.15,2025-12-13,2025-12-15,True,True,aggregate_promo_offers,1523
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,Roll Up,ok,40,33,,12.13.25 FLASH SALE Farewell Prints $20 & 50% off ALL Hol PJs & 40% Sitewide (excl vday & Peppa) PDL,12.13-12.15,2025-12-13,2025-12-15,False,False,rollup_or_pivot,0
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,Sales & Inv,ok,40,27,,12.13.25 FLASH SALE Farewell Prints $20 & 50% off ALL Hol PJs & 40% Sitewide (excl vday & Peppa) PDL,12.13-12.15,2025-12-13,2025-12-15,False,False,non_offer,0
+34a6c67d2dd4,12.13.25 FLASH SALE Farewell Prints $20 & 50 Sitewide (excl vday & Peppa) PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,12.13.25 FLASH SALE Farewell Prints $20 & 50% off ALL Hol PJs & 40% Sitewide (excl vday & Peppa) PDL,12.13-12.15,2025-12-13,2025-12-15,False,False,tier1_recommendation,0
+13ef202c18ce,12.16.24 All Holiday on Sale up to 50% off PDL.xlsx,All Promo Discounts,ok,1641,25,3.0,12.16.24 All Holiday on Sale up to 50% off PDL,12.16.24-12.25.24,2024-12-16,2024-12-25,True,True,aggregate_promo_offers,1637
+13ef202c18ce,12.16.24 All Holiday on Sale up to 50% off PDL.xlsx,Holiday (Apparel),ok,632,25,3.0,12.16.24 All Holiday on Sale up to 50% off PDL,12.16.24-12.25.24,2024-12-16,2024-12-25,True,False,promo_detail,628
+13ef202c18ce,12.16.24 All Holiday on Sale up to 50% off PDL.xlsx,Holiday (Sleep),ok,455,25,3.0,12.16.24 All Holiday on Sale up to 50% off PDL,12.16.24-12.25.24,2024-12-16,2024-12-25,True,False,promo_detail,451
+13ef202c18ce,12.16.24 All Holiday on Sale up to 50% off PDL.xlsx,Marketing Dropdown,ok,4,1,,12.16.24 All Holiday on Sale up to 50% off PDL,12.16.24-12.25.24,2024-12-16,2024-12-25,False,False,support,0
+13ef202c18ce,12.16.24 All Holiday on Sale up to 50% off PDL.xlsx,Offer In Stock,ok,40,15,,12.16.24 All Holiday on Sale up to 50% off PDL,12.16.24-12.25.24,2024-12-16,2024-12-25,False,False,non_offer,0
+13ef202c18ce,12.16.24 All Holiday on Sale up to 50% off PDL.xlsx,Sales & Inv,ok,40,30,,12.16.24 All Holiday on Sale up to 50% off PDL,12.16.24-12.25.24,2024-12-16,2024-12-25,False,False,non_offer,0
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,12.17-12.19,2025-12-17,2025-12-19,False,False,zero_percent_offers,0
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,Current Cleanrance Offers,ok,1156,50,4.0,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs*,12.17-12.19,2025-12-17,2025-12-19,True,False,promo_detail,491
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,Current Final Sale Offers,ok,1145,50,4.0,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs*,12.17-12.19,2025-12-17,2025-12-19,True,False,final_sale,42
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,Data,ok,40,8,,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs*,12.17-12.19,2025-12-17,2025-12-19,False,False,support,0
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,Farewell Prints,ok,1981,49,4.0,Farewell Prints,12.13-12.16,2025-12-13,2025-12-16,True,False,promo_detail,37
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,MSRPs,ok,40,2,,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs*,12.17-12.19,2025-12-17,2025-12-19,False,False,non_offer,0
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,Marketing Dropdown,ok,4,1,,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs*,12.17-12.19,2025-12-17,2025-12-19,False,False,support,0
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,New Markdowns,ok,1958,50,4.0,New Markdowns,10.9,2025-10-09,2025-10-09,True,False,markdown,1
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,Promo Offers 12.17-12.19,ok,1981,49,4.0,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs*,12.17-12.19,2025-12-17,2025-12-19,True,True,aggregate_promo_offers,1811
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,Roll Up,ok,40,33,,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs*,12.17-12.19,2025-12-17,2025-12-19,False,False,rollup_or_pivot,0
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,Sales & Inv,ok,40,27,,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs*,12.17-12.19,2025-12-17,2025-12-19,False,False,non_offer,0
+83cdbcced92b,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,12.17.15 The Holiday Dash Up to 50% Off All Holiday Styles & PJs*,12.17-12.19,2025-12-17,2025-12-19,False,False,tier1_recommendation,0
+d83d280294a8,12.20.23 Up to 50% off Holiday  PDL.xlsx,All Promo Discounts,ok,1730,18,3.0,12.20.23 Up to 50% off Holiday,12.20.23 - 12.25.23,2023-12-20,2023-12-25,True,True,aggregate_promo_offers,1622
+d83d280294a8,12.20.23 Up to 50% off Holiday  PDL.xlsx,Sleep Revisions,ok,1339,15,3.0,Sleep Corrections,11.18.20- 11.28.20,2020-11-18,2020-11-28,True,False,correction,79
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,0% Offers,ok,40,49,4.0,0% Offers,Web/Marketing: Up to % off,,,False,False,zero_percent_offers,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,1.2 New Markdowns,ok,93,50,4.0,NEW MARKDOWNS,1.2,2026-01-02,2026-01-02,True,False,markdown,88
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,1.5 New Furthers- Final Sale,ok,158,50,4.0,FURTHER MARKDOWNS,1.5,2026-01-05,2026-01-05,True,False,final_sale,153
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,1.6 New Arrivals Extra 20,ok,1200,50,4.0,0% Offers,Web/Marketing: Up to % off,2026-01-06,2026-01-06,False,False,zero_percent_offers,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,1.6 Xtra 20% off New Arrivals,ok,1958,50,4.0,New Arrivals List- Extra 20%,1.6,2026-01-06,2026-01-06,True,False,promo_detail,385
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,12.26 New MKDs- Final Sale Only,ok,79,51,4.0,NEW MARKDOWNS,12.26,2025-12-26,2025-12-26,True,False,final_sale,74
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,12.26 New Markdowns (ALL),ok,795,51,4.0,NEW MARKDOWNS,12.26,2025-12-26,2025-12-26,True,False,markdown,790
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,12.30 New Markdowns,ok,1131,51,4.0,12.30 New Markdowns & New Final Sale,12.3,2025-12-30,2025-12-30,True,False,final_sale,211
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,50% Off Unders 12.27,ok,1982,49,4.0,50% Off Unders,12.27,2025-12-27,2025-12-27,True,False,promo_detail,56
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,60% off or deeper MD,ok,682,8,3.0,0% Offers,Web/Marketing: Up to % off,,,False,False,zero_percent_offers,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,<60% Off Markdowns,ok,115,8,2.0,0% Offers,Web/Marketing: Up to % off,,,False,False,zero_percent_offers,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Current Final Sale 12.29,ok,221,9,2.0,0% Offers,Web/Marketing: Up to % off,2025-12-29,2025-12-29,False,False,zero_percent_offers,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Data,ok,40,8,,0% Offers,Web/Marketing: Up to % off,,,False,False,support,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Extra 20% Off Order Exclusions,ok,11,5,1.0,0% Offers,Web/Marketing: Up to % off,,,False,False,zero_percent_offers,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Full Price Badge List,ok,333,6,0.0,0% Offers,Web/Marketing: Up to % off,,,False,False,zero_percent_offers,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,HS Actualized Pivots,ok,29,19,,0% Offers,Web/Marketing: Up to % off,,,False,False,rollup_or_pivot,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,MSRPs,ok,40,2,,0% Offers,Web/Marketing: Up to % off,,,False,False,non_offer,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Marketing Dropdown,ok,4,1,,0% Offers,Web/Marketing: Up to % off,,,False,False,support,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Price Point Badges ,ok,217,23,1.0,0% Offers,Web/Marketing: Up to % off,,,False,False,zero_percent_offers,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Promo Offers 1.2,ok,1981,49,4.0,HANNASALE UP TO 60% OFF + XTRA 20% OFF CLR + NEW MKDS,1.2-1.4,2026-01-02,2026-01-04,True,False,markdown,923
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Promo Offers 1.5,ok,1981,49,4.0,HANNASALE UP TO 75% OFF- FURTHERS TAKEN,1.5-1.11,2026-01-05,2026-01-11,True,False,markdown,928
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Promo Offers 12.26,ok,1971,49,4.0,HANNASALE UP TO 60% OFF,12.26-12.27,2025-12-26,2025-12-27,True,True,aggregate_promo_offers,1010
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Roll Up,ok,40,33,,0% Offers,Web/Marketing: Up to % off,,,False,False,rollup_or_pivot,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Sales & Inv,ok,40,27,,0% Offers,Web/Marketing: Up to % off,,,False,False,non_offer,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Sheet2,ok,40,3,,0% Offers,Web/Marketing: Up to % off,,,False,False,non_offer,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Sheet4,ok,1801,9,0.0,0% Offers,Web/Marketing: Up to % off,,,False,False,zero_percent_offers,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Tier 1 Pin Reccomendations,ok,111,10,9.0,0% Offers,Web/Marketing: Up to % off,,,True,False,tier1_recommendation,30
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Tier 1 Recommendations,ok,17,11,16.0,0% Offers,Web/Marketing: Up to % off,,,False,False,tier1_recommendation,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,"Total HS ALL CLR, FS Offers",ok,1958,51,4.0,ALL CLR/FINAL SALE OFFERS,Web/Marketing: Up to % off,,,True,False,final_sale,1726
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,Trending Categories.Site,ok,40,3,,0% Offers,Web/Marketing: Up to % off,,,False,False,non_offer,0
+a9f9a54a0421,12.26 HANNASALE PDL1.xlsx,deals under 25,ok,40,2,,0% Offers,Web/Marketing: Up to % off,,,False,False,non_offer,0
+c60394dfe5d9,12.26.23 Hanna Sale Up to 60% off PDL.xlsx,All Markdowns,ok,2199,20,3.0,12.26.23 Hanna Sale Markdowns,12.26.23,2023-12-26,2023-12-26,True,False,markdown,2195
+c60394dfe5d9,12.26.23 Hanna Sale Up to 60% off PDL.xlsx,All Promo Discounts,ok,1783,17,3.0,12.26.23 Hanna Sale Promo Pricing,12.26.23 - 1.8.24,2023-12-26,2024-01-08,True,True,aggregate_promo_offers,573
+c60394dfe5d9,12.26.23 Hanna Sale Up to 60% off PDL.xlsx,Sleep Revisions,ok,1339,15,3.0,Sleep Corrections,11.18.20- 11.28.20,2020-11-18,2020-11-28,True,False,correction,79
+88605ba3ba45,12.26.24 Hanna Sale PDL.xlsx,$15 Sleep Flash Sale,ok,969,25,3.0,1.4.25 $15 Sleep Flash Sale,1.4.25-1.5.25,2025-01-04,2025-01-05,True,False,promo_detail,48
+88605ba3ba45,12.26.24 Hanna Sale PDL.xlsx,1.6 Final Phase Furthers,ok,969,26,3.0,1.6.25 Hanna Sale Up to 70% off (Clearance and Final Sale Furthers),1.6.25,2025-01-06,2025-01-06,True,False,final_sale,730
+88605ba3ba45,12.26.24 Hanna Sale PDL.xlsx,All Promo Discounts,ok,1067,25,3.0,12.26.24 Hanna Sale Up to 60% off PDL,12.26.24-1.8.25,2024-12-26,2025-01-08,True,True,aggregate_promo_offers,950
+88605ba3ba45,12.26.24 Hanna Sale PDL.xlsx,Marketing Dropdown,ok,4,1,,12.26.24 Hanna Sale Up to 60% off PDL,12.26.24-1.8.25,2024-12-26,2025-01-08,False,False,support,0
+88605ba3ba45,12.26.24 Hanna Sale PDL.xlsx,Offer In Stock,ok,40,15,,12.26.24 Hanna Sale Up to 60% off PDL,12.26.24-1.8.25,2024-12-26,2025-01-08,False,False,non_offer,0
+88605ba3ba45,12.26.24 Hanna Sale PDL.xlsx,Sales & Inv,ok,40,30,,12.26.24 Hanna Sale Up to 60% off PDL,12.26.24-1.8.25,2024-12-26,2025-01-08,False,False,non_offer,0
+88605ba3ba45,12.26.24 Hanna Sale PDL.xlsx,Total Markdowns 1.2 (New Adds),ok,1444,33,3.0,1.2.25 Markdowns,1.2.25,2025-01-02,2025-01-02,True,False,markdown,1440
+88605ba3ba45,12.26.24 Hanna Sale PDL.xlsx,Total Markdowns 12.26,ok,1184,34,3.0,12.26.24 New Markdowns,12.26.24,2024-12-26,2024-12-26,True,False,markdown,1180
+88605ba3ba45,12.26.24 Hanna Sale PDL.xlsx,pivots,ok,40,20,,12.26.24 Hanna Sale Up to 60% off PDL,12.26.24-1.8.25,2024-12-26,2025-01-08,False,False,rollup_or_pivot,0
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,$25 Sleep,ok,1981,49,4.0,$25 Sleep,12.3-12.9,2025-12-03,2025-12-09,True,False,promo_detail,760
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,12.3-12.9,2025-12-03,2025-12-09,False,False,zero_percent_offers,0
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,12.3 New Markdowns,ok,1200,50,4.0,New Markdowns,12.3,2025-12-03,2025-12-03,True,False,markdown,110
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,Data,ok,40,8,,Up to 50% off ALL Holiday (Excl New Arrivals),12.3-12.9,2025-12-03,2025-12-09,False,False,support,0
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,MSRPs,ok,40,2,,Up to 50% off ALL Holiday (Excl New Arrivals),12.3-12.9,2025-12-03,2025-12-09,False,False,non_offer,0
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,Marketing Dropdown,ok,4,1,,Up to 50% off ALL Holiday (Excl New Arrivals),12.3-12.9,2025-12-03,2025-12-09,False,False,support,0
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,New Markdowns,ok,1958,50,4.0,New Markdowns,10.9,2025-10-09,2025-10-09,True,False,markdown,1
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,Promo 3,ok,1200,50,4.0,Up to 50% off ALL Holiday (Excl New Arrivals),12.3-12.9,2025-12-03,2025-12-09,False,False,empty_placeholder,0
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,Promo Offers 12.3-12.9,ok,1981,49,4.0,Up to 50% off ALL Holiday (Excl New Arrivals),12.3-12.9,2025-12-03,2025-12-09,True,True,aggregate_promo_offers,1621
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,Roll Up,ok,40,33,,Up to 50% off ALL Holiday (Excl New Arrivals),12.3-12.9,2025-12-03,2025-12-09,False,False,rollup_or_pivot,0
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,Sales & Inv,ok,40,27,,Up to 50% off ALL Holiday (Excl New Arrivals),12.3-12.9,2025-12-03,2025-12-09,False,False,non_offer,0
+474c75909a90,12.3.25 Up to 50% off ALL Holiday (Excl New Arrivals) PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,Up to 50% off ALL Holiday (Excl New Arrivals),12.3-12.9,2025-12-03,2025-12-09,False,False,tier1_recommendation,0
+d1e6e4082640,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off PDL.xlsx,All Promo Discounts,ok,1727,25,3.0,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off,12.4.24-12.11.24,2024-12-04,2024-12-11,True,True,aggregate_promo_offers,1723
+d1e6e4082640,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off PDL.xlsx,Comfy Dress Up,ok,1005,25,3.0,12.4.24 Comfy Dress-Up up to 50% off,12.4.24-12.11.24,2024-12-04,2024-12-11,True,False,promo_detail,1001
+d1e6e4082640,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off PDL.xlsx,Marketing Dropdown,ok,4,1,,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off,12.4.24-12.11.24,2024-12-04,2024-12-11,False,False,support,0
+d1e6e4082640,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off PDL.xlsx,Offer In Stock,ok,40,15,,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off,12.4.24-12.11.24,2024-12-04,2024-12-11,False,False,non_offer,0
+d1e6e4082640,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off PDL.xlsx,PJs starting at $20,ok,697,25,3.0,12.4.24 PJs starting at $20 ($20 highlighted in orange in column K),12.4.24-12.11.24,2024-12-04,2024-12-11,True,False,promo_detail,693
+d1e6e4082640,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off PDL.xlsx,Sales & Inv,ok,40,30,,12.4.24 PJs starting at $20 + Comfy Dress-Up up to 50% off,12.4.24-12.11.24,2024-12-04,2024-12-11,False,False,non_offer,0
+93c153fb19b1,"12.8.23 50% off Sitewide (exlcuding New Arrivals, Bundles, + Bluey) PDL.xlsx",All Promo Discounts,ok,1774,18,3.0,"12.8.23 50% off Sitewide (exlcuding New Arrivals, Bundles, + Bluey) PDL",12.8.23 - 12.11.23,2023-12-08,2023-12-11,True,True,aggregate_promo_offers,1549
+93c153fb19b1,"12.8.23 50% off Sitewide (exlcuding New Arrivals, Bundles, + Bluey) PDL.xlsx",Sleep Revisions,ok,1339,15,3.0,Sleep Corrections,11.18.20- 11.28.20,2020-11-18,2020-11-28,True,False,correction,79
+d2a49bb39028,2.10.25 Sleep up to 30% off PDL.xlsx,All Promo Discounts,ok,1848,25,3.0,2.10.25 Sleep up to 30% off,2.10.25-2.13.25,2025-02-10,2025-02-13,True,True,aggregate_promo_offers,1090
+d2a49bb39028,2.10.25 Sleep up to 30% off PDL.xlsx,Marketing Dropdown,ok,4,1,,2.10.25 Sleep up to 30% off,2.10.25-2.13.25,2025-02-10,2025-02-13,False,False,support,0
+d2a49bb39028,2.10.25 Sleep up to 30% off PDL.xlsx,Offer In Stock,ok,40,16,,2.10.25 Sleep up to 30% off,2.10.25-2.13.25,2025-02-10,2025-02-13,False,False,non_offer,0
+d2a49bb39028,2.10.25 Sleep up to 30% off PDL.xlsx,Sales & Inv,ok,40,30,,2.10.25 Sleep up to 30% off,2.10.25-2.13.25,2025-02-10,2025-02-13,False,False,non_offer,0
+d2a49bb39028,2.10.25 Sleep up to 30% off PDL.xlsx,Sleep,ok,1002,25,3.0,2.10.25 Sleep up to 30% off,2.10.25-2.13.25,2025-02-10,2025-02-13,True,False,promo_detail,244
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,0% Offers,ok,40,47,4.0,0% Offers,2.12-2.16,2026-02-12,2026-02-16,False,False,zero_percent_offers,0
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Data,ok,40,8,,2.12.2026 President's Day Event 30% off Sitewide*,2.12-2.16,2026-02-12,2026-02-16,False,False,support,0
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,MSRPs,ok,40,2,,2.12.2026 President's Day Event 30% off Sitewide*,2.12-2.16,2026-02-12,2026-02-16,False,False,non_offer,0
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Marketing Dropdown,ok,4,1,,2.12.2026 President's Day Event 30% off Sitewide*,2.12-2.16,2026-02-12,2026-02-16,False,False,support,0
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Promo 4,ok,1958,48,4.0,Baby Sleep,2.12-2.16,2026-02-12,2026-02-16,True,False,promo_detail,36
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Promo 5,ok,1200,48,4.0,2.12.2026 President's Day Event 30% off Sitewide*,2.12-2.16,2026-02-12,2026-02-16,False,False,empty_placeholder,0
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Promo Offers,ok,1716,47,4.0,2.12.2026 President's Day Event 30% off Sitewide*,2.12-2.16,2026-02-12,2026-02-16,True,True,aggregate_promo_offers,1711
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Roll Up,ok,40,33,,2.12.2026 President's Day Event 30% off Sitewide*,2.12-2.16,2026-02-12,2026-02-16,False,False,rollup_or_pivot,0
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Sales & Inv,ok,40,27,,2.12.2026 President's Day Event 30% off Sitewide*,2.12-2.16,2026-02-12,2026-02-16,False,False,non_offer,0
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Semi-Anuual Baby Sale up to 30%,ok,1200,47,4.0,Semi-Annual Baby Sale up to 30%,2.4-2.8,2026-02-04,2026-02-08,True,False,promo_detail,278
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Spring New Arrivals up to 30%,ok,1048,47,4.0,2.12.2026 President's Day Event 30% off Sitewide*,2.12-2.16,2026-02-12,2026-02-16,True,False,promo_detail,278
+c81e7b24d662,2.12.2026 President's Day Event 30% off Sitewide.xlsx,Tier 1 Recommendations,ok,17,11,16.0,2.12.2026 President's Day Event 30% off Sitewide*,2.12-2.16,2026-02-12,2026-02-16,False,False,tier1_recommendation,0
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,2.17-2.23,2026-02-17,2026-02-23,False,False,zero_percent_offers,0
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Data,ok,40,8,,2.17.2026 Easter & Sleep up to 30% off,2.17-2.23,2026-02-17,2026-02-23,False,False,support,0
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Easter up to 30% off,ok,1048,47,4.0,Easter up to 30% off,2.17-2.23,2026-02-17,2026-02-23,True,False,promo_detail,41
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,MSRPs,ok,40,2,,2.17.2026 Easter & Sleep up to 30% off,2.17-2.23,2026-02-17,2026-02-23,False,False,non_offer,0
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Marketing Dropdown,ok,4,1,,2.17.2026 Easter & Sleep up to 30% off,2.17-2.23,2026-02-17,2026-02-23,False,False,support,0
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Promo 4,ok,1958,48,4.0,Baby Sleep,2.17-2.23,2026-02-17,2026-02-23,True,False,promo_detail,36
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Promo 5,ok,1200,48,4.0,2.17.2026 Easter & Sleep up to 30% off,2.17-2.23,2026-02-17,2026-02-23,False,False,empty_placeholder,0
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Promo Offers,ok,1716,47,4.0,2.17.2026 Easter & Sleep up to 30% off,2.17-2.23,2026-02-17,2026-02-23,True,True,aggregate_promo_offers,1627
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Roll Up,ok,40,33,,2.17.2026 Easter & Sleep up to 30% off,2.17-2.23,2026-02-17,2026-02-23,False,False,rollup_or_pivot,0
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Sales & Inv,ok,40,27,,2.17.2026 Easter & Sleep up to 30% off,2.17-2.23,2026-02-17,2026-02-23,False,False,non_offer,0
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Sleep up to 30% off,ok,1200,47,4.0,Sleep up to 30% off,2.17-2.22,2026-02-17,2026-02-22,True,False,promo_detail,568
+6d803b134bf0,2.17.2026 Easter & Sleep up to 30% off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,2.17.2026 Easter & Sleep up to 30% off,2.17-2.23,2026-02-17,2026-02-23,False,False,tier1_recommendation,0
+00f8e110e6b2,2.19.25 Sleep up to 30 off PDL.xlsx,All Promo Discounts,ok,1717,25,3.0,2.19.25 Sleep up to 30% off + Kids Outfitting up to 30% off PDL,2.19.25-2.24.25,2025-02-19,2025-02-24,True,True,aggregate_promo_offers,1577
+00f8e110e6b2,2.19.25 Sleep up to 30 off PDL.xlsx,Baby Swim,ok,164,25,3.0,2.19.25 Baby Swim up to 30% off,2.19.25-2.24.25,2025-02-19,2025-02-24,True,False,promo_detail,24
+00f8e110e6b2,2.19.25 Sleep up to 30 off PDL.xlsx,Kids Outfitting,ok,567,25,3.0,2.19.25 Sleep up to 30% off + Kids Outfitting up to 30% off PDL,2.19.25-2.24.25,2025-02-19,2025-02-24,True,False,promo_detail,427
+00f8e110e6b2,2.19.25 Sleep up to 30 off PDL.xlsx,Marketing Dropdown,ok,4,1,,2.19.25 Sleep up to 30% off + Kids Outfitting up to 30% off PDL,2.19.25-2.24.25,2025-02-19,2025-02-24,False,False,support,0
+00f8e110e6b2,2.19.25 Sleep up to 30 off PDL.xlsx,Offer In Stock,ok,40,16,,2.19.25 Sleep up to 30% off + Kids Outfitting up to 30% off PDL,2.19.25-2.24.25,2025-02-19,2025-02-24,False,False,non_offer,0
+00f8e110e6b2,2.19.25 Sleep up to 30 off PDL.xlsx,Sales & Inv,ok,40,30,,2.19.25 Sleep up to 30% off + Kids Outfitting up to 30% off PDL,2.19.25-2.24.25,2025-02-19,2025-02-24,False,False,non_offer,0
+00f8e110e6b2,2.19.25 Sleep up to 30 off PDL.xlsx,Sleep,ok,762,25,3.0,2.19.25 Sleep up to 30% off + Kids Outfitting up to 30% off PDL,2.19.25-2.24.25,2025-02-19,2025-02-24,True,False,promo_detail,622
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,2.2-2.11,2026-02-02,2026-02-11,False,False,zero_percent_offers,0
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Data,ok,40,8,,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30%,2.2-2.11,2026-02-02,2026-02-11,False,False,support,0
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,MSRPs,ok,40,2,,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30%,2.2-2.11,2026-02-02,2026-02-11,False,False,non_offer,0
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Marketing Dropdown,ok,4,1,,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30%,2.2-2.11,2026-02-02,2026-02-11,False,False,support,0
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Pin Reqs,ok,3,1,,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30%,2.2-2.11,2026-02-02,2026-02-11,False,False,non_offer,0
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Promo 4,ok,1958,48,4.0,Baby Sleep,2.2-2.11,2026-02-02,2026-02-11,True,False,promo_detail,36
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Promo 5,ok,1200,48,4.0,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30%,2.2-2.11,2026-02-02,2026-02-11,False,False,empty_placeholder,0
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Promo Offers,ok,1172,47,4.0,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30%,2.2-2.11,2026-02-02,2026-02-11,True,True,aggregate_promo_offers,1167
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Roll Up,ok,40,33,,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30%,2.2-2.11,2026-02-02,2026-02-11,False,False,rollup_or_pivot,0
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Sales & Inv,ok,40,27,,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30%,2.2-2.11,2026-02-02,2026-02-11,False,False,non_offer,0
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Semi-Annual Baby Sale up to 30%,ok,1194,47,4.0,Semi-Annual Baby Sale up to 30%,2.4-2.8,2026-02-04,2026-02-08,True,False,promo_detail,272
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Spring New Arrivals up to 30%,ok,1048,47,4.0,Spring New Arrivals up to 30% Off,2.2-2.11,2026-02-02,2026-02-11,True,False,promo_detail,419
+fff500b261f7,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30% PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,2.2.26 New Spring Arrivals & Semi-Annual Baby Sale up to 30%,2.2-2.11,2026-02-02,2026-02-11,False,False,tier1_recommendation,0
+40a716632e0c,2.25.25 Dresses up to 30 off PDL.xlsx,All Promo Discounts,ok,1682,27,3.0,2.25.25 All Dresses up to 30% off + Swim up to 30% off,2.25.25-3.3.25,2025-02-25,2025-03-03,True,True,aggregate_promo_offers,1542
+40a716632e0c,2.25.25 Dresses up to 30 off PDL.xlsx,Baby Sleepers,ok,217,27,3.0,2.25.25 Baby Sleepers starting at $25,2.25.25-3.3.25,2025-02-25,2025-03-03,True,False,promo_detail,77
+40a716632e0c,2.25.25 Dresses up to 30 off PDL.xlsx,Baby Swim,ok,28,27,3.0,2.25.25 Baby Swim up to 30% off,2.25.25-3.3.25,2025-02-25,2025-03-03,True,False,promo_detail,24
+40a716632e0c,2.25.25 Dresses up to 30 off PDL.xlsx,Dresses,ok,168,27,3.0,2.25.25 All Dresses up to 30% off + Swim up to 30% off,2.25.25-3.3.25,2025-02-25,2025-03-03,True,False,promo_detail,164
+40a716632e0c,2.25.25 Dresses up to 30 off PDL.xlsx,Marketing Dropdown,ok,4,1,,2.25.25 All Dresses up to 30% off + Swim up to 30% off,2.25.25-3.3.25,2025-02-25,2025-03-03,False,False,support,0
+40a716632e0c,2.25.25 Dresses up to 30 off PDL.xlsx,Offer In Stock,ok,40,16,,2.25.25 All Dresses up to 30% off + Swim up to 30% off,2.25.25-3.3.25,2025-02-25,2025-03-03,False,False,non_offer,0
+40a716632e0c,2.25.25 Dresses up to 30 off PDL.xlsx,Sales & Inv,ok,40,30,,2.25.25 All Dresses up to 30% off + Swim up to 30% off,2.25.25-3.3.25,2025-02-25,2025-03-03,False,False,non_offer,0
+40a716632e0c,2.25.25 Dresses up to 30 off PDL.xlsx,Swim,ok,128,27,3.0,2.25.25 Dresses up to 30% off + Swim up to 30% off,2.25.25-3.3.25,2025-02-25,2025-03-03,True,False,promo_detail,124
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,3.10-3.13,2026-03-10,2026-03-13,False,False,zero_percent_offers,0
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,3.10-3.13,2026-03-10,2026-03-13,True,False,promo_detail,826
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Data,ok,40,8,,3.10.26 All Kids & Baby Sleep up to 30% & All Swim up to 30% PDL,3.10-3.13,2026-03-10,2026-03-13,False,False,support,0
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Kids & Baby Sleep up to 30%,ok,999,47,4.0,Kids & Baby Sleep up to 30%,3.10-3.13,2026-03-10,2026-03-13,True,False,promo_detail,437
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,MSRPs,ok,40,2,,3.10.26 All Kids & Baby Sleep up to 30% & All Swim up to 30% PDL,3.10-3.13,2026-03-10,2026-03-13,False,False,non_offer,0
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Marketing Dropdown,ok,4,1,,3.10.26 All Kids & Baby Sleep up to 30% & All Swim up to 30% PDL,3.10-3.13,2026-03-10,2026-03-13,False,False,support,0
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Promo 5,ok,1200,48,4.0,3.10.26 All Kids & Baby Sleep up to 30% & All Swim up to 30% PDL,3.10-3.13,2026-03-10,2026-03-13,False,False,empty_placeholder,0
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Promo Offers,ok,1048524,47,4.0,3.10.26 All Kids & Baby Sleep up to 30% & All Swim up to 30% PDL,3.10-3.13,2026-03-10,2026-03-13,True,True,aggregate_promo_offers,1631
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Roll Up,ok,40,33,,3.10.26 All Kids & Baby Sleep up to 30% & All Swim up to 30% PDL,3.10-3.13,2026-03-10,2026-03-13,False,False,rollup_or_pivot,0
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Sales & Inv,ok,40,27,,3.10.26 All Kids & Baby Sleep up to 30% & All Swim up to 30% PDL,3.10-3.13,2026-03-10,2026-03-13,False,False,non_offer,0
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Swim up to 30%,ok,1165,47,4.0,Swim up to 30%,3.10-3.15,2026-03-10,2026-03-15,True,False,promo_detail,123
+7034085be616,3.10.26 All Kids & Baby Sleep up to 30 PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,3.10.26 All Kids & Baby Sleep up to 30% & All Swim up to 30% PDL,3.10-3.13,2026-03-10,2026-03-13,False,False,tier1_recommendation,0
+aeaf06546186,3.11.25 Kids + Baby Sleep 30 off PDL.xlsx,All Promo Discounts,ok,2029,27,3.0,3.11.25 Kids + Baby Sleep 30% off + All Swim up to 30% off,3.11.25-3.17.25,2025-03-11,2025-03-17,True,True,aggregate_promo_offers,2016
+aeaf06546186,3.11.25 Kids + Baby Sleep 30 off PDL.xlsx,Baby Easter,ok,34,27,3.0,3.11.25 Babys First Easter - Up to 40% Off,3.11.25-3.17.25,2025-03-11,2025-03-17,True,False,promo_detail,21
+aeaf06546186,3.11.25 Kids + Baby Sleep 30 off PDL.xlsx,Baby Swim,ok,37,27,3.0,3.11.25 Baby Swim (Novelty) Up to 30% off,3.11.25-3.17.25,2025-03-11,2025-03-17,True,False,promo_detail,24
+aeaf06546186,3.11.25 Kids + Baby Sleep 30 off PDL.xlsx,Kids & Baby Sleep,ok,304,27,3.0,3.11.25 Kids + Baby Sleep 30% off + All Swim up to 30% off,3.11.25-3.17.25,2025-03-11,2025-03-17,True,False,promo_detail,291
+aeaf06546186,3.11.25 Kids + Baby Sleep 30 off PDL.xlsx,Marketing Dropdown,ok,4,1,,3.11.25 Kids + Baby Sleep 30% off + All Swim up to 30% off,3.11.25-3.17.25,2025-03-11,2025-03-17,False,False,support,0
+aeaf06546186,3.11.25 Kids + Baby Sleep 30 off PDL.xlsx,Offer In Stock,ok,40,16,,3.11.25 Kids + Baby Sleep 30% off + All Swim up to 30% off,3.11.25-3.17.25,2025-03-11,2025-03-17,False,False,non_offer,0
+aeaf06546186,3.11.25 Kids + Baby Sleep 30 off PDL.xlsx,Sales & Inv,ok,40,30,,3.11.25 Kids + Baby Sleep 30% off + All Swim up to 30% off,3.11.25-3.17.25,2025-03-11,2025-03-17,False,False,non_offer,0
+aeaf06546186,3.11.25 Kids + Baby Sleep 30 off PDL.xlsx,Swim,ok,131,27,3.0,3.11.25 Kids + Baby Sleep 30% off + All Swim up to 30% off,3.11.25-3.17.25,2025-03-11,2025-03-17,True,False,promo_detail,118
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,3.14-3.17,2026-03-14,2026-03-17,False,False,zero_percent_offers,0
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,All Dresses up to 30%,ok,1012,47,4.0,All Dresses up to 30%,3.14-3.17,2026-03-14,2026-03-17,True,False,promo_detail,190
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,3.14-3.17,2026-03-14,2026-03-17,True,False,promo_detail,826
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,Data,ok,40,8,,3.14 All Dresses up to 30% Off,3.14-3.17,2026-03-14,2026-03-17,False,False,support,0
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,MSRPs,ok,40,2,,3.14 All Dresses up to 30% Off,3.14-3.17,2026-03-14,2026-03-17,False,False,non_offer,0
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,Marketing Dropdown,ok,4,1,,3.14 All Dresses up to 30% Off,3.14-3.17,2026-03-14,2026-03-17,False,False,support,0
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,Promo 5,ok,1200,48,4.0,3.14 All Dresses up to 30% Off,3.14-3.17,2026-03-14,2026-03-17,False,False,empty_placeholder,0
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,Promo Offers,ok,1048576,47,4.0,3.14 All Dresses up to 30% Off,3.14-3.17,2026-03-14,2026-03-17,True,True,aggregate_promo_offers,1514
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,Roll Up,ok,40,33,,3.14 All Dresses up to 30% Off,3.14-3.17,2026-03-14,2026-03-17,False,False,rollup_or_pivot,0
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,Sales & Inv,ok,40,27,,3.14 All Dresses up to 30% Off,3.14-3.17,2026-03-14,2026-03-17,False,False,non_offer,0
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,Swim up to 30%,ok,1165,47,4.0,Swim up to 30%,3.10-3.15,2026-03-10,2026-03-15,True,False,promo_detail,123
+918e0f4cfe53,3.14.26 All Dresses up to 30% Off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,3.14 All Dresses up to 30% Off,3.14-3.17,2026-03-14,2026-03-17,False,False,tier1_recommendation,0
+894508f889ba,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25 PDL.xlsx,All Promo Discounts,ok,2029,27,3.0,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25,3.18.25-3.20.25,2025-03-18,2025-03-20,True,True,aggregate_promo_offers,2022
+894508f889ba,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25 PDL.xlsx,Baby Easter,ok,34,27,3.0,3.18.25 Babys First Easter - Up to 40% Off,3.18.25-3.20.25,2025-03-18,2025-03-20,True,False,promo_detail,21
+894508f889ba,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25 PDL.xlsx,Baby Swim,ok,37,27,3.0,3.18.25 Baby Swim (Novelty) Up to 30% off,3.18.25-3.20.25,2025-03-18,2025-03-20,True,False,promo_detail,24
+894508f889ba,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25 PDL.xlsx,Dresses,ok,2029,27,3.0,3.18.25 Dresses up to 30% off,3.18.25-3.20.25,2025-03-18,2025-03-20,True,False,promo_detail,242
+894508f889ba,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25 PDL.xlsx,HannaSoft,ok,2029,27,3.0,3.18.25 Signature HannaSoft PJs starting at $25,3.18.25-3.20.25,2025-03-18,2025-03-20,True,False,promo_detail,108
+894508f889ba,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25 PDL.xlsx,Marketing Dropdown,ok,4,1,,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25,3.18.25-3.20.25,2025-03-18,2025-03-20,False,False,support,0
+894508f889ba,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25 PDL.xlsx,Offer In Stock,ok,40,16,,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25,3.18.25-3.20.25,2025-03-18,2025-03-20,False,False,non_offer,0
+894508f889ba,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25 PDL.xlsx,Sales & Inv,ok,40,30,,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25,3.18.25-3.20.25,2025-03-18,2025-03-20,False,False,non_offer,0
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,3.18-3.23,2026-03-18,2026-03-23,False,False,zero_percent_offers,0
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,3.18-3.23,2026-03-18,2026-03-23,True,False,markdown,826
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Data,ok,40,8,,3.18 Spring Sale up to 40% Off Everything*,3.18-3.23,2026-03-18,2026-03-23,False,False,support,0
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,MSRPs,ok,40,2,,3.18 Spring Sale up to 40% Off Everything*,3.18-3.23,2026-03-18,2026-03-23,False,False,non_offer,0
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Marketing Dropdown,ok,4,1,,3.18 Spring Sale up to 40% Off Everything*,3.18-3.23,2026-03-18,2026-03-23,False,False,support,0
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Preliminary New Markdowns,ok,1012,47,4.0,New Markdowns,3.18,2026-03-18,2026-03-18,True,False,markdown,185
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Promo 5,ok,1200,48,4.0,3.18 Spring Sale up to 40% Off Everything*,3.18-3.23,2026-03-18,2026-03-23,True,False,markdown,1
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Promo Offers,ok,1048576,47,4.0,3.18 Spring Sale up to 40% Off Everything*,3.18-3.23,2026-03-18,2026-03-23,True,False,markdown,1326
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Roll Up,ok,40,33,,3.18 Spring Sale up to 40% Off Everything*,3.18-3.23,2026-03-18,2026-03-23,False,False,rollup_or_pivot,0
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Sales & Inv,ok,40,27,,3.18 Spring Sale up to 40% Off Everything*,3.18-3.23,2026-03-18,2026-03-23,False,False,non_offer,0
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Swim up to 30%,ok,1165,47,4.0,Swim up to 30%,3.10-3.15,2026-03-10,2026-03-15,True,False,markdown,1
+6f61a4edac8e,3.18.26 Spring Sale up to 40% Off Everything + New Markdowns PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,3.18 Spring Sale up to 40% Off Everything*,3.18-3.23,2026-03-18,2026-03-23,False,False,tier1_recommendation,0
+d95833a4db23,3.21.25 Spring Sale up to 40% off PDL.xlsx,All Promo Discounts,ok,2029,27,3.0,3.21.25 Spring Sale up to 40% off,3.21.25-3.24.25,2025-03-21,2025-03-24,True,True,aggregate_promo_offers,2022
+d95833a4db23,3.21.25 Spring Sale up to 40% off PDL.xlsx,Baby Easter,ok,34,27,3.0,3.21.25 Babys First Easter - Up to 40% Off,3.21.25-3.24.25,2025-03-21,2025-03-24,True,False,promo_detail,20
+d95833a4db23,3.21.25 Spring Sale up to 40% off PDL.xlsx,Baby Swim,ok,37,27,3.0,3.21.25 Baby Swim (Novelty) Up to 30% off,3.21.25-3.24.25,2025-03-21,2025-03-24,True,False,promo_detail,24
+d95833a4db23,3.21.25 Spring Sale up to 40% off PDL.xlsx,Marketing Dropdown,ok,4,1,,3.21.25 Spring Sale up to 40% off,3.21.25-3.24.25,2025-03-21,2025-03-24,False,False,support,0
+d95833a4db23,3.21.25 Spring Sale up to 40% off PDL.xlsx,Offer In Stock,ok,40,16,,3.21.25 Spring Sale up to 40% off,3.21.25-3.24.25,2025-03-21,2025-03-24,False,False,non_offer,0
+d95833a4db23,3.21.25 Spring Sale up to 40% off PDL.xlsx,Sales & Inv,ok,40,30,,3.21.25 Spring Sale up to 40% off,3.21.25-3.24.25,2025-03-21,2025-03-24,False,False,non_offer,0
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,3.24-3.30,2026-03-24,2026-03-30,False,False,zero_percent_offers,0
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,3.24-3.30,2026-03-24,2026-03-30,True,False,promo_detail,826
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Data,ok,40,8,,3.24.26 All Easter up to 50% off & Swim up to 30% off,3.24-3.30,2026-03-24,2026-03-30,False,False,support,0
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Easter up to 50% Off,ok,1012,47,4.0,Easter up to 50% Off,3.24-3.30,2026-03-24,2026-03-30,True,False,promo_detail,45
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,MSRPs,ok,40,2,,3.24.26 All Easter up to 50% off & Swim up to 30% off,3.24-3.30,2026-03-24,2026-03-30,False,False,non_offer,0
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Marketing Dropdown,ok,4,1,,3.24.26 All Easter up to 50% off & Swim up to 30% off,3.24-3.30,2026-03-24,2026-03-30,False,False,support,0
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Promo 5,ok,1200,48,4.0,3.24.26 All Easter up to 50% off & Swim up to 30% off,3.24-3.30,2026-03-24,2026-03-30,False,False,empty_placeholder,0
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Promo Offers,ok,1048576,47,4.0,3.24.26 All Easter up to 50% off & Swim up to 30% off,3.24-3.30,2026-03-24,2026-03-30,True,True,aggregate_promo_offers,1615
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Roll Up,ok,40,33,,3.24.26 All Easter up to 50% off & Swim up to 30% off,3.24-3.30,2026-03-24,2026-03-30,False,False,rollup_or_pivot,0
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Sales & Inv,ok,40,27,,3.24.26 All Easter up to 50% off & Swim up to 30% off,3.24-3.30,2026-03-24,2026-03-30,False,False,non_offer,0
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Swim up to 30%,ok,1163,47,4.0,Swim up to 30%,3.10-3.15,2026-03-10,2026-03-15,True,False,promo_detail,124
+93db504ef15f,3.24.26 All Easter up to 50 off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,3.24.26 All Easter up to 50% off & Swim up to 30% off,3.24-3.30,2026-03-24,2026-03-30,False,False,tier1_recommendation,0
+8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,All Promo Discounts,ok,1981,27,3.0,3.25.25 Easter up to 40% off + All Swim 30% off,3.25.25-3.31.25,2025-03-25,2025-03-31,True,False,markdown,1977
+8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,Baby Easter,ok,24,27,3.0,3.25.25 Baby's First Easter up to 40% off,3.25.25-3.31.25,2025-03-25,2025-03-31,True,False,markdown,20
+8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,Baby Swim,ok,28,27,3.0,3.25.25 Baby Swim up to 30% off,3.25.25-3.31.25,2025-03-25,2025-03-31,True,False,markdown,24
+8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,Easter,ok,71,27,3.0,3.25.25 Easter up to 40% off,3.25.25-3.31.25,2025-03-25,2025-03-31,True,False,markdown,67
+8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,Marketing Dropdown,ok,4,1,,3.25.25 Easter up to 40% off + All Swim 30% off,3.25.25-3.31.25,2025-03-25,2025-03-31,False,False,support,0
+8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,New Markdowns,ok,52,27,3.0,3.25.25 Easter up to 40% off + All Swim 30% off,3.25.25-3.31.25,2025-03-25,2025-03-31,True,False,markdown,48
+8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,Offer In Stock,ok,40,16,,3.25.25 Easter up to 40% off + All Swim 30% off,3.25.25-3.31.25,2025-03-25,2025-03-31,False,False,non_offer,0
+8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,Sales & Inv,ok,40,30,,3.25.25 Easter up to 40% off + All Swim 30% off,3.25.25-3.31.25,2025-03-25,2025-03-31,False,False,non_offer,0
+8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,Swim,ok,122,27,3.0,3.25.25 All Swim 30% off,3.25.25-3.31.25,2025-03-25,2025-03-31,True,False,markdown,118
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,3.31-4.6,2026-03-31,2026-04-06,False,False,zero_percent_offers,0
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,3.31-4.6,2026-03-31,2026-04-06,True,False,promo_detail,826
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Data,ok,40,8,,3.31.26 Dresses up to 30% off & Sleep up to 40% off,3.31-4.6,2026-03-31,2026-04-06,False,False,support,0
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Dresses up to 30% Off,ok,1012,47,4.0,Dresses up to 30% Off,3.31-4.6,2026-03-31,2026-04-06,True,False,promo_detail,203
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,MSRPs,ok,40,2,,3.31.26 Dresses up to 30% off & Sleep up to 40% off,3.31-4.6,2026-03-31,2026-04-06,False,False,non_offer,0
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Marketing Dropdown,ok,4,1,,3.31.26 Dresses up to 30% off & Sleep up to 40% off,3.31-4.6,2026-03-31,2026-04-06,False,False,support,0
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Promo 5,ok,1200,48,4.0,3.31.26 Dresses up to 30% off & Sleep up to 40% off,3.31-4.6,2026-03-31,2026-04-06,False,False,empty_placeholder,0
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Promo Offers,ok,1048576,47,4.0,3.31.26 Dresses up to 30% off & Sleep up to 40% off,3.31-4.6,2026-03-31,2026-04-06,True,True,aggregate_promo_offers,1657
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Roll Up,ok,40,34,,3.31.26 Dresses up to 30% off & Sleep up to 40% off,3.31-4.6,2026-03-31,2026-04-06,False,False,rollup_or_pivot,0
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Sales & Inv,ok,40,27,,3.31.26 Dresses up to 30% off & Sleep up to 40% off,3.31-4.6,2026-03-31,2026-04-06,False,False,non_offer,0
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Sleep up to 40% Off,ok,1163,47,4.0,Sleep up to 40% Off,3.31-4.6,2026-03-31,2026-04-06,True,False,promo_detail,547
+9db59158376e,3.31.26 Dresses up to 30 off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,3.31.26 Dresses up to 30% off & Sleep up to 40% off,3.31-4.6,2026-03-31,2026-04-06,False,False,tier1_recommendation,0
+0d56f224a7b3,3.4.25 Spring Break up to 30 off PDL.xlsx,All Promo Discounts,ok,2029,27,3.0,3.4.25 Spring Break up to 30% off + Easter up to 30% off,3.4.25-3.10.25,2025-03-04,2025-03-10,True,True,aggregate_promo_offers,2025
+0d56f224a7b3,3.4.25 Spring Break up to 30 off PDL.xlsx,Baby Easter,ok,25,27,3.0,3.4.25 Spring Break up to 30% off + Easter up to 30% off PDL,3.4.25-3.10.25,2025-03-04,2025-03-10,True,False,promo_detail,21
+0d56f224a7b3,3.4.25 Spring Break up to 30 off PDL.xlsx,Baby Swim,ok,28,27,3.0,3.4.25 Baby Swim (Novelty) up to 30% off,3.4.25-3.10.25,2025-03-04,2025-03-10,True,False,promo_detail,24
+0d56f224a7b3,3.4.25 Spring Break up to 30 off PDL.xlsx,Easter,ok,71,27,3.0,3.4.25 Spring Break up to 30% off + Easter up to 30% off,3.4.25-3.10.25,2025-03-04,2025-03-10,True,False,promo_detail,67
+0d56f224a7b3,3.4.25 Spring Break up to 30 off PDL.xlsx,Marketing Dropdown,ok,4,1,,3.4.25 Spring Break up to 30% off + Easter up to 30% off,3.4.25-3.10.25,2025-03-04,2025-03-10,False,False,support,0
+0d56f224a7b3,3.4.25 Spring Break up to 30 off PDL.xlsx,Offer In Stock,ok,40,16,,3.4.25 Spring Break up to 30% off + Easter up to 30% off,3.4.25-3.10.25,2025-03-04,2025-03-10,False,False,non_offer,0
+0d56f224a7b3,3.4.25 Spring Break up to 30 off PDL.xlsx,Sales & Inv,ok,40,30,,3.4.25 Spring Break up to 30% off + Easter up to 30% off,3.4.25-3.10.25,2025-03-04,2025-03-10,False,False,non_offer,0
+0d56f224a7b3,3.4.25 Spring Break up to 30 off PDL.xlsx,Spring Break (Apparel + Swim),ok,1210,27,3.0,3.4.25 Spring Break up to 30% off + Easter up to 30% off,3.4.25-3.10.25,2025-03-04,2025-03-10,True,False,promo_detail,1206
+eec5a88b440a,4.1.25 All Dresses up to 30 off + New Markdowns PDL.xlsx,All Promo Discounts,ok,1981,27,3.0,4.1.25 All Dresses up to 30% off + Sleep up to 30% off,4.1.25-4.7.25,2025-04-01,2025-04-07,True,False,markdown,1894
+eec5a88b440a,4.1.25 All Dresses up to 30 off + New Markdowns PDL.xlsx,Baby Easter,ok,108,27,3.0,4.1.25 Baby's First Easter up to 40% off,4.1.25-4.7.25,2025-04-01,2025-04-07,True,False,markdown,21
+eec5a88b440a,4.1.25 All Dresses up to 30 off + New Markdowns PDL.xlsx,Baby Sleep,ok,175,27,3.0,4.1.25 Baby Sleep Starting at $25,4.1.25-4.7.25,2025-04-01,2025-04-07,True,False,markdown,88
+eec5a88b440a,4.1.25 All Dresses up to 30 off + New Markdowns PDL.xlsx,Dresses,ok,215,27,3.0,4.1.25 All Dresses up to 30% off + Sleep up to 30% off,4.1.25-4.7.25,2025-04-01,2025-04-07,True,False,markdown,128
+eec5a88b440a,4.1.25 All Dresses up to 30 off + New Markdowns PDL.xlsx,Marketing Dropdown,ok,4,1,,4.1.25 All Dresses up to 30% off + Sleep up to 30% off,4.1.25-4.7.25,2025-04-01,2025-04-07,False,False,support,0
+eec5a88b440a,4.1.25 All Dresses up to 30 off + New Markdowns PDL.xlsx,New Markdowns,ok,72,27,3.0,4.1.25 New Markdowns,4.1.25,2025-04-01,2025-04-01,True,False,markdown,68
+eec5a88b440a,4.1.25 All Dresses up to 30 off + New Markdowns PDL.xlsx,Offer In Stock,ok,40,16,,4.1.25 All Dresses up to 30% off + Sleep up to 30% off,4.1.25-4.7.25,2025-04-01,2025-04-07,False,False,non_offer,0
+eec5a88b440a,4.1.25 All Dresses up to 30 off + New Markdowns PDL.xlsx,Sales & Inv,ok,40,30,,4.1.25 All Dresses up to 30% off + Sleep up to 30% off,4.1.25-4.7.25,2025-04-01,2025-04-07,False,False,non_offer,0
+eec5a88b440a,4.1.25 All Dresses up to 30 off + New Markdowns PDL.xlsx,Sleep,ok,735,27,3.0,4.1.25 All Dresses up to 30% off + Sleep up to 30% off,4.1.25-4.7.25,2025-04-01,2025-04-07,True,False,markdown,648
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,4.7-4.13,2026-04-07,2026-04-13,False,False,zero_percent_offers,0
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,4.7-4.13,2026-04-07,2026-04-13,True,False,promo_detail,826
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,Data,ok,40,8,,4.14 New Arrivals up to 30% & Sleep Starting @ $25,4.7-4.13,2026-04-07,2026-04-13,False,False,support,0
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,MSRPs,ok,40,2,,4.14 New Arrivals up to 30% & Sleep Starting @ $25,4.7-4.13,2026-04-07,2026-04-13,False,False,non_offer,0
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,Marketing Dropdown,ok,4,1,,4.14 New Arrivals up to 30% & Sleep Starting @ $25,4.7-4.13,2026-04-07,2026-04-13,False,False,support,0
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,New Arrivals up to 30%,ok,1012,47,4.0,New Arrivals up to 30%,4.7-4.13,2026-04-07,2026-04-13,True,False,promo_detail,442
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,Promo 5,ok,1200,48,4.0,4.14 New Arrivals up to 30% & Sleep Starting @ $25,4.7-4.13,2026-04-07,2026-04-13,False,False,empty_placeholder,0
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,Promo Offers,ok,1048576,47,4.0,4.14 New Arrivals up to 30% & Sleep Starting @ $25,4.7-4.13,2026-04-07,2026-04-13,True,True,aggregate_promo_offers,1878
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,Roll Up,ok,40,34,,4.14 New Arrivals up to 30% & Sleep Starting @ $25,4.7-4.13,2026-04-07,2026-04-13,False,False,rollup_or_pivot,0
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,Sales & Inv,ok,40,27,,4.14 New Arrivals up to 30% & Sleep Starting @ $25,4.7-4.13,2026-04-07,2026-04-13,False,False,non_offer,0
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,Sleep Starting @ $25,ok,1101,47,4.0,Sleep Starting @ $25,4.7-4.13,2026-04-07,2026-04-13,True,False,promo_detail,545
+373d0d836a0d,4.14.26 New Arrivals up to 30% & Sleep Starting @ $25 PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,4.14 New Arrivals up to 30% & Sleep Starting @ $25,4.7-4.13,2026-04-07,2026-04-13,False,False,tier1_recommendation,0
+18d5dd03fcd1,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off PDL.xlsx,All Promo Discounts,ok,1924,27,3.0,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off,4.15.25-4.20.25,2025-04-15,2025-04-20,True,True,aggregate_promo_offers,1764
+18d5dd03fcd1,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off PDL.xlsx,Marketing Dropdown,ok,4,1,,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off,4.15.25-4.20.25,2025-04-15,2025-04-20,False,False,support,0
+18d5dd03fcd1,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off PDL.xlsx,Offer In Stock,ok,40,16,,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off,4.15.25-4.20.25,2025-04-15,2025-04-20,False,False,non_offer,0
+18d5dd03fcd1,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off PDL.xlsx,Sales & Inv,ok,40,30,,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off,4.15.25-4.20.25,2025-04-15,2025-04-20,False,False,non_offer,0
+18d5dd03fcd1,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off PDL.xlsx,ShortJohns,ok,289,27,3.0,4.15.25 ShortJohns starting at $25,4.15.25-4.20.25,2025-04-15,2025-04-20,True,False,promo_detail,129
+18d5dd03fcd1,4.15.25 ShortJohns starting at $25 + Summer Favorites up to 30% off PDL.xlsx,Summer Favorites,ok,1539,27,3.0,4.15.25 Summer Favorites up to 30% off,4.15.25-4.20.25,2025-04-15,2025-04-20,True,False,promo_detail,1535
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,4.21-5.4,2026-04-21,2026-05-04,False,False,zero_percent_offers,0
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,All Clearance Offers,ok,1012,47,4.0,All Clearance Offers,4.21-5.4,2026-04-21,2026-05-04,True,False,promo_detail,754
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,Data,ok,40,8,,4.21.26 Friends & Family 40% Off Sitewide,4.21-5.4,2026-04-21,2026-05-04,False,False,support,0
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,MSRPs,ok,40,2,,4.21.26 Friends & Family 40% Off Sitewide,4.21-5.4,2026-04-21,2026-05-04,False,False,non_offer,0
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,Marketing Dropdown,ok,4,1,,4.21.26 Friends & Family 40% Off Sitewide,4.21-5.4,2026-04-21,2026-05-04,False,False,support,0
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,Promo 5,ok,1200,48,4.0,4.21.26 Friends & Family 40% Off Sitewide,4.21-5.4,2026-04-21,2026-05-04,False,False,empty_placeholder,0
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,Promo Offers,ok,1048576,47,4.0,4.21.26 Friends & Family 40% Off Sitewide,4.21-5.4,2026-04-21,2026-05-04,True,True,aggregate_promo_offers,2014
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,RWB Offers,ok,1918,48,4.0,RWB Offers,4.21-5.4,2026-04-21,2026-05-04,True,False,promo_detail,29
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,Roll Up,ok,40,34,,4.21.26 Friends & Family 40% Off Sitewide,4.21-5.4,2026-04-21,2026-05-04,False,False,rollup_or_pivot,0
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,Sales & Inv,ok,40,27,,4.21.26 Friends & Family 40% Off Sitewide,4.21-5.4,2026-04-21,2026-05-04,False,False,non_offer,0
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,Star Wars Offers,ok,1101,47,4.0,Star Wars Offers,4.21-5.4,2026-04-21,2026-05-04,True,False,promo_detail,13
+167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,4.21.26 Friends & Family 40% Off Sitewide,4.21-5.4,2026-04-21,2026-05-04,False,False,tier1_recommendation,0
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,4.7-4.13,2026-04-07,2026-04-13,False,False,zero_percent_offers,0
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,4.7-4.13,2026-04-07,2026-04-13,True,False,promo_detail,826
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,Data,ok,40,8,,4.7 All Swim 30% Off,4.7-4.13,2026-04-07,2026-04-13,False,False,support,0
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,MSRPs,ok,40,2,,4.7 All Swim 30% Off,4.7-4.13,2026-04-07,2026-04-13,False,False,non_offer,0
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,Marketing Dropdown,ok,4,1,,4.7 All Swim 30% Off,4.7-4.13,2026-04-07,2026-04-13,False,False,support,0
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,New Arrivals,ok,1101,47,4.0,New Arrivals,4.7-4.13,2026-04-07,2026-04-13,True,False,promo_detail,190
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,Promo 5,ok,1200,48,4.0,4.7 All Swim 30% Off,4.7-4.13,2026-04-07,2026-04-13,False,False,empty_placeholder,0
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,Promo Offers,ok,1048576,47,4.0,4.7 All Swim 30% Off,4.7-4.13,2026-04-07,2026-04-13,True,True,aggregate_promo_offers,1688
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,Roll Up,ok,40,34,,4.7 All Swim 30% Off,4.7-4.13,2026-04-07,2026-04-13,False,False,rollup_or_pivot,0
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,Sales & Inv,ok,40,27,,4.7 All Swim 30% Off,4.7-4.13,2026-04-07,2026-04-13,False,False,non_offer,0
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,Swim 30% Off,ok,1012,47,4.0,Swim 30% Off,4.7-4.13,2026-04-07,2026-04-13,True,False,promo_detail,195
+bf87c8b270f9,4.7.26 All Swim 30% Off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,4.7 All Swim 30% Off,4.7-4.13,2026-04-07,2026-04-13,False,False,tier1_recommendation,0
+cfeb4f2ea1bf,4.8.25 All Easter on Sale up to 50% off PDL.xlsx,All Promo Discounts,ok,1981,27,3.0,4.8.25 All Easter on Sale up to 50% off,4.8.25-4.14.25,2025-04-08,2025-04-14,True,True,aggregate_promo_offers,1891
+cfeb4f2ea1bf,4.8.25 All Easter on Sale up to 50% off PDL.xlsx,Easter,ok,157,27,3.0,4.8.25 All Easter on Sale up to 50% off,4.8.25-4.14.25,2025-04-08,2025-04-14,True,False,promo_detail,67
+cfeb4f2ea1bf,4.8.25 All Easter on Sale up to 50% off PDL.xlsx,Marketing Dropdown,ok,4,1,,4.8.25 All Easter on Sale up to 50% off,4.8.25-4.14.25,2025-04-08,2025-04-14,False,False,support,0
+cfeb4f2ea1bf,4.8.25 All Easter on Sale up to 50% off PDL.xlsx,New Arrivals,ok,567,27,3.0,4.11.25 New Arrivals 25% off with code,4.11.25-4.13.25,2025-04-11,2025-04-13,True,False,promo_detail,477
+cfeb4f2ea1bf,4.8.25 All Easter on Sale up to 50% off PDL.xlsx,Offer In Stock,ok,40,16,,4.8.25 All Easter on Sale up to 50% off,4.8.25-4.14.25,2025-04-08,2025-04-14,False,False,non_offer,0
+cfeb4f2ea1bf,4.8.25 All Easter on Sale up to 50% off PDL.xlsx,Sales & Inv,ok,40,30,,4.8.25 All Easter on Sale up to 50% off,4.8.25-4.14.25,2025-04-08,2025-04-14,False,False,non_offer,0
+3af3562b7efb,5.13.25 All Swim up to 40 off.xlsx,ALL OFFERS,ok,1722,30,4.0,5.13.25 All Swim up to 40% off + All baby up to 40% off,5.13.25-5.16.25,2025-05-13,2025-05-16,True,False,promo_detail,1717
+3af3562b7efb,5.13.25 All Swim up to 40 off.xlsx,Marketing Dropdown,ok,4,1,,5.13.25 All Swim up to 40% off + All baby up to 40% off,5.13.25-5.16.25,2025-05-13,2025-05-16,False,False,support,0
+3af3562b7efb,5.13.25 All Swim up to 40 off.xlsx,Offer In Stock,ok,40,16,,5.13.25 All Swim up to 40% off + All baby up to 40% off,5.13.25-5.16.25,2025-05-13,2025-05-16,False,False,non_offer,0
+3af3562b7efb,5.13.25 All Swim up to 40 off.xlsx,Sales & Inv,ok,40,30,,5.13.25 All Swim up to 40% off + All baby up to 40% off,5.13.25-5.16.25,2025-05-13,2025-05-16,False,False,non_offer,0
+3af3562b7efb,5.13.25 All Swim up to 40 off.xlsx,baby up to 40% off,ok,367,30,4.0,5.13.25 All Swim up to 40% off + All baby up to 40% off,5.13.25-5.16.25,2025-05-13,2025-05-16,True,False,promo_detail,361
+3af3562b7efb,5.13.25 All Swim up to 40 off.xlsx,swim up to 40%,ok,234,30,4.0,5.13.25 All Swim up to 40% off + All baby up to 40% off,5.13.25-5.16.25,2025-05-13,2025-05-16,True,False,promo_detail,229
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,5.14-5.25,2026-05-14,2026-05-25,False,False,zero_percent_offers,0
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,25 badge,ok,40,2,,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,False,False,non_offer,0
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,5.14-5.25,2026-05-14,2026-05-25,True,False,promo_detail,826
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Data,ok,40,8,,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,False,False,support,0
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Dresses up to 40%,ok,921,47,4.0,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,True,False,promo_detail,1
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,MSRPs,ok,40,2,,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,False,False,non_offer,0
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Marketing Dropdown,ok,4,1,,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,False,False,support,0
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,New Markdown Offers,ok,995,47,4.0,New Markdowns,5.14-5.25,2026-05-14,2026-05-25,True,False,markdown,321
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Pin Reccs,ok,33,10,8.0,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,True,False,promo_detail,24
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Promo 5,ok,1200,48,4.0,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,False,False,empty_placeholder,0
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Promo Offers,ok,1048501,47,4.0,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,True,True,aggregate_promo_offers,1751
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Roll Up,ok,40,34,,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,False,False,rollup_or_pivot,0
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Sales & Inv,ok,40,27,,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,False,False,non_offer,0
+245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,False,False,tier1_recommendation,0
+79d192339e91,5.17.25 Memorial Day up to 50% off - updated 05.02.25.xlsx,ALL OFFERS,ok,1735,31,4.0,5.17.25 Memorial Day up to 50% Off,5.17.25-5.26.25,2025-05-17,2025-05-26,True,False,promo_detail,1728
+79d192339e91,5.17.25 Memorial Day up to 50% off - updated 05.02.25.xlsx,Clearance List,ok,463,31,4.0,5.17.25 Memorial Day up to 50% Off -- extra % off clearance,5.17.25-5.26.25,2025-05-17,2025-05-26,True,False,promo_detail,457
+79d192339e91,5.17.25 Memorial Day up to 50% off - updated 05.02.25.xlsx,In Stock,ok,40,5,,5.17.25 Memorial Day up to 50% Off,5.17.25-5.26.25,2025-05-17,2025-05-26,False,False,non_offer,0
+79d192339e91,5.17.25 Memorial Day up to 50% off - updated 05.02.25.xlsx,Marketing Dropdown,ok,4,1,,5.17.25 Memorial Day up to 50% Off,5.17.25-5.26.25,2025-05-17,2025-05-26,False,False,support,0
+79d192339e91,5.17.25 Memorial Day up to 50% off - updated 05.02.25.xlsx,Sales & Inv,ok,40,27,,5.17.25 Memorial Day up to 50% Off,5.17.25-5.26.25,2025-05-17,2025-05-26,False,False,non_offer,0
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,5.26-6-1,2026-05-26,2026-06-01,False,False,zero_percent_offers,0
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,5.26-6-1,2026-05-26,2026-06-01,True,False,promo_detail,826
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,Collab up to 40%,ok,921,47,4.0,Collab up to 40%,5.26-6-1,2026-05-26,2026-06-01,True,False,promo_detail,146
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,Data,ok,40,8,,5.26.26 Dresses up to 50% & Collab up to 40%,5.26-6-1,2026-05-26,2026-06-01,False,False,support,0
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,Dresses up to 50%,ok,1012,47,4.0,Dresses up to 50%,5.26-6-1,2026-05-26,2026-06-01,True,False,promo_detail,182
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,MSRPs,ok,40,2,,5.26.26 Dresses up to 50% & Collab up to 40%,5.26-6-1,2026-05-26,2026-06-01,False,False,non_offer,0
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,Marketing Dropdown,ok,4,1,,5.26.26 Dresses up to 50% & Collab up to 40%,5.26-6-1,2026-05-26,2026-06-01,False,False,support,0
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,New Arrivals,ok,1200,48,4.0,New Arrivals,5.26-6-1,2026-05-26,2026-06-01,True,False,promo_detail,40
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,Promo Offers,ok,1048575,47,4.0,5.26.26 Dresses up to 50% & Collab up to 40%,5.26-6-1,2026-05-26,2026-06-01,True,True,aggregate_promo_offers,1610
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,Roll Up,ok,40,34,,5.26.26 Dresses up to 50% & Collab up to 40%,5.26-6-1,2026-05-26,2026-06-01,False,False,rollup_or_pivot,0
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,Sales & Inv,ok,40,27,,5.26.26 Dresses up to 50% & Collab up to 40%,5.26-6-1,2026-05-26,2026-06-01,False,False,non_offer,0
+260d6ea14630,5.26.26 Dresses up to 50 PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,5.26.26 Dresses up to 50% & Collab up to 40%,5.26-6-1,2026-05-26,2026-06-01,False,False,tier1_recommendation,0
+fad258b29082,5.27.25 Summer Dresses up to 50 off.xlsx,ALL OFFERS,ok,1876,30,4.0,Summer Dresses up to 50% off + All Kids up to 40% off (Camp and Play),5.27.25-6.2.25,2025-05-27,2025-06-02,True,False,promo_detail,1733
+fad258b29082,5.27.25 Summer Dresses up to 50 off.xlsx,DRESSES,ok,318,30,4.0,Summer Dresses up to 50% off + All Kids up to 40% off,5.27.25-6.2.25,2025-05-27,2025-06-02,True,False,promo_detail,175
+fad258b29082,5.27.25 Summer Dresses up to 50 off.xlsx,In Stock,ok,40,5,,Summer Dresses up to 50% off + All Kids up to 40% off (Camp and Play),5.27.25-6.2.25,2025-05-27,2025-06-02,False,False,non_offer,0
+fad258b29082,5.27.25 Summer Dresses up to 50 off.xlsx,Marketing Dropdown,ok,4,1,,Summer Dresses up to 50% off + All Kids up to 40% off (Camp and Play),5.27.25-6.2.25,2025-05-27,2025-06-02,False,False,support,0
+fad258b29082,5.27.25 Summer Dresses up to 50 off.xlsx,NEW ARRIVALS,ok,187,20,1.0,Summer Dresses up to 50% off + All Kids up to 40% off (Camp and Play),5.27.25-6.2.25,2025-05-27,2025-06-02,True,False,promo_detail,185
+fad258b29082,5.27.25 Summer Dresses up to 50 off.xlsx,Sales & Inv,ok,40,27,,Summer Dresses up to 50% off + All Kids up to 40% off (Camp and Play),5.27.25-6.2.25,2025-05-27,2025-06-02,False,False,non_offer,0
+fad258b29082,5.27.25 Summer Dresses up to 50 off.xlsx,Sheet1,ok,40,2,,Summer Dresses up to 50% off + All Kids up to 40% off (Camp and Play),5.27.25-6.2.25,2025-05-27,2025-06-02,False,False,non_offer,0
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,5.5-5.8,2026-05-05,2026-05-08,False,False,zero_percent_offers,0
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,5.5-5.8,2026-05-05,2026-05-08,True,False,promo_detail,826
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Data,ok,40,8,,5.5.26 Sleep Starting @ $25 & All Swim up to 40%,5.5-5.8,2026-05-05,2026-05-08,False,False,support,0
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,MSRPs,ok,40,2,,5.5.26 Sleep Starting @ $25 & All Swim up to 40%,5.5-5.8,2026-05-05,2026-05-08,False,False,non_offer,0
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Marketing Dropdown,ok,4,1,,5.5.26 Sleep Starting @ $25 & All Swim up to 40%,5.5-5.8,2026-05-05,2026-05-08,False,False,support,0
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Promo 5,ok,1200,48,4.0,5.5.26 Sleep Starting @ $25 & All Swim up to 40%,5.5-5.8,2026-05-05,2026-05-08,False,False,empty_placeholder,0
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Promo Offers,ok,1048576,47,4.0,5.5.26 Sleep Starting @ $25 & All Swim up to 40%,5.5-5.8,2026-05-05,2026-05-08,True,True,aggregate_promo_offers,1922
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Roll Up,ok,40,34,,5.5.26 Sleep Starting @ $25 & All Swim up to 40%,5.5-5.8,2026-05-05,2026-05-08,False,False,rollup_or_pivot,0
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Sales & Inv,ok,40,27,,5.5.26 Sleep Starting @ $25 & All Swim up to 40%,5.5-5.8,2026-05-05,2026-05-08,False,False,non_offer,0
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Sleep Starting @ $25,ok,921,47,4.0,Sleep Starting @ $25,5.5-5.8,2026-05-05,2026-05-08,True,False,promo_detail,542
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Swim up to 40%,ok,1012,47,4.0,Swim up to 40%,5.5-5.8,2026-05-05,2026-05-08,True,False,promo_detail,202
+6a0848b424cd,5.5.26 Sleep Starting @ $25 & All Swim up to 40% PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,5.5.26 Sleep Starting @ $25 & All Swim up to 40%,5.5-5.8,2026-05-05,2026-05-08,False,False,tier1_recommendation,0
+c8b97e3216dd,5.7.25 Dresses 30 off.xlsx,ALL OFFERS,ok,1913,30,4.0,5.7.25 All Dresses 30% off and Sleep up to 40% off (dresses: with exceptions),5.7.25-5.12.25,2025-05-07,2025-05-12,True,False,promo_detail,1837
+c8b97e3216dd,5.7.25 Dresses 30 off.xlsx,DRESSES,ok,286,30,4.0,5.7.25 All Dresses 30% off and Sleep up to 40% off (dresses: with exceptions),5.7.25-5.12.25,2025-05-07,2025-05-12,True,False,promo_detail,210
+c8b97e3216dd,5.7.25 Dresses 30 off.xlsx,Marketing Dropdown,ok,4,1,,5.7.25 All Dresses 30% off and Sleep up to 40% off (dresses: with exceptions),5.7.25-5.12.25,2025-05-07,2025-05-12,False,False,support,0
+c8b97e3216dd,5.7.25 Dresses 30 off.xlsx,Offer In Stock,ok,40,16,,5.7.25 All Dresses 30% off and Sleep up to 40% off (dresses: with exceptions),5.7.25-5.12.25,2025-05-07,2025-05-12,False,False,non_offer,0
+c8b97e3216dd,5.7.25 Dresses 30 off.xlsx,SLEEP,ok,695,30,4.0,5.7.25 All Dresses 30% off and Sleep up to 40% off (dresses: with exceptions),5.7.25-5.12.25,2025-05-07,2025-05-12,True,False,promo_detail,619
+c8b97e3216dd,5.7.25 Dresses 30 off.xlsx,Sales & Inv,ok,40,30,,5.7.25 All Dresses 30% off and Sleep up to 40% off (dresses: with exceptions),5.7.25-5.12.25,2025-05-07,2025-05-12,False,False,non_offer,0
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,0% Offers,ok,40,47,4.0,0% Offers,5.9-5.13,2026-05-09,2026-05-13,False,False,zero_percent_offers,0
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,5.9-5.13,2026-05-09,2026-05-13,True,False,promo_detail,826
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Data,ok,40,8,,5.9.26 All Dresses & All Swim up to 40% PDL,5.9-5.13,2026-05-09,2026-05-13,False,False,support,0
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Dresses up to 40%,ok,921,47,4.0,Dresses up to 40%,5.9-5.13,2026-05-09,2026-05-13,True,False,promo_detail,244
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,MSRPs,ok,40,2,,5.9.26 All Dresses & All Swim up to 40% PDL,5.9-5.13,2026-05-09,2026-05-13,False,False,non_offer,0
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Marketing Dropdown,ok,4,1,,5.9.26 All Dresses & All Swim up to 40% PDL,5.9-5.13,2026-05-09,2026-05-13,False,False,support,0
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Promo 5,ok,1200,48,4.0,5.9.26 All Dresses & All Swim up to 40% PDL,5.9-5.13,2026-05-09,2026-05-13,False,False,empty_placeholder,0
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Promo Offers,ok,1048576,47,4.0,5.9.26 All Dresses & All Swim up to 40% PDL,5.9-5.13,2026-05-09,2026-05-13,True,True,aggregate_promo_offers,1896
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Roll Up,ok,40,34,,5.9.26 All Dresses & All Swim up to 40% PDL,5.9-5.13,2026-05-09,2026-05-13,False,False,rollup_or_pivot,0
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Sales & Inv,ok,40,27,,5.9.26 All Dresses & All Swim up to 40% PDL,5.9-5.13,2026-05-09,2026-05-13,False,False,non_offer,0
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Swim up to 40%,ok,1012,47,4.0,Swim up to 40%,5.9-5.13,2026-05-09,2026-05-13,True,False,promo_detail,204
+db52aefb7199,5.9.26 All Dresses & All Swim up to 40% PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,5.9.26 All Dresses & All Swim up to 40% PDL,5.9-5.13,2026-05-09,2026-05-13,False,False,tier1_recommendation,0
+832f3bfaf4ab,6.10.25 All Swim up to 50 off.xlsx,ALL OFFERS,ok,1732,30,4.0,All Swim up to 50% off - starting at $20 & RWB/Backyard Bliss up to 50% off,6.10.25-6.16.25,2025-06-10,2025-06-16,True,False,promo_detail,1727
+832f3bfaf4ab,6.10.25 All Swim up to 50 off.xlsx,In Stock,ok,40,5,,All Swim up to 50% off - starting at $20 & RWB/Backyard Bliss up to 50% off,6.10.25-6.16.25,2025-06-10,2025-06-16,False,False,non_offer,0
+832f3bfaf4ab,6.10.25 All Swim up to 50 off.xlsx,Marketing Dropdown,ok,4,1,,All Swim up to 50% off - starting at $20 & RWB/Backyard Bliss up to 50% off,6.10.25-6.16.25,2025-06-10,2025-06-16,False,False,support,0
+832f3bfaf4ab,6.10.25 All Swim up to 50 off.xlsx,SWIM,ok,233,30,4.0,All Swim up to 50% off - starting at $20 & RWB/Backyard Bliss up to 50% off,6.10.25-6.16.25,2025-06-10,2025-06-16,True,False,promo_detail,228
+832f3bfaf4ab,6.10.25 All Swim up to 50 off.xlsx,Sales & Inv,ok,40,27,,All Swim up to 50% off - starting at $20 & RWB/Backyard Bliss up to 50% off,6.10.25-6.16.25,2025-06-10,2025-06-16,False,False,non_offer,0
+33fa51f382ff,6.17.25 All Dresses up to 50 off.xlsx,ALL OFFERS,ok,1805,30,4.0,All Dresses up to 50% off & All Sleep up to 50% off,6.17.25-6.21.25,2025-06-17,2025-06-21,True,False,promo_detail,1798
+33fa51f382ff,6.17.25 All Dresses up to 50 off.xlsx,DRESSES,ok,200,30,4.0,All Dresses up to 50% off & All Sleep up to 50% off,6.17.25-6.21.25,2025-06-17,2025-06-21,True,False,promo_detail,195
+33fa51f382ff,6.17.25 All Dresses up to 50 off.xlsx,In Stock,ok,40,5,,All Dresses up to 50% off & All Sleep up to 50% off,6.17.25-6.21.25,2025-06-17,2025-06-21,False,False,non_offer,0
+33fa51f382ff,6.17.25 All Dresses up to 50 off.xlsx,Marketing Dropdown,ok,4,1,,All Dresses up to 50% off & All Sleep up to 50% off,6.17.25-6.21.25,2025-06-17,2025-06-21,False,False,support,0
+33fa51f382ff,6.17.25 All Dresses up to 50 off.xlsx,SLEEP,ok,638,30,4.0,All Dresses up to 50% off & All Sleep up to 50% off,6.17.25-6.21.25,2025-06-17,2025-06-21,True,False,promo_detail,631
+33fa51f382ff,6.17.25 All Dresses up to 50 off.xlsx,Sales & Inv,ok,40,27,,All Dresses up to 50% off & All Sleep up to 50% off,6.17.25-6.21.25,2025-06-17,2025-06-21,False,False,non_offer,0
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,0% Offers,ok,40,43,4.0,0% Offers,6.18-6.24,2026-06-18,2026-06-24,False,False,zero_percent_offers,0
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,6.18 NEW Markdowns,ok,774,45,4.0,New Markdowns,6.18,2026-06-18,2026-06-18,True,False,markdown,769
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,6.18 Promo Offers,ok,911,46,4.0,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,True,False,promo_detail,906
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,6.25 NEW Markdowns,ok,897,42,4.0,New Markdowns,6.25,2026-06-25,2026-06-25,True,False,markdown,114
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,6.25 Promo Offers,ok,1373,44,4.0,Hanna Sale up to 60% Off,6.25-6.26,2026-06-25,2026-06-26,True,False,promo_detail,735
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,6.27 Promo Offers,ok,1431,44,4.0,Hanna Sale up to 60% Off & All Unders 50% Off,6.27-6.30,2026-06-27,2026-06-30,True,False,promo_detail,753
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,7.1 FURTHER Markdowns,ok,932,43,4.0,Further Markdowns,7.1,2026-07-01,2026-07-01,True,False,markdown,126
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,7.1 Promo Offers,ok,1432,44,4.0,Hanna Sale up to 75% Off,7.1-7.6,2026-07-01,2026-07-06,True,False,promo_detail,753
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,Data,ok,40,8,,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,False,False,support,0
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,Images,ok,8722,5,2.0,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,True,False,promo_detail,8718
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,MSRPs,ok,40,2,,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,False,False,non_offer,0
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,Marketing Dropdown,ok,4,1,,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,False,False,support,0
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,OLD Clearance Offers,ok,1977,43,4.0,OLD Clearance Offers,6.18-6.24,2026-06-18,2026-06-24,True,False,promo_detail,961
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,Roll Up,ok,40,47,,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,False,False,rollup_or_pivot,0
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,Sales & Inv,ok,40,27,,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,False,False,non_offer,0
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,Sheet1,ok,882,22,0.0,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,True,False,promo_detail,881
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,Sheet2,ok,40,16,,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,False,False,non_offer,0
+4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,False,False,tier1_recommendation,0
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,0% Offers,ok,40,43,4.0,0% Offers,5.26-6-1,2026-05-26,2026-06-01,False,False,zero_percent_offers,0
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,5.26-6-1,2026-05-26,2026-06-01,True,False,promo_detail,826
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,Data,ok,40,8,,6.2.26 RWB & All Sleep up to 50% Off,5.26-6-1,2026-05-26,2026-06-01,False,False,support,0
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,MSRPs,ok,40,2,,6.2.26 RWB & All Sleep up to 50% Off,5.26-6-1,2026-05-26,2026-06-01,False,False,non_offer,0
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,Marketing Dropdown,ok,4,1,,6.2.26 RWB & All Sleep up to 50% Off,5.26-6-1,2026-05-26,2026-06-01,False,False,support,0
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,New Arrivals,ok,1200,48,4.0,New Arrivals,5.26-6-1,2026-05-26,2026-06-01,True,False,promo_detail,40
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,Promo Offers,ok,1048575,47,4.0,6.2.26 RWB & All Sleep up to 50% Off,5.26-6-1,2026-05-26,2026-06-01,True,True,aggregate_promo_offers,1539
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,RWB up to 50%,ok,1011,43,4.0,RWB up to 50%,5.26-6-1,2026-05-26,2026-06-01,True,False,promo_detail,28
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,Roll Up,ok,40,34,,6.2.26 RWB & All Sleep up to 50% Off,5.26-6-1,2026-05-26,2026-06-01,False,False,rollup_or_pivot,0
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,Sales & Inv,ok,40,27,,6.2.26 RWB & All Sleep up to 50% Off,5.26-6-1,2026-05-26,2026-06-01,False,False,non_offer,0
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,Sleep up to 50%,ok,921,43,4.0,Sleep up to 50%,5.26-6-1,2026-05-26,2026-06-01,True,False,promo_detail,443
+a069507696c0,6.2.26 RWB & All Sleep up to 50% Off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,6.2.26 RWB & All Sleep up to 50% Off,5.26-6-1,2026-05-26,2026-06-01,False,False,tier1_recommendation,0
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,CHRISTMAS IN JULY 7.1-7.2,ok,35,30,4.0,HANNA SALE: CHRISTMAS IN JULY,7.1.25-7.2.25,2025-07-01,2025-07-02,True,False,promo_detail,27
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,HANNA SALE CLOSEDOWN 7.4,ok,880,30,11.0,HANNA SALE CLOSEDOWN,Begin 7.4,2025-07-04,2025-07-04,True,False,promo_detail,866
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,HANNA SALE PHASE 2 - 6.29,ok,775,31,11.0,HANNA SALE additional markdowns,Begin 6.29,2025-06-29,2025-06-29,True,False,markdown,107
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,HANNA SALE START 6-21,ok,774,31,11.0,HANNA SALE Up to 60% off,Begin 6.21.25 (PHASE 1),2025-06-21,2025-06-21,True,False,promo_detail,758
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,In Stock,ok,40,5,,HANNA SALE Up to 60% off,6.21.25-6.28.25,2025-06-21,2025-06-28,False,False,non_offer,0
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,KS CHEAT SHEET,ok,14,4,,HANNA SALE Up to 60% off,6.21.25-6.28.25,2025-06-21,2025-06-28,False,False,non_offer,0
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,Marketing Dropdown,ok,4,1,,HANNA SALE Up to 60% off,6.21.25-6.28.25,2025-06-21,2025-06-28,False,False,support,0
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,OVERNIGHT QA VALIDATION,ok,6,7,5.0,HANNA SALE Up to 60% off,6.21.25-6.28.25,2025-06-21,2025-06-28,False,False,promo_detail,0
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,REG PROMO OFFERS 6.21-6.26,ok,1045,31,4.0,HANNA SALE Up to 60% off,6.21.25-6.28.25,2025-06-21,2025-06-28,True,False,promo_detail,1040
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,REG PROMO OFFERS 6.27-6.30,ok,1045,31,4.0,HANNA SALE Up to 60% off,6.21.25-6.30.25,2025-06-21,2025-06-30,True,False,promo_detail,1040
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,Sales & Inv,ok,40,27,,HANNA SALE Up to 60% off,6.21.25-6.28.25,2025-06-21,2025-06-28,False,False,non_offer,0
+deb802d08d2f,6.21.25 Hanna Sale Phase 1 up to 60% off.xlsx,existing markdowns,ok,775,30,11.0,HANNA SALE existing markdowns,6.21.25-6.28.25,2025-06-21,2025-06-28,True,False,markdown,481
+a0fddef2f62d,6.3.25 All Sleep up to 50 off.xlsx,ALL OFFERS,ok,1738,30,4.0,All Sleep up to 50% off + All Dresses up to 40% off,6.3.25-6.9.25,2025-06-03,2025-06-09,True,False,promo_detail,1727
+a0fddef2f62d,6.3.25 All Sleep up to 50 off.xlsx,DRESSES,ok,187,30,4.0,All Sleep up to 50% off + All Dresses up to 40% off,6.3.25-6.9.25,2025-06-03,2025-06-09,True,False,promo_detail,176
+a0fddef2f62d,6.3.25 All Sleep up to 50 off.xlsx,In Stock,ok,40,5,,All Sleep up to 50% off + All Dresses up to 40% off,6.3.25-6.9.25,2025-06-03,2025-06-09,False,False,non_offer,0
+a0fddef2f62d,6.3.25 All Sleep up to 50 off.xlsx,Marketing Dropdown,ok,4,1,,All Sleep up to 50% off + All Dresses up to 40% off,6.3.25-6.9.25,2025-06-03,2025-06-09,False,False,support,0
+a0fddef2f62d,6.3.25 All Sleep up to 50 off.xlsx,SLEEP,ok,610,30,4.0,All Sleep up to 50% off + All Dresses up to 40% off,6.3.25-6.9.25,2025-06-03,2025-06-09,True,False,promo_detail,599
+a0fddef2f62d,6.3.25 All Sleep up to 50 off.xlsx,Sales & Inv,ok,40,27,,All Sleep up to 50% off + All Dresses up to 40% off,6.3.25-6.9.25,2025-06-03,2025-06-09,False,False,non_offer,0
+a0fddef2f62d,6.3.25 All Sleep up to 50 off.xlsx,clearance - 6.7.25 extra 20% of,ok,364,30,5.0,All Sleep up to 50% off + All Dresses up to 40% off,6.3.25-6.9.25,2025-06-03,2025-06-09,True,False,promo_detail,358
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,0% Offers,ok,40,43,4.0,0% Offers,6.9.26-6.17.26,2026-06-09,2026-06-17,False,False,zero_percent_offers,0
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,6.9.26-6.17.26,2026-06-09,2026-06-17,True,False,promo_detail,826
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Data,ok,40,8,,6.9.26 RWB & Swim & Dresses up to 50% Off,6.9.26-6.17.26,2026-06-09,2026-06-17,False,False,support,0
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Dresses up to 50%,ok,1200,44,4.0,Dresses up to 50%,6.13.26-6.17.26,2026-06-13,2026-06-17,True,False,promo_detail,173
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,MSRPs,ok,40,2,,6.9.26 RWB & Swim & Dresses up to 50% Off,6.9.26-6.17.26,2026-06-09,2026-06-17,False,False,non_offer,0
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Marketing Dropdown,ok,4,1,,6.9.26 RWB & Swim & Dresses up to 50% Off,6.9.26-6.17.26,2026-06-09,2026-06-17,False,False,support,0
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Promo Offers,ok,1532,43,4.0,6.9.26 RWB & Swim & Dresses up to 50% Off,6.9.26-6.17.26,2026-06-09,2026-06-17,True,True,aggregate_promo_offers,1527
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,RWB up to 50%,ok,1011,43,4.0,RWB up to 50%,6.9.26-6.17.26,2026-06-09,2026-06-17,True,False,promo_detail,28
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Roll Up,ok,40,34,,6.9.26 RWB & Swim & Dresses up to 50% Off,6.9.26-6.17.26,2026-06-09,2026-06-17,False,False,rollup_or_pivot,0
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Sales & Inv,ok,40,27,,6.9.26 RWB & Swim & Dresses up to 50% Off,6.9.26-6.17.26,2026-06-09,2026-06-17,False,False,non_offer,0
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Swim up to 50%,ok,921,43,4.0,Sleep up to 50%,6.9.26-6.12.26,2026-06-09,2026-06-12,True,False,promo_detail,198
+3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,6.9.26 RWB & Swim & Dresses up to 50% Off,6.9.26-6.17.26,2026-06-09,2026-06-17,False,False,tier1_recommendation,0
+b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,ALL OFFERS,ok,1672,32,11.0,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,True,False,promo_detail,1653
+b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,In Stock,ok,40,5,,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,False,False,non_offer,0
+b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,KS CHEAT SHEET,ok,14,4,,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,False,False,non_offer,0
+b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,Marketing Dropdown,ok,4,1,,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,False,False,support,0
+b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,Sales & Inv,ok,40,27,,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,False,False,non_offer,0
+b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,clearance,ok,2234,32,11.0,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,True,False,promo_detail,810
+b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,summer dresses,ok,81,32,11.0,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,True,False,promo_detail,69
+b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,summer shorts sets and tees,ok,110,32,11.0,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,True,False,promo_detail,97
+b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,swim,ok,56,32,11.0,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,True,False,promo_detail,44
+646f46fa83d6,7.22.25 Sleep up to 40 off.xlsx,ALL OFFERS,ok,1753,32,11.0,Sleep up to 40% off + Swim up to 50% off,7.22.25 - 7.28.25,2025-07-22,2025-07-28,True,False,promo_detail,1733
+646f46fa83d6,7.22.25 Sleep up to 40 off.xlsx,In Stock,ok,40,5,,Sleep up to 40% off + Swim up to 50% off,7.22.25 - 7.28.25,2025-07-22,2025-07-28,False,False,non_offer,0
+646f46fa83d6,7.22.25 Sleep up to 40 off.xlsx,KS CHEAT SHEET,ok,14,4,,Sleep up to 40% off + Swim up to 50% off,7.22.25 - 7.28.25,2025-07-22,2025-07-28,False,False,non_offer,0
+646f46fa83d6,7.22.25 Sleep up to 40 off.xlsx,Marketing Dropdown,ok,4,1,,Sleep up to 40% off + Swim up to 50% off,7.22.25 - 7.28.25,2025-07-22,2025-07-28,False,False,support,0
+646f46fa83d6,7.22.25 Sleep up to 40 off.xlsx,SLEEP,ok,694,32,11.0,Sleep up to 40% off + Swim up to 50% off,7.22.25 - 7.28.25,2025-07-22,2025-07-28,True,False,promo_detail,682
+646f46fa83d6,7.22.25 Sleep up to 40 off.xlsx,SWIM,ok,56,32,11.0,Sleep up to 40% off + Swim up to 50% off,7.22.25 - 7.28.25,2025-07-22,2025-07-28,True,False,promo_detail,44
+646f46fa83d6,7.22.25 Sleep up to 40 off.xlsx,Sales & Inv,ok,40,27,,Sleep up to 40% off + Swim up to 50% off,7.22.25 - 7.28.25,2025-07-22,2025-07-28,False,False,non_offer,0
+646f46fa83d6,7.22.25 Sleep up to 40 off.xlsx,clearance,ok,2226,32,11.0,Sleep up to 40% off + Swim up to 50% off,7.22.25 - 7.28.25,2025-07-22,2025-07-28,True,False,promo_detail,876
+9ff222ae93fa,7.29.25 First Day up to 30% off + Sleep from $20 PDL.xlsx,ALL OFFERS,ok,1687,32,11.0,FIRST DAY PICTURE OUTFITS - Up to 30& Off + Sleep from $20,7.29.25-8.4.25,2025-07-29,2025-08-04,True,False,promo_detail,1675
+9ff222ae93fa,7.29.25 First Day up to 30% off + Sleep from $20 PDL.xlsx,DRESSES & SKIRTS,ok,189,32,11.0,FIRST DAY PICTURE OUTFITS - Up to 30& Off + Sleep from $20,7.29.25-8.4.25,2025-07-29,2025-08-04,True,False,promo_detail,177
+9ff222ae93fa,7.29.25 First Day up to 30% off + Sleep from $20 PDL.xlsx,In Stock,ok,40,5,,FIRST DAY PICTURE OUTFITS - Up to 30& Off + Sleep from $20,7.29.25-8.4.25,2025-07-29,2025-08-04,False,False,non_offer,0
+9ff222ae93fa,7.29.25 First Day up to 30% off + Sleep from $20 PDL.xlsx,KS CHEAT SHEET,ok,14,4,,FIRST DAY PICTURE OUTFITS - Up to 30& Off + Sleep from $20,7.29.25-8.4.25,2025-07-29,2025-08-04,False,False,non_offer,0
+9ff222ae93fa,7.29.25 First Day up to 30% off + Sleep from $20 PDL.xlsx,Marketing Dropdown,ok,4,1,,FIRST DAY PICTURE OUTFITS - Up to 30& Off + Sleep from $20,7.29.25-8.4.25,2025-07-29,2025-08-04,False,False,support,0
+9ff222ae93fa,7.29.25 First Day up to 30% off + Sleep from $20 PDL.xlsx,SLEEP FROM $20,ok,174,32,11.0,FIRST DAY PICTURE OUTFITS - Up to 30& Off + Sleep from $20,7.29.25-8.4.25,2025-07-29,2025-08-04,True,False,promo_detail,162
+9ff222ae93fa,7.29.25 First Day up to 30% off + Sleep from $20 PDL.xlsx,Sales & Inv,ok,40,27,,FIRST DAY PICTURE OUTFITS - Up to 30& Off + Sleep from $20,7.29.25-8.4.25,2025-07-29,2025-08-04,False,False,non_offer,0
+4f272317f643,7.30.24 All Sleep on Sale starting from $25 + Mix & Match PDL.xlsx,All Promo Discounts,ok,1729,13,3.0,7.30.24 All Sleep on Sale starting from $25,7.30.24-8.5.24,2024-07-30,2024-08-05,True,True,aggregate_promo_offers,741
+4f272317f643,7.30.24 All Sleep on Sale starting from $25 + Mix & Match PDL.xlsx,Mix & Match,ok,1360,12,3.0,7.30.24 Mix & Match Get it in Time for Picture Day,7.30.24-8.5.24,2024-07-30,2024-08-05,True,False,promo_detail,553
+4f272317f643,7.30.24 All Sleep on Sale starting from $25 + Mix & Match PDL.xlsx,Sleep Revisions,ok,1339,15,3.0,Sleep Corrections,11.18.20- 11.28.20,2020-11-18,2020-11-28,True,False,correction,79
+513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,ALL OFFERS,ok,986,31,11.0,BABY/TODDLER & KIDS SLEEP + 50% OFF BLUEY,7.9.25-7.14.25,2025-07-09,2025-07-14,True,False,promo_detail,974
+513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,BLUEY UP TO 50% OFF,ok,32,31,11.0,BLUEY UP TO 50% OFF,7.9.25-7.14.25,2025-07-09,2025-07-14,True,False,promo_detail,20
+513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,In Stock,ok,40,5,,BABY/TODDLER & KIDS SLEEP + 50% OFF BLUEY,7.9.25-7.14.25,2025-07-09,2025-07-14,False,False,non_offer,0
+513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,KS CHEAT SHEET,ok,14,4,,BABY/TODDLER & KIDS SLEEP + 50% OFF BLUEY,7.9.25-7.14.25,2025-07-09,2025-07-14,False,False,non_offer,0
+513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,Marketing Dropdown,ok,4,1,,BABY/TODDLER & KIDS SLEEP + 50% OFF BLUEY,7.9.25-7.14.25,2025-07-09,2025-07-14,False,False,support,0
+513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,Sales & Inv,ok,40,27,,BABY/TODDLER & KIDS SLEEP + 50% OFF BLUEY,7.9.25-7.14.25,2025-07-09,2025-07-14,False,False,non_offer,0
+513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,TWO DAY BABY EVENT,ok,42,31,11.0,BABY/TODDLER SLEEP TWO DAY EVENT,7.9.25-7.10.25,2025-07-09,2025-07-10,True,False,promo_detail,30
+513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,TWO DAY KIDS SLEEP EVENT,ok,19,31,11.0,KIDS SLEEP starting from $15,7.11-7.12,2025-07-11,2025-07-12,True,False,promo_detail,7
+719e18f30fac,8.12.25 Hannaween up to 30% (featuring sleep) PDL.xlsx,ALL OFFERS,ok,1808,30,4.0,8.12.25 Hannaween up to 30% (featuring sleep),8.12 - 8.17,2025-08-12,2025-08-17,True,False,promo_detail,1674
+719e18f30fac,8.12.25 Hannaween up to 30% (featuring sleep) PDL.xlsx,BTS DRESSES,ok,207,30,4.0,8.12.25 Hannaween up to 30% (featuring sleep),8.12 - 8.17,2025-08-12,2025-08-17,True,False,promo_detail,202
+719e18f30fac,8.12.25 Hannaween up to 30% (featuring sleep) PDL.xlsx,HANNAWEEN,ok,1808,30,4.0,8.12.25 Hannaween up to 30% (featuring sleep),8.12 - 8.17,2025-08-12,2025-08-17,True,False,promo_detail,89
+719e18f30fac,8.12.25 Hannaween up to 30% (featuring sleep) PDL.xlsx,In Stock,ok,40,5,,8.12.25 Hannaween up to 30% (featuring sleep),8.12 - 8.17,2025-08-12,2025-08-17,False,False,non_offer,0
+719e18f30fac,8.12.25 Hannaween up to 30% (featuring sleep) PDL.xlsx,Marketing Dropdown,ok,4,1,,8.12.25 Hannaween up to 30% (featuring sleep),8.12 - 8.17,2025-08-12,2025-08-17,False,False,support,0
+719e18f30fac,8.12.25 Hannaween up to 30% (featuring sleep) PDL.xlsx,Sales & Inv,ok,40,27,,8.12.25 Hannaween up to 30% (featuring sleep),8.12 - 8.17,2025-08-12,2025-08-17,False,False,non_offer,0
+75f1f192c89f,8.18.25 BTS & Sleep up to 40% PDL.xlsx,0% Offers,ok,40,49,4.0,8.18.25 BTS & Sleep up to 40%,8.18-8.20,2025-08-18,2025-08-20,False,False,zero_percent_offers,0
+75f1f192c89f,8.18.25 BTS & Sleep up to 40% PDL.xlsx,2,ok,2000,49,4.0,8.18.25 BTS & Sleep up to 40%,8.18-8.20,2025-08-18,2025-08-20,False,False,empty_placeholder,0
+75f1f192c89f,8.18.25 BTS & Sleep up to 40% PDL.xlsx,3,ok,2000,49,4.0,8.18.25 BTS & Sleep up to 40%,8.18-8.20,2025-08-18,2025-08-20,False,False,empty_placeholder,0
+75f1f192c89f,8.18.25 BTS & Sleep up to 40% PDL.xlsx,Data,ok,40,8,,8.18.25 BTS & Sleep up to 40%,8.18-8.20,2025-08-18,2025-08-20,False,False,support,0
+75f1f192c89f,8.18.25 BTS & Sleep up to 40% PDL.xlsx,Marketing Dropdown,ok,4,1,,8.18.25 BTS & Sleep up to 40%,8.18-8.20,2025-08-18,2025-08-20,False,False,support,0
+75f1f192c89f,8.18.25 BTS & Sleep up to 40% PDL.xlsx,Promo Offers,ok,2000,49,4.0,8.18.25 BTS & Sleep up to 40%,8.18-8.20,2025-08-18,2025-08-20,True,True,aggregate_promo_offers,1149
+75f1f192c89f,8.18.25 BTS & Sleep up to 40% PDL.xlsx,Roll Up,ok,40,26,,8.18.25 BTS & Sleep up to 40%,8.18-8.20,2025-08-18,2025-08-20,False,False,rollup_or_pivot,0
+75f1f192c89f,8.18.25 BTS & Sleep up to 40% PDL.xlsx,Sales & Inv,ok,40,27,,8.18.25 BTS & Sleep up to 40%,8.18-8.20,2025-08-18,2025-08-20,False,False,non_offer,0
+75f1f192c89f,8.18.25 BTS & Sleep up to 40% PDL.xlsx,Sleep Up To 40%,ok,2000,49,4.0,Sleep Up Tp 40%,8.18-8.20,2025-08-18,2025-08-20,True,False,promo_detail,347
+400fdd1ffe6d,8.21.25 Labor Day Sale up to 40% PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,8.21 - 8.23,2025-08-21,2025-08-23,False,False,zero_percent_offers,0
+400fdd1ffe6d,8.21.25 Labor Day Sale up to 40% PDL.xlsx,Data,ok,40,8,,8.21 Labor Day Sale up to 40%,8.21 - 8.23,2025-08-21,2025-08-23,False,False,support,0
+400fdd1ffe6d,8.21.25 Labor Day Sale up to 40% PDL.xlsx,Marketing Dropdown,ok,4,1,,8.21 Labor Day Sale up to 40%,8.21 - 8.23,2025-08-21,2025-08-23,False,False,support,0
+400fdd1ffe6d,8.21.25 Labor Day Sale up to 40% PDL.xlsx,New Markdowns,ok,2000,49,4.0,New Markdowns,8.25,2025-08-25,2025-08-25,True,False,markdown,149
+400fdd1ffe6d,8.21.25 Labor Day Sale up to 40% PDL.xlsx,Phase 2 8.24,ok,2000,49,4.0,8.21 Labor Day Sale up to 40% - Phase 2,8.24-8.28,2025-08-24,2025-08-28,True,False,promo_detail,1500
+400fdd1ffe6d,8.21.25 Labor Day Sale up to 40% PDL.xlsx,Phase 3 8.29,ok,2000,49,4.0,8.21 Labor Day Sale up to 40% - Phase 3,8.29-9.2,2025-08-29,2025-09-02,True,False,promo_detail,1500
+400fdd1ffe6d,8.21.25 Labor Day Sale up to 40% PDL.xlsx,Promo Offers - Phase 1,ok,1982,49,4.0,8.21 Labor Day Sale up to 40%,8.21 - 8.23,2025-08-21,2025-08-23,True,True,aggregate_promo_offers,1507
+400fdd1ffe6d,8.21.25 Labor Day Sale up to 40% PDL.xlsx,Roll Up,ok,40,26,,8.21 Labor Day Sale up to 40%,8.21 - 8.23,2025-08-21,2025-08-23,False,False,rollup_or_pivot,0
+400fdd1ffe6d,8.21.25 Labor Day Sale up to 40% PDL.xlsx,Sales & Inv,ok,40,27,,8.21 Labor Day Sale up to 40%,8.21 - 8.23,2025-08-21,2025-08-23,False,False,non_offer,0
+220f4fbd04f8,8.5.25 Back to School Kids up to 40% off PDL.xlsx,ALL OFFERS,ok,1678,30,4.0,8.5.25 Back to School Kids up to 40% off,8.5.25 - 8.11.25,2025-08-05,2025-08-11,True,False,promo_detail,1673
+220f4fbd04f8,8.5.25 Back to School Kids up to 40% off PDL.xlsx,In Stock,ok,40,5,,8.5.25 Back to School Kids up to 40% off,8.5.25 - 8.11.25,2025-08-05,2025-08-11,False,False,non_offer,0
+220f4fbd04f8,8.5.25 Back to School Kids up to 40% off PDL.xlsx,Marketing Dropdown,ok,4,1,,8.5.25 Back to School Kids up to 40% off,8.5.25 - 8.11.25,2025-08-05,2025-08-11,False,False,support,0
+220f4fbd04f8,8.5.25 Back to School Kids up to 40% off PDL.xlsx,Sales & Inv,ok,40,27,,8.5.25 Back to School Kids up to 40% off,8.5.25 - 8.11.25,2025-08-05,2025-08-11,False,False,non_offer,0
+a4ee9757b895,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL.xlsx,All Promo Discounts,ok,1727,21,3.0,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL,9.11.24-9.17.24,2024-09-11,2024-09-17,True,True,aggregate_promo_offers,1525
+a4ee9757b895,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL.xlsx,Dress & Legging Promo Discounts,ok,167,21,3.0,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL,9.11.24-9.17.24,2024-09-11,2024-09-17,True,False,promo_detail,163
+a4ee9757b895,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL.xlsx,Halloween Promo Discounts,ok,108,21,3.0,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL,9.11.24-9.17.24,2024-09-11,2024-09-17,True,False,promo_detail,104
+a4ee9757b895,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL.xlsx,Marketing Dropdown,ok,4,1,,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL,9.11.24-9.17.24,2024-09-11,2024-09-17,False,False,support,0
+a4ee9757b895,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL.xlsx,Offer In Stock,ok,40,15,,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL,9.11.24-9.17.24,2024-09-11,2024-09-17,False,False,non_offer,0
+a4ee9757b895,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL.xlsx,Sales & Inv,ok,40,30,,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL,9.11.24-9.17.24,2024-09-11,2024-09-17,False,False,non_offer,0
+a4ee9757b895,9.11.24 Halloween from $25 + Dresses & Leggings up to 40% off PDL.xlsx,Stripe Promo Discounts,ok,1727,21,3.0,9.13.24 40% off all Stripe PJs PDL,9.13.24-9.16.24,2024-09-13,2024-09-16,True,False,promo_detail,122
+2119fa886571,9.18.24 Big Fall Sale Up to 50% off + New Markdowns PDL.xlsx,All Promo Discounts,ok,1727,22,3.0,9.18.24 Big Fall Sale up to 50% off + New Markdowns,9.18.24-9.22.24,2024-09-18,2024-09-22,True,False,markdown,1270
+2119fa886571,9.18.24 Big Fall Sale Up to 50% off + New Markdowns PDL.xlsx,Markdowns,ok,1727,21,3.0,9.18.24 Big Fall Sale up to 50% off + New Markdowns,9.18.24,2024-09-18,2024-09-18,True,False,markdown,389
+2119fa886571,9.18.24 Big Fall Sale Up to 50% off + New Markdowns PDL.xlsx,Marketing Dropdown,ok,4,1,,9.18.24 Big Fall Sale up to 50% off + New Markdowns,9.18.24-9.22.24,2024-09-18,2024-09-22,False,False,support,0
+2119fa886571,9.18.24 Big Fall Sale Up to 50% off + New Markdowns PDL.xlsx,Offer In Stock,ok,40,15,,9.18.24 Big Fall Sale up to 50% off + New Markdowns,9.18.24-9.22.24,2024-09-18,2024-09-22,False,False,non_offer,0
+2119fa886571,9.18.24 Big Fall Sale Up to 50% off + New Markdowns PDL.xlsx,Sales & Inv,ok,40,30,,9.18.24 Big Fall Sale up to 50% off + New Markdowns,9.18.24-9.22.24,2024-09-18,2024-09-22,False,False,non_offer,0
+2f92a152c3cd,9.18.25 Big Fall Sale up to 50%.xlsx,0% Offers,ok,40,49,4.0,0% Offers,9.18-9.23,2025-09-18,2025-09-23,False,False,zero_percent_offers,0
+2f92a152c3cd,9.18.25 Big Fall Sale up to 50%.xlsx,2,ok,1985,49,4.0,Dresses & Leggings up to 40%,9.9,2025-09-09,2025-09-09,False,False,empty_placeholder,0
+2f92a152c3cd,9.18.25 Big Fall Sale up to 50%.xlsx,3,ok,2000,49,4.0,9.18.25 Big Fall Sale up to 50%,9.18-9.23,2025-09-18,2025-09-23,False,False,empty_placeholder,0
+2f92a152c3cd,9.18.25 Big Fall Sale up to 50%.xlsx,Data,ok,40,8,,9.18.25 Big Fall Sale up to 50%,9.18-9.23,2025-09-18,2025-09-23,False,False,support,0
+2f92a152c3cd,9.18.25 Big Fall Sale up to 50%.xlsx,Marketing Dropdown,ok,4,1,,9.18.25 Big Fall Sale up to 50%,9.18-9.23,2025-09-18,2025-09-23,False,False,support,0
+2f92a152c3cd,9.18.25 Big Fall Sale up to 50%.xlsx,New Markdowns,ok,2000,49,4.0,New Markdowns,9.18,2025-09-18,2025-09-18,True,False,markdown,69
+2f92a152c3cd,9.18.25 Big Fall Sale up to 50%.xlsx,Promo Offers,ok,1978,49,4.0,9.18.25 Big Fall Sale up to 50%,9.18-9.23,2025-09-18,2025-09-23,True,True,aggregate_promo_offers,648
+2f92a152c3cd,9.18.25 Big Fall Sale up to 50%.xlsx,Roll Up,ok,40,26,,9.18.25 Big Fall Sale up to 50%,9.18-9.23,2025-09-18,2025-09-23,False,False,rollup_or_pivot,0
+2f92a152c3cd,9.18.25 Big Fall Sale up to 50%.xlsx,Sales & Inv,ok,40,27,,9.18.25 Big Fall Sale up to 50%,9.18-9.23,2025-09-18,2025-09-23,False,False,non_offer,0
+d490ffa57efd,9.23.24 Sleep up to 30 + New Markdowns PDL.xlsx,All Promo Discounts,ok,1727,25,3.0,Sleep up to 30% off + Dresses Up to 40% off + New Markdowns PDL,9.23.24-9.30.24,2024-09-23,2024-09-30,True,False,markdown,1494
+d490ffa57efd,9.23.24 Sleep up to 30 + New Markdowns PDL.xlsx,Dresses,ok,73,25,3.0,Sleep up to 30% off + Dresses Up to 40% off + New Markdowns PDL,9.23.24-9.30.24,2024-09-23,2024-09-30,True,False,markdown,69
+d490ffa57efd,9.23.24 Sleep up to 30 + New Markdowns PDL.xlsx,Marketing Dropdown,ok,4,1,,Sleep up to 30% off + Dresses Up to 40% off + New Markdowns PDL,9.23.24-9.30.24,2024-09-23,2024-09-30,False,False,support,0
+d490ffa57efd,9.23.24 Sleep up to 30 + New Markdowns PDL.xlsx,New Markdowns,ok,337,25,3.0,Sleep up to 30% off + Dresses Up to 40% off + New Markdowns PDL,9.23.24-9.30.24,2024-09-23,2024-09-30,True,False,markdown,104
+d490ffa57efd,9.23.24 Sleep up to 30 + New Markdowns PDL.xlsx,Offer In Stock,ok,40,15,,Sleep up to 30% off + Dresses Up to 40% off + New Markdowns PDL,9.23.24-9.30.24,2024-09-23,2024-09-30,False,False,non_offer,0
+d490ffa57efd,9.23.24 Sleep up to 30 + New Markdowns PDL.xlsx,Sales & Inv,ok,40,30,,Sleep up to 30% off + Dresses Up to 40% off + New Markdowns PDL,9.23.24-9.30.24,2024-09-23,2024-09-30,False,False,non_offer,0
+d490ffa57efd,9.23.24 Sleep up to 30 + New Markdowns PDL.xlsx,Sleep Discounts,ok,688,25,3.0,Sleep up to 30% off + Dresses Up to 40% off + New Markdowns PDL,9.23.24-9.30.24,2024-09-23,2024-09-30,True,False,markdown,684
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,0% Offers,ok,40,50,4.0,0% Offers,9.24-9.30,2025-09-24,2025-09-30,False,False,zero_percent_offers,0
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,3,ok,2000,49,4.0,9.24.25 Sleep up to 30% & Hannaween up to 50%,9.24-9.30,2025-09-24,2025-09-30,False,False,empty_placeholder,0
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,Data,ok,40,8,,9.24.25 Sleep up to 30% & Hannaween up to 50%,9.24-9.30,2025-09-24,2025-09-30,False,False,support,0
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,Hannaween up to 50%,ok,2000,50,4.0,Hannaween up to 50%,9.24-9.30,2025-09-24,2025-09-30,True,False,promo_detail,39
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,Marketing Dropdown,ok,4,1,,9.24.25 Sleep up to 30% & Hannaween up to 50%,9.24-9.30,2025-09-24,2025-09-30,False,False,support,0
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,Promo Offers,ok,2000,50,4.0,9.24.25 Sleep up to 30% & Hannaween up to 50%,9.24-9.30,2025-09-24,2025-09-30,True,True,aggregate_promo_offers,1312
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,Roll Up,ok,40,26,,9.24.25 Sleep up to 30% & Hannaween up to 50%,9.24-9.30,2025-09-24,2025-09-30,False,False,rollup_or_pivot,0
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,Sales & Inv,ok,40,27,,9.24.25 Sleep up to 30% & Hannaween up to 50%,9.24-9.30,2025-09-24,2025-09-30,False,False,non_offer,0
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,Sheet1,ok,40,2,,9.24.25 Sleep up to 30% & Hannaween up to 50%,9.24-9.30,2025-09-24,2025-09-30,False,False,non_offer,0
+5960d7a7be1f,9.24.25 Sleep up to 30 PDL.xlsx,Sleep up to 30%,ok,1973,50,4.0,Sleep up to 30%,9.24-9.30,2025-09-24,2025-09-30,True,False,promo_detail,531
+e727de076f07,9.3.25 Sleep up to 40 PDL.xlsx,0% Offers,ok,40,49,4.0,0% Offers,9.3-9.8,2025-09-03,2025-09-08,False,False,zero_percent_offers,0
+e727de076f07,9.3.25 Sleep up to 40 PDL.xlsx,Baby Up to 50%,ok,2000,49,4.0,Baby Up to 50%,9.3,2025-09-03,2025-09-03,True,False,promo_detail,346
+e727de076f07,9.3.25 Sleep up to 40 PDL.xlsx,Data,ok,40,8,,9.3 Sleep up to 40% & Baby up to 50%,9.3-9.8,2025-09-03,2025-09-08,False,False,support,0
+e727de076f07,9.3.25 Sleep up to 40 PDL.xlsx,Grinch 50%,ok,2000,49,4.0,Grinch 50% Off,9.6-9.8,2025-09-06,2025-09-08,True,False,promo_detail,13
+e727de076f07,9.3.25 Sleep up to 40 PDL.xlsx,Marketing Dropdown,ok,4,1,,9.3 Sleep up to 40% & Baby up to 50%,9.3-9.8,2025-09-03,2025-09-08,False,False,support,0
+e727de076f07,9.3.25 Sleep up to 40 PDL.xlsx,Promo Offers,ok,1974,49,4.0,9.3 Sleep up to 40% & Baby up to 50%,9.3-9.8,2025-09-03,2025-09-08,True,True,aggregate_promo_offers,1485
+e727de076f07,9.3.25 Sleep up to 40 PDL.xlsx,Roll Up,ok,40,26,,9.3 Sleep up to 40% & Baby up to 50%,9.3-9.8,2025-09-03,2025-09-08,False,False,rollup_or_pivot,0
+e727de076f07,9.3.25 Sleep up to 40 PDL.xlsx,Sales & Inv,ok,40,27,,9.3 Sleep up to 40% & Baby up to 50%,9.3-9.8,2025-09-03,2025-09-08,False,False,non_offer,0
+e727de076f07,9.3.25 Sleep up to 40 PDL.xlsx,Sleep Up to 40%,ok,2000,49,4.0,Sleep Up to 40%,9.3,2025-09-03,2025-09-03,True,False,promo_detail,610
+ea455220d30d,9.9.25 Hannaween up to 40.xlsx,0% Offers,ok,40,49,4.0,0% Offers,9.9-9.17,2025-09-09,2025-09-17,False,False,zero_percent_offers,0
+ea455220d30d,9.9.25 Hannaween up to 40.xlsx,3,ok,2000,49,4.0,9.9.25 Hannaween up to 40% & Dresses & Leggings up to 40%,9.9-9.17,2025-09-09,2025-09-17,False,False,empty_placeholder,0
+ea455220d30d,9.9.25 Hannaween up to 40.xlsx,Data,ok,40,8,,9.9.25 Hannaween up to 40% & Dresses & Leggings up to 40%,9.9-9.17,2025-09-09,2025-09-17,False,False,support,0
+ea455220d30d,9.9.25 Hannaween up to 40.xlsx,Dresses & Leggings up to 40%,ok,1983,49,4.0,Dresses & Leggings up to 40%,9.9,2025-09-09,2025-09-09,True,False,promo_detail,174
+ea455220d30d,9.9.25 Hannaween up to 40.xlsx,Hannaween up to 40%,ok,1997,49,4.0,Hannaween up to 40%,9.9,2025-09-09,2025-09-09,True,False,promo_detail,82
+ea455220d30d,9.9.25 Hannaween up to 40.xlsx,Marketing Dropdown,ok,4,1,,9.9.25 Hannaween up to 40% & Dresses & Leggings up to 40%,9.9-9.17,2025-09-09,2025-09-17,False,False,support,0
+ea455220d30d,9.9.25 Hannaween up to 40.xlsx,Promo Offers,ok,1973,49,4.0,9.9.25 Hannaween up to 40% & Dresses & Leggings up to 40%,9.9-9.17,2025-09-09,2025-09-17,True,True,aggregate_promo_offers,1463
+ea455220d30d,9.9.25 Hannaween up to 40.xlsx,Roll Up,ok,40,26,,9.9.25 Hannaween up to 40% & Dresses & Leggings up to 40%,9.9-9.17,2025-09-09,2025-09-17,False,False,rollup_or_pivot,0
+ea455220d30d,9.9.25 Hannaween up to 40.xlsx,Sales & Inv,ok,40,27,,9.9.25 Hannaween up to 40% & Dresses & Leggings up to 40%,9.9-9.17,2025-09-09,2025-09-17,False,False,non_offer,0
+eaa11de3755f,COUPON TRACKER.xlsx,AVAILABLE CODES,ok,27,4,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,Bundle Exclusions ,ok,40,4,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,CONT. CODE USAGE,ok,16,6,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,CONTINGENCY CODES,ok,22,13,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,COUPON TRACKER,ok,40,32,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,Campaign Naming Conventions,ok,6,4,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,Cheat Sheet!,ok,32,5,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,DISCLAIMERS,ok,40,7,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,DON'T DELETE,ok,40,1,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,Ongoing Promotions ,ok,40,13,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,Sheet1,ok,2,3,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,Site Promo Code Past Offers,ok,7,14,,,,,,False,False,coupon,0
+eaa11de3755f,COUPON TRACKER.xlsx,holly working,ok,28,6,,,,,,False,False,coupon,0
+7b287f974058,Price Changes Effective 5.31 - New Arrivals Code.xlsx,Sheet1,ok,127,19,3.0,,,,,False,False,price_change,0

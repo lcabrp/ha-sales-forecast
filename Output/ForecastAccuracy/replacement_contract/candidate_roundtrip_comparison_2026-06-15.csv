@@ -1,0 +1,7 @@
+CandidateID,CandidateType,FallbackWeight,RecentVolumeCap,ForwardDemandRows,FD1ToFD14Units,RequiredSlotTiers,RequiredSlotsTotal,DuplicateKeys,Status
+corporate_clone_2026-06-15_v2,,,,33963,161188.0,206,18995.9,0,pass
+no_ml_baseline_2026-06-15_v2,no_ml_baseline,,,36908,446554.0,226,20237.2,0,pass
+seasonal_no_ml_baseline_2026-06-15_v2,seasonal_no_ml_baseline,,,43481,471847.0,232,26091.1,0,pass
+hybrid_ml_conservative_2026-06-15_v1,hybrid_ml_baseline,0.1,,18620,148392.0,193,11935.600000000002,0,pass
+hybrid_ml_more_conservative_2026-06-15_v1,hybrid_ml_baseline,0.05,,18620,140360.0,192,9076.7,0,pass
+hybrid_ml_capped_conservative_2026-06-15_v1,hybrid_ml_baseline,0.05,0.85,18620,140360.0,192,9076.7,0,pass

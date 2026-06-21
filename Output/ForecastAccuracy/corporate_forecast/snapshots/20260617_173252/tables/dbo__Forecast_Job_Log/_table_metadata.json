@@ -1,0 +1,17 @@
+{
+  "table": "dbo.Forecast_Job_Log",
+  "status": "ok",
+  "error": "",
+  "estimated_rows": 221038,
+  "estimated_columns": 2,
+  "rows_written": 221038,
+  "parts": 1,
+  "output_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\corporate_forecast\\snapshots\\20260617_173252\\tables\\dbo__Forecast_Job_Log",
+  "parquet_bytes": 1548778,
+  "filters": {},
+  "columns": [
+    "Process_Date",
+    "Process_Description"
+  ],
+  "elapsed_seconds": 1.05
+}

@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-06-12T09:05:49",
+  "output_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\sales_orders",
+  "sqlite_db": "",
+  "requested_start_date": "2025-01-01",
+  "requested_end_date": "2026-06-08",
+  "order_date_min": "2025-01-01",
+  "order_date_max": "2026-06-08",
+  "sku_day_rows": 3317066,
+  "daily_rows": 524,
+  "distinct_skus": 45400,
+  "ordered_units": 10887386.0,
+  "line_amount": 288316019.57,
+  "tables": {
+    "sales_order_lines_sample": 1000,
+    "sales_order_sku_day": 3317066,
+    "sales_order_daily_summary": 524,
+    "sales_order_daily_discount_bands": 3668
+  }
+}

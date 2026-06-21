@@ -1,0 +1,38 @@
+{
+  "table": "dbo.Offers",
+  "status": "ok",
+  "error": "",
+  "estimated_rows": 93435,
+  "estimated_columns": 21,
+  "rows_written": 1000,
+  "parts": 2,
+  "output_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\corporate_forecast\\snapshots\\20260617_173147\\tables\\dbo__Offers",
+  "parquet_bytes": 56214,
+  "filters": {
+    "max_rows_per_table": 1000
+  },
+  "columns": [
+    "OfferID",
+    "division",
+    "department",
+    "ItemName",
+    "ColorName",
+    "Class",
+    "SizeRange",
+    "Avg_Landed_Cost",
+    "Max_MSRP",
+    "DirectSellStartDate",
+    "DirectSellEndDate",
+    "DirectSeasonParentCode",
+    "RetailSellStartDate",
+    "RetailSellEndDate",
+    "RetailSeasonParentCode",
+    "WholesaleSellStartDate",
+    "WholesaleSellEndDate",
+    "WholesaleSeasonParentCode",
+    "OutletSellStartDate",
+    "OutletSellEndDate",
+    "OutletSeasonParentCode"
+  ],
+  "elapsed_seconds": 0.16
+}

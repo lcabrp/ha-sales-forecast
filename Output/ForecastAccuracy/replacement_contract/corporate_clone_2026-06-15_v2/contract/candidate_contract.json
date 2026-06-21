@@ -1,0 +1,132 @@
+{
+  "candidate_id": "corporate_clone_2026-06-15_v2",
+  "candidate_type": "corporate_workbook_clone",
+  "created_at": "2026-06-15T07:09:30",
+  "source_workbook": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Source\\Product Info for BRG_2026-06-01.xlsx",
+  "source_workbook_name": "Product Info for BRG_2026-06-01.xlsx",
+  "source_workbook_sha256": "dbf8d653a66647a06897f7c861dcfa144d85dd95adc5ed943d663b4040cf4daf",
+  "clone_workbook": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\corporate_clone_2026-06-15_v2\\input\\Product Info for BRG_2026-06-01__corporate_clone_2026-06-15_v2.xlsx",
+  "clone_workbook_sha256": "dbf8d653a66647a06897f7c861dcfa144d85dd95adc5ed943d663b4040cf4daf",
+  "forecast_start_date": "2026-06-02",
+  "required_candidate_tables": {
+    "daily_forecast": [
+      "CandidateID",
+      "SourceWorkbook",
+      "ForecastStartDate",
+      "SKU",
+      "ForecastDay",
+      "ForecastDate",
+      "ForecastUnits"
+    ],
+    "weekly_forecast": [
+      "CandidateID",
+      "SourceWorkbook",
+      "SKU",
+      "WeekIndex",
+      "WeekStartDate",
+      "ForecastUnits",
+      "IsFirst13Weeks"
+    ]
+  },
+  "ax_forward_demand_columns": [
+    "Division",
+    "Department",
+    "Class",
+    "Subclass",
+    "KeyCategoryView",
+    "SKU",
+    "Item",
+    "Color",
+    "Size",
+    "ProductGroupCode",
+    "SizeGroupCode",
+    "Velocity",
+    "SlotTier",
+    "ReplenishmentThreshold",
+    "PutawayIndicator",
+    "ProductStatus",
+    "ProductStatusDate",
+    "ProductStage",
+    "ReturnAction",
+    "ReturnActionDate",
+    "NVARExpectedQty",
+    "ForecastStartDate",
+    "FD1",
+    "FD2",
+    "FD3",
+    "FD4",
+    "FD5",
+    "FD6",
+    "FD7",
+    "FD8",
+    "FD9",
+    "FD10",
+    "FD11",
+    "FD12",
+    "FD13",
+    "FD14"
+  ],
+  "outputs": {
+    "daily_forecast": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\corporate_clone_2026-06-15_v2\\contract\\daily_forecast.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\corporate_clone_2026-06-15_v2\\contract\\daily_forecast_sample.csv",
+      "rows": 116676,
+      "columns": [
+        "CandidateID",
+        "SourceWorkbook",
+        "ForecastStartDate",
+        "SKU",
+        "ForecastDay",
+        "ForecastDate",
+        "ForecastUnits"
+      ]
+    },
+    "weekly_forecast": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\corporate_clone_2026-06-15_v2\\contract\\weekly_forecast.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\corporate_clone_2026-06-15_v2\\contract\\weekly_forecast_sample.csv",
+      "rows": 815984,
+      "columns": [
+        "CandidateID",
+        "SourceWorkbook",
+        "SKU",
+        "WeekIndex",
+        "WeekStartDate",
+        "ForecastUnits",
+        "IsFirst13Weeks"
+      ]
+    },
+    "product_hierarchy": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\corporate_clone_2026-06-15_v2\\contract\\product_hierarchy.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\corporate_clone_2026-06-15_v2\\contract\\product_hierarchy_sample.csv",
+      "rows": 238210,
+      "columns": [
+        "Offer",
+        "SKU",
+        "Division",
+        "Department",
+        "Class",
+        "KeyCategoryView",
+        "SizeGroup",
+        "GoLiveDate",
+        "OfferCount",
+        "Item",
+        "Color"
+      ]
+    },
+    "product_status": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\corporate_clone_2026-06-15_v2\\contract\\product_status.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\corporate_clone_2026-06-15_v2\\contract\\product_status_sample.csv",
+      "rows": 57351,
+      "columns": [
+        "StatusSKU",
+        "ProductStatus",
+        "ProductStatusDate"
+      ]
+    }
+  },
+  "notes": [
+    "This package is a corporate workbook clone used to prove the replacement harness.",
+    "Future model candidates should produce the daily and weekly forecast contract tables before ingestion scoring.",
+    "The cloned workbook is local/generated output and should not be committed."
+  ]
+}

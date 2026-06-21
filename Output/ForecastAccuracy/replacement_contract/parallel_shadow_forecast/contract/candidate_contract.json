@@ -1,0 +1,140 @@
+{
+  "candidate_id": "parallel_shadow_forecast",
+  "candidate_type": "quantile_hybrid_ml_baseline",
+  "created_at": "2026-06-17T17:09:16",
+  "source_workbook": "Source\\Product Info for BRG_2026-06-15.xlsx",
+  "source_workbook_name": "Product Info for BRG_2026-06-15.xlsx",
+  "source_workbook_sha256": "24887250e9cddff269d0d659621977a1f8a2ee5040bef223af101a048e2fd049",
+  "clone_workbook": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\input\\Product Info for BRG_2026-06-15__parallel_shadow_forecast.xlsx",
+  "clone_workbook_sha256": "50f7e531f10c27f9ac0d7f71b85f9630cb59f099aa8cc7094dd3be25280f1e43",
+  "forecast_start_date": "2026-06-16",
+  "ax_forward_demand_columns": [
+    "Division",
+    "Department",
+    "Class",
+    "Subclass",
+    "KeyCategoryView",
+    "SKU",
+    "Item",
+    "Color",
+    "Size",
+    "ProductGroupCode",
+    "SizeGroupCode",
+    "Velocity",
+    "SlotTier",
+    "ReplenishmentThreshold",
+    "PutawayIndicator",
+    "ProductStatus",
+    "ProductStatusDate",
+    "ProductStage",
+    "ReturnAction",
+    "ReturnActionDate",
+    "NVARExpectedQty",
+    "ForecastStartDate",
+    "FD1",
+    "FD2",
+    "FD3",
+    "FD4",
+    "FD5",
+    "FD6",
+    "FD7",
+    "FD8",
+    "FD9",
+    "FD10",
+    "FD11",
+    "FD12",
+    "FD13",
+    "FD14"
+  ],
+  "hybrid_method": {
+    "method": "quantile_hybrid_ml_baseline",
+    "forecast_start_date": "2026-06-16",
+    "quantile": 0.35,
+    "demand_censoring": true,
+    "corporate_blending": true,
+    "ml_threshold_units": 20.0,
+    "recent_fallback_weight": 0.1,
+    "recent_volume_cap": null,
+    "weekly_tail_scale": 0.5,
+    "train_rows": 69319,
+    "calibration_rows": 221107,
+    "future_rows": 3381910,
+    "forecast_totals": {
+      "fd1_to_fd14_units": 431717.0,
+      "first_13_week_units": 926039.2333838653,
+      "selected_ml_skus": 3,
+      "forecast_skus": 16220
+    }
+  },
+  "outputs": {
+    "daily_forecast": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\daily_forecast.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\daily_forecast_sample.csv",
+      "rows": 227080,
+      "columns": [
+        "CandidateID",
+        "SourceWorkbook",
+        "ForecastStartDate",
+        "SKU",
+        "ForecastDay",
+        "ForecastDate",
+        "ForecastUnits"
+      ]
+    },
+    "weekly_forecast": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\weekly_forecast.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\weekly_forecast_sample.csv",
+      "rows": 421720,
+      "columns": [
+        "CandidateID",
+        "SourceWorkbook",
+        "SKU",
+        "WeekIndex",
+        "WeekStartDate",
+        "ForecastUnits",
+        "IsFirst13Weeks"
+      ]
+    },
+    "product_hierarchy": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\product_hierarchy.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\product_hierarchy_sample.csv",
+      "rows": 238210,
+      "columns": [
+        "Offer",
+        "SKU",
+        "Division",
+        "Department",
+        "Class",
+        "KeyCategoryView",
+        "SizeGroup",
+        "GoLiveDate",
+        "OfferCount",
+        "Item",
+        "Color"
+      ]
+    },
+    "product_status": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\product_status.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\product_status_sample.csv",
+      "rows": 68427,
+      "columns": [
+        "StatusSKU",
+        "ProductStatus",
+        "ProductStatusDate"
+      ]
+    },
+    "signal_sku_summary": {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\signal_sku_summary.parquet",
+      "sample_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\replacement_contract\\parallel_shadow_forecast\\contract\\signal_sku_summary_sample.csv",
+      "rows": 16220,
+      "columns": [
+        "SKU",
+        "FD1ToFD14Units",
+        "ML14DayForecastUnits",
+        "Recent14DayUnits",
+        "SelectedByMLThreshold",
+        "RecentFallbackWeight"
+      ]
+    }
+  }
+}

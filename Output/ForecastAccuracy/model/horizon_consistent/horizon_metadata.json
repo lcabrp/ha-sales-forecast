@@ -1,0 +1,32 @@
+{
+  "champion_model": "hgb_absolute_log",
+  "exclude_corporate_features": true,
+  "generated_at_utc": "2026-06-17T20:06:09.174391+00:00",
+  "keep_zero_frac": 0.3,
+  "learning_rate": 0.06,
+  "max_horizon": 14,
+  "max_iter": 180,
+  "max_train_rows": 500000,
+  "notes": [
+    "HorizonConsistentMLForecastQty is trained on (SKU, origin) x horizon rows with origin-state lag features, target-date calendar/promo features, and Horizon as a feature, then scored leak-free over FD1..FD14.",
+    "FrozenChampionMLForecastQty is the plain champion trained on raw panel rows but scored at the same honest horizon, for a like-for-like comparison.",
+    "Both are compared against corporate and recent-demand baselines on an identical grid."
+  ],
+  "origin_stride": 14,
+  "output_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\horizon_consistent",
+  "panel": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\model\\model_sku_day_panel.parquet",
+  "windows": [
+    {
+      "fd_end": "2026-05-25",
+      "fd_start": "2026-05-12",
+      "label": "y2026_fd_a",
+      "origin": "2026-05-11"
+    },
+    {
+      "fd_end": "2026-06-08",
+      "fd_start": "2026-05-26",
+      "label": "y2026_fd_b",
+      "origin": "2026-05-25"
+    }
+  ]
+}

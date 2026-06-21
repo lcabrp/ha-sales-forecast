@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-06-12T11:41:52",
+  "source_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Source",
+  "rows": 210057,
+  "snapshot_count": 10,
+  "distinct_skus": 36222,
+  "snapshot_date_range": [
+    "2024-03-19",
+    "2026-06-01"
+  ],
+  "outputs": {
+    "snapshots": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inbound\\product_info_inbound_snapshots.parquet",
+    "summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inbound\\product_info_inbound_snapshot_summary.csv"
+  },
+  "notes": [
+    "Workbook snapshots are historical planning snapshots, useful for backtesting.",
+    "AX live open PO tables are still preferred for current operational state."
+  ]
+}

@@ -1,0 +1,4 @@
+Scope,Rows,UniqueSKUs,NoForecastRows,NoForecastSKUs
+cube_locations,2,0,0,0
+cube_live_inventory,0,0,0,0
+cube_recent_work_14d,302,75,66,16
