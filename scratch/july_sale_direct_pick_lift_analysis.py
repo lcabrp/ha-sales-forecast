@@ -4,7 +4,7 @@ This scratch analysis avoids Planner totals and uses warehouse DirectPick actual
 from local Parquet artifacts:
 
 - 2025 analog sale and baseline:
-  scratch/velocity_policy_replay/direct_pick_sku_day_15mo.parquet
+    Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2025.parquet
 - 2026 current pre-sale baseline:
   Output/ForecastAccuracy/history/parquet/actual_sku_day_modified.parquet
 
@@ -66,7 +66,7 @@ def load_category_map() -> pd.DataFrame:
 
 def load_2025_direct_pick() -> pd.DataFrame:
     df = pd.read_parquet(
-        PROJECT_ROOT / "scratch" / "velocity_policy_replay" / "direct_pick_sku_day_15mo.parquet"
+        FORECAST_ROOT / "direct_pick_history" / "parquet" / "direct_pick_sku_day_modified_2025.parquet"
     )
     df["Date"] = pd.to_datetime(df["PickDate"]).dt.normalize()
     df["Units"] = pd.to_numeric(df["PickUnits"], errors="coerce").fillna(0)

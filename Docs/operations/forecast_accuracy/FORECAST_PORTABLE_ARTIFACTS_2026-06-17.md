@@ -1,9 +1,13 @@
 # Forecast Portable Artifacts - 2026-06-17
 
 This note records the current portability contract for the forecast-replacement
-and monitoring data artifacts. The goal is to keep as much useful data as
-possible in Git while avoiding GitHub's `100 MB` single-file limit and keeping
-regenerable bulky artifacts local.
+artifacts in `ha-sales-forecast`. The goal is to keep as much useful forecast
+data as possible in Git while avoiding GitHub's `100 MB` single-file limit and
+keeping regenerable bulky artifacts local.
+
+Extraction update, 2026-06-25: monitoring, market-basket, zone-map generation,
+and daily layout-compliance artifacts belong to sibling repos unless they are
+copied here as compact forecast facts with a documented forecast use.
 
 ## Size Audit
 
@@ -49,8 +53,6 @@ Largest tracked portable artifacts at the time of the audit:
 | Artifact | Approx size | Keep tracked? | Reason |
 | --- | ---: | --- | --- |
 | `Output/ForecastAccuracy/sales_orders/sales_order_sku_day.parquet` | `68.4 MB` | Yes | Core SKU/day demand fact, expensive to rebuild |
-| `Output/Monitoring/Monitoring_History.db` | `51.9 MB` | Yes | Operational monitoring timeline and forecast SlotTier SCD |
-| `Output/MarketBasket/Market_Basket_Data_12mo.parquet` | `39.1 MB` | Yes | Compact market-basket input |
 | `Output/ForecastAccuracy/history/parquet/forecast_sku_day.parquet` | `28.3 MB` | Yes | Historical corporate forecast fact |
 | `Output/ForecastAccuracy/inventory/inventory_sku_day.parquet` | `27.2 MB` | Yes | Forecast inventory feature fact |
 
@@ -60,7 +62,6 @@ Largest untracked/not-ignored candidates at the time of the audit:
 | --- | ---: | --- |
 | `Output/ForecastAccuracy/inventory/ax_inventory_history_sku_day.parquet` | `27.3 MB` | Safe to track; useful model input |
 | `Output/Ingestion/FwdDemandCSV_2026-06-16.csv` | `5.5 MB` | Safe to track; confirmed AX upload |
-| `Output/Monitoring/forecast_snapshots/confirmed_raw/FwdDemandCSV_2026-06-16_99541d05594b.csv` | `5.5 MB` | Safe to track; exact confirmed AX payload |
 | `Source/Planner/2024 Planner.xlsx` through `2026 Planner.xlsx` | `1.9-2.5 MB` | Safe to track if the team is comfortable storing Planner workbooks |
 
 ## Deliberately Local Or Ignored
@@ -71,19 +72,14 @@ These files are over `100 MB` locally and should stay ignored:
 | --- | ---: | --- |
 | `Output/ForecastAccuracy/model/model_sku_day_panel.parquet` | `221 MB` | Monolithic model panel; split monthly parts are the portable form |
 | `tmp/forecast_history_smoke_20260601_v2.db` | `183 MB` | Temporary smoke-test database |
-| `Output/Monitoring/Monitoring_History_backup_before_scd_*.db` | `173 MB` | Point-in-time backup; current `Monitoring_History.db` is tracked |
 | `.venv/Lib/site-packages/xgboost/lib/xgboost.dll` | `137 MB` | Environment dependency, rebuilt by `uv` |
-| `Docs/legacy/BRG/Tools/.../Reserve Storage Tool_*.xlsm` | `114 MB` | Large legacy workbook; excluded by `Docs/legacy/BRG/Tools/` |
 
 ## Portable Data Contract
 
 Track these when under `100 MB`:
 
-- confirmed AX forward-demand CSV snapshots under
-  `Output/Monitoring/forecast_snapshots/confirmed_raw/`;
-- narrow forecast SlotTier snapshots under
-  `Output/Monitoring/forecast_snapshots/narrow/`;
-- compact monitoring history under `Output/Monitoring/Monitoring_History.db`;
+- confirmed AX forward-demand CSV snapshots only when promoted under this repo's
+  forecast-artifact folders;
 - compact sales, promotion, inbound, inventory, warehouse-supply, reservation,
   and Planner Parquet/CSV/JSON facts under `Output/ForecastAccuracy/`;
 - Planner extracted totals and snapshots under
@@ -99,7 +95,7 @@ Keep local by default:
 - the monolithic model panel `model_sku_day_panel.parquet`;
 - raw replacement candidate package folders under
   `Output/ForecastAccuracy/replacement_contract/`;
-- local SQLite convenience DBs other than the monitoring DB;
+- local SQLite convenience DBs;
 - raw allocation-link facts with sales-order identifiers.
 
 Replacement candidate package folders are intentionally ignored for now even
@@ -122,12 +118,6 @@ Rebuild the panel from source facts if monthly parts are missing:
 ```powershell
 uv run python scripts/python/forecast_model_panel.py --workers 8
 uv run python scripts/python/forecast_model_split_panel.py
-```
-
-Refresh current pick-face inventory and inbound facts:
-
-```powershell
-uv run python scripts/python/monitoring/inventory_zone_compliance_monitor.py
 ```
 
 Refresh AX saved inventory history:
@@ -170,7 +160,7 @@ Rebuild the current velocity-policy shadow panel after confirmed forecast
 uploads:
 
 ```powershell
-uv run python scratch/build_velocity_policy_shadow_panel.py --overwrite
+uv run python scripts/python/forecast_direct_pick_history.py --overwrite
 uv run python scratch/backtest_velocity_stability_controls.py --overwrite
 ```
 

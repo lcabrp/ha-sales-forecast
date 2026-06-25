@@ -95,9 +95,11 @@ def parse_args() -> argparse.Namespace:
         "--yoy-direct-pick-history-path",
         type=Path,
         default=Path(__file__).resolve().parents[2]
-        / "scratch"
-        / "velocity_policy_replay"
-        / "direct_pick_sku_day_15mo.parquet",
+        / "Output"
+        / "ForecastAccuracy"
+        / "direct_pick_history"
+        / "parquet"
+        / "direct_pick_sku_day_modified_2025.parquet",
     )
     parser.add_argument("--yoy-analog-sale-start", default="2025-06-21")
     parser.add_argument("--yoy-analog-sale-end", default="2025-07-04")

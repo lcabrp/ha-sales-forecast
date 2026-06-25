@@ -17,7 +17,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import numpy as np
 import pandas as pd
 
 PYTHON_DIR = Path(__file__).resolve().parent
@@ -26,25 +25,23 @@ if str(PYTHON_DIR) not in sys.path:
 
 from output_paths import PROJECT_ROOT  # noqa: E402
 
-import forecast_model_train as fmt
-import forecast_replacement_ml_backtest as frmb
-import forecast_replacement_ml_quantile_backtest as frmqb
-from forecast_model_panel import (
+import forecast_model_train as fmt  # noqa: E402
+import forecast_replacement_ml_backtest as frmb  # noqa: E402
+import forecast_replacement_ml_quantile_backtest as frmqb  # noqa: E402
+from forecast_model_panel import (  # noqa: E402
     PDL_SKU_FEATURES_PATH,
     PROMO_DAILY_PATH,
 )
-from forecast_model_train import (
+from forecast_model_train import (  # noqa: E402
     DATE_COLUMN,
     DEFAULT_PANEL_PATH,
     MODEL_DIR,
     TARGET_COLUMN,
-    apply_calibration,
     configure_threads,
     load_panel,
-    prepare_xy,
     require_sklearn,
 )
-from forecast_replacement_backtest import (
+from forecast_replacement_backtest import (  # noqa: E402
     ACTUALS_PATH,
     FORECAST_DAY_PATH,
     FORECAST_SNAPSHOT_PATH,
@@ -57,7 +54,7 @@ from forecast_replacement_backtest import (
     score_forecast,
     summarize_by_candidate,
 )
-from forecast_replacement_ml_backtest import (
+from forecast_replacement_ml_backtest import (  # noqa: E402
     aggregate_forecast,
     combine_with_recent_fallback,
     load_daily_promotions,

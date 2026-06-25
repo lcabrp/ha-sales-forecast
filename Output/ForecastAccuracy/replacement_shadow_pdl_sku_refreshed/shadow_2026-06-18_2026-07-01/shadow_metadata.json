@@ -1,12 +1,14 @@
 {
-  "generated_at": "2026-06-18T09:40:41",
+  "generated_at": "2026-06-25T15:54:34",
   "forecast_start": "2026-06-18",
   "forecast_end": "2026-07-01",
   "partial_actuals": true,
-  "actuals_available_through": "2026-06-18",
-  "reused_frozen_forecast": false,
+  "actuals_available_through": "2026-06-25",
+  "reused_frozen_forecast": true,
+  "loaded_external_frozen_forecast": false,
+  "base_frozen_forecast_path": "",
   "forecast_path": "Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\shadow_daily_forecasts.parquet",
-  "frozen_forecast_generated_at": null,
+  "frozen_forecast_generated_at": "2026-06-25T15:35:36",
   "threads_requested": 8,
   "model": "hgb_absolute_log",
   "ml_threshold_units": 20.0,
@@ -14,14 +16,10 @@
     0.05,
     0.1
   ],
-  "recent_volume_caps": [
-    0.85,
-    1.0,
-    1.1
-  ],
-  "train_rows": 500000,
-  "calibration_rows": 195998,
-  "future_rows": 3387986,
+  "recent_volume_caps": [],
+  "train_rows": 0,
+  "calibration_rows": 0,
+  "future_rows": 0,
   "future_inputs": {
     "candidate_universe_skus": 241999,
     "snapshot_attribute_skus": 241500,
@@ -46,5 +44,6 @@
   "corporate": {
     "status": "missing_exact_start"
   },
+  "yoy_sale_lift_overlay": null,
   "score_grain": "SKU/day"
 }

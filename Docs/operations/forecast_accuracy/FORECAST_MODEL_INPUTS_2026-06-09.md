@@ -563,10 +563,10 @@ uv run python scripts/python/monitoring/inventory_zone_compliance_monitor.py --s
 ```
 
 This preserves the existing monitoring outputs under
-`Output/Monitoring/reports/` and `Output/Monitoring/Monitoring_History.db`, then
-updates the forecast-model Parquet files. The Parquet files are the preferred
-modeling inputs; the SQLite database is for compact monitoring metrics and
-operator reporting.
+`Output/Monitoring/reports/` and `Output/Monitoring/Monitoring_History.db`, as
+owned by `ha-kydc-monitoring`, then updates the forecast-model Parquet files.
+The Parquet files are the preferred modeling inputs; the SQLite database is for
+compact monitoring metrics and operator reporting.
 
 Current forecast-inventory Parquet grain:
 

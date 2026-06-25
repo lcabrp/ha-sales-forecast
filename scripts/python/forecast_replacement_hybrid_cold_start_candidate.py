@@ -24,19 +24,19 @@ if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
 
 
-import forecast_model_train as fmt
-import forecast_replacement_ml_backtest as frmb
-import forecast_replacement_ml_quantile_backtest as frmqb
-import ingestion_pipeline as ingestion
-from forecast_model_compare_sklearn import require_sklearn
-from forecast_model_panel import PROMO_DAILY_PATH
-from forecast_model_train import (
+import forecast_model_train as fmt  # noqa: E402
+import forecast_replacement_ml_backtest as frmb  # noqa: E402
+import forecast_replacement_ml_quantile_backtest as frmqb  # noqa: E402
+import ingestion_pipeline as ingestion  # noqa: E402
+from forecast_model_compare_sklearn import require_sklearn  # noqa: E402
+from forecast_model_panel import PROMO_DAILY_PATH  # noqa: E402
+from forecast_model_train import (  # noqa: E402
     DEFAULT_PANEL_PATH,
     configure_threads,
     load_panel,
 )
-from forecast_replacement_backtest import load_actuals
-from forecast_replacement_contract import (
+from forecast_replacement_backtest import load_actuals  # noqa: E402
+from forecast_replacement_contract import (  # noqa: E402
     ACTUALS_PATH,
     DEFAULT_LOOKBACK_DAYS,
     DEFAULT_OUTPUT_ROOT,
@@ -48,12 +48,12 @@ from forecast_replacement_contract import (
     run_ingestion_roundtrip,
     write_brg_workbook,
 )
-from forecast_replacement_ml_backtest import (
+from forecast_replacement_ml_backtest import (  # noqa: E402
     load_daily_promotions,
     load_pdl_features,
     train_window,
 )
-from forecast_replacement_hybrid_candidate import (
+from forecast_replacement_hybrid_candidate import (  # noqa: E402
     source_universe,
     source_snapshot_attributes,
     recent_daily_forecast,
@@ -63,15 +63,15 @@ from forecast_replacement_hybrid_candidate import (
     build_weekly_from_daily,
     build_signal_summary,
 )
-from forecast_replacement_ml_quantile_backtest import run_quantile_stage
-from forecast_replacement_ml_cold_start import (
+from forecast_replacement_ml_quantile_backtest import run_quantile_stage  # noqa: E402
+from forecast_replacement_ml_cold_start import (  # noqa: E402
     DEFAULT_SNAPSHOT_DIR,
     load_forecast_db_attributes,
     build_future_rows_cold_start,
 )
 
 # Set global db_attrs reference for build_future_rows_cold_start override
-import forecast_replacement_ml_cold_start as cold_start_mod
+import forecast_replacement_ml_cold_start as cold_start_mod  # noqa: E402
 
 DEFAULT_CANDIDATE_TYPE = "cold_start_hybrid_ml"
 DEFAULT_MODEL = "hgb_cold_start_quantile"
@@ -323,7 +323,7 @@ def main() -> None:
         forecast_start,
         args.weekly_tail_scale,
     )
-    signal = build_signal_summary(
+    build_signal_summary(
         df_14day,
         ml_totals,
         recent_daily,

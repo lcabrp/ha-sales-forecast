@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-06-19T13:37:07.313896+00:00",
+  "generated_at_utc": "2026-06-25T19:53:22.754525+00:00",
   "mode": "forecast_training_direct_pick_history",
   "source": "DAX_Archive.arc/DAX_PROD.dbo WHSWORKTABLE/WHSWORKLINE/INVENTDIM",
   "date_basis": "modified",
   "window": {
     "start_date": "2022-01-01",
-    "end_date_exclusive": "2026-06-19"
+    "end_date_exclusive": "2026-06-26"
   },
-  "archive_boundary": "2026-06-13",
+  "archive_boundary": "2026-06-20",
   "filters": {
     "DATAAREAID": "ha",
     "PARTITION": 5637144576,
@@ -44,7 +44,7 @@
   ],
   "shards": [
     {
-      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2022.parquet",
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2022.parquet",
       "bytes": 6895277,
       "sha256": "58c41e3d681ea93da66d1eedf734b944d57740ce5aadf00778db6a6b21a54813",
       "rows": 2119178,
@@ -56,7 +56,7 @@
       "year": 2022
     },
     {
-      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2023.parquet",
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2023.parquet",
       "bytes": 7132792,
       "sha256": "8fe74ecdb1be7d977badfa5dc4f17a9fd2ddc1d76ac80877026b755b9215b1cb",
       "rows": 2154543,
@@ -68,7 +68,7 @@
       "year": 2023
     },
     {
-      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2024.parquet",
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2024.parquet",
       "bytes": 7493913,
       "sha256": "1cf85bace815307bf345f1cec2c269fa2d00749c42a14c267e85525b8b341f6c",
       "rows": 2289654,
@@ -80,7 +80,7 @@
       "year": 2024
     },
     {
-      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2025.parquet",
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2025.parquet",
       "bytes": 7580333,
       "sha256": "c630a3ac63ab13b1e1f5beeb5242728b0d7be74eab98cef846e3109275ef8923",
       "rows": 2366162,
@@ -92,26 +92,26 @@
       "year": 2025
     },
     {
-      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2026.parquet",
-      "bytes": 3339734,
-      "sha256": "392d664fc9c07848e4e3c42c9f8b6257e5218f90c941515ebf7390250d52e3d0",
-      "rows": 985883,
-      "distinct_skus": 24569,
-      "pick_units": 2728805.0,
-      "pick_lines": 2685382,
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2026.parquet",
+      "bytes": 3501378,
+      "sha256": "cfe00164994601c32079d235bca77a71436383ed76d04a20eae87575807045bf",
+      "rows": 1031435,
+      "distinct_skus": 24794,
+      "pick_units": 2908823.0,
+      "pick_lines": 2862351,
       "start_date": "2026-01-02",
-      "end_date": "2026-06-18",
+      "end_date": "2026-06-25",
       "year": 2026
     }
   ],
   "totals": {
-    "rows": 9915420,
-    "pick_units": 38574387.0,
-    "pick_lines": 37302908
+    "rows": 9960972,
+    "pick_units": 38754405.0,
+    "pick_lines": 37479877
   },
   "outputs": {
-    "manifest": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\direct_pick_history_manifest.json",
-    "summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\direct_pick_history_year_summary.csv",
-    "parquet_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\direct_pick_history\\parquet"
+    "manifest": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\direct_pick_history_manifest.json",
+    "summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\direct_pick_history_year_summary.csv",
+    "parquet_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\parquet"
   }
 }

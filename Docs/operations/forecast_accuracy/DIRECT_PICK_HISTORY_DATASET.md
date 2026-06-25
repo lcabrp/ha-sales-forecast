@@ -9,10 +9,10 @@ Current useful pick artifacts found on disk:
 
 | File | Grain | Date Span | Use |
 |---|---|---:|---|
-| `scratch/velocity_policy_replay/direct_pick_sku_day_15mo.parquet` | SKU/day DirectPick totals by work-created date | 2025-03-04 through 2026-06-02 | Useful for July 2025 sale analogs and velocity-policy work. |
+| `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2025.parquet` | SKU/day DirectPick totals by work-created date | 2025-01-01 through 2025-12-31 | Useful for July sale analogs and forecast work. |
 | `Output/ForecastAccuracy/history/parquet/actual_sku_day_modified.parquet` | SKU/day DirectPick totals by pick-line modified date | 2025-11-01 through 2026-06-18 | Current model target and scorecard actuals. |
 | `Output/MarketBasket/Market_Basket_Data_12mo.parquet` | pick line/order/SKU | 2025-04-01 through 2026-04-06 | Co-purchase/pathing analysis, not needed for forecast target training. |
-| `scratch/velocity_policy_replay/physical_replen_touches_3y.parquet` | replenishment touch | 2023-06-02 through 2026-06-02 | Supply/labor pressure, not demand. Do not use as sold-unit history. |
+| `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2024.parquet` | replenishment touch | 2024-01-01 through 2024-12-31 | Supply/labor pressure, not demand. Do not use as sold-unit history. |
 
 The gap for event learning is older fulfilled DirectPick demand. The local
 DirectPick demand caches do not reach October 2024/2023, so they are not enough

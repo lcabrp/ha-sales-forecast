@@ -17,9 +17,12 @@ If the forecast database is missing or needs to be recreated:
 
 ```powershell
 uv run python scripts/python/forecast_accuracy.py import-forecasts
-uv run python scripts/python/forecast_accuracy.py import-forecasts --input-dir Output\Monitoring\forecast_snapshots\confirmed_raw
 uv run python scripts/python/forecast_accuracy.py summary
 ```
+
+Confirmed AX uploads now need to be copied or promoted into a forecast-owned
+artifact folder before this repo imports them. `Output\Monitoring\...` is a
+sibling-repo path after the extraction.
 
 If you need the imported actuals for a date range, rerun the actuals import with the correct window documented in the forecast-accuracy runbook:
 

@@ -4,12 +4,10 @@ repo_health_check.py - Lightweight pre-flight checks for the repo.
 Default checks:
     1. Parse-only syntax validation for repo Python files (no .pyc writes)
     2. Optional `ruff check` if Ruff is installed
-    3. Optional zone-map QA via audit_map_quality.py if Proposed_Zone_Map.csv exists
 
 Examples:
     python scripts/python/repo_health_check.py
     python scripts/python/repo_health_check.py --syntax-only
-    python scripts/python/repo_health_check.py --skip-audit
     python scripts/python/repo_health_check.py --skip-ruff
 """
 
@@ -24,16 +22,8 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT_DIR = Path(__file__).resolve().parent
-OUTPUT_DIR = PROJECT_ROOT / "Output"
-ZONE_MAP = OUTPUT_DIR / "Layout" / "maps" / "Proposed_Zone_Map.csv"
 RUFF_TARGETS = [
-    "scripts/python/market_basket_analysis.py",
-    "scripts/python/zone_allocator.py",
-    "scripts/python/audit_map_quality.py",
-    "scripts/python/create_virtual_layout.py",
-    "scripts/python/evaluate_layout.py",
-    "scripts/python/generate_move_list.py",
-    "scripts/python/repo_health_check.py",
+    "scripts/python",
 ]
 
 
@@ -119,37 +109,10 @@ def run_ruff_check() -> int:
     return result.returncode
 
 
-def run_zone_map_audit() -> int:
-    print()
-    print("=" * 72)
-    print("ZONE MAP AUDIT")
-    print("=" * 72)
-
-    if not ZONE_MAP.exists():
-        print(
-            "[SKIP] Output/Layout/maps/Proposed_Zone_Map.csv not found. "
-            "Generate it with zone_allocator.py first."
-        )
-        return 0
-
-    audit_script = SCRIPT_DIR / "audit_map_quality.py"
-    result = subprocess.run(
-        [sys.executable, str(audit_script)],
-        cwd=PROJECT_ROOT,
-        text=True,
-    )
-    if result.returncode == 0:
-        print("[PASS] Zone map audit passed.")
-    else:
-        print(f"[FAIL] Zone map audit exited with code {result.returncode}.")
-    return result.returncode
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run lightweight repo health checks.")
     parser.add_argument("--syntax-only", action="store_true", help="Run only parse/syntax validation.")
     parser.add_argument("--skip-ruff", action="store_true", help="Skip Ruff even if installed.")
-    parser.add_argument("--skip-audit", action="store_true", help="Skip audit_map_quality.py.")
     args = parser.parse_args()
 
     exit_code = 0
@@ -160,10 +123,6 @@ def main() -> None:
     if not args.syntax_only and not args.skip_ruff:
         ruff_code = run_ruff_check()
         exit_code = max(exit_code, ruff_code)
-
-    if not args.syntax_only and not args.skip_audit:
-        audit_code = run_zone_map_audit()
-        exit_code = max(exit_code, audit_code)
 
     print()
     print("=" * 72)

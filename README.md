@@ -14,13 +14,13 @@ This repo owns:
 - replacement forecast backtests and shadow windows
 - ML and hybrid forecast candidates
 - planner-based forecast comparison and scaling experiments
-- velocity/SlotTier policy research when the question is forecast stability, demand quality, or replenishment-pressure criteria
 
 This repo does not own:
 
 - AX forward-demand ingestion production runs
 - warehouse zone-map painting/allocation
 - daily layout monitoring after map cutover
+- monitoring history and SlotTier SCD maintenance, which live in `ha-kydc-monitoring`
 
 ## Layout
 

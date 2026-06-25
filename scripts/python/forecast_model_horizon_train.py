@@ -49,7 +49,7 @@ import argparse
 import json
 import sys
 from copy import copy
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -219,7 +219,6 @@ def horizon_training_frame(
     args: argparse.Namespace,
 ) -> pd.DataFrame:
     """Expand (SKU active at origin) x horizon into a leak-free training table."""
-    rng = np.random.default_rng(args.random_state)
     target_dates = {o + pd.Timedelta(days=h) for o in origins for h in range(1, MAX_HORIZON + 1)}
     sold_lookup = build_lookup_by_date(panel, [TARGET_COLUMN], target_dates)
     promo_lookup = build_lookup_by_date(panel, promo_cols, target_dates)

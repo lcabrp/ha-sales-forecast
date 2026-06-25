@@ -7,7 +7,7 @@ entry first.
 ## 2026-06-18 - July sale DirectPick YoY lift overlay decision
 
 ### Context reviewed
-- `scratch/velocity_policy_replay/direct_pick_sku_day_15mo.parquet`
+- `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2025.parquet`
 - `scratch/july_sale_direct_pick_lift_analysis.py`
 - `Output/ForecastAccuracy/replacement_shadow_pdl_sku_refreshed/shadow_2026-06-18_2026-07-01/`
 - `Docs/operations/forecast_accuracy/FORECAST_REPLACEMENT_RESET_2026-06-15.md`
@@ -60,7 +60,7 @@ sale-regime overlay:
 ### Context reviewed
 
 - `Docs/operations/forecast_accuracy/FORECAST_REPLACEMENT_RESET_2026-06-15.md`
-- `Docs/technical/VELOCITY_POLICY_SHADOW_FINDINGS_2026-06-16.md`
+- `Docs/operations/forecast_accuracy/DIRECT_PICK_HISTORY_DATASET.md`
 - `Docs/operations/forecast_accuracy/CORPORATE_FORECAST_DB_SNAPSHOT_2026-06-17.md`
 - `Docs/operations/forecast_accuracy/FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md`
 - replacement backtest / ml-backtest / hybrid / volume-brake / policy scripts and

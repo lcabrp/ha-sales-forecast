@@ -988,16 +988,16 @@ Scratch analysis:
 ```text
 Script: scratch/july_sale_direct_pick_lift_analysis.py
 Output: scratch/july_sale_direct_pick_lift_outputs/
-Prior DirectPick source: scratch/velocity_policy_replay/direct_pick_sku_day_15mo.parquet
+Prior DirectPick source: Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2025.parquet
 Current actual source: Output/ForecastAccuracy/history/parquet/actual_sku_day_modified.parquet
 Shadow source: Output/ForecastAccuracy/replacement_shadow_pdl_sku_refreshed/shadow_2026-06-18_2026-07-01/
 ```
 
 Important source distinction:
 
-- `scratch/velocity_policy_replay/direct_pick_sku_day_15mo.parquet` is the
+- `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2025.parquet` is the
   usable SKU/day `DirectPick` demand fact for the 2025 July-sale analog.
-- `scratch/velocity_policy_replay/physical_replen_touches_3y.parquet` is a
+- `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2024.parquet` is a
   three-year physical replenishment-touch fact, useful for velocity/routing
   policy, but it is not a three-year DirectPick demand fact.
 
