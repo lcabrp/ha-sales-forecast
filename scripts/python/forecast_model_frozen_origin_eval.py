@@ -40,15 +40,6 @@ It trains the current champion (``hgb_absolute_log``) on data strictly before th
 forecast window, then for each window reports, per FD-day and aggregated:
 WAPE, bias, sold-unit coverage and zero-forecast sold %, for the model(s) and the
 existing baselines (corporate, recent-7, recent-28, hybrid).
-
-EXAMPLE
--------
-    uv run python scripts/python/forecast_model_frozen_origin_eval.py \
-        --threads 8 --max-train-rows 500000 --max-iter 180 \
-        --exclude-corporate-features \
-        --modes frozen recursive leaky \
-        --window 2026-05-12:2026-05-25:y2026_fd_a \
-        --window 2026-05-26:2026-06-08:y2026_fd_b
 """
 
 from __future__ import annotations
@@ -102,6 +93,11 @@ RECURSIVE_SEED_DAYS = 28
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the frozen-origin evaluation script.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Frozen-origin / recursive forward forecast evaluation.")
     parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -145,6 +141,19 @@ DEFAULT_WINDOWS = [
 
 
 def parse_window(value: str) -> dict[str, Any]:
+    """Parse a forecast window string format (FD_START:FD_END:LABEL).
+
+    Establishes the forecast origin as the day before FD_START.
+
+    Args:
+        value: Window parameter string.
+
+    Returns:
+        dict[str, Any]: Parsed window boundary variables and label.
+
+    Raises:
+        ValueError: If formatting is invalid or start date is after the end date.
+    """
     parts = value.split(":")
     if len(parts) != 3:
         raise ValueError(f"Window must be FD_START:FD_END:LABEL, got {value!r}")
@@ -162,12 +171,16 @@ def parse_window(value: str) -> dict[str, Any]:
 
 
 def freeze_columns(model_feature_columns: list[str]) -> list[str]:
-    """Features that are only known up to the origin in a real forward forecast.
+    """Identify features that represent historical states and must be frozen at origin.
 
-    Anything with a lag/rolling suffix (own-demand, family, inventory, supply,
-    corporate) plus inbound future-supply buckets. Promotion-calendar, calendar,
-    and static product-attribute features are intentionally NOT frozen because a
-    real forecast legitimately knows them for future dates.
+    Includes lagged demand, supply work counts, inventory status, and inbound purchase quantities.
+    Calendar dates and planned promotion schedules are excluded from freezing.
+
+    Args:
+        model_feature_columns: List of model feature column names.
+
+    Returns:
+        list[str]: Filtered list of features to freeze.
     """
     frozen: list[str] = []
     for col in model_feature_columns:
@@ -178,27 +191,60 @@ def freeze_columns(model_feature_columns: list[str]) -> list[str]:
     return frozen
 
 
-def origin_snapshot(panel: pd.DataFrame, origin: pd.Timestamp, freeze_cols: list[str]) -> pd.DataFrame:
-    """Latest per-SKU value of each freeze column on or before the origin date."""
+def origin_snapshot(
+    panel: pd.DataFrame,
+    origin: pd.Timestamp,
+    freeze_cols: list[str],
+) -> pd.DataFrame:
+    """Retrieve the latest observed feature values for all SKUs up to the origin date.
+
+    Args:
+        panel: Fully merged panel dataset.
+        origin: Forecast origin timestamp.
+        freeze_cols: Feature columns to select.
+
+    Returns:
+        pd.DataFrame: Lookup table mapping SKU to frozen feature values.
+    """
     history = panel.loc[panel[DATE_COLUMN].le(origin), [SKU_COLUMN, DATE_COLUMN, *freeze_cols]]
     history = history.sort_values(DATE_COLUMN)
     snapshot = history.groupby(SKU_COLUMN, as_index=False).last()
     return snapshot.drop(columns=[DATE_COLUMN])
 
 
-def apply_frozen_features(holdout: pd.DataFrame, snapshot: pd.DataFrame, freeze_cols: list[str]) -> pd.DataFrame:
-    """Overwrite leak-prone holdout columns with origin-snapshot values.
+def apply_frozen_features(
+    holdout: pd.DataFrame,
+    snapshot: pd.DataFrame,
+    freeze_cols: list[str],
+) -> pd.DataFrame:
+    """Overwrite target holdout columns with values from the origin snapshot lookup.
 
-    SKUs with no history before the origin (true cold-start) keep NaN, which the
-    model pipeline imputes to zero - the honest "no recent demand known" signal.
+    Args:
+        holdout: Holdout prediction frame.
+        snapshot: Lookup snapshot of frozen features.
+        freeze_cols: List of column names to overwrite.
+
+    Returns:
+        pd.DataFrame: Holdout dataframe containing frozen values.
     """
     work = holdout.drop(columns=[col for col in freeze_cols if col in holdout.columns])
     work = work.merge(snapshot[[SKU_COLUMN, *freeze_cols]], on=SKU_COLUMN, how="left")
     return work
 
 
-def seed_demand_buffer(panel: pd.DataFrame, origin: pd.Timestamp) -> dict[Any, dict[pd.Timestamp, float]]:
-    """Per-SKU {date: actual SoldUnits} for the days just before the origin."""
+def seed_demand_buffer(
+    panel: pd.DataFrame,
+    origin: pd.Timestamp,
+) -> dict[Any, dict[pd.Timestamp, float]]:
+    """Create a buffer containing historical daily sales units leading up to the origin.
+
+    Args:
+        panel: Panel dataset.
+        origin: Forecast origin timestamp.
+
+    Returns:
+        dict[Any, dict[pd.Timestamp, float]]: SKU-indexed dictionary containing date-level sales.
+    """
     seed_start = origin - pd.Timedelta(days=RECURSIVE_SEED_DAYS)
     window = panel.loc[
         panel[DATE_COLUMN].between(seed_start, origin),
@@ -211,11 +257,12 @@ def seed_demand_buffer(panel: pd.DataFrame, origin: pd.Timestamp) -> dict[Any, d
 
 
 def _buffer_lag(day_map: dict[pd.Timestamp, float], target: pd.Timestamp, offset_days: int) -> float:
+    """Fetch lagged value from a day map buffer."""
     return float(day_map.get(target - pd.Timedelta(days=offset_days), 0.0))
 
 
 def _buffer_rolling(day_map: dict[pd.Timestamp, float], target: pd.Timestamp, window_days: int) -> float:
-    # Mean of the (shift-1) trailing window: dates in [target-window, target-1].
+    """Compute rolling mean from a day map buffer."""
     total = 0.0
     for k in range(1, window_days + 1):
         total += float(day_map.get(target - pd.Timedelta(days=k), 0.0))
@@ -223,6 +270,15 @@ def _buffer_rolling(day_map: dict[pd.Timestamp, float], target: pd.Timestamp, wi
 
 
 def recursive_ar_row(day_map: dict[pd.Timestamp, float], target: pd.Timestamp) -> dict[str, float]:
+    """Derive recursive autoregressive lag/rolling features for a target date from a buffer.
+
+    Args:
+        day_map: Date-level demand quantities.
+        target: Target forecasting date.
+
+    Returns:
+        dict[str, float]: Derived autoregressive features dict.
+    """
     return {
         "SoldUnitsLag1": _buffer_lag(day_map, target, 1),
         "SoldUnitsLag7": _buffer_lag(day_map, target, 7),
@@ -237,8 +293,22 @@ def train_champion(
     panel: pd.DataFrame,
     window: dict[str, Any],
     args: argparse.Namespace,
-):
-    """Train hgb_absolute_log strictly on data before the forecast window."""
+) -> tuple[Any, str, list[str], int]:
+    """Train the HGB champion model strictly using data prior to the forecast start date.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        panel: Fully merged model panel.
+        window: Window boundaries dictionary.
+        args: Pipeline options.
+
+    Returns:
+        tuple[Any, str, list[str], int]: Fitted model Pipeline, model mode, feature column names,
+            and size of the training dataset.
+
+    Raises:
+        ValueError: If no training rows are available before the holdout start.
+    """
     train = panel.loc[panel[DATE_COLUMN].lt(window["start"])].copy()
     if train.empty:
         raise ValueError(f"No training rows before {window['start'].date()} for window {window['label']}.")
@@ -255,6 +325,17 @@ def train_champion(
 
 
 def predict_frame(model: Any, mode: str, frame: pd.DataFrame, args: argparse.Namespace) -> np.ndarray:
+    """Predict demand quantities for a dataframe.
+
+    Args:
+        model: Fitted pipeline model.
+        mode: Prediction scale mode key.
+        frame: Dataframe containing raw features.
+        args: Pipeline options.
+
+    Returns:
+        np.ndarray: Predicted demand units.
+    """
     x, _, _, _, _ = prepare_xy(
         frame,
         args.exclude_corporate_features,
@@ -263,18 +344,74 @@ def predict_frame(model: Any, mode: str, frame: pd.DataFrame, args: argparse.Nam
     return predict_candidate(model, mode, x)
 
 
-def score_frozen(model, mode, holdout, snapshot, freeze_cols, args) -> np.ndarray:
+def score_frozen(
+    model: Any,
+    mode: str,
+    holdout: pd.DataFrame,
+    snapshot: pd.DataFrame,
+    freeze_cols: list[str],
+    args: argparse.Namespace,
+) -> np.ndarray:
+    """Generate forecasts with features completely frozen at the origin date.
+
+    Args:
+        model: Fitted pipeline model.
+        mode: Prediction scale mode key.
+        holdout: Holdout prediction frame.
+        snapshot: Snapshot of frozen values.
+        freeze_cols: Features to freeze.
+        args: Command parameters.
+
+    Returns:
+        np.ndarray: Predicted demand units.
+    """
     frame = apply_frozen_features(holdout, snapshot, freeze_cols)
     return predict_frame(model, mode, frame, args)
 
 
-def score_leaky(model, mode, holdout, args) -> np.ndarray:
-    # Use holdout rows exactly as-is (the existing scoreboard behaviour).
+def score_leaky(model: Any, mode: str, holdout: pd.DataFrame, args: argparse.Namespace) -> np.ndarray:
+    """Predict using standard holdout rows (with leakage from future in-window actuals).
+
+    Args:
+        model: Fitted pipeline model.
+        mode: Prediction scale mode.
+        holdout: Holdout prediction frame.
+        args: Command parameters.
+
+    Returns:
+        np.ndarray: Predicted demand units.
+    """
     return predict_frame(model, mode, holdout, args)
 
 
-def score_recursive(model, mode, holdout, snapshot, freeze_cols, panel, window, args) -> np.ndarray:
-    """Day-by-day forecast that feeds the model's own predictions back as lags."""
+def score_recursive(
+    model: Any,
+    mode: str,
+    holdout: pd.DataFrame,
+    snapshot: pd.DataFrame,
+    freeze_cols: list[str],
+    panel: pd.DataFrame,
+    window: dict[str, Any],
+    args: argparse.Namespace,
+) -> np.ndarray:
+    """Execute a recursive multi-step forecast where predictions are fed back as lags.
+
+    Simulates forecast execution by predicting day-by-day and updating the autoregressive
+    lookback buffer with the model's own positive forecasts.
+
+    Args:
+        model: Fitted pipeline model.
+        mode: Model scale mode.
+        holdout: Holdout prediction frame.
+        snapshot: Snapshot of frozen values.
+        freeze_cols: Features to freeze.
+        panel: Unified model panel.
+        window: Window metadata.
+        args: Command parameters.
+
+    Returns:
+        np.ndarray: Predicted demand units.
+    """
     base = apply_frozen_features(holdout, snapshot, freeze_cols).copy()
     base["_row_id"] = np.arange(len(base))
     buffer = seed_demand_buffer(panel, window["origin"])
@@ -304,6 +441,15 @@ def score_recursive(model, mode, holdout, snapshot, freeze_cols, panel, window, 
 
 
 def coverage_row(df: pd.DataFrame, forecast_col: str) -> dict[str, Any]:
+    """Calculate target demand coverage metrics for a specific forecast column.
+
+    Args:
+        df: Target scored dataframe.
+        forecast_col: Forecast column to evaluate.
+
+    Returns:
+        dict[str, Any]: Calculated coverage metrics.
+    """
     actual = pd.to_numeric(df[TARGET_COLUMN], errors="coerce").fillna(0.0)
     forecast = pd.to_numeric(df[forecast_col], errors="coerce").fillna(0.0)
     total_sold = float(actual.sum())
@@ -321,6 +467,16 @@ def coverage_row(df: pd.DataFrame, forecast_col: str) -> dict[str, Any]:
 
 
 def evaluate_window(scored: pd.DataFrame, forecast_cols: list[str], window: dict[str, Any]) -> dict[str, pd.DataFrame]:
+    """Calculate aggregated, daily, and coverage evaluation metrics for a holdout window.
+
+    Args:
+        scored: Scored predictions dataset.
+        forecast_cols: Forecast columns to evaluate.
+        window: Window metadata dictionary.
+
+    Returns:
+        dict[str, pd.DataFrame]: Compiled evaluation datasets.
+    """
     scored = scored.copy()
     scored["FDDay"] = (scored[DATE_COLUMN] - window["origin"]).dt.days
 
@@ -335,7 +491,26 @@ def evaluate_window(scored: pd.DataFrame, forecast_cols: list[str], window: dict
     return {"aggregate": aggregate, "per_day": per_day, "coverage": coverage}
 
 
-def run_window(ml, panel, window, args) -> dict[str, pd.DataFrame]:
+def run_window(
+    ml: dict[str, Any],
+    panel: pd.DataFrame,
+    window: dict[str, Any],
+    args: argparse.Namespace,
+) -> dict[str, pd.DataFrame]:
+    """Execute training and evaluations on a single holdout window.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        panel: Unified model panel.
+        window: Window boundaries dictionary.
+        args: Command parameters.
+
+    Returns:
+        dict[str, pd.DataFrame]: Scoring results by forecast construction types.
+
+    Raises:
+        ValueError: If the holdout window contains no panel records.
+    """
     holdout = panel.loc[panel[DATE_COLUMN].between(window["start"], window["end"])].copy()
     if holdout.empty:
         raise ValueError(f"No panel rows in forecast window {window['label']} "
@@ -369,6 +544,7 @@ def run_window(ml, panel, window, args) -> dict[str, pd.DataFrame]:
 
 
 def main() -> None:
+    """Execute the command line entry point to run frozen-origin evaluations."""
     args = parse_args()
     configure_threads(args.threads)
     ml = require_sklearn()

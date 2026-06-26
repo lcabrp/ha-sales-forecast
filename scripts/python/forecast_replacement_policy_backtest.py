@@ -55,6 +55,11 @@ REQUIRED_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the replacement policy backtest.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Backtest replacement candidate selection policies.")
     parser.add_argument("--score-file", action="append", type=Path, dest="score_files")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -66,6 +71,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def load_scores(paths: list[Path], candidates: list[str]) -> pd.DataFrame:
+    """Load and validate window-score CSV files.
+
+    Args:
+        paths: List of file paths to load.
+        candidates: List of candidate forecast identifiers to filter for.
+
+    Returns:
+        pd.DataFrame: Sorted, filtered, and deduplicated scores dataframe.
+    """
     frames = []
     for path in paths:
         if not path.exists():
@@ -86,6 +100,15 @@ def load_scores(paths: list[Path], candidates: list[str]) -> pd.DataFrame:
 
 
 def summarize(rows: list[dict[str, Any]], policy: str) -> tuple[dict[str, Any], pd.DataFrame]:
+    """Aggregate window-level decisions and calculate policy metrics.
+
+    Args:
+        rows: List of dictionaries representing selected window score records.
+        policy: Name of the policy evaluated.
+
+    Returns:
+        tuple[dict[str, Any], pd.DataFrame]: A summary metrics dictionary and a DataFrame of window choices.
+    """
     selected = pd.DataFrame(rows)
     sold_units = float(selected["SoldUnits"].sum())
     forecast_units = float(selected["ForecastUnits"].sum())
@@ -107,6 +130,15 @@ def summarize(rows: list[dict[str, Any]], policy: str) -> tuple[dict[str, Any], 
 
 
 def best_prior_candidate(scores: pd.DataFrame, prior_dates: list[pd.Timestamp]) -> str:
+    """Determine the candidate that performed best in the specified prior windows.
+
+    Args:
+        scores: The full candidate scores DataFrame.
+        prior_dates: List of prior timestamps/windows to aggregate.
+
+    Returns:
+        str: The identifier of the best candidate by WAPE.
+    """
     prior = scores.loc[scores["ForecastStartDate"].isin(prior_dates)].copy()
     grouped = prior.groupby("Candidate").agg(
         AbsErrorUnits=("AbsErrorUnits", "sum"),
@@ -117,6 +149,16 @@ def best_prior_candidate(scores: pd.DataFrame, prior_dates: list[pd.Timestamp]) 
 
 
 def fixed_policy(scores: pd.DataFrame, starts: list[pd.Timestamp], candidate: str) -> tuple[dict[str, Any], pd.DataFrame]:
+    """Evaluate a fixed policy that chooses the same candidate across all windows.
+
+    Args:
+        scores: Full candidate scores DataFrame.
+        starts: All forecast start dates.
+        candidate: Candidate forecast identifier to lock in.
+
+    Returns:
+        tuple[dict[str, Any], pd.DataFrame]: Summary metrics and window choices.
+    """
     rows = [
         scores.loc[
             scores["ForecastStartDate"].eq(start) & scores["Candidate"].eq(candidate)
@@ -132,6 +174,17 @@ def rolling_policy(
     lookback_windows: int,
     default_candidate: str,
 ) -> tuple[dict[str, Any], pd.DataFrame]:
+    """Evaluate a rolling selection policy based on recent performance.
+
+    Args:
+        scores: Full candidate scores DataFrame.
+        starts: List of all forecast start dates.
+        lookback_windows: Number of prior windows to evaluate for candidate selection.
+        default_candidate: Fallback candidate identifier for warmup windows.
+
+    Returns:
+        tuple[dict[str, Any], pd.DataFrame]: Summary metrics and window choices.
+    """
     rows = []
     for idx, start in enumerate(starts):
         if idx < lookback_windows:
@@ -152,6 +205,17 @@ def expanding_policy(
     warmup_windows: int,
     default_candidate: str,
 ) -> tuple[dict[str, Any], pd.DataFrame]:
+    """Evaluate an expanding selection policy that integrates all prior history.
+
+    Args:
+        scores: Full candidate scores DataFrame.
+        starts: List of all forecast start dates.
+        warmup_windows: Number of warmup windows before policy begins choosing.
+        default_candidate: Fallback candidate identifier for warmup windows.
+
+    Returns:
+        tuple[dict[str, Any], pd.DataFrame]: Summary metrics and window choices.
+    """
     rows = []
     for idx, start in enumerate(starts):
         if idx < warmup_windows:
@@ -167,6 +231,7 @@ def expanding_policy(
 
 
 def main() -> None:
+    """Execute the replacement candidate policy backtest pipeline."""
     args = parse_args()
     score_files = args.score_files or DEFAULT_SCORE_FILES
     candidates = args.candidates or DEFAULT_CANDIDATES

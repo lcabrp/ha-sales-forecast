@@ -163,6 +163,11 @@ CORPORATE_FEATURE_COLUMNS = {
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the model training and evaluation script.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Train and backtest the first forecast ML model.")
     parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -241,6 +246,11 @@ def parse_args() -> argparse.Namespace:
 
 
 def configure_threads(thread_count: int) -> None:
+    """Set thread caps for CPU parallel computing libraries to limit resource utilization.
+
+    Args:
+        thread_count: Max number of threads.
+    """
     value = str(max(1, int(thread_count)))
     os.environ.setdefault("LOKY_MAX_CPU_COUNT", value)
     os.environ.setdefault("OMP_NUM_THREADS", value)
@@ -250,6 +260,14 @@ def configure_threads(thread_count: int) -> None:
 
 
 def require_sklearn() -> dict[str, Any]:
+    """Import and return the required scikit-learn components, raising helpful error if missing.
+
+    Returns:
+        dict[str, Any]: Dictionary of imported library objects.
+
+    Raises:
+        RuntimeError: If scikit-learn or joblib are not installed.
+    """
     try:
         from joblib import dump
         from sklearn.compose import ColumnTransformer
@@ -272,10 +290,29 @@ def require_sklearn() -> dict[str, Any]:
 
 
 def normalize_date(series: pd.Series) -> pd.Series:
+    """Normalize a series to pandas datetime index.
+
+    Args:
+        series: Date series to normalize.
+
+    Returns:
+        pd.Series: Cleaned datetime series.
+    """
     return pd.to_datetime(series, errors="coerce").dt.normalize()
 
 
 def available_columns(path: Path) -> list[str]:
+    """Inspect schema of a single Parquet file or a folder of Parquet parts.
+
+    Args:
+        path: Path to the Parquet dataset or directory.
+
+    Returns:
+        list[str]: Column names present in the dataset schema.
+
+    Raises:
+        FileNotFoundError: If the dataset path is missing.
+    """
     if not path.exists():
         raise FileNotFoundError(f"Model panel not found: {path}")
     if path.is_dir():
@@ -287,15 +324,23 @@ def available_columns(path: Path) -> list[str]:
 
 
 def load_panel(path: Path, start_date: str) -> pd.DataFrame:
+    """Load model panel files, filtering by start date.
+
+    Args:
+        path: Parquet directory or file path.
+        start_date: ISO format date boundary (inclusive).
+
+    Returns:
+        pd.DataFrame: Loaded dataset containing select features.
+    """
     columns = set([DATE_COLUMN, "SKU", TARGET_COLUMN, *BASELINE_COLUMNS])
     columns.update(NUMERIC_FEATURES)
     columns.update(CATEGORICAL_FEATURES)
     columns.update(PRODUCT_IDENTITY_FEATURES)
     columns.update(BOOLEAN_FEATURES)
 
-    # Reading the full schema first is cheap enough for this local Parquet and
-    # keeps the script tolerant when a feature family has not been generated yet.
     schema_columns = available_columns(path)
+    # Filter columns to read only what actually exists in the Parquet schema
     read_columns = [col for col in columns if col in schema_columns]
     if path.is_dir():
         parquet_files = sorted(path.glob("*.parquet"))
@@ -307,6 +352,18 @@ def load_panel(path: Path, start_date: str) -> pd.DataFrame:
 
 
 def resolve_holdout(df: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.Timestamp, pd.Timestamp]:
+    """Decide holdout time boundaries based on options and data range.
+
+    Args:
+        df: Input dataframe.
+        args: Pipeline options.
+
+    Returns:
+        tuple[pd.Timestamp, pd.Timestamp]: Start and end holdout dates.
+
+    Raises:
+        ValueError: If holdout start date is after the end date.
+    """
     panel_end = df[DATE_COLUMN].max()
     end = pd.Timestamp(date.fromisoformat(args.holdout_end)) if args.holdout_end else panel_end
     start = (
@@ -320,6 +377,7 @@ def resolve_holdout(df: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.Time
 
 
 def _exclude_corporate(columns: list[str], exclude_corporate_features: bool) -> list[str]:
+    """Helper to remove corporate columns from a feature list if requested."""
     if not exclude_corporate_features:
         return columns
     return [col for col in columns if col not in CORPORATE_FEATURE_COLUMNS]
@@ -330,6 +388,20 @@ def prepare_xy(
     exclude_corporate_features: bool = False,
     include_product_identity_features: bool = False,
 ) -> tuple[pd.DataFrame, np.ndarray, list[str], list[str], list[str]]:
+    """Slice and clean panel features and log-transform the target values.
+
+    Applies log1p to the target SoldUnits to stabilize regression variance.
+
+    Args:
+        df: Input dataset.
+        exclude_corporate_features: If True, excludes corporate forecast features.
+        include_product_identity_features: If True, adds product identities to categorical features.
+
+    Returns:
+        tuple[pd.DataFrame, np.ndarray, list[str], list[str], list[str]]:
+            Features dataframe, log-transformed target array, numeric feature columns,
+            categorical feature columns, and boolean feature columns.
+    """
     numeric = _exclude_corporate(
         [col for col in NUMERIC_FEATURES if col in df.columns],
         exclude_corporate_features,
@@ -360,17 +432,46 @@ def prepare_xy(
     for col in numeric:
         features[col] = pd.to_numeric(features[col], errors="coerce")
 
+    # Apply log1p scaling to stabilize demand target variance
     target = np.log1p(pd.to_numeric(df[TARGET_COLUMN], errors="coerce").fillna(0).clip(lower=0))
     return features, target.to_numpy(), numeric, categorical, boolean
 
 
 def sample_training_rows(df: pd.DataFrame, max_rows: int, random_state: int) -> pd.DataFrame:
+    """Downsample training rows if they exceed the row threshold limit.
+
+    Args:
+        df: Training dataframe.
+        max_rows: Max rows cap.
+        random_state: Seed.
+
+    Returns:
+        pd.DataFrame: Sampled training rows.
+    """
     if max_rows <= 0 or len(df) <= max_rows:
         return df
     return df.sample(n=max_rows, random_state=random_state)
 
 
-def build_model(ml: dict[str, Any], numeric: list[str], categorical: list[str], boolean: list[str], args: argparse.Namespace):
+def build_model(
+    ml: dict[str, Any],
+    numeric: list[str],
+    categorical: list[str],
+    boolean: list[str],
+    args: argparse.Namespace,
+) -> Any:
+    """Construct a scikit-learn Pipeline with ColumnTransformer preprocessor and HGB regressor.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        numeric: List of numeric column names.
+        categorical: List of categorical column names.
+        boolean: List of boolean column names.
+        args: Pipeline configuration options.
+
+    Returns:
+        Pipeline: Unfit scikit-learn Pipeline.
+    """
     transformers = []
     if numeric:
         transformers.append(
@@ -412,10 +513,33 @@ def build_model(ml: dict[str, Any], numeric: list[str], categorical: list[str], 
 
 
 def safe_divide(numerator: float, denominator: float) -> float:
+    """Perform division returning 0.0 if denominator is 0.
+
+    Args:
+        numerator: Divisor.
+        denominator: Dividend.
+
+    Returns:
+        float: Quotient.
+    """
     return 0.0 if denominator == 0 else numerator / denominator
 
 
-def evaluate_predictions(df: pd.DataFrame, forecast_cols: list[str], group_cols: list[str] | None = None) -> pd.DataFrame:
+def evaluate_predictions(
+    df: pd.DataFrame,
+    forecast_cols: list[str],
+    group_cols: list[str] | None = None,
+) -> pd.DataFrame:
+    """Evaluate WAPE and bias error metrics across grouped segments of holdout data.
+
+    Args:
+        df: Target dataframe containing forecasts and actuals.
+        forecast_cols: List of forecast columns to evaluate.
+        group_cols: Optional columns to group by.
+
+    Returns:
+        pd.DataFrame: Compiled metrics dataframe.
+    """
     group_cols = group_cols or []
     groups = df.groupby(group_cols, dropna=False) if group_cols else [((), df)]
     rows: list[dict[str, Any]] = []
@@ -442,6 +566,19 @@ def evaluate_predictions(df: pd.DataFrame, forecast_cols: list[str], group_cols:
 
 
 def bounded_factor(actual: float, forecast: float, minimum: float = 0.25, maximum: float = 4.0) -> float:
+    """Compute bounded post-model multiplicative scaling factor.
+
+    Limits factors to prevent extreme scaling shifts.
+
+    Args:
+        actual: Sum of actual units.
+        forecast: Sum of predicted forecast units.
+        minimum: Lowest allowed scaling factor.
+        maximum: Highest allowed scaling factor.
+
+    Returns:
+        float: The bounded calibration factor.
+    """
     if forecast <= 0:
         return 1.0
     return float(np.clip(actual / forecast, minimum, maximum))
@@ -452,6 +589,16 @@ def calibration_factor_table(
     raw_forecast_col: str,
     group_cols: list[str],
 ) -> pd.DataFrame:
+    """Build a lookup table of calibration scaling factors by groups.
+
+    Args:
+        df: Calibration dataset.
+        raw_forecast_col: Uncalibrated forecast column name.
+        group_cols: Group columns to segment factors.
+
+    Returns:
+        pd.DataFrame: Factor lookup dataframe.
+    """
     if df.empty:
         return pd.DataFrame(columns=[*group_cols, "CalibrationFactor"])
 
@@ -474,6 +621,15 @@ def calibration_factor_table(
 
 
 def calibration_group_columns(mode: str, df: pd.DataFrame) -> list[str]:
+    """Retrieve segment group columns corresponding to a calibration mode.
+
+    Args:
+        mode: Calibration mode string.
+        df: Input dataframe to inspect.
+
+    Returns:
+        list[str]: Matched columns present in dataframe.
+    """
     candidates = {
         "global": [],
         "none": [],
@@ -497,6 +653,20 @@ def apply_calibration(
     raw_forecast_col: str,
     args: argparse.Namespace,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Apply post-model calibration multipliers to predictions in the holdout window.
+
+    Ensures that segment-specific factors are backed by enough history; otherwise, it
+    falls back to a global calibration factor.
+
+    Args:
+        holdout: Prediction dataset.
+        calibration: Calibration history window dataset.
+        raw_forecast_col: Raw model forecast column name.
+        args: Pipeline options.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: Updated prediction dataset and calibration factors table.
+    """
     if args.calibration_days <= 0 or args.calibration_mode == "none" or calibration.empty:
         holdout["MLCalibratedForecastQty"] = holdout[raw_forecast_col]
         factors = pd.DataFrame(
@@ -551,6 +721,20 @@ def period_summary(
     holdout_start: pd.Timestamp,
     holdout_end: pd.Timestamp,
 ) -> pd.DataFrame:
+    """Build performance evaluation summaries for multiple historical sub-intervals.
+
+    Calculates metrics for the overall holdout, trailing 7 days, trailing 28 days,
+    YTD, and individual months.
+
+    Args:
+        holdout: Holdout prediction dataset.
+        forecast_cols: Forecast columns to evaluate.
+        holdout_start: Start timestamp of the holdout period.
+        holdout_end: End timestamp of the holdout period.
+
+    Returns:
+        pd.DataFrame: Summary table rows.
+    """
     windows: list[tuple[str, pd.Timestamp, pd.Timestamp]] = [
         ("holdout", holdout_start, holdout_end),
         ("last_7_days", max(holdout_start, holdout_end - pd.Timedelta(days=6)), holdout_end),
@@ -587,6 +771,7 @@ def period_summary(
 
 
 def main() -> None:
+    """Execute the command line entry point to train a forecasting model and run backtests."""
     args = parse_args()
     configure_threads(args.threads)
     try:
@@ -712,4 +897,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

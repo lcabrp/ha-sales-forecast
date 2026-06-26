@@ -1,13 +1,11 @@
-"""
-sharepoint_source.py — SharePoint Online Source File Downloader
-================================================================
+"""sharepoint_source.py — SharePoint Online Source File Downloader.
 
-Downloads 'Product Info for BRG.xlsx' directly from SharePoint Online,
+Downloads the weekly/daily 'Product Info for BRG.xlsx' directly from SharePoint Online,
 replacing the manual download step in the legacy workflow.
 
 The legacy Excel-based tools (Case Quantity Calcs, Active Storage Tool)
 connected to this same file via OLE DB / Power Query using "Organizational
-Account" authentication.  This script replicates that exact auth flow using
+Account" authentication. This script replicates that exact auth flow using
 Microsoft's MSAL library (the same identity stack that Power Query uses).
 
 SharePoint file location (OneDrive for Business, owned by svc-az-pbi):
@@ -16,7 +14,7 @@ SharePoint file location (OneDrive for Business, owned by svc-az-pbi):
 
 Authentication — "Organizational Account" flow:
   Power Query's "Organizational Account" = Azure AD OAuth2 with interactive
-  browser sign-in.  We replicate this with MSAL's acquire_token_interactive():
+  browser sign-in. We replicate this with MSAL's acquire_token_interactive():
 
   1st run  → Browser opens → sign in with your org account (MFA supported)
   2nd+ run → MSAL silently refreshes the cached token — no browser, no prompt
@@ -31,7 +29,7 @@ Client ID:
   in Azure AD (see CUSTOM_APP_REGISTRATION_GUIDE below) and set CLIENT_ID.
 
 Usage:
-  Called by ingestion_pipeline.py via get_source_file().  Standalone:
+  Called by ingestion_pipeline.py via get_source_file(). Standalone:
     uv run python scripts/python/sharepoint_source.py
     uv run python scripts/python/sharepoint_source.py --force
     uv run python scripts/python/sharepoint_source.py --clear-creds
@@ -47,7 +45,6 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # Project Paths
 # ══════════════════════════════════════════════════════════════════════════════
@@ -55,19 +52,18 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
 SOURCE_DIR = PROJECT_ROOT / "Source"
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # SharePoint Configuration
 # ══════════════════════════════════════════════════════════════════════════════
 
 # The host and site path identify the OneDrive for Business personal site
-# where the source file lives.  This is the same location that the legacy
+# where the source file lives. This is the same location that the legacy
 # Power Query connections pointed to.
 SHAREPOINT_HOST = "hannacorp-my.sharepoint.com"
 SITE_PATH = "/personal/svc-az-pbi_hannaandersson_com"
 FILE_NAME = "Product Info for BRG.xlsx"
 
-# SharePoint REST API endpoint for direct file download.  We use
+# SharePoint REST API endpoint for direct file download. We use
 # GetFileByServerRelativeUrl()/$value which returns the raw bytes.
 # This avoids Microsoft Graph entirely (and the AADSTS65002 error).
 SHAREPOINT_FILE_URL = (
@@ -77,16 +73,15 @@ SHAREPOINT_FILE_URL = (
     f"/$value"
 )
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # MSAL / Azure AD Configuration
 #
 # "Organizational Account" in Power Query = Azure AD OAuth2 with delegated
-# permissions.  MSAL is Microsoft's official library for this flow.
+# permissions. MSAL is Microsoft's official library for this flow.
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Microsoft Office's well-known public client ID.  This is the same app
-# identity that Word, Excel, and PowerPoint use for Azure AD auth.  Using it
+# Microsoft Office's well-known public client ID. This is the same app
+# identity that Word, Excel, and PowerPoint use for Azure AD auth. Using it
 # means the user gets the same sign-in experience as opening a SharePoint
 # file in Excel — no app registration needed.
 #
@@ -94,13 +89,13 @@ SHAREPOINT_FILE_URL = (
 # app (see CUSTOM_APP_REGISTRATION_GUIDE below) and replace this value.
 CLIENT_ID = "d3590ed6-52b3-4102-aeff-aad2292ab01c"
 
-# "organizations" authority allows any Azure AD tenant.  MSAL discovers the
+# "organizations" authority allows any Azure AD tenant. MSAL discovers the
 # correct tenant from the user's email during interactive sign-in.
 AUTHORITY = "https://login.microsoftonline.com/organizations"
 
-# Scope targets SharePoint directly (not Microsoft Graph).  The Office client
+# Scope targets SharePoint directly (not Microsoft Graph). The Office client
 # ID is preauthorized for SharePoint in most tenants, but NOT for Graph —
-# requesting Graph scopes triggers AADSTS65002.  By scoping to the SharePoint
+# requesting Graph scopes triggers AADSTS65002. By scoping to the SharePoint
 # host, we sidestep that entirely and talk to the same API that Power Query uses.
 SCOPES = [f"https://{SHAREPOINT_HOST}/AllSites.Read"]
 
@@ -118,17 +113,16 @@ SCOPES = [f"https://{SHAREPOINT_HOST}/AllSites.Read"]
 # 7. Click "Grant admin consent for [your org]" (requires admin)
 # ──────────────────────────────────────────────────────────────────────────
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # Token Cache
 #
 # MSAL stores OAuth tokens (access + refresh) in a serializable cache.
-# We persist this to disk so the user only authenticates once.  The refresh
+# We persist this to disk so the user only authenticates once. The refresh
 # token (~90 day lifetime) lets MSAL silently renew access tokens on
 # subsequent runs without opening a browser.
 #
 # On Windows, msal-extensions encrypts the cache file via DPAPI (same
-# protection Windows Credential Manager uses).  On other platforms, it
+# protection Windows Credential Manager uses). On other platforms, it
 # falls back to plaintext — acceptable for a local dev tool, not for servers.
 # ══════════════════════════════════════════════════════════════════════════════
 AUTH_DIR = PROJECT_ROOT / ".auth"
@@ -136,7 +130,14 @@ TOKEN_CACHE_FILE = AUTH_DIR / "token_cache.bin"
 
 
 def _build_msal_app():
-    """Build MSAL app with persistent, optionally encrypted token cache."""
+    """Build MSAL public client application with persistent, optionally encrypted token cache.
+
+    Tries to import `msal_extensions` to get OS-level data protection (DPAPI on Windows).
+    If extensions are not available, falls back to a plain text serializable token cache on disk.
+
+    Returns:
+        msal.PublicClientApplication: An initialized MSAL public client.
+    """
     import msal
 
     AUTH_DIR.mkdir(parents=True, exist_ok=True)
@@ -157,11 +158,12 @@ def _build_msal_app():
         cache = PersistedTokenCache(persistence)
 
     except ImportError:
-        # Fallback: unencrypted file cache.  Functional for a local CLI tool.
+        # Fallback: unencrypted file cache. Functional for a local CLI tool.
         cache = msal.SerializableTokenCache()
         if os.path.exists(cache_path):
             with open(cache_path, "r") as f:
                 cache.deserialize(f.read())
+        # Automatically save cache state on exit
         atexit.register(
             lambda: open(cache_path, "w").write(cache.serialize())
             if cache.has_state_changed
@@ -174,12 +176,17 @@ def _build_msal_app():
 
 
 def _acquire_token() -> str:
-    """
-    Acquire a Microsoft Graph access token.
+    """Acquire a Microsoft SharePoint Online access token.
 
     Mirrors Power Query's "Organizational Account" flow:
     1. Try silent renewal (cached refresh token).
     2. If no cached token or refresh expired, open browser for interactive login.
+
+    Returns:
+        str: Access token for SharePoint API calls.
+
+    Raises:
+        RuntimeError: If authentication fails.
     """
     app = _build_msal_app()
 
@@ -212,11 +219,23 @@ def _acquire_token() -> str:
 # ══════════════════════════════════════════════════════════════════════════════
 
 def _today_filename() -> str:
-    """Date-stamped name matching the existing Source/ naming convention."""
+    """Generate date-stamped name matching the existing Source/ naming convention.
+
+    Returns:
+        str: Formatted filename e.g. "Product Info for BRG_MM-DD-YYYY.xlsx".
+    """
     return f"Product Info for BRG_{datetime.now().strftime('%m-%d-%Y')}.xlsx"
 
 
 def _todays_file_exists(dest_dir: Path) -> Path | None:
+    """Check if the date-stamped file for today already exists in the destination folder.
+
+    Args:
+        dest_dir: Destination folder path.
+
+    Returns:
+        Path or None: Path to file if it exists, otherwise None.
+    """
     target = dest_dir / _today_filename()
     return target if target.exists() else None
 
@@ -224,13 +243,19 @@ def _todays_file_exists(dest_dir: Path) -> Path | None:
 def download_from_sharepoint(
     dest_dir: Path, force: bool = False
 ) -> Path | None:
-    """
-    Download the source file via SharePoint REST API.
+    """Download the source file via SharePoint REST API.
 
     Uses the /_api/web/GetFileByServerRelativeUrl()/$value endpoint, which
-    returns raw file bytes directly.  This targets the SharePoint resource
+    returns raw file bytes directly. This targets the SharePoint resource
     (not Microsoft Graph), avoiding the AADSTS65002 preauthorization error
     that blocks first-party client IDs from accessing Graph.
+
+    Args:
+        dest_dir: Path to save the downloaded workbook.
+        force: If True, re-downloads even if today's file already exists.
+
+    Returns:
+        Path or None: The Path to the saved file if successful, or None if failed.
     """
     import requests
 
@@ -275,6 +300,7 @@ def download_from_sharepoint(
                 f.write(chunk)
                 total += len(chunk)
 
+        # Sanity check file size (should be roughly ~55 MB, definitely > 1 MB)
         if total < 1_000_000:
             print(f"[!] Only {total:,} bytes received (expected ~55 MB). Aborting.")
             os.unlink(tmp_path)
@@ -311,20 +337,36 @@ def clear_cached_credentials() -> None:
 # ══════════════════════════════════════════════════════════════════════════════
 
 def get_latest_local_file(source_dir: Path) -> Path | None:
-    """Find the most recently modified source file in Source/."""
+    """Find the most recently modified source file in the Source directory.
+
+    Args:
+        source_dir: Folder to search.
+
+    Returns:
+        Path or None: Path to the latest file matching the pattern, or None.
+    """
     pattern = str(source_dir / "Product Info for BRG*.xlsx")
     files = glob.glob(pattern)
     return Path(max(files, key=os.path.getmtime)) if files else None
 
 
 def get_source_file(source_dir: Path, force_download: bool = False) -> Path:
-    """
-    Primary entry point.  Tries SharePoint first, falls back to local file.
+    """Primary entry point. Tries SharePoint first, falls back to local file.
 
     Called by ingestion_pipeline.py to replace the original
     get_latest_source_file() with a two-step strategy:
-      1. Download from SharePoint via Graph API (skip if today's file exists).
+      1. Download from SharePoint via REST API (skip if today's file exists).
       2. If download fails for any reason, use the newest local file in Source/.
+
+    Args:
+        source_dir: Directory where workbooks are saved.
+        force_download: Force download from SharePoint.
+
+    Returns:
+        Path: Path to the downloaded or fallback file.
+
+    Raises:
+        FileNotFoundError: If SharePoint fails and no local fallbacks exist.
     """
     try:
         result = download_from_sharepoint(source_dir, force=force_download)
@@ -336,9 +378,9 @@ def get_source_file(source_dir: Path, force_download: bool = False) -> Path:
     # ── Fallback to local file ─────────────────────────────────────────────
     print()
     print("    ╔══════════════════════════════════════════════════════════╗")
-    print("    ║  WARNING: Using local file — it may be outdated.       ║")
-    print("    ║  The pipeline will continue, but verify the results    ║")
-    print("    ║  against the current SharePoint data when possible.    ║")
+    print("    ║  WARNING: Using local file — it may be outdated.         ║")
+    print("    ║  The pipeline will continue, but verify the results      ║")
+    print("    ║  against the current SharePoint data when possible.      ║")
     print("    ╚══════════════════════════════════════════════════════════╝")
     print()
 
@@ -369,6 +411,7 @@ def get_source_file(source_dir: Path, force_download: bool = False) -> Path:
 # ══════════════════════════════════════════════════════════════════════════════
 
 def main():
+    """Main CLI entry point for sharepoint downloader script."""
     parser = argparse.ArgumentParser(
         description="Download 'Product Info for BRG.xlsx' from SharePoint Online."
     )
@@ -402,4 +445,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

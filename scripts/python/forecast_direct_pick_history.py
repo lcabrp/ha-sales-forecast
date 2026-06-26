@@ -1,6 +1,6 @@
 """Export sharded SKU/day DirectPick history for forecast training.
 
-The persisted facts intentionally stay at SKU/day grain.  Work IDs, sales-order
+The persisted facts intentionally stay at SKU/day grain. Work IDs, sales-order
 IDs, operator/user fields, and raw work-line details are not saved here; this
 dataset is for demand modeling, event lift, and forecast scoring.
 """
@@ -31,6 +31,11 @@ EXCLUDED_PICK_LOCATIONS = ("Bander", "AutoBagger")
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for direct pick history exporter.
+
+    Returns:
+        argparse.Namespace: Checked command arguments.
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--server", default="prodaxsql2")
     parser.add_argument("--database", default="DAX_PROD")
@@ -48,6 +53,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def sha256(path: Path) -> str:
+    """Compute the SHA-256 hash of a file's content in a chunked, memory-efficient manner.
+
+    Args:
+        path: Path to the target file.
+
+    Returns:
+        str: Hexadecimal SHA-256 hash.
+    """
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
@@ -56,6 +69,14 @@ def sha256(path: Path) -> str:
 
 
 def detect_archive_boundary(engine: sa.Engine) -> date:
+    """Detect boundary date separating active production and historical archive datasets.
+
+    Args:
+        engine: Database engine.
+
+    Returns:
+        date: Max date in the archive.
+    """
     query = sa.text(
         """
         SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -75,6 +96,18 @@ def detect_archive_boundary(engine: sa.Engine) -> date:
 
 
 def source_segments(start: date, end_exclusive: date, archive_boundary: date) -> list[tuple[str, str, date, date]]:
+    """Determine schema mapping routes and split date intervals for extracting pick data.
+
+    Decides when to route queries to DAX_Archive versus DAX_PROD databases.
+
+    Args:
+        start: Inclusive start date.
+        end_exclusive: Exclusive end date.
+        archive_boundary: Date boundary dividing production and archives.
+
+    Returns:
+        list[tuple[str, str, date, date]]: List of table schemas, location schemas, and start/end dates.
+    """
     segments: list[tuple[str, str, date, date]] = []
     archive_end = min(end_exclusive, archive_boundary)
     prod_start = max(start, archive_boundary)
@@ -86,6 +119,17 @@ def source_segments(start: date, end_exclusive: date, archive_boundary: date) ->
 
 
 def year_windows(start: date, end_exclusive: date) -> list[tuple[int, date, date]]:
+    """Slice a date range into chronological annual window intervals.
+
+    Used to produce annual sharded Parquet files on disk.
+
+    Args:
+        start: Inclusive start date.
+        end_exclusive: Exclusive end date.
+
+    Returns:
+        list[tuple[int, date, date]]: List of year-stamped start/end intervals.
+    """
     windows: list[tuple[int, date, date]] = []
     current = start
     while current < end_exclusive:
@@ -97,6 +141,18 @@ def year_windows(start: date, end_exclusive: date) -> list[tuple[int, date, date
 
 
 def direct_pick_query(schema: str, location_schema: str, date_expr: str) -> sa.TextClause:
+    """Build SQL statement to extract direct picking metrics from warehouse records.
+
+    Filters for completed DirectPick actions and active picking zones.
+
+    Args:
+        schema: Target schema name.
+        location_schema: WMS Location table schema prefix.
+        date_expr: Database field representing transaction date (created or modified).
+
+    Returns:
+        sa.TextClause: Executable SQL query.
+    """
     return sa.text(
         f"""
         SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -157,6 +213,19 @@ def read_segment(
     end_exclusive: date,
     date_basis: str,
 ) -> pd.DataFrame:
+    """Execute SQL query to pull picking records for a specific schema segment.
+
+    Args:
+        conn: Open database connection.
+        schema: Target WMS schema name.
+        location_schema: Location schema prefix.
+        start: Segment start date.
+        end_exclusive: Segment end date.
+        date_basis: Field representing date (created or modified).
+
+    Returns:
+        pd.DataFrame: Query results DataFrame.
+    """
     date_expr = "wl.MODIFIEDDATETIME" if date_basis == "modified" else "wt.CREATEDDATETIME"
     return pd.read_sql_query(
         direct_pick_query(schema, location_schema, date_expr),
@@ -172,6 +241,15 @@ def read_segment(
 
 
 def normalize_frame(frame: pd.DataFrame, date_basis: str) -> pd.DataFrame:
+    """Normalize and clean columns of the direct pick DataFrame, aggregate duplicates.
+
+    Args:
+        frame: Input raw pick DataFrame.
+        date_basis: Extraction date basis.
+
+    Returns:
+        pd.DataFrame: Cleaned daily SKU pick statistics.
+    """
     if frame.empty:
         return pd.DataFrame(columns=["PickDate", "DateBasis", "SKU", "PickLines", "DistinctOrders", "PickUnits"])
 
@@ -190,6 +268,16 @@ def normalize_frame(frame: pd.DataFrame, date_basis: str) -> pd.DataFrame:
 
 
 def write_shard(frame: pd.DataFrame, path: Path, overwrite: bool) -> dict[str, object]:
+    """Write DataFrame to a sharded zstd Parquet file, replacing existing records if allowed.
+
+    Args:
+        frame: Shard records DataFrame.
+        path: Path to Parquet file.
+        overwrite: Overwrite files if present.
+
+    Returns:
+        dict[str, object]: Shard stats summary dictionary.
+    """
     if path.exists() and not overwrite:
         raise FileExistsError(f"Pass --overwrite to replace {path}")
     tmp_path = path.with_name(f"{path.name}.tmp")
@@ -209,6 +297,7 @@ def write_shard(frame: pd.DataFrame, path: Path, overwrite: bool) -> dict[str, o
 
 
 def main() -> None:
+    """Main CLI entry point for direct pick history exporter."""
     args = parse_args()
     if args.start_date < DEFAULT_START_DATE:
         raise ValueError("Refusing to collect before 2022-01-01 by default.")

@@ -1,4 +1,17 @@
-"""Audit promo and newness coverage for independent forecast misses."""
+"""Audit promo and newness coverage for independent forecast misses.
+
+This script parses forecast outputs, merges them with promotion logs from the
+SKU-day panel parts, and pulls product attributes (like launch dates) from the
+corporate Product Info sheet ("Product Info for BRG*.xlsx").
+
+It computes error metrics (Bias, WAPE) across different dimensions:
+1. Product families (Division, Department, Class, Item, Color)
+2. Newness cohorts based on days elapsed since the "Go Live Date"
+3. PDL (promotion/discount) event status
+
+These slices help isolate whether forecasting errors are concentrated in newly
+launched styles, promotional periods, or specific categories.
+"""
 
 from __future__ import annotations
 
@@ -12,17 +25,23 @@ import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 
-
+# Default output/input paths corresponding to standard forecast pipeline structures
 DEFAULT_FORECAST = Path(
     "Output/ForecastAccuracy/model/champion_candidate_independent_shadow/champion_sku_day_forecast.parquet"
 )
 DEFAULT_PANEL = Path("Output/ForecastAccuracy/model/model_sku_day_panel_parts")
 DEFAULT_PRODUCT_INFO_DIR = Path("Source")
 DEFAULT_OUTPUT_DIR = Path("Output/ForecastAccuracy/model/champion_candidate_independent_shadow/review")
+
+# Standard forecast target and forecast comparison columns
 TARGET_COLUMN = "SoldUnits"
 MODEL_COLUMN = "SelectedForecastQty"
 CORPORATE_COLUMN = "CorporateForecastQty"
+
+# Hierarchical levels to audit forecast performance
 FAMILY_COLUMNS = ["Division", "Department", "Class", "Item", "Color"]
+
+# Subset of panel columns required to audit promotional effects
 PANEL_AUDIT_COLUMNS = [
     "SKU",
     "Date",
@@ -61,35 +80,95 @@ PANEL_AUDIT_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the promo and newness audit script.
+
+    Returns:
+        argparse.Namespace: Populated argument values containing file and directory paths.
+    """
     parser = argparse.ArgumentParser(description="Audit promo/newness coverage on forecast misses.")
-    parser.add_argument("--forecast", type=Path, default=DEFAULT_FORECAST)
-    parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL)
-    parser.add_argument("--product-info-dir", type=Path, default=DEFAULT_PRODUCT_INFO_DIR)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
-    parser.add_argument("--top-n", type=int, default=250)
-    parser.add_argument("--skip-product-info", action="store_true")
+    parser.add_argument(
+        "--forecast",
+        type=Path,
+        default=DEFAULT_FORECAST,
+        help="Path to the champion forecast Parquet file.",
+    )
+    parser.add_argument(
+        "--panel",
+        type=Path,
+        default=DEFAULT_PANEL,
+        help="Directory containing the model SKU-day panel Parquet partitions.",
+    )
+    parser.add_argument(
+        "--product-info-dir",
+        type=Path,
+        default=DEFAULT_PRODUCT_INFO_DIR,
+        help="Directory containing Product Info Excel sheets.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIR,
+        help="Directory where output audit CSVs and metadata will be saved.",
+    )
+    parser.add_argument(
+        "--top-n",
+        type=int,
+        default=250,
+        help="Number of worst-performing groups to output in the family report.",
+    )
+    parser.add_argument(
+        "--skip-product-info",
+        action="store_true",
+        help="If set, skips reading the product info sheets and checking go-live dates.",
+    )
     return parser.parse_args()
 
 
 def normalize_sku(value: Any) -> str:
+    """Clean and normalize SKU identifiers to ensure join consistency.
+
+    Args:
+        value (Any): Raw SKU values from excel, database, or parquet.
+
+    Returns:
+        str: Upper-cased, whitespace-stripped string or empty string.
+    """
     if pd.isna(value):
         return ""
     return str(value).strip().upper()
 
 
 def latest_product_info_file(directory: Path) -> Path | None:
+    """Find the latest modified Product Info sheet in the target directory.
+
+    Args:
+        directory (Path): Source directory to search for Product Info.
+
+    Returns:
+        Path | None: Path to the latest file, or None if no matching files exist.
+    """
     files = sorted(directory.glob("Product Info for BRG*.xlsx"), key=lambda path: path.stat().st_mtime, reverse=True)
     return files[0] if files else None
 
 
 def load_product_info_attrs(directory: Path) -> tuple[pd.DataFrame, str | None]:
+    """Load SKU go-live dates and status attributes from the latest Product Info file.
+
+    Args:
+        directory (Path): Directory where Product Info Excel files reside.
+
+    Returns:
+        tuple[pd.DataFrame, str | None]: A dataframe with attributes and the path of the parsed file.
+    """
     path = latest_product_info_file(directory)
     if path is None:
         return pd.DataFrame(columns=["SKU", "GoLiveDate", "ProductStatus", "ProductStatusDate"]), None
 
+    # Skip first 3 lines as headers/metadata in the standard corporate spreadsheet format
     df = pd.read_excel(path, sheet_name="Product Attributes", header=3, engine="calamine")
     df = df.iloc[1:].copy().reset_index(drop=True)
 
+    # Slice left-most columns related to classification and launch dates
     left = df[df.columns[:9]].copy()
     left.columns = [
         "Offer",
@@ -107,6 +186,7 @@ def load_product_info_attrs(directory: Path) -> tuple[pd.DataFrame, str | None]:
     left["GoLiveDate"] = pd.to_datetime(left["GoLiveDate"], errors="coerce").dt.normalize()
     left = left.drop_duplicates("SKU", keep="first")
 
+    # Slice status and lifecycle tracking attributes if available
     if len(df.columns) > 12:
         status = df[[df.columns[10], df.columns[11], df.columns[12]]].copy()
         status.columns = ["SKU", "ProductStatus", "ProductStatusDate"]
@@ -122,6 +202,18 @@ def load_product_info_attrs(directory: Path) -> tuple[pd.DataFrame, str | None]:
 
 
 def read_panel_audit_rows(panel_path: Path, forecast: pd.DataFrame) -> pd.DataFrame:
+    """Read promo and discount columns from the panel partition matching the forecast window.
+
+    This restricts panel reading only to SKUs and date ranges present in the forecast
+    to manage memory footprints.
+
+    Args:
+        panel_path (Path): Path to the panel directory.
+        forecast (pd.DataFrame): Dataframe containing the forecast records to join.
+
+    Returns:
+        pd.DataFrame: Merged panel attributes for matching SKU and Date records.
+    """
     schema = set(pq.read_schema(panel_path).names)
     columns = [col for col in PANEL_AUDIT_COLUMNS if col in schema]
     panel = pd.read_parquet(panel_path, columns=columns)
@@ -134,17 +226,42 @@ def read_panel_audit_rows(panel_path: Path, forecast: pd.DataFrame) -> pd.DataFr
 
 
 def bool_rate(series: pd.Series) -> float:
+    """Calculate the fraction of true flags in a pandas Series.
+
+    Args:
+        series (pd.Series): Boolean or numeric series to average.
+
+    Returns:
+        float: Percentage of True records.
+    """
     if series.empty:
         return 0.0
     return float(series.fillna(False).astype(bool).mean())
 
 
 def joined_event_names(series: pd.Series, limit: int = 5) -> str:
+    """Consolidate distinct event/promotional sheet names into a single string separator.
+
+    Args:
+        series (pd.Series): Event name text column.
+        limit (int, optional): Max number of distinct event names to report. Defaults to 5.
+
+    Returns:
+        str: Separated list of top unique names.
+    """
     names = [str(value).strip() for value in series.dropna().unique() if str(value).strip()]
     return " | ".join(sorted(names)[:limit])
 
 
 def classify_newness(days_since_go_live: float | None) -> str:
+    """Classify product lifecycle stage relative to its launch/go-live date.
+
+    Args:
+        days_since_go_live (float | None): Days between record date and go-live date.
+
+    Returns:
+        str: Cohort classification tag.
+    """
     if days_since_go_live is None or pd.isna(days_since_go_live):
         return "UnknownGoLive"
     if days_since_go_live < 0:
@@ -157,6 +274,14 @@ def classify_newness(days_since_go_live: float | None) -> str:
 
 
 def add_derived_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Add cohort groups and normalize numeric metrics in the merged audit dataframe.
+
+    Args:
+        df (pd.DataFrame): Dataframe containing merged forecast, panel, and product info.
+
+    Returns:
+        pd.DataFrame: Enriched dataframe with newness buckets and normalized targets.
+    """
     df = df.copy()
     for col in [TARGET_COLUMN, MODEL_COLUMN, CORPORATE_COLUMN, "OrderedUnits"]:
         if col in df.columns:
@@ -174,6 +299,8 @@ def add_derived_columns(df: pd.DataFrame) -> pd.DataFrame:
         df["DaysSinceProductForecastStart"] = (df["Date"] - df["LatestProductForecastStartDate"]).dt.days
     else:
         df["DaysSinceProductForecastStart"] = np.nan
+
+    # Parse Item and Color from standard SKU format if missing
     if "Item" not in df.columns or "Color" not in df.columns:
         parsed = df["SKU"].astype(str).str.extract(r"^(?P<Item>[^-]+)-(?P<Color>[^-]+)-")
         for col in ["Item", "Color"]:
@@ -183,6 +310,15 @@ def add_derived_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def family_audit(df: pd.DataFrame, top_n: int) -> pd.DataFrame:
+    """Group forecast errors at family hierarchies to diagnose top miss contributors.
+
+    Args:
+        df (pd.DataFrame): Enriched SKU-day observations.
+        top_n (int): Number of worst-performing rows to slice.
+
+    Returns:
+        pd.DataFrame: Grouped metrics sorted by bias.
+    """
     rows: list[dict[str, Any]] = []
     group_cols = [col for col in FAMILY_COLUMNS if col in df.columns]
     for key, group in df.groupby(group_cols, dropna=False):
@@ -208,11 +344,15 @@ def family_audit(df: pd.DataFrame, top_n: int) -> pd.DataFrame:
                 "SkuPDLPromoRowRate": bool_rate(group.get("HasSkuPDLPromotion", pd.Series(dtype=bool))),
                 "AnyPromoRowRate": bool_rate(group.get("HasAnyPromotion", pd.Series(dtype=bool))),
                 "ObservedDiscountRowRate": bool_rate(group.get("HasObservedDiscount", pd.Series(dtype=bool))),
-                "MaxSkuPDLDiscountPct": float(pd.to_numeric(group.get("pdl_sku_max_discount_pct", 0), errors="coerce").max() or 0),
+                "MaxSkuPDLDiscountPct": float(
+                    pd.to_numeric(group.get("pdl_sku_max_discount_pct", 0), errors="coerce").max() or 0
+                ),
                 "AvgObservedDiscountPctVsMSRP": float(
                     pd.to_numeric(group.get("WeightedDiscountPctVsMSRP", 0), errors="coerce").fillna(0).mean()
                 ),
-                "SkuPDLActiveEvents": float(pd.to_numeric(group.get("pdl_sku_active_events", 0), errors="coerce").fillna(0).sum()),
+                "SkuPDLActiveEvents": float(
+                    pd.to_numeric(group.get("pdl_sku_active_events", 0), errors="coerce").fillna(0).sum()
+                ),
                 "PdlPrimarySheetTypes": joined_event_names(group.get("pdl_sku_primary_sheet_type", pd.Series(dtype=str))),
                 "PdlPrimaryEventNames": joined_event_names(group.get("pdl_sku_primary_event_name", pd.Series(dtype=str))),
                 "GoLiveMin": str(group["GoLiveDate"].min().date()) if group["GoLiveDate"].notna().any() else "",
@@ -230,6 +370,14 @@ def family_audit(df: pd.DataFrame, top_n: int) -> pd.DataFrame:
 
 
 def newness_summary(df: pd.DataFrame) -> pd.DataFrame:
+    """Summarize error performance by product age cohort and promotional status.
+
+    Args:
+        df (pd.DataFrame): Enriched observations.
+
+    Returns:
+        pd.DataFrame: WAPE and bias summarized for each cohort-promotion slice.
+    """
     rows: list[dict[str, Any]] = []
     for key, group in df.groupby(["NewnessBucket", "HasSkuPDLPromotion"], dropna=False):
         bucket, promo = key
@@ -257,6 +405,7 @@ def newness_summary(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Read forecast artifacts, merge promo/newness metadata, and save audit reports."""
     args = parse_args()
     forecast = pd.read_parquet(args.forecast)
     forecast["SKU"] = forecast["SKU"].map(normalize_sku)
@@ -303,4 +452,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 

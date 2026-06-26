@@ -32,15 +32,6 @@ forecast at the horizon corporate is actually delivered on.
 
 It does NOT modify any existing script. It reuses helpers read-only, including the
 frozen-origin harness.
-
-EXAMPLE
--------
-    uv run python scripts/python/forecast_model_horizon_train.py \
-        --threads 8 --max-train-rows 500000 --max-iter 180 \
-        --exclude-corporate-features \
-        --origin-stride 14 --keep-zero-frac 0.3 \
-        --window 2026-05-12:2026-05-25:y2026_fd_a \
-        --window 2026-05-26:2026-06-08:y2026_fd_b
 """
 
 from __future__ import annotations
@@ -98,6 +89,11 @@ PROMO_EXTRA = {"HasPDLPromotion", "HasCouponPromotion", "HasAnyPromotion", "HasS
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for training and evaluating a horizon-consistent model.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Train and honestly evaluate a horizon-consistent forecast.")
     parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -174,7 +170,6 @@ SAVE_FORECAST_COLUMNS = [
     *BASELINE_COLUMNS,
 ]
 
-
 DEFAULT_WINDOWS = [
     "2026-05-12:2026-05-25:y2026_fd_a",
     "2026-05-26:2026-06-08:y2026_fd_b",
@@ -182,6 +177,14 @@ DEFAULT_WINDOWS = [
 
 
 def model_feature_columns(panel_columns: set[str]) -> tuple[list[str], list[str], list[str]]:
+    """Determine available model features split by data type.
+
+    Args:
+        panel_columns: Set of all columns present in the input panel.
+
+    Returns:
+        tuple[list[str], list[str], list[str]]: Numeric, categorical, and boolean feature lists.
+    """
     numeric = [c for c in NUMERIC_FEATURES if c in panel_columns]
     categorical = [c for c in CATEGORICAL_FEATURES if c in panel_columns]
     boolean = [c for c in BOOLEAN_FEATURES if c in panel_columns]
@@ -189,6 +192,14 @@ def model_feature_columns(panel_columns: set[str]) -> tuple[list[str], list[str]
 
 
 def promo_columns(panel_columns: list[str]) -> list[str]:
+    """Identify promotion-related columns in the panel dataset.
+
+    Args:
+        panel_columns: List of columns to inspect.
+
+    Returns:
+        list[str]: Promotion column names.
+    """
     cols = []
     for col in panel_columns:
         if col.startswith(PROMO_PREFIXES) or col in PROMO_EXTRA:
@@ -197,6 +208,15 @@ def promo_columns(panel_columns: list[str]) -> list[str]:
 
 
 def calendar_frame(target: pd.Timestamp, n_rows: int) -> dict[str, Any]:
+    """Generate calendar features dictionary for a target date.
+
+    Args:
+        target: Target date timestamp.
+        n_rows: Number of rows in target dataframe.
+
+    Returns:
+        dict[str, Any]: Calendar features dictionary.
+    """
     iso_week = int(target.isocalendar().week)
     weekend = target.weekday() >= 5
     return {
@@ -207,7 +227,21 @@ def calendar_frame(target: pd.Timestamp, n_rows: int) -> dict[str, Any]:
     }
 
 
-def build_lookup_by_date(panel: pd.DataFrame, value_columns: list[str], dates: set[pd.Timestamp]) -> dict[pd.Timestamp, pd.DataFrame]:
+def build_lookup_by_date(
+    panel: pd.DataFrame,
+    value_columns: list[str],
+    dates: set[pd.Timestamp],
+) -> dict[pd.Timestamp, pd.DataFrame]:
+    """Construct a date-indexed lookup dictionary containing values for specific dates.
+
+    Args:
+        panel: Panel dataset.
+        value_columns: Columns to extract.
+        dates: Set of dates to filter.
+
+    Returns:
+        dict[pd.Timestamp, pd.DataFrame]: Date-indexed lookup mapping.
+    """
     needed = panel.loc[panel[DATE_COLUMN].isin(dates), [SKU_COLUMN, DATE_COLUMN, *value_columns]]
     return {pd.Timestamp(dt): grp.drop(columns=[DATE_COLUMN]) for dt, grp in needed.groupby(DATE_COLUMN)}
 
@@ -218,7 +252,20 @@ def horizon_training_frame(
     promo_cols: list[str],
     args: argparse.Namespace,
 ) -> pd.DataFrame:
-    """Expand (SKU active at origin) x horizon into a leak-free training table."""
+    """Expand (SKU active at origin) x horizon into a leak-free training table.
+
+    Groups data by historical origin dates, matches each active SKU against targets at
+    horizons 1..14, incorporates target-date promotions/calendar features, and aggregates actuals.
+
+    Args:
+        panel: Fully populated model panel.
+        origins: Selected training origin dates.
+        promo_cols: Promotion-related columns.
+        args: Pipeline options.
+
+    Returns:
+        pd.DataFrame: Expanded training dataset.
+    """
     target_dates = {o + pd.Timedelta(days=h) for o in origins for h in range(1, MAX_HORIZON + 1)}
     sold_lookup = build_lookup_by_date(panel, [TARGET_COLUMN], target_dates)
     promo_lookup = build_lookup_by_date(panel, promo_cols, target_dates)
@@ -282,6 +329,17 @@ def prepare_with_horizon(
     frame: pd.DataFrame,
     args: argparse.Namespace,
 ) -> tuple[pd.DataFrame, np.ndarray, list[str], list[str], list[str]]:
+    """Clean, slice, and return features and targets with Horizon appended to numeric features.
+
+    Args:
+        frame: Input dataset with a Horizon column.
+        args: Pipeline options.
+
+    Returns:
+        tuple[pd.DataFrame, np.ndarray, list[str], list[str], list[str]]:
+            Features dataframe, log target array, numeric feature columns,
+            categorical feature columns, and boolean feature columns.
+    """
     x, y, numeric, categorical, boolean = prepare_xy(
         frame,
         args.exclude_corporate_features,
@@ -293,14 +351,44 @@ def prepare_with_horizon(
     return x, y, numeric, categorical, boolean
 
 
-def fit_horizon_model(ml: dict[str, Any], training: pd.DataFrame, args: argparse.Namespace):
+def fit_horizon_model(
+    ml: dict[str, Any],
+    training: pd.DataFrame,
+    args: argparse.Namespace,
+) -> tuple[Any, str]:
+    """Fit a horizon-consistent model on the expanded multi-horizon training frame.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        training: Prepared training dataset.
+        args: Command parameters.
+
+    Returns:
+        tuple[Any, str]: Fitted Pipeline and candidate model mode key.
+    """
     x_train, y_train, numeric, categorical, boolean = prepare_with_horizon(training, args)
     model, mode = build_candidate(CHAMPION_MODEL, ml, numeric, categorical, boolean, args)
     model.fit(x_train, y_train)
     return model, mode
 
 
-def fit_old_champion(ml: dict[str, Any], panel: pd.DataFrame, window_start: pd.Timestamp, args: argparse.Namespace):
+def fit_old_champion(
+    ml: dict[str, Any],
+    panel: pd.DataFrame,
+    window_start: pd.Timestamp,
+    args: argparse.Namespace,
+) -> tuple[Any, str]:
+    """Train the plain champion model on raw panel rows (non-horizon consistent) for backtest side-by-sides.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        panel: Fully merged panel dataset.
+        window_start: Holdout window start timestamp.
+        args: Command options.
+
+    Returns:
+        tuple[Any, str]: Fitted Pipeline and model mode.
+    """
     train = panel.loc[panel[DATE_COLUMN].lt(window_start)].copy()
     train = sample_training_rows(train, args.max_train_rows, args.random_state)
     x_train, y_train, numeric, categorical, boolean = prepare_xy(
@@ -313,20 +401,74 @@ def fit_old_champion(ml: dict[str, Any], panel: pd.DataFrame, window_start: pd.T
     return model, mode
 
 
-def score_horizon(model, mode, holdout, snapshot, freeze_cols, origin, args) -> np.ndarray:
+def score_horizon(
+    model: Any,
+    mode: str,
+    holdout: pd.DataFrame,
+    snapshot: pd.DataFrame,
+    freeze_cols: list[str],
+    origin: pd.Timestamp,
+    args: argparse.Namespace,
+) -> np.ndarray:
+    """Generate predictions using the horizon-consistent model.
+
+    Freezes origin-state features, derives target-date horizons, and generates predictions.
+
+    Args:
+        model: Fitted model Pipeline.
+        mode: Model mode key.
+        holdout: Holdout prediction template.
+        snapshot: Snapshot of features frozen at origin.
+        freeze_cols: Columns to freeze.
+        origin: Forecast origin date.
+        args: Command options.
+
+    Returns:
+        np.ndarray: Predicted demand units.
+    """
     frame = apply_frozen_features(holdout, snapshot, freeze_cols).copy()
     frame[HORIZON_COLUMN] = (frame[DATE_COLUMN] - origin).dt.days
     x, _, _, _, _ = prepare_with_horizon(frame, args)
     return predict_candidate(model, mode, x)
 
 
-def score_frozen_old(model, mode, holdout, snapshot, freeze_cols, args) -> np.ndarray:
+def score_frozen_old(
+    model: Any,
+    mode: str,
+    holdout: pd.DataFrame,
+    snapshot: pd.DataFrame,
+    freeze_cols: list[str],
+    args: argparse.Namespace,
+) -> np.ndarray:
+    """Generate predictions using the plain champion model with origin-frozen features.
+
+    Args:
+        model: Fitted model pipeline.
+        mode: Model mode.
+        holdout: Prediction holdout frame.
+        snapshot: Snapshot of features frozen at origin.
+        freeze_cols: Columns to freeze.
+        args: Command options.
+
+    Returns:
+        np.ndarray: Predicted demand units.
+    """
     frame = apply_frozen_features(holdout, snapshot, freeze_cols)
     x, _, _, _, _ = prepare_xy(frame, args.exclude_corporate_features, args.include_product_identity_features)
     return predict_candidate(model, mode, x)
 
 
 def evaluate_window(scored: pd.DataFrame, forecast_cols: list[str], window: dict[str, Any]) -> dict[str, pd.DataFrame]:
+    """Calculate aggregated, daily, and coverage evaluation metrics for a holdout window.
+
+    Args:
+        scored: Scored predictions dataset.
+        forecast_cols: Forecast columns to evaluate.
+        window: Window metadata dictionary.
+
+    Returns:
+        dict[str, pd.DataFrame]: Compiled evaluation datasets.
+    """
     scored = scored.copy()
     scored["FDDay"] = (scored[DATE_COLUMN] - window["origin"]).dt.days
 
@@ -340,6 +482,16 @@ def evaluate_window(scored: pd.DataFrame, forecast_cols: list[str], window: dict
 
 
 def training_origins(panel: pd.DataFrame, window_start: pd.Timestamp, stride: int) -> list[pd.Timestamp]:
+    """Identify valid historical origin dates before the forecast window.
+
+    Args:
+        panel: Model panel dataset.
+        window_start: Holdout window start date.
+        stride: Distance in days between training origins.
+
+    Returns:
+        list[pd.Timestamp]: List of training origin dates.
+    """
     available = panel.loc[panel[DATE_COLUMN].lt(window_start), DATE_COLUMN]
     if available.empty:
         return []
@@ -349,7 +501,25 @@ def training_origins(panel: pd.DataFrame, window_start: pd.Timestamp, stride: in
     return [pd.Timestamp(o) for o in origins]
 
 
-def run_window(ml, panel, window, promo_cols, args) -> dict[str, pd.DataFrame]:
+def run_window(
+    ml: dict[str, Any],
+    panel: pd.DataFrame,
+    window: dict[str, Any],
+    promo_cols: list[str],
+    args: argparse.Namespace,
+) -> dict[str, pd.DataFrame]:
+    """Execute training and frozen-origin prediction on a single holdout window.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        panel: Fully merged model panel.
+        window: Window metadata.
+        promo_cols: Promotion columns.
+        args: Command parameters.
+
+    Returns:
+        dict[str, pd.DataFrame]: Scored dataset and evaluation metrics.
+    """
     holdout = panel.loc[panel[DATE_COLUMN].between(window["start"], window["end"])].copy()
     if holdout.empty:
         raise ValueError(f"No panel rows in forecast window {window['label']}.")
@@ -393,6 +563,7 @@ def run_window(ml, panel, window, promo_cols, args) -> dict[str, pd.DataFrame]:
 
 
 def main() -> None:
+    """Execute the command line entry point to train a horizon-consistent model and run frozen evaluation."""
     args = parse_args()
     configure_threads(args.threads)
     ml = require_sklearn()

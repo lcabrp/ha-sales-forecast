@@ -51,6 +51,11 @@ DEFAULT_WINDOWS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the rolling-origin scikit-learn model comparisons.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Run rolling-origin sklearn model comparisons.")
     parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -101,6 +106,17 @@ def parse_args() -> argparse.Namespace:
 
 
 def parse_window(value: str) -> dict[str, str]:
+    """Parse a single window string format (START:END:LABEL) into a structured dictionary.
+
+    Args:
+        value: Window parameter string.
+
+    Returns:
+        dict[str, str]: Dictionary mapping start, end, and label values.
+
+    Raises:
+        ValueError: If formatting is invalid or start date is after the end date.
+    """
     parts = value.split(":")
     if len(parts) != 3:
         raise ValueError(f"Window must be START:END:LABEL, got {value!r}")
@@ -113,6 +129,15 @@ def parse_window(value: str) -> dict[str, str]:
 
 
 def args_for_window(args: argparse.Namespace, window: dict[str, str]) -> argparse.Namespace:
+    """Create a customized copy of command arguments focused on a specific window segment.
+
+    Args:
+        args: Global command arguments.
+        window: Target window dictionary.
+
+    Returns:
+        argparse.Namespace: Target window-specific arguments.
+    """
     window_args = copy(args)
     window_args.holdout_start = window["start"]
     window_args.holdout_end = window["end"]
@@ -121,6 +146,15 @@ def args_for_window(args: argparse.Namespace, window: dict[str, str]) -> argpars
 
 
 def summarize_baselines(holdout: pd.DataFrame, window: dict[str, str]) -> pd.DataFrame:
+    """Evaluate standard baselines (corporate/recent) during a window holdout.
+
+    Args:
+        holdout: Holdout subset of panel.
+        window: Window metadata dictionary.
+
+    Returns:
+        pd.DataFrame: Evaluation metrics dataframe.
+    """
     forecast_cols = [col for col in BASELINE_COLUMNS if col in holdout.columns]
     summary = evaluate_predictions(holdout, forecast_cols)
     summary.insert(0, "WindowLabel", window["label"])
@@ -136,6 +170,17 @@ def run_window(
     args: argparse.Namespace,
     window: dict[str, str],
 ) -> pd.DataFrame:
+    """Train, predict, calibrate, and evaluate all candidates for a specific window.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        panel: Fully merged model panel.
+        args: Command parameters.
+        window: Window metadata dictionary.
+
+    Returns:
+        pd.DataFrame: Metric summary results of models and baselines during the window.
+    """
     window_args = args_for_window(args, window)
     train, calibration, holdout, holdout_start, holdout_end = split_panel(panel, window_args)
     rows = [summarize_baselines(holdout, window)]
@@ -166,6 +211,14 @@ def run_window(
 
 
 def add_window_context(summary: pd.DataFrame) -> pd.DataFrame:
+    """Append derived metrics and model indicators to the summary results table.
+
+    Args:
+        summary: Raw summary dataframe.
+
+    Returns:
+        pd.DataFrame: Contextualized summary dataframe.
+    """
     summary = summary.copy()
     summary["AbsBiasPct"] = summary["BiasPct"].abs()
     summary["IsModelForecast"] = summary["ModelKey"].ne("baseline")
@@ -173,11 +226,29 @@ def add_window_context(summary: pd.DataFrame) -> pd.DataFrame:
 
 
 def best_by_window(summary: pd.DataFrame) -> pd.DataFrame:
+    """Find the top forecast model for each individual window based on WAPE.
+
+    Args:
+        summary: Contextualized summary.
+
+    Returns:
+        pd.DataFrame: Best forecast candidates per window.
+    """
     ranked = summary.sort_values(["WindowLabel", "WAPE", "AbsBiasPct"], ascending=[True, True, True])
     return ranked.groupby("WindowLabel", as_index=False).head(1).reset_index(drop=True)
 
 
 def aggregate_by_forecast(summary: pd.DataFrame) -> pd.DataFrame:
+    """Calculate aggregate summary metrics across all historical windows.
+
+    Groups metrics by forecast type, counts window wins, and sorts by average WAPE.
+
+    Args:
+        summary: Contextualized summary.
+
+    Returns:
+        pd.DataFrame: Aggregate ranking table.
+    """
     grouped = (
         summary.groupby(["ModelKey", "ForecastName"], as_index=False)
         .agg(
@@ -200,6 +271,7 @@ def aggregate_by_forecast(summary: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Execute the command line entry point to run rolling comparisons across all window targets."""
     args = parse_args()
     configure_threads(args.threads)
     ml = require_sklearn()

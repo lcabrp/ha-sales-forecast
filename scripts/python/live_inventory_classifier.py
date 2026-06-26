@@ -37,7 +37,16 @@ HIERARCHY_FIELDS = ["Division", "Department", "Class", "KeyCategoryView", "SizeG
 
 
 def velocity_from_slot_tier(slot_tier: str) -> str:
-    """Return the velocity suffix from a SlotTier or zone label."""
+    """Return the velocity suffix from a SlotTier or zone label.
+
+    Matches patterns like 'WAA' -> 'AA', 'PJA' -> 'A', etc.
+
+    Args:
+        slot_tier: The SlotTier/Zone identifier.
+
+    Returns:
+        str: The velocity suffix ('AA', 'A', 'B', 'C'), or empty string if unparseable.
+    """
     value = str(slot_tier)
     if value.endswith("AA"):
         return "AA"
@@ -47,7 +56,14 @@ def velocity_from_slot_tier(slot_tier: str) -> str:
 
 
 def build_tier_to_zone_map(proposed_map: pd.DataFrame) -> tuple[set[str], dict[str, list[str]]]:
-    """Build available zone and family indexes from a proposed map."""
+    """Build available zone and family indexes from a proposed warehouse map.
+
+    Args:
+        proposed_map: DataFrame representing the warehouse layout zone-map.
+
+    Returns:
+        tuple[set[str], dict[str, list[str]]]: Distinct zone set and mapped zone-family list.
+    """
     zone_col = "ProposedZoneId" if "ProposedZoneId" in proposed_map.columns else "ZONEID"
     available_zones = {
         str(zone).strip()
@@ -71,6 +87,12 @@ def _same_family_velocity_order(source_velocity: str) -> list[str]:
     High-velocity items avoid C as a normal fallback because C locations can be
     much farther away. C remains usable for C items, where distance pressure is
     lower and the alternative is a hard unmapped exception.
+
+    Args:
+        source_velocity: Target velocity band ('AA', 'A', 'B', or 'C').
+
+    Returns:
+        list[str]: Falls back ordered velocity list.
     """
     if source_velocity == "AA":
         return ["AA", "A", "B"]
@@ -82,7 +104,19 @@ def _same_family_velocity_order(source_velocity: str) -> list[str]:
 
 
 def resolve_zone(slot_tier: str, available_zones: set[str], zone_families: dict[str, list[str]]) -> str:
-    """Resolve a SlotTier to the best available zone in a proposed map."""
+    """Resolve a SlotTier to the best available zone in a proposed map.
+
+    Attempts exact mapping first. If missing, traverses same-family velocity ordering,
+    and falls back to similar product groups if necessary.
+
+    Args:
+        slot_tier: SlotTier code to map.
+        available_zones: Available zones set.
+        zone_families: Mapped zone family definitions.
+
+    Returns:
+        str: Resolved zone ID, or 'Unmapped'.
+    """
     tier = str(slot_tier).strip()
     if not tier:
         return "Unmapped"
@@ -123,6 +157,14 @@ def resolve_zone(slot_tier: str, available_zones: set[str], zone_families: dict[
 
 
 def _load_forward_demand(demand_path: Path) -> pd.DataFrame:
+    """Read authoritative forward demand forecast to map SKU -> SlotTier.
+
+    Args:
+        demand_path: Path to the FwdDemand CSV file.
+
+    Returns:
+        pd.DataFrame: DataFrame containing SKU, SlotTier and Total14DayDemand columns.
+    """
     header = pd.read_csv(demand_path, nrows=0)
     fd_cols = [f"FD{i}" for i in range(1, 15) if f"FD{i}" in header.columns]
     usecols = ["SKU", "SlotTier", *fd_cols]
@@ -135,7 +177,16 @@ def _load_forward_demand(demand_path: Path) -> pd.DataFrame:
 
 
 def _load_sku_ledger_fallback(sku_ledger_db: Path = SKU_LEDGER_DB) -> pd.Series:
-    """Load historical SKU category families from the SKU ledger."""
+    """Load historical SKU category families from the SKU ledger.
+
+    Constructs a fallback SlotTier (suffix 'C') using product group and size.
+
+    Args:
+        sku_ledger_db: Database file path.
+
+    Returns:
+        pd.Series: Fallback SlotTier indexed by SKU.
+    """
     if not sku_ledger_db.exists():
         return pd.Series(dtype="object")
 
@@ -171,7 +222,18 @@ def _merge_classification_fallback(
     prefix: str,
     source_name: str,
 ) -> tuple[pd.DataFrame, int]:
-    """Fill blank hierarchy fields from an ingestion-style fallback table."""
+    """Fill blank hierarchy fields from an ingestion-style fallback table.
+
+    Args:
+        df: Target DataFrame to update.
+        fallback_df: Fallback hierarchy DataFrame.
+        key_col: Join column name.
+        prefix: Column prefix for fallback keys.
+        source_name: Source name descriptor.
+
+    Returns:
+        tuple[pd.DataFrame, int]: Updated DataFrame and count of recovered rows.
+    """
     if fallback_df.empty:
         return df, 0
 
@@ -191,7 +253,18 @@ def _merge_classification_fallback(
 
 
 def _load_current_hierarchy_fallback(skus: pd.Series, context_label: str) -> pd.DataFrame:
-    """Resolve forecast-missing live SKUs with ingestion hierarchy precedence."""
+    """Resolve forecast-missing live SKUs with ingestion hierarchy precedence.
+
+    Resolves items by checking exact SKU, then Item-Color, then Item, and lastly
+    checks AX product database hierarchies.
+
+    Args:
+        skus: Series of SKUs to resolve.
+        context_label: Log label descriptor.
+
+    Returns:
+        pd.DataFrame: Resolved hierarchy DataFrame.
+    """
     sku_values = sorted({str(sku).strip() for sku in skus.dropna() if str(sku).strip()})
     columns = [
         "SKU",
@@ -301,7 +374,14 @@ def _write_hierarchy_fallback_to_ledger(
     sku_ledger_db: Path,
     source_prefix: str,
 ) -> None:
-    """Persist trusted hierarchy fallback classifications when explicitly enabled."""
+    """Persist trusted hierarchy fallback classifications when explicitly enabled.
+
+    Args:
+        hierarchy_fallback: Fallback classifications table.
+        persist: If True, executes inserts/updates to the SQLite database.
+        sku_ledger_db: SQLite ledger database file path.
+        source_prefix: Source tag label.
+    """
     if not persist:
         if hierarchy_fallback.empty:
             print("    SKU ledger hierarchy cache: no current hierarchy fallback rows to save")
@@ -369,6 +449,15 @@ def _write_hierarchy_fallback_to_ledger(
 
 
 def _add_hierarchy_context(sql_df: pd.DataFrame, hierarchy_fallback: pd.DataFrame) -> pd.DataFrame:
+    """Insert fallback category fields back into the main live inventory DataFrame.
+
+    Args:
+        sql_df: Input raw live inventory records.
+        hierarchy_fallback: Table containing parsed hierarchies.
+
+    Returns:
+        pd.DataFrame: DataFrame populated with hierarchy context columns.
+    """
     if hierarchy_fallback.empty:
         for hierarchy_col in ["Division", "Department", "Class", "KeyCategoryView", "ProductGroupCode", "SizeGroupCode"]:
             sql_df[f"Hierarchy{hierarchy_col}"] = ""
@@ -390,7 +479,23 @@ def classify_live_inventory(
     source_prefix: str = "LiveInventoryHierarchyFallback",
     context_label: str = "forecast-missing",
 ) -> pd.DataFrame:
-    """Classify live picking inventory into SlotTiers and optional map zones."""
+    """Classify live picking inventory into SlotTiers and optional map zones.
+
+    Filters out wholesale location entries, resolves SlotTiers sequentially via
+    demand forecasts, historical ledger cache, and current hierarchy attributes.
+
+    Args:
+        sql_df: DataFrame representing live DC inventory records.
+        demand_path: Path to the FwdDemand CSV file.
+        proposed_map: Optional proposed map DataFrame.
+        sku_ledger_db: Sku ledger cache path.
+        persist_hierarchy_fallback: If True, writes resolved fallbacks to ledger.
+        source_prefix: Logging source tag prefix.
+        context_label: Category resolver descriptor.
+
+    Returns:
+        pd.DataFrame: Categorized unique SKU records.
+    """
     demand = _load_forward_demand(demand_path)
     sku_to_tier = demand.set_index("SKU")["SlotTier"]
     sku_to_demand = demand.set_index("SKU")["Total14DayDemand"]

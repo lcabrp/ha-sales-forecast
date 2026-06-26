@@ -44,13 +44,14 @@ from pathlib import Path
 
 import pandas as pd
 
+# Add the parent directory to Python path to import sister utilities
 PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
 
 from forecast_model_train import MODEL_DIR  # noqa: E402
 
-
+# Default locations for incoming forecasts and target output scorecard reports
 DEFAULT_FORECAST_PATH = MODEL_DIR / "horizon_consistent" / "forecast_sku_day.parquet"
 DEFAULT_OUTPUT_DIR = MODEL_DIR / "slotting_scorecard"
 ACTUAL_COLUMN = "SoldUnits"
@@ -61,6 +62,7 @@ TIER_ORDER = ["C", "B", "A", "AA"]
 TIER_RANK = {tier: i for i, tier in enumerate(TIER_ORDER)}
 THIRTEEN_WEEK_FROM_14D = 91.0 / 14.0  # extrapolate a 14-day total to 13-week units
 
+# Forecast candidate methods to score in the comparison grid
 CANDIDATE_COLUMNS = [
     "HorizonConsistentMLForecastQty",
     "FrozenChampionMLForecastQty",
@@ -76,9 +78,24 @@ CANDIDATE_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the slotting scorecard.
+
+    Returns:
+        argparse.Namespace: Populated argument Namespace with file paths and parameters.
+    """
     parser = argparse.ArgumentParser(description="Velocity-tier / slotting scorecard for forecasts.")
-    parser.add_argument("--forecast", type=Path, default=DEFAULT_FORECAST_PATH)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument(
+        "--forecast",
+        type=Path,
+        default=DEFAULT_FORECAST_PATH,
+        help="Path to the forecast Parquet file containing columns for actuals and predictions.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIR,
+        help="Output directory to save the scorecard CSVs and JSON metadata.",
+    )
     parser.add_argument(
         "--thirteen-week-factor",
         type=float,
@@ -89,6 +106,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def velocity_tier(units_13wk: float) -> str:
+    """Classify 13-week unit volume into standard velocity letter tiers.
+
+    Args:
+        units_13wk (float): Extrapolated or actual 13-week unit volume.
+
+    Returns:
+        str: Velocity tier code ('C', 'B', 'A', or 'AA').
+    """
     if pd.isna(units_13wk) or units_13wk <= 20:
         return "C"
     if units_13wk > 100:
@@ -99,13 +124,31 @@ def velocity_tier(units_13wk: float) -> str:
 
 
 def sku_window_totals(forecast: pd.DataFrame, value_cols: list[str]) -> pd.DataFrame:
-    """Sum each forecast (and actual) to 14-day totals per (window, SKU)."""
+    """Sum each forecast candidate and actuals to a 14-day total per SKU.
+
+    Args:
+        forecast (pd.DataFrame): SKU-day forecast observations.
+        value_cols (list[str]): Columns representing forecast predictions.
+
+    Returns:
+        pd.DataFrame: Grouped SKU-window dataframe.
+    """
     agg = {col: "sum" for col in [ACTUAL_COLUMN, *value_cols]}
     totals = forecast.groupby(["WindowLabel", SKU_COLUMN], as_index=False).agg(agg)
     return totals
 
 
 def assign_tiers(totals: pd.DataFrame, value_cols: list[str], factor: float) -> pd.DataFrame:
+    """Map sales quantities to velocity tiers based on the thirteen-week factor.
+
+    Args:
+        totals (pd.DataFrame): Dataframe with summed forecast quantities per SKU/window.
+        value_cols (list[str]): List of forecast columns.
+        factor (float): Multiplier for 13-week extrapolation.
+
+    Returns:
+        pd.DataFrame: Dataframe with added velocity tier columns.
+    """
     out = totals.copy()
     out["ActualTier"] = (out[ACTUAL_COLUMN] * factor).map(velocity_tier)
     for col in value_cols:
@@ -114,6 +157,15 @@ def assign_tiers(totals: pd.DataFrame, value_cols: list[str], factor: float) -> 
 
 
 def tier_accuracy(tiers: pd.DataFrame, value_cols: list[str]) -> pd.DataFrame:
+    """Calculate velocity tier accuracy metrics for each forecast candidate.
+
+    Args:
+        tiers (pd.DataFrame): SKU-window totals with mapped tiers.
+        value_cols (list[str]): Columns containing candidate forecasts.
+
+    Returns:
+        pd.DataFrame: Comparison scorecard with exact match rates and unit-weighted miss percentages.
+    """
     rows = []
     actual_rank = tiers["ActualTier"].map(TIER_RANK)
     actual_units = tiers[ACTUAL_COLUMN]
@@ -138,6 +190,15 @@ def tier_accuracy(tiers: pd.DataFrame, value_cols: list[str]) -> pd.DataFrame:
 
 
 def confusion_for(tiers: pd.DataFrame, col: str) -> pd.DataFrame:
+    """Generate a confusion matrix cross-tabulation for a single candidate.
+
+    Args:
+        tiers (pd.DataFrame): Assigned tier dataframe.
+        col (str): The forecast candidate column name to tabulate.
+
+    Returns:
+        pd.DataFrame: Reindexed cross-tabulation table.
+    """
     confusion = pd.crosstab(tiers["ActualTier"], tiers[f"{col}__tier"])
     confusion = confusion.reindex(index=TIER_ORDER, columns=TIER_ORDER, fill_value=0)
     confusion.index.name = "ActualTier"
@@ -146,7 +207,18 @@ def confusion_for(tiers: pd.DataFrame, col: str) -> pd.DataFrame:
 
 
 def tier_stability(tiers: pd.DataFrame, value_cols: list[str]) -> pd.DataFrame:
-    """Tier churn between consecutive windows (lower = more stable zone map)."""
+    """Evaluate velocity tier churn rate between consecutive forecast windows.
+
+    Lower churn values are preferred because they indicate that physical SKU relocations
+    will be minimized.
+
+    Args:
+        tiers (pd.DataFrame): Assigned tier dataframe.
+        value_cols (list[str]): Columns representing forecast candidates.
+
+    Returns:
+        pd.DataFrame: Stability breakdown per window pair.
+    """
     windows = sorted(tiers["WindowLabel"].unique())
     if len(windows) < 2:
         return pd.DataFrame(
@@ -177,6 +249,7 @@ def tier_stability(tiers: pd.DataFrame, value_cols: list[str]) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Load inputs, execute slotting accuracy/stability audits, and write reports."""
     args = parse_args()
     if not args.forecast.exists():
         raise SystemExit(
@@ -230,3 +303,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

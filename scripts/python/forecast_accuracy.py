@@ -1,7 +1,7 @@
 """Build a local forecast-accuracy SQLite workspace from forecast CSV snapshots.
 
-This is intentionally data-first.  The initial import preserves weekly forecast
-snapshots and unpivots nonzero FD1-FD14 values into SKU-day rows.  Actual
+This is intentionally data-first. The initial import preserves weekly forecast
+snapshots and unpivots nonzero FD1-FD14 values into SKU-day rows. Actual
 sales/pick imports can then join to forecast_sku_snapshot and forecast_sku_day
 without rereading the large CSVs.
 """
@@ -51,6 +51,11 @@ SKU_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for forecast accuracy tool.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Import FwdDemandCSV snapshots into a forecast accuracy SQLite database."
     )
@@ -108,6 +113,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def sha256(path: Path) -> str:
+    """Compute the SHA-256 hash of a file's content in a chunked, memory-efficient manner.
+
+    Args:
+        path: Path to the target file.
+
+    Returns:
+        str: Hexadecimal SHA-256 hash.
+    """
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
@@ -116,6 +129,17 @@ def sha256(path: Path) -> str:
 
 
 def snapshot_file_date(path: Path) -> date:
+    """Parse the date from a FwdDemandCSV filename (e.g. FwdDemandCSV_YYYY-MM-DD.csv).
+
+    Args:
+        path: Path to the CSV file.
+
+    Returns:
+        date: Parsed calendar Date.
+
+    Raises:
+        ValueError: If filename does not match expected naming convention.
+    """
     match = FORECAST_FILE_RE.match(path.name)
     if not match:
         raise ValueError(f"Expected FwdDemandCSV_YYYY-MM-DD.csv, got {path.name}")
@@ -123,11 +147,28 @@ def snapshot_file_date(path: Path) -> date:
 
 
 def snapshot_id(path: Path, source_sha256: str) -> str:
+    """Generate a stable unique snapshot identifier hash based on filename and contents.
+
+    Args:
+        path: Path to the file.
+        source_sha256: Contents hash.
+
+    Returns:
+        str: Generated hexadecimal snapshot ID.
+    """
     value = f"{path.name.lower()}|{source_sha256}".encode("utf-8")
     return hashlib.sha256(value).hexdigest()
 
 
 def connect(db_path: Path) -> sqlite3.Connection:
+    """Establish a connection to the forecast accuracy SQLite database, setting performance flags.
+
+    Args:
+        db_path: Path to the SQLite file.
+
+    Returns:
+        sqlite3.Connection: Opened connection.
+    """
     db_path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON")
@@ -138,6 +179,11 @@ def connect(db_path: Path) -> sqlite3.Connection:
 
 
 def initialize_schema(conn: sqlite3.Connection) -> None:
+    """Ensure the target tables, views, and index schemas are created in the SQLite database.
+
+    Args:
+        conn: Open SQLite connection.
+    """
     conn.executescript(
         """
         CREATE TABLE IF NOT EXISTS forecast_snapshot_files (
@@ -294,10 +340,29 @@ def initialize_schema(conn: sqlite3.Connection) -> None:
 
 
 def normalize_text(series: pd.Series) -> pd.Series:
+    """Standardize string series by stripping whitespaces and filling missing cells.
+
+    Args:
+        series: Pandas Series.
+
+    Returns:
+        pd.Series: Normalized Series.
+    """
     return series.fillna("").astype(str).str.strip()
 
 
 def load_forecast_csv(path: Path) -> pd.DataFrame:
+    """Read a FwdDemand forecast CSV file, verifying that all schema columns are present.
+
+    Args:
+        path: Path to the target forecast CSV file.
+
+    Returns:
+        pd.DataFrame: Cleaned forecast DataFrame.
+
+    Raises:
+        ValueError: If columns are missing or SKUs contain duplicates.
+    """
     usecols = [col for col in [*SKU_COLUMNS, *FD_COLUMNS] if col]
     df = pd.read_csv(path, usecols=lambda col: col in usecols)
     missing_cols = sorted(set([*SKU_COLUMNS, *FD_COLUMNS]) - set(df.columns))
@@ -330,6 +395,12 @@ def load_forecast_csv(path: Path) -> pd.DataFrame:
 
 
 def delete_snapshot(conn: sqlite3.Connection, snap_id: str) -> None:
+    """Remove a forecast snapshot and all its unpivoted daily details from the database.
+
+    Args:
+        conn: Open SQLite connection.
+        snap_id: Identifer key of the snapshot to delete.
+    """
     conn.execute("DELETE FROM forecast_sku_day WHERE SnapshotId = ?", (snap_id,))
     conn.execute("DELETE FROM forecast_sku_snapshot WHERE SnapshotId = ?", (snap_id,))
     conn.execute("DELETE FROM forecast_snapshot_files WHERE SnapshotId = ?", (snap_id,))
@@ -342,6 +413,19 @@ def import_forecast_file(
     overwrite: bool = False,
     include_zero_days: bool = False,
 ) -> tuple[str, str]:
+    """Parse and import a single FwdDemand forecast snapshot file.
+
+    Unpivots forecast quantity columns into separate SKU-day records.
+
+    Args:
+        conn: Open SQLite connection.
+        path: Path to the target forecast CSV file.
+        overwrite: If True, replaces existing database records for this file.
+        include_zero_days: If True, writes forecast rows even if Qty is 0.
+
+    Returns:
+        tuple[str, str]: Import status code and the snapshot ID.
+    """
     source_sha256 = sha256(path)
     snap_id = snapshot_id(path, source_sha256)
     existing = conn.execute(
@@ -352,6 +436,7 @@ def import_forecast_file(
         return "skipped", snap_id
     if existing and overwrite:
         delete_snapshot(conn, snap_id)
+        
     same_content = conn.execute(
         """
         SELECT SnapshotId
@@ -432,6 +517,14 @@ def import_forecasts(
     overwrite: bool,
     include_zero_days: bool,
 ) -> None:
+    """Scan input directory for forecast files and import them sequentially into the database.
+
+    Args:
+        input_dir: Source folder containing CSVs.
+        db_path: SQLite DB path.
+        overwrite: Overwrite existing imports.
+        include_zero_days: Include rows with zero quantities.
+    """
     paths = sorted(
         path
         for path in input_dir.glob("FwdDemandCSV_*.csv")
@@ -464,6 +557,14 @@ def import_forecasts(
 
 
 def parse_iso_date(value: str) -> date:
+    """Parse string representation of date in ISO YYYY-MM-DD format.
+
+    Args:
+        value: Input string.
+
+    Returns:
+        date: Converted Python Date.
+    """
     try:
         return date.fromisoformat(value)
     except ValueError as exc:
@@ -471,6 +572,14 @@ def parse_iso_date(value: str) -> date:
 
 
 def detect_archive_boundary(engine: sa.Engine) -> date | None:
+    """Detect boundary timestamp separating active and historical warehouse transaction archives.
+
+    Args:
+        engine: Database connection engine.
+
+    Returns:
+        date or None: Boundary Date, or None if detection failed.
+    """
     query = sa.text(
         """
         SELECT CAST(MAX(CREATEDDATETIME) AS DATE) AS MaxArchiveDate
@@ -492,6 +601,18 @@ def detect_archive_boundary(engine: sa.Engine) -> date | None:
 
 
 def actuals_query(source_table_schema: str, source_dim_schema: str, date_expr: str) -> sa.TextClause:
+    """Construct SQL query for pulling actual unit movement statistics from warehouse tables.
+
+    Filters for completed DirectPick work records.
+
+    Args:
+        source_table_schema: WMS table schema name (e.g. 'dbo').
+        source_dim_schema: Dimension table schema name (e.g. 'dbo').
+        date_expr: Database field representing transaction date (created or modified).
+
+    Returns:
+        sa.TextClause: SQL query string.
+    """
     return sa.text(
         f"""
         SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -542,6 +663,18 @@ def fetch_actuals(
     end_date: date,
     date_basis: str,
 ) -> pd.DataFrame:
+    """Retrieve actual units processed from warehouse tables, combining archives if required.
+
+    Args:
+        server: Host server.
+        database: Database name.
+        start_date: Filter start date.
+        end_date: Filter end date.
+        date_basis: Field representing date (created or modified).
+
+    Returns:
+        pd.DataFrame: Cleaned actual SKU metrics DataFrame.
+    """
     if end_date < start_date:
         raise ValueError("--end-date must be on or after --start-date")
 
@@ -605,6 +738,16 @@ def import_actuals(
     database: str,
     date_basis: str,
 ) -> None:
+    """Pull, validate, and write warehouse pick actuals to the SQLite database.
+
+    Args:
+        db_path: SQLite file path.
+        start_date_text: Inclusive start date string.
+        end_date_text: Inclusive end date string.
+        server: Target SQL server host.
+        database: Database name.
+        date_basis: Date field key (created or modified).
+    """
     start_date = parse_iso_date(start_date_text)
     end_date = parse_iso_date(end_date_text)
     actuals = fetch_actuals(
@@ -639,6 +782,11 @@ def import_actuals(
 
 
 def print_summary(db_path: Path) -> None:
+    """Fetch and print summary details of imported forecast snapshots.
+
+    Args:
+        db_path: SQLite database file path.
+    """
     with connect(db_path) as conn:
         initialize_schema(conn)
         rows = conn.execute(
@@ -670,6 +818,7 @@ def print_summary(db_path: Path) -> None:
 
 
 def main() -> None:
+    """Main CLI entry point for forecast accuracy tool."""
     args = parse_args()
     if args.command == "import-forecasts":
         import_forecasts(args.input_dir, args.db, args.overwrite, args.include_zero_days)

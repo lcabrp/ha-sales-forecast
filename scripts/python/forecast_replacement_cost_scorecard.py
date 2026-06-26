@@ -76,6 +76,11 @@ REQUIRED_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the expected-cost scorecard.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Expected-cost scorecard for replacement candidates.")
     parser.add_argument("--score-file", action="append", type=Path, dest="score_files", required=False)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -95,6 +100,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def load_scores(paths: list[Path], candidates: list[str] | None) -> pd.DataFrame:
+    """Load and validate window-score CSV files.
+
+    Args:
+        paths: List of score file paths to load.
+        candidates: Optional list of candidate names to filter for.
+
+    Returns:
+        pd.DataFrame: The validated scores DataFrame.
+    """
     frames = []
     for path in paths:
         if not path.exists():
@@ -113,6 +127,16 @@ def load_scores(paths: list[Path], candidates: list[str] | None) -> pd.DataFrame
 
 
 def decompose(scores: pd.DataFrame) -> pd.DataFrame:
+    """Decompose absolute error into over-forecast and under-forecast units.
+
+    Also isolates zero-forecast misses to allow specific penalty rates.
+
+    Args:
+        scores: Full candidate scores DataFrame.
+
+    Returns:
+        pd.DataFrame: A copy of scores with decomposed error columns added.
+    """
     df = scores.copy()
     bias = df["ForecastUnits"] - df["SoldUnits"]
     df["OverUnits"] = (df["AbsErrorUnits"] + bias).clip(lower=0) / 2.0
@@ -125,6 +149,17 @@ def decompose(scores: pd.DataFrame) -> pd.DataFrame:
 
 
 def cost_summary(df: pd.DataFrame, c_over: float, c_under: float, c_zero: float) -> pd.DataFrame:
+    """Summarize decomposed scores across all windows and calculate expected costs.
+
+    Args:
+        df: Decomposed scores DataFrame.
+        c_over: Unit cost of over-forecasting.
+        c_under: Unit cost of shortfall (under-forecasting) on covered SKUs.
+        c_zero: Unit cost of shortfall on uncovered/zero-forecast SKUs.
+
+    Returns:
+        pd.DataFrame: A summary DataFrame sorted by expected cost descending.
+    """
     grouped = df.groupby("Candidate", as_index=False).agg(
         Windows=("ForecastStartDate", "nunique"),
         SoldUnits=("SoldUnits", "sum"),
@@ -146,10 +181,28 @@ def cost_summary(df: pd.DataFrame, c_over: float, c_under: float, c_zero: float)
     return grouped.sort_values("ExpectedCost")
 
 
-def break_even(df: pd.DataFrame, focus: list[str], sweep: list[float], c_over: float, zero_multiple: float) -> pd.DataFrame:
+def break_even(
+    df: pd.DataFrame,
+    focus: list[str],
+    sweep: list[float],
+    c_over: float,
+    zero_multiple: float,
+) -> pd.DataFrame:
     """Sweep the shortfall/excess cost ratio and show which focus candidate wins.
 
-    c_under = ratio * c_over ; c_zero = zero_multiple * c_under.
+    For each ratio in the sweep:
+    c_under = ratio * c_over
+    c_zero = zero_multiple * c_under
+
+    Args:
+        df: Decomposed scores DataFrame.
+        focus: Two candidate identifiers to compare.
+        sweep: List of shortfall-to-excess cost ratios to sweep.
+        c_over: Unit cost of over-forecasting.
+        zero_multiple: Multiplier for zero-forecast unit cost relative to c_under.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing sweep ratios, cost comparison, and winner.
     """
     rows = []
     sub = df.loc[df["Candidate"].isin(focus)]
@@ -176,6 +229,7 @@ def break_even(df: pd.DataFrame, focus: list[str], sweep: list[float], c_over: f
 
 
 def main() -> None:
+    """Execute the expected-cost scorecard and break-even sweep pipeline."""
     args = parse_args()
     score_files = args.score_files or [
         FORECAST_ACCURACY_ROOT / "replacement_ml_backtests" / "combined_replacement_window_scores.csv"

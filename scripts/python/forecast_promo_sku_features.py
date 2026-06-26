@@ -39,6 +39,7 @@ PDL_OFFER_ROWS_PATH = PROMOTIONS_DIR / "pdl_offer_rows.parquet"
 FORECAST_SNAPSHOT_PATH = HISTORY_PARQUET_DIR / "forecast_sku_snapshot.parquet"
 DEFAULT_OUTPUT_DIR = PROMOTIONS_DIR
 
+# Regex matches offer codes like 67513-43Q, capturing group 1 as item and group 2 as color.
 OFFER_CODE_RE = re.compile(r"^\s*([A-Za-z0-9]+)(?:-+([A-Za-z0-9]+))?(?:-+[A-Za-z0-9]+)?\s*$")
 TEXT_NA = {"", "nan", "nat", "none", "<na>"}
 OFFER_CODE_COLUMNS = ["offer_cc", "offer", "style_2", "style"]
@@ -52,6 +53,11 @@ MODELABLE_SHEET_TYPES = {
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the PDL promotion features pipeline.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Create SKU/day PDL promotion features for forecast modeling."
     )
@@ -71,6 +77,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def clean_text(value: object) -> str:
+    """Clean and normalize string values, mapping common text-based nulls to empty string.
+
+    Args:
+        value: The raw value to clean.
+
+    Returns:
+        str: Cleansed string.
+    """
     if value is None or pd.isna(value):
         return ""
     text = str(value).strip()
@@ -78,11 +92,29 @@ def clean_text(value: object) -> str:
 
 
 def normalize_code(value: object) -> str:
+    """Normalize code values (e.g. style/color) by stripping whitespace and uppercasing.
+
+    Args:
+        value: The code value to normalize.
+
+    Returns:
+        str: Normalized uppercase code.
+    """
     return clean_text(value).upper().replace(" ", "")
 
 
 def parse_offer_code(*values: object) -> tuple[str, str]:
-    """Return an item/color key from the first parseable offer-like value."""
+    """Parse multiple code candidate strings to extract a valid item/color code.
+
+    Loops through candidates in priority order, attempts to match standard offer code
+    regex, and returns the first successfully parsed item and color code.
+
+    Args:
+        *values: Candidate code values to inspect.
+
+    Returns:
+        tuple[str, str]: Extracted (item, color) code tuple. Returns ("", "") if no match found.
+    """
     for value in values:
         text = normalize_code(value)
         if not text:
@@ -98,28 +130,69 @@ def parse_offer_code(*values: object) -> tuple[str, str]:
 
 
 def normalize_date(series: pd.Series) -> pd.Series:
+    """Normalize date series to a consistent pandas datetime index (without timezone).
+
+    Args:
+        series: Pandas series containing dates.
+
+    Returns:
+        pd.Series: Normalized datetime series.
+    """
     return pd.to_datetime(series, errors="coerce").dt.normalize()
 
 
 def normalized_discount(series: pd.Series) -> pd.Series:
+    """Normalize discount values to a float between 0 and 1.
+
+    Handles percentages (e.g. 20%) by dividing values > 1 by 100.0, and clips results.
+
+    Args:
+        series: Series of discount numbers.
+
+    Returns:
+        pd.Series: Float discount values in the range [0.0, 1.0].
+    """
     values = pd.to_numeric(series, errors="coerce")
     values = values.where(values.le(1), values / 100.0)
     return values.clip(lower=0, upper=1)
 
 
 def load_sku_universe(path: Path) -> pd.DataFrame:
+    """Load and deduplicate the active SKU universe from forecast snapshots.
+
+    Args:
+        path: Path to the forecast SKU snapshot Parquet file.
+
+    Returns:
+        pd.DataFrame: Active SKU mapping containing SKU, Item, Color, and Size.
+
+    Raises:
+        FileNotFoundError: If the input file is missing.
+    """
     if not path.exists():
         raise FileNotFoundError(f"Forecast snapshot not found: {path}")
     df = pd.read_parquet(path, columns=["SKU", "Item", "Color", "Size", "InferredFileDate"])
     df["InferredFileDate"] = normalize_date(df["InferredFileDate"])
     for col in ["SKU", "Item", "Color", "Size"]:
         df[col] = df[col].map(normalize_code)
+    # Exclude empty rows and keep the most recent SKU mapping
     df = df.loc[df["SKU"].ne("") & df["Item"].ne("") & df["Color"].ne("")].copy()
     df = df.sort_values(["SKU", "InferredFileDate"]).drop_duplicates("SKU", keep="last")
     return df[["SKU", "Item", "Color", "Size"]].drop_duplicates()
 
 
 def load_pdl_rows(path: Path) -> pd.DataFrame:
+    """Load promotion detail list (PDL) offer rows from Parquet.
+
+    Args:
+        path: Path to the PDL offer rows Parquet.
+
+    Returns:
+        pd.DataFrame: Dataframe of loadable columns.
+
+    Raises:
+        FileNotFoundError: If the input file is missing.
+    """
     if not path.exists():
         raise FileNotFoundError(f"PDL offer rows not found: {path}")
     columns = [
@@ -162,6 +235,18 @@ def load_pdl_rows(path: Path) -> pd.DataFrame:
 
 
 def prepare_offer_rows(df: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Clean, filter, parse, and score PDL offer rows.
+
+    Filters rows based on sheet types, event duration constraints, and date filters. It extracts
+    the best item/color keys and derives the max discount percentage and minimum promo price.
+
+    Args:
+        df: Raw PDL offer rows.
+        args: Pipeline command-line options.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Prepared dataframe and processing metadata summary.
+    """
     start_filter = pd.Timestamp(date.fromisoformat(args.start_date)) if args.start_date else None
     end_filter = pd.Timestamp(date.fromisoformat(args.end_date)) if args.end_date else None
 
@@ -170,6 +255,7 @@ def prepare_offer_rows(df: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.D
     rows = rows.loc[rows["start_date"].notna() & rows["end_date"].notna()].copy()
     rows = rows.loc[rows["end_date"].ge(rows["start_date"])].copy()
     rows["event_days"] = (rows["end_date"] - rows["start_date"]).dt.days + 1
+    # Ignore suspiciously long windows; site-wide promos have their own global features.
     rows = rows.loc[rows["event_days"].between(1, args.max_event_days)].copy()
     if start_filter is not None:
         rows = rows.loc[rows["end_date"].ge(start_filter)].copy()
@@ -188,6 +274,7 @@ def prepare_offer_rows(df: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.D
     rows["Color"] = parsed[1]
     rows = rows.loc[rows["Item"].ne("") & rows["Color"].ne("")].copy()
 
+    # Collect and normalize discount rates across various layout sources
     discount_sources = [
         col
         for col in [
@@ -205,6 +292,7 @@ def prepare_offer_rows(df: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.D
     else:
         rows["discount_pct"] = pd.NA
 
+    # Collect and normalize price points across various layout sources
     price_sources = [
         col
         for col in ["promo_price_num", "markdown_price", "mkd_price", "new_promo_price", "promo_price", "clearance_price"]
@@ -216,6 +304,7 @@ def prepare_offer_rows(df: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.D
     else:
         rows["effective_promo_price"] = pd.NA
 
+    # Flag promotion categories based on sheet types
     rows["is_markdown"] = rows["sheet_type"].fillna("").astype(str).str.contains(
         "markdown|clearance", case=False, regex=True
     )
@@ -239,6 +328,14 @@ def prepare_offer_rows(df: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.D
 
 
 def expand_offer_dates(rows: pd.DataFrame) -> pd.DataFrame:
+    """Duplicate promotion offer rows for each day of their start-to-end event duration.
+
+    Args:
+        rows: Dataframe containing start_date, end_date, and event_days columns.
+
+    Returns:
+        pd.DataFrame: Exploded dataframe containing a single 'Date' column per active event day.
+    """
     if rows.empty:
         return rows.assign(Date=pd.NaT)
     repeated = rows.loc[rows.index.repeat(rows["event_days"].astype(int))].copy()
@@ -248,6 +345,14 @@ def expand_offer_dates(rows: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_sku_day_features(args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Join PDL promotions with the SKU universe and generate SKU/day features.
+
+    Args:
+        args: Command-line parameters.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Aggregated features dataframe and metadata summary.
+    """
     sku_universe = load_sku_universe(args.forecast_snapshot)
     pdl_rows_raw = load_pdl_rows(args.pdl_offer_rows)
     pdl_rows, summary = prepare_offer_rows(pdl_rows_raw, args)
@@ -258,6 +363,7 @@ def build_sku_day_features(args: argparse.Namespace) -> tuple[pd.DataFrame, dict
     if joined.empty:
         output = pd.DataFrame(columns=["Date", "SKU"])
     else:
+        # Group by Date and SKU to collapse overlapping events into single daily features
         output = (
             joined.groupby(["Date", "SKU"], dropna=False)
             .agg(
@@ -298,6 +404,13 @@ def build_sku_day_features(args: argparse.Namespace) -> tuple[pd.DataFrame, dict
 
 
 def write_outputs(output: pd.DataFrame, summary: dict[str, Any], args: argparse.Namespace) -> None:
+    """Persist generated promotion features as Parquet, CSV samples, and JSON summary.
+
+    Args:
+        output: Dataframe of SKU/day promotion features.
+        summary: Metadata summary dictionary.
+        args: Command-line options.
+    """
     args.output_dir.mkdir(parents=True, exist_ok=True)
     feature_path = args.output_dir / "pdl_sku_day_features.parquet"
     output.to_parquet(feature_path, index=False, compression="zstd")
@@ -316,6 +429,7 @@ def write_outputs(output: pd.DataFrame, summary: dict[str, Any], args: argparse.
 
 
 def main() -> None:
+    """Execute the command line entry point for promotion SKU feature generation."""
     args = parse_args()
     output, summary = build_sku_day_features(args)
     write_outputs(output, summary, args)

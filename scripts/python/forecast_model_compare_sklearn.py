@@ -47,6 +47,11 @@ DEFAULT_OUTPUT_DIR = MODEL_DIR / "sklearn_compare"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for comparing scikit-learn models.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Compare scikit-learn forecast models.")
     parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -102,6 +107,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def require_sklearn() -> dict[str, Any]:
+    """Import and return the required scikit-learn components, raising helpful error if missing.
+
+    Returns:
+        dict[str, Any]: Dictionary of imported library objects.
+
+    Raises:
+        RuntimeError: If scikit-learn or joblib are not installed.
+    """
     try:
         from sklearn.compose import ColumnTransformer
         from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
@@ -126,6 +139,7 @@ def require_sklearn() -> dict[str, Any]:
 
 
 def _exclude_corporate(columns: list[str], exclude_corporate_features: bool) -> list[str]:
+    """Helper to remove corporate columns from a feature list if requested."""
     if not exclude_corporate_features:
         return columns
     return [col for col in columns if col not in CORPORATE_FEATURE_COLUMNS]
@@ -135,6 +149,18 @@ def numeric_feature_frame(
     df: pd.DataFrame,
     exclude_corporate_features: bool = False,
 ) -> tuple[pd.DataFrame, np.ndarray, list[str]]:
+    """Clean and filter panel numeric features, applying log1p scale to demand target.
+
+    Used primarily for linear model baseline tests that exclude categorical attributes.
+
+    Args:
+        df: Input panel dataframe.
+        exclude_corporate_features: Whether to exclude corporate forecast columns.
+
+    Returns:
+        tuple[pd.DataFrame, np.ndarray, list[str]]: Cleaned features, log target array,
+            and feature column names.
+    """
     numeric = _exclude_corporate(
         [col for col in NUMERIC_FEATURES if col in df.columns],
         exclude_corporate_features,
@@ -158,6 +184,17 @@ def full_preprocessor(
     categorical: list[str],
     boolean: list[str],
 ) -> Any:
+    """Build preprocessor Pipeline for all numeric, categorical, and boolean feature fields.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        numeric: List of numeric column names.
+        categorical: List of categorical column names.
+        boolean: List of boolean column names.
+
+    Returns:
+        ColumnTransformer: Preprocessor transformer.
+    """
     transformers = []
     if numeric:
         transformers.append(
@@ -185,6 +222,15 @@ def full_preprocessor(
 
 
 def numeric_preprocessor(ml: dict[str, Any], columns: list[str]) -> Any:
+    """Build preprocessor with scaling and imputation for numeric-only pipelines.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        columns: List of numeric feature columns.
+
+    Returns:
+        ColumnTransformer: Preprocessor transformer.
+    """
     return ml["ColumnTransformer"](
         [
             (
@@ -210,6 +256,19 @@ def build_candidate(
     boolean: list[str],
     args: argparse.Namespace,
 ) -> tuple[Any, str]:
+    """Construct an unfit Pipeline matching a model name configuration.
+
+    Args:
+        name: Name configuration key of model candidate.
+        ml: Dictionary of scikit-learn components.
+        numeric: List of numeric columns.
+        categorical: List of categorical columns.
+        boolean: List of boolean columns.
+        args: Pipeline configuration options.
+
+    Returns:
+        tuple[Any, str]: Pipeline model and model scale mode key (e.g. 'log' or 'raw').
+    """
     hgb = ml["HistGradientBoostingRegressor"]
     preprocessor = full_preprocessor(ml, numeric, categorical, boolean)
     common = {
@@ -253,6 +312,18 @@ def build_candidate(
 
 
 def predict_candidate(model: Any, mode: str, x_holdout: pd.DataFrame) -> np.ndarray:
+    """Generate final unit demand forecasts using model mode rules.
+
+    Reverses log-transforms if the model is fitted on a log scale.
+
+    Args:
+        model: Fitted pipeline model.
+        mode: Prediction scale mode key.
+        x_holdout: Input holdout features.
+
+    Returns:
+        np.ndarray: Predicted demand units.
+    """
     predictions = model.predict(x_holdout)
     if mode in {"log", "numeric_log"}:
         return np.clip(np.expm1(predictions), 0, None)
@@ -267,6 +338,19 @@ def run_single_stage(
     holdout: pd.DataFrame,
     args: argparse.Namespace,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Train, predict, and calibrate a single-stage regression candidate.
+
+    Args:
+        name: Name of model candidate.
+        ml: Dictionary of scikit-learn components.
+        train: Training dataset.
+        calibration: Calibration dataset.
+        holdout: Holdout prediction template.
+        args: Command parameters.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: Scored holdout dataset and calibration factors table.
+    """
     if name == "ridge_numeric_log":
         x_train, y_train, feature_columns = numeric_feature_frame(
             train,
@@ -324,6 +408,21 @@ def run_two_stage(
     holdout: pd.DataFrame,
     args: argparse.Namespace,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Train, predict, and calibrate a two-stage forecast candidate.
+
+    Trains a classification stage to predict probability of positive demand,
+    and a regression stage to predict log demand quantity on positive demand rows.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        train: Training dataset.
+        calibration: Calibration dataset.
+        holdout: Holdout prediction template.
+        args: Command parameters.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: Scored holdout dataset and calibration factors table.
+    """
     x_train, _, numeric, categorical, boolean = prepare_xy(
         train,
         args.exclude_corporate_features,
@@ -360,6 +459,7 @@ def run_two_stage(
             ),
         ]
     )
+    # Binary classification target: SoldUnits > 0
     classifier.fit(x_train, pd.to_numeric(train[TARGET_COLUMN], errors="coerce").fillna(0).gt(0))
 
     positive_train = train.loc[pd.to_numeric(train[TARGET_COLUMN], errors="coerce").fillna(0).gt(0)].copy()
@@ -381,6 +481,7 @@ def run_two_stage(
     scored = holdout.copy()
     raw_col = "two_stage_hgb_logForecastQty"
     cal_col = "two_stage_hgb_logCalibratedForecastQty"
+    # Final forecast = probability of sale * predicted quantity if sold
     scored[raw_col] = classifier.predict_proba(x_holdout)[:, 1] * predict_candidate(
         regressor,
         mode,
@@ -399,7 +500,21 @@ def run_two_stage(
     return scored, factors
 
 
-def split_panel(panel: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp]:
+def split_panel(
+    panel: pd.DataFrame,
+    args: argparse.Namespace,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp]:
+    """Partition the panel into train, calibration, and holdout segments based on command dates.
+
+    Args:
+        panel: Fully merged model panel.
+        args: Command parameters.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Timestamp, pd.Timestamp]:
+            Training subset, calibration subset, holdout subset, holdout start timestamp,
+            and holdout end timestamp.
+    """
     holdout_start, holdout_end = resolve_holdout(panel, args)
     calibration_start = holdout_start - pd.Timedelta(days=max(args.calibration_days, 0))
     train = panel.loc[panel[DATE_COLUMN].lt(calibration_start)].copy()
@@ -415,6 +530,7 @@ def split_panel(panel: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.DataF
 
 
 def main() -> None:
+    """Execute the command line entry point to train and rank multiple model candidates."""
     args = parse_args()
     configure_threads(args.threads)
     os.environ.setdefault("PYTHONHASHSEED", str(args.random_state))

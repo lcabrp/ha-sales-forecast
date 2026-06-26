@@ -36,6 +36,11 @@ CHAMPION_MODEL = "hgb_absolute_log"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for backtesting forecast overlay rules.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Backtest overlay rules for the champion forecast.")
     parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -81,6 +86,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def args_for_window(args: argparse.Namespace, window: dict[str, str]) -> argparse.Namespace:
+    """Create a copy of arguments updated with dates for the target window.
+
+    Args:
+        args: Base command-line arguments namespace.
+        window: Dict containing 'start' and 'end' date strings.
+
+    Returns:
+        argparse.Namespace: Updated arguments namespace copy.
+    """
     window_args = copy(args)
     window_args.holdout_start = window["start"]
     window_args.holdout_end = window["end"]
@@ -89,6 +103,14 @@ def args_for_window(args: argparse.Namespace, window: dict[str, str]) -> argpars
 
 
 def add_overlay_columns(scored: pd.DataFrame) -> pd.DataFrame:
+    """Apply experimental overlay blending and flooring rules to model predictions.
+
+    Args:
+        scored: DataFrame of model predictions.
+
+    Returns:
+        pd.DataFrame: DataFrame with additional columns for each overlay rule.
+    """
     scored = scored.copy()
     raw = scored[f"{CHAMPION_MODEL}ForecastQty"]
     recent7 = scored["Recent7BaselineQty"].fillna(0)
@@ -118,6 +140,17 @@ def run_window(
     args: argparse.Namespace,
     window: dict[str, str],
 ) -> pd.DataFrame:
+    """Train the champion model and evaluate all overlay rules for a single window.
+
+    Args:
+        ml: Dictionary containing scikit-learn module/class references.
+        panel: Full feature panel history DataFrame.
+        args: Global command-line configuration arguments.
+        window: Window descriptors (start, end, label).
+
+    Returns:
+        pd.DataFrame: Evaluation summary metrics for all candidates.
+    """
     window_args = args_for_window(args, window)
     train, calibration, holdout, holdout_start, holdout_end = split_panel(panel, window_args)
     print(
@@ -144,6 +177,14 @@ def run_window(
 
 
 def aggregate(summary: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate window-level prediction metrics across all backtest windows.
+
+    Args:
+        summary: Combined window-level summary metrics.
+
+    Returns:
+        pd.DataFrame: Aggregated performance metrics sorted by mean WAPE.
+    """
     summary = summary.copy()
     summary["AbsBiasPct"] = summary["BiasPct"].abs()
     winners = (
@@ -170,6 +211,7 @@ def aggregate(summary: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Execute the champion model overlay rules backtest pipeline."""
     args = parse_args()
     configure_threads(args.threads)
     ml = require_sklearn()

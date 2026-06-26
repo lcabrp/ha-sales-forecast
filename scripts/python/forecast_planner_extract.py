@@ -1,7 +1,7 @@
 """Extract daily Planner forecast/actual totals for forecast calibration.
 
 The Planner workbooks are operational spreadsheets with date columns across the
-Outbound tab.  This extractor keeps the row contract explicit and writes a tidy
+Outbound tab. This extractor keeps the row contract explicit and writes a tidy
 daily table that can be joined to forecast-package totals without reopening the
 workbook each time.
 """
@@ -29,6 +29,8 @@ DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "Output" / "ForecastAccuracy" / "planner"
 OUTBOUND_SHEET = "Outbound"
 KPI_SHEET = "KPI DC Forecast link file"
 DATE_ROW_INDEX = 2
+
+# Mapper for raw row labels in the outbound sheet to cleaned database field names
 METRIC_LABELS = {
     "Remaining Volume (Units)": "remaining_volume_units",
     "Units Shipped Goal": "units_shipped_goal",
@@ -39,6 +41,7 @@ METRIC_LABELS = {
     "Actual Demand (units)": "actual_demand_units",
     "Percentage demand vs. forecast": "percentage_demand_vs_forecast",
 }
+
 REQUIRED_OUTPUT_COLUMNS = [
     "remaining_volume_units",
     "units_shipped_goal",
@@ -51,6 +54,11 @@ REQUIRED_OUTPUT_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the Planner extractor.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(description="Extract daily Planner totals from the Planner workbook.")
     parser.add_argument("--year", type=int, default=2026)
     parser.add_argument("--source-dir", type=Path, default=DEFAULT_SOURCE_DIR)
@@ -65,6 +73,22 @@ def parse_args() -> argparse.Namespace:
 
 
 def choose_source(source_dir: Path, year: int, source_file: Path | None) -> Path:
+    """Choose the best input file from available planner workbooks.
+
+    If a specific source_file is provided, verifies that it exists.
+    Otherwise, scans source_dir for workbooks matching the year and picks the newest by mtime.
+
+    Args:
+        source_dir: Directory containing planner files.
+        year: The year to search for in filenames.
+        source_file: An optional specific file path.
+
+    Returns:
+        Path: Path to the selected planner workbook.
+
+    Raises:
+        FileNotFoundError: If no candidate workbooks are found.
+    """
     if source_file:
         if not source_file.exists():
             raise FileNotFoundError(source_file)
@@ -76,10 +100,32 @@ def choose_source(source_dir: Path, year: int, source_file: Path | None) -> Path
 
 
 def _normalize_label(value: object) -> str:
+    """Normalize row label text by removing extra spaces.
+
+    Args:
+        value: Input label object/string.
+
+    Returns:
+        str: Cleaned, space-normalized string.
+    """
     return " ".join(str(value).strip().split())
 
 
 def extract_outbound(path: Path) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Extract daily outbound metric totals from the 'Outbound' sheet of the workbook.
+
+    Finds the row containing dates, aligns column indices, extracts row metrics
+    matching METRIC_LABELS, and formats into a tidy pandas DataFrame.
+
+    Args:
+        path: Path to the Excel workbook.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Tidy daily metrics DataFrame and run metadata.
+
+    Raises:
+        ValueError: If 'Actual Demand (units)' row cannot be found.
+    """
     raw = pd.read_excel(path, sheet_name=OUTBOUND_SHEET, header=None, engine="calamine")
     dates = pd.to_datetime(raw.iloc[DATE_ROW_INDEX, 1:], errors="coerce")
     date_columns = [idx + 1 for idx, value in enumerate(dates) if pd.notna(value)]
@@ -101,12 +147,14 @@ def extract_outbound(path: Path) -> tuple[pd.DataFrame, dict[str, Any]]:
     if "actual_demand_units" in missing_outputs:
         raise ValueError("Missing required Outbound row label: Actual Demand (units)")
 
+    # Calculate helper ratios
     output["plan_vs_actual_demand_pct"] = (
         output["ops_imf_plan_forecasted_units"] / output["actual_demand_units"]
     )
     output["powerbi_vs_actual_demand_pct"] = (
         output["shipped_units_powerbi"] / output["actual_demand_units"]
     )
+    
     metadata = {
         "outbound_sheet": OUTBOUND_SHEET,
         "date_row_excel": DATE_ROW_INDEX + 1,
@@ -120,13 +168,26 @@ def extract_outbound(path: Path) -> tuple[pd.DataFrame, dict[str, Any]]:
 
 
 def extract_kpi(path: Path) -> pd.DataFrame:
+    """Extract daily KPI DC Forecasted demand units from the link sheet.
+
+    If the tab does not exist, returns an empty DataFrame with the correct schema.
+
+    Args:
+        path: Path to the Excel workbook.
+
+    Returns:
+        pd.DataFrame: A DataFrame with columns ['Date', 'kpi_forecasted_demand_units'].
+    """
     try:
         kpi = pd.read_excel(path, sheet_name=KPI_SHEET, header=0, engine="calamine")
     except ValueError:
+        # Sheet does not exist or cannot be read
         return pd.DataFrame(columns=["Date", "kpi_forecasted_demand_units"])
+        
     required = {"Date", "Forecasted Demand Units"}
     if not required.issubset(kpi.columns):
         return pd.DataFrame(columns=["Date", "kpi_forecasted_demand_units"])
+        
     out = kpi[["Date", "Forecasted Demand Units"]].copy()
     out["Date"] = pd.to_datetime(out["Date"], errors="coerce").dt.normalize()
     out["kpi_forecasted_demand_units"] = pd.to_numeric(
@@ -138,6 +199,7 @@ def extract_kpi(path: Path) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Main CLI entry point for planner workbook daily forecast totals extraction."""
     args = parse_args()
     source = choose_source(args.source_dir, args.year, args.source_file)
     args.output_dir.mkdir(parents=True, exist_ok=True)

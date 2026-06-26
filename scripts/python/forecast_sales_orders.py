@@ -1,6 +1,6 @@
 """Extract sales-order price and discount features from AX for forecast modeling.
 
-This complements the warehouse DirectPick actuals.  DirectPick tells us what
+This complements the warehouse DirectPick actuals. DirectPick tells us what
 was fulfilled; SALESLINE/SALESTABLE tells us what was ordered and at what price.
 The price/discount fields are useful for validating PDL promotion windows and
 for learning realized promotion lift.
@@ -34,6 +34,11 @@ DEFAULT_ORIGINS = ("WEB", "CALLCENTER")
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the sales orders extractor.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Extract SALESLINE/SALESTABLE price-discount features for forecasting."
     )
@@ -100,10 +105,28 @@ def parse_args() -> argparse.Namespace:
 
 
 def normalize_text(series: pd.Series) -> pd.Series:
+    """Safely fill missing values with empty strings, cast to string, and strip white space.
+
+    Args:
+        series: Target pandas Series.
+
+    Returns:
+        pd.Series: Normalized Series.
+    """
     return series.fillna("").astype(str).str.strip()
 
 
 def date_chunks(start: date, end: date, chunk_days: int) -> list[tuple[date, date]]:
+    """Split a broad date range into smaller sub-intervals for chunked SQL extraction.
+
+    Args:
+        start: Inclusive start date.
+        end: Inclusive end date.
+        chunk_days: Maximum size of date chunks in days.
+
+    Returns:
+        list[tuple[date, date]]: List of start/end chunk tuples.
+    """
     chunks = []
     current = start
     while current <= end:
@@ -114,10 +137,26 @@ def date_chunks(start: date, end: date, chunk_days: int) -> list[tuple[date, dat
 
 
 def sql_list(values: tuple[str, ...] | list[str]) -> str:
+    """Escapes single quotes and maps string values to comma-separated single-quoted SQL list fragment.
+
+    Args:
+        values: Strings to format.
+
+    Returns:
+        str: Comma-separated SQL list fragment.
+    """
     return ", ".join(f"'{value.replace("'", "''")}'" for value in values)
 
 
 def probe_query(schema: str) -> sa.TextClause:
+    """Query database schema definition to inspect SALESTABLE/SALESLINE column types.
+
+    Args:
+        schema: Target database schema name (e.g. 'dbo').
+
+    Returns:
+        sa.TextClause: Executable SQL query.
+    """
     return sa.text(
         """
         SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -161,6 +200,19 @@ def sales_line_query(
     excluded_items: tuple[str, ...],
     include_all_origins: bool,
 ) -> sa.TextClause:
+    """Build query targeting SALESTABLE and SALESLINE to retrieve order lines and details.
+
+    Applies company, partition, order types, exclusions, and origin filters.
+
+    Args:
+        schema: Schema namespace.
+        origins: Target sales origin codes (e.g. WEB).
+        excluded_items: ItemIDs to discard.
+        include_all_origins: If True, skips the origin filter.
+
+    Returns:
+        sa.TextClause: Query string.
+    """
     origin_filter = ""
     if not include_all_origins:
         origin_filter = f"AND st.SALESORIGINID IN ({sql_list(origins)})"
@@ -250,6 +302,14 @@ def sales_line_query(
 
 
 def enrich_lines(lines: pd.DataFrame) -> pd.DataFrame:
+    """Enrich raw sales line records with calculated metrics and discount rates.
+
+    Args:
+        lines: Raw order lines DataFrame.
+
+    Returns:
+        pd.DataFrame: DataFrame populated with gross amounts, discount percentages, and indicators.
+    """
     if lines.empty:
         return lines
     text_cols = [
@@ -309,6 +369,14 @@ def enrich_lines(lines: pd.DataFrame) -> pd.DataFrame:
 
 
 def summarize_parts(output_dir: Path) -> dict[str, pd.DataFrame]:
+    """Read saved Parquet parts, consolidate records, and build SKU/Day and daily summary rollups.
+
+    Args:
+        output_dir: Output folder.
+
+    Returns:
+        dict[str, pd.DataFrame]: Summarized DataFrames map.
+    """
     parts_dir = output_dir / "parts"
     part_paths = sorted(parts_dir.glob("sales_order_lines_part_*.parquet"))
     if not part_paths:
@@ -404,6 +472,15 @@ def write_tables(
     no_sqlite: bool,
     no_csv: bool,
 ) -> None:
+    """Save processed DataFrames in Parquet, CSV, and SQLite database storage.
+
+    Args:
+        tables: Maps table names to DataFrames.
+        output_dir: Output folder.
+        db_path: Target SQLite file.
+        no_sqlite: If True, skips SQLite database.
+        no_csv: If True, skips CSV mirroring.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     for name, df in tables.items():
         df.to_parquet(output_dir / f"{name}.parquet", index=False, compression="zstd")
@@ -447,6 +524,16 @@ def write_summary(
     end: date | None = None,
     no_sqlite: bool = False,
 ) -> None:
+    """Save extraction run metadata metrics.
+
+    Args:
+        output_dir: Target folder.
+        db_path: SQLite DB path.
+        tables: Data DataFrames.
+        start: Extraction start.
+        end: Extraction end.
+        no_sqlite: True to skip SQLite.
+    """
     sku_day = tables["sales_order_sku_day"]
     daily = tables["sales_order_daily_summary"]
     summary = {
@@ -472,6 +559,11 @@ def write_summary(
 
 
 def run_probe(args: argparse.Namespace) -> None:
+    """Query schema structures of SALESTABLE and SALESLINE tables.
+
+    Args:
+        args: Command parameters.
+    """
     engine = get_ax_engine(server=args.server, database=args.database, verbose=True)
     with engine.connect() as conn:
         columns = pd.read_sql_query(probe_query(args.schema), conn, params={"schema_name": args.schema})
@@ -479,6 +571,11 @@ def run_probe(args: argparse.Namespace) -> None:
 
 
 def run_collect(args: argparse.Namespace) -> None:
+    """Query order line details sequentially in chunk intervals, cleaning, enriching, and saving them.
+
+    Args:
+        args: Command parameters.
+    """
     start = date.fromisoformat(args.start_date)
     end = date.fromisoformat(args.end_date)
     if end < start:
@@ -528,12 +625,18 @@ def run_collect(args: argparse.Namespace) -> None:
 
 
 def run_summarize(args: argparse.Namespace) -> None:
+    """Generate daily summaries and matrices from previously downloaded parquet parts.
+
+    Args:
+        args: Command parameters.
+    """
     tables = summarize_parts(args.output_dir)
     write_tables(tables, args.output_dir, args.db, args.no_sqlite, args.no_csv)
     write_summary(args.output_dir, args.db, tables, no_sqlite=args.no_sqlite)
 
 
 def main() -> None:
+    """Main CLI entry point for sales orders extractor."""
     args = parse_args()
     if args.command == "probe":
         run_probe(args)

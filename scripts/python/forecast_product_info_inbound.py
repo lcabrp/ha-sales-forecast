@@ -2,7 +2,7 @@
 
 AX live open-PO tables are the most operationally authoritative source for
 today, but saved Product Info workbooks are useful for historical backtests
-because each workbook is an as-of planning snapshot.  This extractor keeps that
+because each workbook is an as-of planning snapshot. This extractor keeps that
 snapshot date explicit so downstream model features can avoid future leakage.
 """
 
@@ -30,6 +30,11 @@ FILENAME_DATE_PATTERN = re.compile(r"(\d{4})[-_](\d{2})[-_](\d{2})")
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for Product Info inbound snapshot extractor.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Extract Product Info workbook inbound snapshots."
     )
@@ -41,6 +46,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def snapshot_date_from_name(path: Path) -> pd.Timestamp | None:
+    """Parse a date timestamp from workbook name using pattern matching (e.g. YYYY-MM-DD).
+
+    Args:
+        path: Path to the Excel workbook.
+
+    Returns:
+        pd.Timestamp or None: Extracted date timestamp, or None if not matching.
+    """
     match = FILENAME_DATE_PATTERN.search(path.name)
     if not match:
         return None
@@ -49,6 +62,20 @@ def snapshot_date_from_name(path: Path) -> pd.Timestamp | None:
 
 
 def read_workbook_inbound(path: Path) -> pd.DataFrame:
+    """Extract inbound details from a single Product Info workbook.
+
+    Expects tab name 'Product Inbound' with columns: SKU, InDC(calc), PurchId,
+    and PO Receive Remainder Units.
+
+    Args:
+        path: Path to the Excel workbook file.
+
+    Returns:
+        pd.DataFrame: Cleaned and normalized inbound records DataFrame.
+
+    Raises:
+        ValueError: If snapshot date is missing or required columns are absent.
+    """
     snapshot_date = snapshot_date_from_name(path)
     if snapshot_date is None:
         raise ValueError(f"Could not infer snapshot date from {path.name}")
@@ -81,6 +108,7 @@ def read_workbook_inbound(path: Path) -> pd.DataFrame:
         & output["ExpectedInDCDate"].notna()
         & output["InboundRemainderUnits"].gt(0)
     ].copy()
+    
     return output.loc[
         :,
         [
@@ -95,6 +123,12 @@ def read_workbook_inbound(path: Path) -> pd.DataFrame:
 
 
 def write_outputs(df: pd.DataFrame, args: argparse.Namespace) -> None:
+    """Save processed snapshots, daily summaries, and manifest metadata files.
+
+    Args:
+        df: Processed DataFrame.
+        args: Command line parameters.
+    """
     args.output_dir.mkdir(parents=True, exist_ok=True)
     detail_path = args.output_dir / "product_info_inbound_snapshots.parquet"
     summary_path = args.output_dir / "product_info_inbound_snapshot_summary.csv"
@@ -114,6 +148,7 @@ def write_outputs(df: pd.DataFrame, args: argparse.Namespace) -> None:
         .sort_values("SnapshotDate")
     )
     summary.to_csv(summary_path, index=False)
+    
     metadata = {
         "generated_at": datetime.now().replace(microsecond=0).isoformat(),
         "source_dir": str(args.source_dir),
@@ -138,6 +173,7 @@ def write_outputs(df: pd.DataFrame, args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    """Main CLI entry point for Product Info inbound snapshots extractor."""
     args = parse_args()
     files = sorted(args.source_dir.glob(args.pattern))
     files = [path for path in files if snapshot_date_from_name(path) is not None]

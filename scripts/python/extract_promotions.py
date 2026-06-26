@@ -1,6 +1,6 @@
 """Extract promotion planning workbook features for forecast modeling.
 
-The PDL workbooks are business-authored Excel files, not a strict schema.  This
+The PDL workbooks are business-authored Excel files, not a strict schema. This
 extractor is intentionally content-driven: it looks for Event Name,
 Effective Date(s), and recognizable offer/product headers instead of relying on
 specific sheet names.
@@ -158,12 +158,24 @@ COUPON_OUTPUT_COLUMNS = [
 
 @dataclass
 class SheetExtract:
+    """Dataclass holding extracted sheets metadata and details.
+
+    Attributes:
+        sheet_row: Metadata summary for the sheet.
+        event_row: Event details if the sheet is classified as an offer sheet.
+        offers: DataFrame holding the extracted promo item/style level rows.
+    """
     sheet_row: dict[str, Any]
     event_row: dict[str, Any] | None
     offers: pd.DataFrame
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the promotions workbook extractor.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(description="Extract PDL and coupon promotion features.")
     parser.add_argument("--source-dir", type=Path, default=DEFAULT_SOURCE_DIR)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -185,6 +197,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def clean_text(value: Any) -> str:
+    """Clean and standardize input string value.
+
+    Args:
+        value: Cell value from pandas/Excel sheet.
+
+    Returns:
+        str: Trimmed, space-normalized string, or empty string if cell is NA.
+    """
     if value is None or pd.isna(value):
         return ""
     if isinstance(value, float) and value.is_integer():
@@ -195,6 +215,16 @@ def clean_text(value: Any) -> str:
 
 
 def normalize_key(value: Any) -> str:
+    """Convert an Excel header/label into a standardized snake_case identifier.
+
+    Handles common symbols like % and & by expanding them.
+
+    Args:
+        value: Header label to normalize.
+
+    Returns:
+        str: Normalized snake_case key matching HEADER_ALIASES mapping.
+    """
     text = clean_text(value).lower().replace("%", " pct ")
     text = text.replace("&", " and ").replace("$", " dollar ")
     text = re.sub(r"[^a-z0-9]+", "_", text).strip("_")
@@ -203,6 +233,16 @@ def normalize_key(value: Any) -> str:
 
 
 def unique_headers(values: Iterable[Any]) -> list[str]:
+    """Generate a unique list of headers from a raw iterable.
+
+    Duplicates are disambiguated by appending an index count (e.g. `header_2`).
+
+    Args:
+        values: Raw headers list.
+
+    Returns:
+        list[str]: Uniquified headers matching normalization patterns.
+    """
     headers: list[str] = []
     seen: dict[str, int] = {}
     for idx, value in enumerate(values):
@@ -216,14 +256,41 @@ def unique_headers(values: Iterable[Any]) -> list[str]:
 
 
 def stable_file_id(path: Path) -> str:
+    """Produce a deterministic 12-char unique hash based on filename.
+
+    Args:
+        path: Path to the workbook.
+
+    Returns:
+        str: Deterministic 12-character ID.
+    """
     return hashlib.sha256(path.name.lower().encode("utf-8")).hexdigest()[:12]
 
 
 def infer_year(month: int) -> int:
+    """Infer the calendar year for dates that omit years (fallbacks).
+
+    Assumes months >= 7 are in 2025, and months < 7 are in 2026.
+
+    Args:
+        month: Month number.
+
+    Returns:
+        int: Calendar year.
+    """
     return 2025 if month >= 7 else 2026
 
 
 def normalize_year(year_text: str | None, month: int) -> int:
+    """Standardize two-digit or missing years to four-digit calendar years.
+
+    Args:
+        year_text: Regex match text for year or None.
+        month: Calendar month.
+
+    Returns:
+        int: Standardized four-digit calendar year.
+    """
     if not year_text:
         return infer_year(month)
     year = int(year_text)
@@ -235,6 +302,16 @@ def normalize_year(year_text: str | None, month: int) -> int:
 
 
 def source_file_date(path: Path) -> date | None:
+    """Parse date from filename string patterns.
+
+    Expects patterns like MM.DD.YYYY or MM.DD.YY.
+
+    Args:
+        path: Path to the workbook.
+
+    Returns:
+        date or None: Parsed date, or None if pattern not found.
+    """
     match = FILENAME_DATE_RE.search(path.name)
     if not match:
         return None
@@ -248,6 +325,15 @@ def source_file_date(path: Path) -> date | None:
 
 
 def parse_date_token(token: re.Match[str], default_year: int | None) -> date | None:
+    """Convert regex token match to a Python date.
+
+    Args:
+        token: Match object from date parsing regex.
+        default_year: Default calendar year.
+
+    Returns:
+        date or None: Parsed date, or None if invalid.
+    """
     month = int(token.group(1))
     day = int(token.group(2))
     year = normalize_year(token.group(3), month) if token.group(3) else default_year
@@ -260,6 +346,15 @@ def parse_date_token(token: re.Match[str], default_year: int | None) -> date | N
 
 
 def parse_date_range(text: Any, default_year: int | None) -> tuple[date | None, date | None]:
+    """Extract start and end dates from a cell containing date text.
+
+    Args:
+        text: Input date range text (e.g. "6.9.26 - 6.15.26").
+        default_year: Default year if year is omitted.
+
+    Returns:
+        tuple[date | None, date | None]: Start and End dates, if parsed.
+    """
     if isinstance(text, datetime):
         return text.date(), text.date()
     if isinstance(text, date):
@@ -281,6 +376,7 @@ def parse_date_range(text: Any, default_year: int | None) -> tuple[date | None, 
     second = parse_date_token(tokens[1], end_default)
     if second is None:
         return first, first
+    # Adjust for year rollover if range crosses year boundaries without explicit years
     if not second_has_year and second < first:
         try:
             second = date(first.year + 1, second.month, second.day)
@@ -294,6 +390,18 @@ def adjust_for_source_file_year(
     end_date: date | None,
     file_date: date | None,
 ) -> tuple[date | None, date | None]:
+    """Correct years on promotion dates near year-end rollovers.
+
+    If file is modified near Q4 but promo refers to Q1, increments the year.
+
+    Args:
+        start_date: Parsed promo start date.
+        end_date: Parsed promo end date.
+        file_date: Workbook modification/extraction date.
+
+    Returns:
+        tuple[date | None, date | None]: Rollover-adjusted dates.
+    """
     if file_date is None or start_date is None:
         return start_date, end_date
     if file_date.month >= 10 and start_date.month <= 2 and start_date < file_date:
@@ -304,6 +412,16 @@ def adjust_for_source_file_year(
 
 
 def find_label_value(df: pd.DataFrame, labels: set[str], max_rows: int = 25) -> Any:
+    """Locate header key label and retrieve its corresponding value in adjacent cells.
+
+    Args:
+        df: Input sheet preview DataFrame.
+        labels: Normalization labels to look for.
+        max_rows: Scan limit boundary.
+
+    Returns:
+        Any: Extracted value if found, or empty string.
+    """
     max_row = min(max_rows, len(df))
     for row_idx in range(max_row):
         row = df.iloc[row_idx]
@@ -317,6 +435,14 @@ def find_label_value(df: pd.DataFrame, labels: set[str], max_rows: int = 25) -> 
 
 
 def header_score(keys: list[str]) -> int:
+    """Score headers to assess how likely they contain promotion product rows.
+
+    Args:
+        keys: Normalized keys.
+
+    Returns:
+        int: Rating score. Higher means more likely to contain product rows.
+    """
     key_set = set(keys)
     score = 0
     if "offer" in key_set:
@@ -342,6 +468,15 @@ def header_score(keys: list[str]) -> int:
 
 
 def find_header_row(df: pd.DataFrame, max_rows: int = 35) -> int | None:
+    """Discover the index of the main header row containing products info.
+
+    Args:
+        df: Sheet preview DataFrame.
+        max_rows: Scan boundary limit.
+
+    Returns:
+        int or None: Zero-based row index if found, otherwise None.
+    """
     best_idx: int | None = None
     best_score = 0
     for row_idx in range(min(max_rows, len(df))):
@@ -359,6 +494,17 @@ def classify_sheet(
     header_row: int | None,
     source_file: str = "",
 ) -> str:
+    """Classify the role of the sheet based on sheet name, event name and headers.
+
+    Args:
+        sheet_name: Raw Excel sheet tab name.
+        event_name: Discovered Event Name.
+        header_row: Identified product header row index.
+        source_file: Name of workbook file.
+
+    Returns:
+        str: Classification type (e.g. 'promo_detail', 'coupon', 'rollup_or_pivot').
+    """
     haystack = f"{source_file} {sheet_name} {event_name}".lower()
     if "coupon" in haystack:
         return "coupon"
@@ -390,6 +536,14 @@ def classify_sheet(
 
 
 def infer_scope(*values: Any) -> str:
+    """Infer the categorical scope of the promotion based on keyword occurrences.
+
+    Args:
+        *values: Text strings to inspect.
+
+    Returns:
+        str: Pipe-delimited list of inferred categories.
+    """
     text = " ".join(clean_text(value).lower() for value in values)
     scopes = []
     checks = [
@@ -413,6 +567,14 @@ def infer_scope(*values: Any) -> str:
 
 
 def to_number(value: Any) -> float | None:
+    """Parse string cells to float, discarding currency symbols, commas and percent signs.
+
+    Args:
+        value: Cell value.
+
+    Returns:
+        float or None: Parsed float, or None if parsing fails.
+    """
     text = clean_text(value)
     if not text:
         return None
@@ -426,6 +588,15 @@ def to_number(value: Any) -> float | None:
 
 
 def first_existing(df: pd.DataFrame, columns: Iterable[str]) -> pd.Series:
+    """Get content from the first column in `columns` list that exists in the DataFrame.
+
+    Args:
+        df: Target DataFrame.
+        columns: List of preferred column names.
+
+    Returns:
+        pd.Series: Pandas series representing column values, or None series if not found.
+    """
     for column in columns:
         if column in df.columns:
             return df[column]
@@ -433,11 +604,31 @@ def first_existing(df: pd.DataFrame, columns: Iterable[str]) -> pd.Series:
 
 
 def numeric_series(df: pd.DataFrame, columns: Iterable[str]) -> pd.Series:
+    """Extract first existing column and convert its content to numeric series.
+
+    Args:
+        df: Target DataFrame.
+        columns: List of candidate column names.
+
+    Returns:
+        pd.Series: Parsed numeric Series.
+    """
     values = first_existing(df, columns).map(to_number)
     return pd.to_numeric(values, errors="coerce")
 
 
 def normalize_offer_frame(raw: pd.DataFrame, header_row: int) -> pd.DataFrame:
+    """Process raw offer grid, aligning column headers and parsing values.
+
+    Extracts standard fields like style, offer_cc, msrp, inventory and clean them.
+
+    Args:
+        raw: Raw sheet DataFrame.
+        header_row: Main header row index.
+
+    Returns:
+        pd.DataFrame: Cleaned and normalized DataFrame.
+    """
     headers = unique_headers(raw.iloc[header_row].tolist())
     frame = raw.iloc[header_row + 1 :].copy()
     frame.columns = headers
@@ -475,6 +666,7 @@ def normalize_offer_frame(raw: pd.DataFrame, header_row: int) -> pd.DataFrame:
         if col in frame.columns:
             frame[col] = frame[col].map(clean_text)
 
+    # If style is missing but offer is present, extract prefix (e.g. style)
     if "style" not in frame.columns:
         frame["style"] = frame["offer"].map(lambda value: clean_text(value).split("-")[0])
     else:
@@ -483,6 +675,7 @@ def normalize_offer_frame(raw: pd.DataFrame, header_row: int) -> pd.DataFrame:
             lambda value: clean_text(value).split("-")[0]
         )
 
+    # Convert numeric fields
     frame["original_msrp_num"] = numeric_series(frame, ("original_msrp", "msrp"))
     frame["promo_price_num"] = numeric_series(
         frame,
@@ -513,6 +706,22 @@ def extract_sheet(
     inherited_event_name: str,
     inherited_effective: str,
 ) -> SheetExtract:
+    """Parse and extract a single Excel sheet tab.
+
+    Identifies sheet metadata, date windows, classifications, and reads raw offer items.
+
+    Args:
+        file_id: Stable identifier hash for the workbook.
+        source_file: Workbook filename.
+        sheet_name: Tab sheet name.
+        raw: Full sheet DataFrame.
+        file_date: Workbook timestamp.
+        inherited_event_name: Event name from predecessor sheets (inheritance fallback).
+        inherited_effective: Date range text from predecessor sheets.
+
+    Returns:
+        SheetExtract: Extracted dataclass.
+    """
     header_row = find_header_row(raw)
     event_name = clean_text(find_label_value(raw, {"event_name"})) or inherited_event_name
     raw_effective_text = clean_text(find_label_value(raw, {"effective_date_s"}))
@@ -633,6 +842,14 @@ def extract_sheet(
 
 
 def extract_workbook(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], list[pd.DataFrame]]:
+    """Parse and extract all sheets within a workbook Excel file.
+
+    Args:
+        path: Path to the Excel workbook file.
+
+    Returns:
+        tuple: Workbook summary, sheets metadata list, event metadata list, and offer DataFrames.
+    """
     file_id = stable_file_id(path)
     file_date = source_file_date(path)
     workbook_type = "coupon" if "coupon" in path.name.lower() else "unknown"
@@ -773,6 +990,15 @@ def extract_workbook(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]], 
 
 
 def matching_column(columns: Iterable[str], *needles: str) -> str | None:
+    """Find the column name matching multiple lookup substring needles.
+
+    Args:
+        columns: Iterable of column names to check.
+        *needles: Substrings to match.
+
+    Returns:
+        str or None: The matching column name, or None.
+    """
     for column in columns:
         key = normalize_key(column)
         if all(needle in key for needle in needles):
@@ -781,6 +1007,14 @@ def matching_column(columns: Iterable[str], *needles: str) -> str | None:
 
 
 def extract_coupon_rows(path: Path) -> pd.DataFrame:
+    """Extract coupon rows from the 'COUPON TRACKER' sheet in a workbook.
+
+    Args:
+        path: Path to the coupon Excel workbook.
+
+    Returns:
+        pd.DataFrame: DataFrame containing mapped and cleaned coupon records.
+    """
     try:
         df = pd.read_excel(path, sheet_name="COUPON TRACKER", header=0, dtype=object, engine="calamine")
     except Exception:
@@ -844,12 +1078,29 @@ def extract_coupon_rows(path: Path) -> pd.DataFrame:
 
 
 def max_discount_percent(text: str) -> float | None:
+    """Extract maximum numerical discount percent (e.g. '40%') matching patterns in text.
+
+    Args:
+        text: Raw text to scan.
+
+    Returns:
+        float or None: Largest parsed discount percentage, or None.
+    """
     values = [float(match.group(1)) for match in DISCOUNT_RE.finditer(clean_text(text))]
     values = [value for value in values if 0 <= value <= 100]
     return max(values) if values else None
 
 
 def date_range_rows(start: str, end: str) -> Iterable[str]:
+    """Generate calendar date strings between start and end inclusive.
+
+    Args:
+        start: ISO start date string.
+        end: ISO end date string.
+
+    Returns:
+        Iterable[str]: List of date strings.
+    """
     if not start or not end:
         return []
     start_dt = date.fromisoformat(start)
@@ -860,6 +1111,14 @@ def date_range_rows(start: str, end: str) -> Iterable[str]:
 
 
 def build_pdl_daily(events: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Generate daily exploded rows and summary statistics for PDL events.
+
+    Args:
+        events: pdl_events DataFrame.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: Daily event details and date-grouped summary statistics.
+    """
     if events.empty:
         empty_event = pd.DataFrame(
             columns=[
@@ -926,6 +1185,14 @@ def build_pdl_daily(events: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def build_coupon_daily(coupon_rows: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Generate daily exploded rows and summary statistics for coupon campaigns.
+
+    Args:
+        coupon_rows: coupon tracker rows DataFrame.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: Daily coupon details and date-grouped summary statistics.
+    """
     daily_rows = []
     for row in coupon_rows.itertuples(index=False):
         for day in date_range_rows(row.start_date, row.end_date):
@@ -958,6 +1225,15 @@ def build_coupon_daily(coupon_rows: pd.DataFrame) -> tuple[pd.DataFrame, pd.Data
 
 
 def build_combined_daily(pdl_daily: pd.DataFrame, coupon_daily: pd.DataFrame) -> pd.DataFrame:
+    """Combine PDL and coupon summary statistics over a complete calendar date range.
+
+    Args:
+        pdl_daily: PDL date summary DataFrame.
+        coupon_daily: Coupon date summary DataFrame.
+
+    Returns:
+        pd.DataFrame: Merged daily promotional features.
+    """
     starts = []
     ends = []
     for df in (pdl_daily, coupon_daily):
@@ -993,6 +1269,15 @@ def build_combined_daily(pdl_daily: pd.DataFrame, coupon_daily: pd.DataFrame) ->
 
 
 def order_columns(df: pd.DataFrame, preferred: list[str]) -> pd.DataFrame:
+    """Ensure a set of preferred columns exists in a DataFrame and moves them to the front.
+
+    Args:
+        df: Target DataFrame.
+        preferred: List of column names to move to the front.
+
+    Returns:
+        pd.DataFrame: Reordered DataFrame.
+    """
     for column in preferred:
         if column not in df.columns:
             df[column] = ""
@@ -1001,7 +1286,15 @@ def order_columns(df: pd.DataFrame, preferred: list[str]) -> pd.DataFrame:
 
 
 def align_table_columns(existing: pd.DataFrame, fresh: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Return both frames with a shared column set, preserving existing column order."""
+    """Return both frames with a shared column set, preserving existing column order.
+
+    Args:
+        existing: Existing tracking table.
+        fresh: Newly extracted table.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: Aligned existing and fresh DataFrames.
+    """
     columns = list(existing.columns) + [column for column in fresh.columns if column not in existing.columns]
     if not columns:
         columns = list(fresh.columns)
@@ -1016,6 +1309,15 @@ def align_table_columns(existing: pd.DataFrame, fresh: pd.DataFrame) -> tuple[pd
 
 
 def merge_on_source_file(existing: pd.DataFrame, fresh: pd.DataFrame) -> pd.DataFrame:
+    """Merge fresh extractions into existing historical tables, replacing matching source_file.
+
+    Args:
+        existing: Existing tracking table.
+        fresh: Newly extracted records.
+
+    Returns:
+        pd.DataFrame: Merged DataFrame.
+    """
     if fresh.empty:
         return existing.copy()
     if existing.empty:
@@ -1030,6 +1332,15 @@ def merge_on_source_file(existing: pd.DataFrame, fresh: pd.DataFrame) -> pd.Data
 
 
 def sort_table(name: str, df: pd.DataFrame) -> pd.DataFrame:
+    """Sort tracking tables in a stable deterministic order.
+
+    Args:
+        name: Name of target table.
+        df: DataFrame to sort.
+
+    Returns:
+        pd.DataFrame: Sorted DataFrame.
+    """
     sort_columns_by_table = {
         "workbook_files": ["source_file"],
         "workbook_sheets": ["source_file", "sheet_name"],
@@ -1048,6 +1359,16 @@ def merge_existing_source_tables(
     output_dir: Path,
     replace_existing: bool,
 ) -> tuple[dict[str, pd.DataFrame], dict[str, int]]:
+    """Merge newly extracted dataframes with historical records already written on disk.
+
+    Args:
+        fresh_tables: Map of fresh extractions.
+        output_dir: Output storage directory path.
+        replace_existing: If True, skips merging and returns sorted fresh tables.
+
+    Returns:
+        tuple[dict[str, pd.DataFrame], dict[str, int]]: Merged tables and original counts.
+    """
     source_table_names = [
         "workbook_files",
         "workbook_sheets",
@@ -1073,12 +1394,27 @@ def merge_existing_source_tables(
 
 
 def write_table(df: pd.DataFrame, name: str, output_dir: Path) -> None:
+    """Save DataFrame in both Parquet and CSV formats to the output directory.
+
+    Args:
+        df: DataFrame to save.
+        name: Filename stem.
+        output_dir: Output folder.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     df.to_parquet(output_dir / f"{name}.parquet", index=False)
     df.to_csv(output_dir / f"{name}.csv", index=False)
 
 
 def write_sqlite(tables: dict[str, pd.DataFrame], db_path: Path) -> None:
+    """Save all dataframes as tables inside a local SQLite database.
+
+    Creates useful database indices on key lookup columns to speed up reports.
+
+    Args:
+        tables: Map of table names to DataFrames.
+        db_path: Path to save the SQLite database file.
+    """
     db_path.parent.mkdir(parents=True, exist_ok=True)
     if db_path.exists():
         db_path.unlink()
@@ -1097,6 +1433,12 @@ def write_sqlite(tables: dict[str, pd.DataFrame], db_path: Path) -> None:
 
 
 def write_samples(events: pd.DataFrame, output_dir: Path) -> None:
+    """Save representative small samples of top events to CSV files for inspection.
+
+    Args:
+        events: Extracted pdl_events.
+        output_dir: Target output folder path.
+    """
     if events.empty:
         pd.DataFrame().to_csv(output_dir / "top_pdl_events_sample.csv", index=False)
         pd.DataFrame().to_csv(output_dir / "aggregate_pdl_events_sample.csv", index=False)
@@ -1112,6 +1454,7 @@ def write_samples(events: pd.DataFrame, output_dir: Path) -> None:
 
 
 def main() -> None:
+    """Main CLI entry point for extracting promotions planner workbooks."""
     args = parse_args()
     source_dir = args.source_dir
     output_dir = args.output_dir

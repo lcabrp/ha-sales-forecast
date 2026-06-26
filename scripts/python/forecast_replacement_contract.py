@@ -73,6 +73,11 @@ AX_FORWARD_DEMAND_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the replacement contract generator.
+
+    Returns:
+        argparse.Namespace: Populated argument namespaces.
+    """
     parser = argparse.ArgumentParser(
         description="Create a BRG-like forecast candidate and run the ingestion round-trip."
     )
@@ -119,6 +124,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def file_sha256(path: Path) -> str:
+    """Compute the SHA-256 hash checksum of a file.
+
+    Args:
+        path (Path): Path to the file.
+
+    Returns:
+        str: Hex digest checksum.
+    """
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
@@ -127,6 +140,17 @@ def file_sha256(path: Path) -> str:
 
 
 def choose_source(source_file: Path | None) -> Path:
+    """Select the corporate workbook source.
+
+    Returns the user-specified source_file if available, otherwise queries the ingestion
+    pipeline for the latest available file in the repository source directory.
+
+    Args:
+        source_file (Path | None): Optional user specified workbook path.
+
+    Returns:
+        Path: Path to chosen workbook.
+    """
     if source_file is not None:
         if not source_file.exists():
             raise FileNotFoundError(f"Source workbook not found: {source_file}")
@@ -135,6 +159,14 @@ def choose_source(source_file: Path | None) -> Path:
 
 
 def normalize_forecast_start(value: str) -> pd.Timestamp:
+    """Parse and normalize a forecast start date string into a Timestamp at midnight.
+
+    Args:
+        value (str): Raw string date.
+
+    Returns:
+        pd.Timestamp: Normalized midnight Timestamp.
+    """
     parsed = pd.to_datetime(value, errors="coerce")
     if pd.isna(parsed):
         raise ValueError(f"Could not parse forecast start date: {value!r}")
@@ -142,10 +174,23 @@ def normalize_forecast_start(value: str) -> pd.Timestamp:
 
 
 def default_forecast_start_date() -> pd.Timestamp:
+    """Calculate the default forecast start date (tomorrow).
+
+    Returns:
+        pd.Timestamp: Tomorrow's date at midnight.
+    """
     return pd.Timestamp(datetime.now().date()) + pd.Timedelta(days=1)
 
 
 def normalize_optional_date(value: str | None) -> pd.Timestamp:
+    """Parse a forecast start date, falling back to tomorrow if empty.
+
+    Args:
+        value (str | None): Optional date string.
+
+    Returns:
+        pd.Timestamp: Normalized midnight Timestamp.
+    """
     if value is None:
         return default_forecast_start_date()
     parsed = pd.to_datetime(value, errors="coerce")
@@ -155,15 +200,40 @@ def normalize_optional_date(value: str | None) -> pd.Timestamp:
 
 
 def previous_sunday(value: pd.Timestamp) -> pd.Timestamp:
+    """Determine the Sunday immediately preceding (or equal to) the given Timestamp.
+
+    Args:
+        value (pd.Timestamp): Target date.
+
+    Returns:
+        pd.Timestamp: Midnight Timestamp of the previous Sunday.
+    """
     return value - pd.Timedelta(days=(value.dayofweek + 1) % 7)
 
 
 def forecast_week_dates(forecast_start: pd.Timestamp, weeks: int = WEEKLY_FORECAST_WEEKS) -> list[pd.Timestamp]:
+    """Generate a series of weekly start dates commencing from the previous Sunday.
+
+    Args:
+        forecast_start (pd.Timestamp): Target start date.
+        weeks (int, optional): Number of weeks to generate. Defaults to WEEKLY_FORECAST_WEEKS.
+
+    Returns:
+        list[pd.Timestamp]: List of midnight timestamps.
+    """
     first_week = previous_sunday(forecast_start)
     return [first_week + pd.Timedelta(days=7 * idx) for idx in range(weeks)]
 
 
 def normalize_sku_series(series: pd.Series) -> pd.Series:
+    """Apply standard uppercase cleaning and stripping rules to SKU values.
+
+    Args:
+        series (pd.Series): Raw SKU pandas Series.
+
+    Returns:
+        pd.Series: Normalized SKU string Series.
+    """
     return series.fillna("").map(ingestion.normalize_sku)
 
 
@@ -173,6 +243,17 @@ def build_daily_contract(
     candidate_id: str,
     source_workbook: str,
 ) -> pd.DataFrame:
+    """Melt daily wide forecasts (FD1-FD14) into long database contract records.
+
+    Args:
+        df_14day (pd.DataFrame): Wide daily forecast table.
+        forecast_start (pd.Timestamp): Midnight start timestamp.
+        candidate_id (str): Unique candidate identifier.
+        source_workbook (str): Source workbook filename.
+
+    Returns:
+        pd.DataFrame: Long format daily forecast contract dataframe.
+    """
     daily = df_14day.melt(
         id_vars=["SKU"],
         value_vars=[col for col in FD_COLUMNS if col in df_14day.columns],
@@ -205,6 +286,18 @@ def build_weekly_contract(
     candidate_id: str,
     source_workbook: str,
 ) -> pd.DataFrame:
+    """Melt weekly wide forecasts into long database contract records.
+
+    Args:
+        df_weekly (pd.DataFrame): Wide weekly forecast table.
+        week_dates (list[pd.Timestamp]): Sunday start date timestamps.
+        week_columns (list[Any]): Target weekly column names/keys.
+        candidate_id (str): Unique candidate identifier.
+        source_workbook (str): Source workbook filename.
+
+    Returns:
+        pd.DataFrame: Long format weekly forecast contract dataframe.
+    """
     weekly = df_weekly.melt(
         id_vars=["SKU"],
         value_vars=week_columns,
@@ -233,6 +326,16 @@ def build_weekly_contract(
 
 
 def write_frame_with_sample(df: pd.DataFrame, path: Path, sample_rows: int) -> dict[str, Any]:
+    """Write contract dataframe to Parquet with a subset sample saved as CSV.
+
+    Args:
+        df (pd.DataFrame): Target dataframe.
+        path (Path): Destination parquet filepath.
+        sample_rows (int): Max rows in the diagnostic CSV.
+
+    Returns:
+        dict[str, Any]: Saved files location metadata.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(path, index=False, compression="zstd")
     sample_path = path.with_name(f"{path.stem}_sample.csv")
@@ -245,7 +348,21 @@ def write_frame_with_sample(df: pd.DataFrame, path: Path, sample_rows: int) -> d
     }
 
 
-def latest_snapshot(df: pd.DataFrame, date_col: str, as_of_date: pd.Timestamp) -> tuple[pd.DataFrame, pd.Timestamp | None]:
+def latest_snapshot(
+    df: pd.DataFrame,
+    date_col: str,
+    as_of_date: pd.Timestamp,
+) -> tuple[pd.DataFrame, pd.Timestamp | None]:
+    """Retrieve the most recent data snapshot available before or on the target date.
+
+    Args:
+        df (pd.DataFrame): Dataframe with historical snapshot records.
+        date_col (str): Snapshot date column.
+        as_of_date (pd.Timestamp): Maximum allowed snapshot date.
+
+    Returns:
+        tuple[pd.DataFrame, pd.Timestamp | None]: Eligible snapshot rows, and snapshot date used.
+    """
     if df.empty or date_col not in df.columns:
         return df.iloc[0:0].copy(), None
     work = df.copy()
@@ -264,6 +381,18 @@ def load_direct_pick_signal(
     forecast_start: pd.Timestamp,
     lookback_days: int,
 ) -> tuple[pd.DataFrame, dict[int, float], dict[str, Any]]:
+    """Load historical direct pick actuals and calculate daily average velocity.
+
+    Also returns day-of-week demand scaling factors representing normal weekly curves.
+
+    Args:
+        actuals_path (Path): Path to actuals parquet.
+        forecast_start (pd.Timestamp): Start date of forecast window.
+        lookback_days (int): Days window size for history.
+
+    Returns:
+        tuple[pd.DataFrame, dict[int, float], dict[str, Any]]: Sku base demand, dow scaling indexes, and stats metadata.
+    """
     columns = ["ActualDate", "SKU", "SoldUnits"]
     if not actuals_path.exists():
         return (
@@ -331,6 +460,18 @@ def load_direct_pick_signal(
 
 
 def same_month_day(year: int, date_value: pd.Timestamp) -> pd.Timestamp:
+    """Map a given date to the same month and day in a different calendar year.
+
+    Safely handles Leap Day by rolling back to February 28th if the target year
+    does not support February 29th.
+
+    Args:
+        year (int): Target year.
+        date_value (pd.Timestamp): Reference date.
+
+    Returns:
+        pd.Timestamp: Date in the target year.
+    """
     day = date_value.day
     while day > 0:
         try:
@@ -348,6 +489,22 @@ def load_seasonal_direct_pick_signal(
     seasonal_years: int,
     seasonal_window_days: int,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]:
+    """Compute historical seasonal actual demand over past years.
+
+    Evaluates sales in matching calendar day windows across historical years to
+    form seasonal baseline anchors.
+
+    Args:
+        actuals_path (Path): Path to actuals parquet.
+        forecast_start (pd.Timestamp): Start date of forecast window.
+        daily_dates (list[pd.Timestamp]): Target daily dates.
+        week_dates (list[pd.Timestamp]): Target weekly start dates.
+        seasonal_years (int): Number of prior years to evaluate.
+        seasonal_window_days (int): Half-width of seasonal comparison window.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]: Seasonal daily, weekly records and stats.
+    """
     daily_columns = ["SKU", "ForecastDate", "SeasonalDailyUnits", "SeasonalDailyWindowDays"]
     weekly_columns = ["SKU", "WeekStartDate", "SeasonalWeeklyUnits", "SeasonalWeeklyWindowDays"]
     empty_daily = pd.DataFrame(columns=daily_columns)
@@ -450,6 +607,14 @@ def load_seasonal_direct_pick_signal(
 
 
 def promo_multiplier(df: pd.DataFrame) -> pd.Series:
+    """Calculate promotional uplift multiplier based on discount percentages.
+
+    Args:
+        df (pd.DataFrame): Dataframe containing max discount percentages and promotion flags.
+
+    Returns:
+        pd.Series: Numeric series of multiplier values.
+    """
     discount = pd.to_numeric(df.get("pdl_sku_max_discount_pct", 0), errors="coerce").fillna(0)
     multiplier = 1.0 + discount.clip(lower=0, upper=1) * PROMO_DISCOUNT_UPLIFT_FACTOR
     has_promo = df.get("HasSkuPDLPromotion", False)
@@ -464,6 +629,16 @@ def load_promo_signal(
     forecast_start: pd.Timestamp,
     week_dates: list[pd.Timestamp],
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]:
+    """Parse future promotional features and compile daily and weekly uplifts.
+
+    Args:
+        pdl_path (Path): Path to PDL features file.
+        forecast_start (pd.Timestamp): Midnight start timestamp.
+        week_dates (list[pd.Timestamp]): List of weekly start dates.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]: Daily, weekly promo signals and stats.
+    """
     columns = [
         "Date",
         "SKU",
@@ -552,6 +727,17 @@ def load_inbound_signal(
     inbound_path: Path,
     forecast_start: pd.Timestamp,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Parse corporate inbound shipments files.
+
+    Provides coverage/universe attributes to ensure new and returning SKUs are slotted.
+
+    Args:
+        inbound_path (Path): Path to open inbound shipments file.
+        forecast_start (pd.Timestamp): Midnight start timestamp.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Inbound dataframe, and stats metadata.
+    """
     columns = [
         "SnapshotDate",
         "SKU",
@@ -594,6 +780,18 @@ def load_reservation_signal(
     reservations_path: Path,
     forecast_start: pd.Timestamp,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Parse corporate sales reservation files to extract open-order proxies.
+
+    Restricts demand units only to valid reserve statuses (WMS blank location and
+    pickface allocations) to prevent over-forecasting.
+
+    Args:
+        reservations_path (Path): Path to reservation parquet.
+        forecast_start (pd.Timestamp): Midnight start timestamp.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Cleaned reservation records, and metrics metadata.
+    """
     columns = [
         "SnapshotDate",
         "SKU",
@@ -644,6 +842,17 @@ def load_reservation_signal(
 
 
 def integerize_daily_forecast(daily: pd.DataFrame) -> pd.DataFrame:
+    """Integerize daily fractional forecasts to integer units per SKU.
+
+    Uses largest remainder rounding (Hamilton method) to ensure that the sum of
+    daily integer forecasts exactly equals the rounded sum of daily fractional forecasts.
+
+    Args:
+        daily (pd.DataFrame): Long format daily forecast dataframe containing SKU, ForecastDay, and ForecastUnitsRaw.
+
+    Returns:
+        pd.DataFrame: Enriched daily long forecast with integer ForecastUnits.
+    """
     pieces = []
     for _, group in daily.sort_values(["SKU", "ForecastDay"], kind="mergesort").groupby("SKU", sort=False):
         work = group.copy()
@@ -686,6 +895,28 @@ def build_no_ml_forecasts(
     seasonal_window_days: int = DEFAULT_SEASONAL_WINDOW_DAYS,
     seasonal_recent_weight: float = DEFAULT_SEASONAL_RECENT_WEIGHT,
 ) -> tuple[pd.DataFrame, pd.DataFrame, list[pd.Timestamp], pd.DataFrame, dict[str, Any]]:
+    """Build a non-ML baseline forecast blending recent direct picks, reservations, and promotions.
+
+    If enabled, historical seasonal actuals from calendar analogs are blended
+    using a weighted average.
+
+    Args:
+        actuals_path (Path): Path to actuals parquet.
+        pdl_path (Path): Path to PDL features parquet.
+        inbound_path (Path): Path to inbound shipments parquet.
+        reservations_path (Path): Path to reservations snapshot parquet.
+        forecast_start (pd.Timestamp): Midnight start date of forecast.
+        lookback_days (int): Prior days window for base actuals.
+        source_universe_skus (pd.DataFrame | None, optional): SKUs list. Defaults to None.
+        include_seasonal_history (bool, optional): If True, incorporates YoY calendar logic.
+        seasonal_years (int, optional): Prior years lookback count.
+        seasonal_window_days (int, optional): Half-width calendar window.
+        seasonal_recent_weight (float, optional): Weight assigned to recent demand (0 to 1).
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame, list[pd.Timestamp], pd.DataFrame, dict[str, Any]]:
+            Daily forecast, weekly forecast, week dates list, SKU signal summary, and execution metadata.
+    """
     week_dates = forecast_week_dates(forecast_start)
     daily_dates = [forecast_start + pd.Timedelta(days=idx) for idx in range(14)]
     direct_pick, dow_factors, direct_pick_meta = load_direct_pick_signal(
@@ -966,6 +1197,14 @@ def build_no_ml_forecasts(
 
 
 def excel_value(value: Any) -> Any:
+    """Convert pandas/numpy missing values and timestamps to Excel-compatible formats.
+
+    Args:
+        value: Input scalar value to be formatted.
+
+    Returns:
+        The formatted value, converting Timestamp to datetime and na/NaN/NaT to None.
+    """
     if pd.isna(value):
         return None
     if isinstance(value, pd.Timestamp):
@@ -979,6 +1218,14 @@ def write_rows(
     start_col: int,
     rows: pd.DataFrame,
 ) -> None:
+    """Bulk write a pandas DataFrame to an xlsxwriter worksheet using row tuples.
+
+    Args:
+        worksheet: Target sheet to write to.
+        start_row: Starting row index (0-indexed).
+        start_col: Starting column index (0-indexed).
+        rows: Dataframe containing rows to write.
+    """
     for row_offset, values in enumerate(rows.itertuples(index=False, name=None)):
         worksheet.write_row(start_row + row_offset, start_col, [excel_value(value) for value in values])
 
@@ -994,19 +1241,39 @@ def write_brg_workbook(
     df_load: pd.DataFrame,
     df_on_hand_location: pd.DataFrame,
 ) -> None:
+    """Generate a corporate-style BRG forecast template workbook from raw forecast data.
+
+    This function simulates the structured sheets that the legacy active storage
+    and zoning-slotting pipelines expect. It formats datetime values and prints
+    metadata mimicking the SharePoint master download output.
+
+    Args:
+        workbook_path: Destination path for the Excel workbook.
+        df_weekly: Weekly forecast data by SKU.
+        week_dates: Dates corresponding to the weekly columns.
+        df_14day: Daily forecast data for the 14-day horizon.
+        forecast_start: Start date of the daily forecast period.
+        df_hier: SKU product hierarchy metadata.
+        df_status: SKU workflow status records.
+        df_load: Target load details and expected maximum inventory.
+        df_on_hand_location: Location-level inventory counts.
+    """
     workbook_path.parent.mkdir(parents=True, exist_ok=True)
     workbook = xlsxwriter.Workbook(
         str(workbook_path),
+        # Use constant_memory to handle large SKU volumes without blowing up RAM footprint
         {"constant_memory": True, "strings_to_urls": False, "nan_inf_to_errors": True},
     )
     date_format = workbook.add_format({"num_format": "m/d/yyyy"})
     datetime_format = workbook.add_format({"num_format": "m/d/yyyy h:mm:ss AM/PM"})
 
+    # Write "LAST REFRESHED" worksheet metadata
     ws = workbook.add_worksheet("LAST REFRESHED")
     ws.write(1, 2, "On Hand Location data current as of:")
     ws.write(3, 2, "Last Refreshed UTC")
     ws.write_datetime(4, 2, datetime.now(), datetime_format)
 
+    # Write "Product Forecast Tool by Week" worksheet
     ws = workbook.add_worksheet("Product Forecast Tool by Week")
     ws.write(0, 0, "FiscalYear_Month")
     ws.write(0, 1, "All")
@@ -1024,6 +1291,7 @@ def write_brg_workbook(
         ws.write_row(row_idx, 1, values)
         ws.write(row_idx, len(week_dates) + 1, float(sum(values)))
 
+    # Write "SKU Level 14 Day Forecast" worksheet
     ws = workbook.add_worksheet("SKU Level 14 Day Forecast")
     ws.write_datetime(1, 1, forecast_start.to_pydatetime(), date_format)
     for idx in range(2, 15):
@@ -1033,6 +1301,7 @@ def write_brg_workbook(
         ws.write(2, idx, f"D{idx}")
     write_rows(ws, 3, 0, df_14day[["SKU", *FD_COLUMNS]])
 
+    # Write "Product Attributes" worksheet
     ws = workbook.add_worksheet("Product Attributes")
     left_headers = [
         "Offer",
@@ -1084,6 +1353,7 @@ def write_brg_workbook(
         if row_offset < len(status_rows):
             ws.write_row(5 + row_offset, 10, [excel_value(value) for value in status_rows[row_offset]])
 
+    # Write "Load Data" worksheet
     ws = workbook.add_worksheet("Load Data")
     ws.write_row(1, 0, ["Load", "LoadShipDate", "LoadETA", "PurchId", "SKU", "LicensePlate", "LP Units"])
     load_out = pd.DataFrame(
@@ -1099,6 +1369,7 @@ def write_brg_workbook(
     )
     write_rows(ws, 2, 0, load_out)
 
+    # Write "On Hand by Location" worksheet
     ws = workbook.add_worksheet("On Hand by Location")
     ws.write_row(
         2,
@@ -1149,6 +1420,31 @@ def write_no_ml_baseline_contract(
     seasonal_window_days: int = DEFAULT_SEASONAL_WINDOW_DAYS,
     seasonal_recent_weight: float = DEFAULT_SEASONAL_RECENT_WEIGHT,
 ) -> dict[str, Any]:
+    """Execute the no-ML baseline contract pipeline.
+
+    Reads the reference product attributes, builds baseline no-ML forecasts, generates
+    the target BRG Excel workbook structure, writes the contract parquets, and saves the
+    candidate JSON metadata contract.
+
+    Args:
+        source_file: Path to corporate planner workbook.
+        candidate_dir: Base directory to save candidate outputs.
+        candidate_id: Unique candidate identification string.
+        candidate_type: Type descriptor of the baseline candidate.
+        sample_rows: Max number of preview rows to include in logs.
+        forecast_start: Midnight timestamp marking the forecast origin.
+        lookback_days: Length of baseline actuals demand lookback.
+        actuals_path: Path to historical actuals parquet.
+        pdl_path: Path to promotion demand ledger parquet.
+        inbound_path: Path to inbound shipments parquet.
+        reservations_path: Path to reservations snapshot parquet.
+        seasonal_years: Number of years to look back for seasonal blending.
+        seasonal_window_days: Day window offset width for YoY seasonal matching.
+        seasonal_recent_weight: Blend weight (0 to 1) given to recent demand actuals.
+
+    Returns:
+        A dictionary containing candidate contract metadata details.
+    """
     input_dir = candidate_dir / "input"
     contract_dir = candidate_dir / "contract"
     input_dir.mkdir(parents=True, exist_ok=True)
@@ -1273,6 +1569,17 @@ def write_candidate_contract(
     candidate_id: str,
     sample_rows: int,
 ) -> dict[str, Any]:
+    """Clones a corporate forecast workbook and registers it as a candidate contract.
+
+    Args:
+        source_file: Path to corporate planner workbook.
+        candidate_dir: Target output folder path for candidate registration.
+        candidate_id: Unique candidate ID string.
+        sample_rows: Maximum rows to preview in diagnostic tables.
+
+    Returns:
+        A dictionary containing contract metadata details.
+    """
     input_dir = candidate_dir / "input"
     contract_dir = candidate_dir / "contract"
     input_dir.mkdir(parents=True, exist_ok=True)
@@ -1356,6 +1663,15 @@ def write_candidate_contract(
 
 
 def run_ingestion_roundtrip(candidate_dir: Path, clone_workbook: Path) -> dict[str, Any]:
+    """Execute ingestion pipeline sub-process on generated candidate workbook.
+
+    Args:
+        candidate_dir: Folder path where logs and outputs are placed.
+        clone_workbook: Path to the generated Excel workbook candidate.
+
+    Returns:
+        A dictionary summarizing roundtrip evaluation parameters.
+    """
     ingestion_output_dir = candidate_dir / "ingestion_output"
     log_dir = candidate_dir / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -1433,6 +1749,12 @@ def run_ingestion_roundtrip(candidate_dir: Path, clone_workbook: Path) -> dict[s
 
 
 def main() -> None:
+    """Execute forecast replacement candidate contract generation.
+
+    Parses configuration flags, identifies the appropriate source workbook, resolves the
+    output directory structure, generates the contract, and invokes the ingestion validation
+    roundtrip steps.
+    """
     args = parse_args()
     source_file = choose_source(args.source_file)
     default_prefix = args.candidate_type

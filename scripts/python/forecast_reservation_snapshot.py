@@ -1,7 +1,7 @@
 """Capture live AX WMS reservation snapshots for forecast-model features.
 
 Reservations are a current-state signal, so this script writes dated snapshots
-that can be reused offline later.  It uses WHSINVENTRESERVE as the primary WMS
+that can be reused offline later. It uses WHSINVENTRESERVE as the primary WMS
 reservation source and keeps blank-location reservations separate from
 location-assigned reservations to preserve pre-work demand signal.
 """
@@ -31,6 +31,11 @@ PICKFACE_PROFILES = {"Picking", "Picking A", "Picking D", "PalletPicking"}
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for reservations snapshot extraction script.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(description="Extract live AX reservation snapshots for forecasting.")
     parser.add_argument("--snapshot-date", default=date.today().isoformat())
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -50,10 +55,30 @@ def parse_args() -> argparse.Namespace:
 
 
 def sql_list(values: tuple[str, ...]) -> str:
+    """Safely format string values to a comma-separated single-quoted SQL list fragment.
+
+    Args:
+        values: String identifiers to list.
+
+    Returns:
+        str: Comma-separated escaped string literal.
+    """
     return ", ".join(f"'{value.replace("'", "''")}'" for value in values)
 
 
 def reservation_snapshot_query(excluded_items: tuple[str, ...]) -> sa.TextClause:
+    """Generate SQL query to extract active WMS reservation statistics from Microsoft Dynamics AX tables.
+
+    Specifically joins WHSINVENTRESERVE, INVENTDIM, and WMSLOCATION tables,
+    filtering for the default company, warehouse partition, and site.
+    Also categorizes reservations into reservation buckets (e.g. BlankLocation, PickFace, bulk).
+
+    Args:
+        excluded_items: ItemIDs to exclude (e.g. virtual items, gift cards).
+
+    Returns:
+        sa.TextClause: Executable SQL query.
+    """
     excluded_filter = ""
     if excluded_items:
         excluded_filter = f"AND wir.ITEMID NOT IN ({sql_list(excluded_items)})"
@@ -125,6 +150,14 @@ def reservation_snapshot_query(excluded_items: tuple[str, ...]) -> sa.TextClause
 
 
 def make_sku(df: pd.DataFrame) -> pd.Series:
+    """Concatenate Item, Color, and Size fields to construct standard dash-separated SKUs.
+
+    Args:
+        df: Input DataFrame containing Item, Color, and Size_ columns.
+
+    Returns:
+        pd.Series: Generated SKU string Series.
+    """
     item = df["Item"].fillna("").astype(str).str.strip()
     color = df["Color"].fillna("").astype(str).str.strip()
     size = df["Size_"].fillna("").astype(str).str.strip()
@@ -132,6 +165,14 @@ def make_sku(df: pd.DataFrame) -> pd.Series:
 
 
 def clean_frame(df: pd.DataFrame) -> pd.DataFrame:
+    """Perform data cleaning on raw reservation snapshot records.
+
+    Args:
+        df: Raw database query results DataFrame.
+
+    Returns:
+        pd.DataFrame: Normalized and sorted reservations DataFrame.
+    """
     output = df.copy()
     output["SnapshotDate"] = pd.to_datetime(output["SnapshotDate"], errors="coerce").dt.normalize()
     output["MaxReservationModifiedDateTimeUTC"] = pd.to_datetime(
@@ -168,6 +209,20 @@ def clean_frame(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def aggregate_sku_day(detail: pd.DataFrame) -> pd.DataFrame:
+    """Pivots detailed location records into daily SKU summary metrics.
+
+    WHS reservation hierarchy levels are not additive. Level 3 blank-location
+    rows are the best current open-order demand proxy; level 4 located rows
+    describe allocation/work progress and must stay separate. Only pickface
+    located reservations are treated as replenishment-relevant sales allocation;
+    W001, bulk, and process-area reservations are diagnostics/exclusions.
+
+    Args:
+        detail: Cleaned detailed snapshot DataFrame.
+
+    Returns:
+        pd.DataFrame: Aggregated daily SKU summary.
+    """
     if detail.empty:
         return pd.DataFrame(columns=["SnapshotDate", "SKU"])
 
@@ -228,11 +283,8 @@ def aggregate_sku_day(detail: pd.DataFrame) -> pd.DataFrame:
             "ReservationOtherLocated",
         ]
     ].sum(axis=1)
-    # WHS reservation hierarchy levels are not additive.  Level 3 blank-location
-    # rows are the best current open-order demand proxy; level 4 located rows
-    # describe allocation/work progress and must stay separate.  Only pickface
-    # located reservations are treated as replenishment-relevant sales allocation;
-    # W001, bulk, and process-area reservations are diagnostics/exclusions.
+    
+    # Establish total physical reservation based on hierarchy level logic
     output["ReservationPhysicalTotal"] = output["ReservationBlankLocation"]
     output["HasReservation"] = output["ReservationPhysicalTotal"].ne(0) | output[
         "ReservationSalesAllocatedPhysicalTotal"
@@ -241,16 +293,33 @@ def aggregate_sku_day(detail: pd.DataFrame) -> pd.DataFrame:
 
 
 def append_or_replace_snapshot(existing_path: Path, snapshot: pd.DataFrame, date_col: str) -> pd.DataFrame:
+    """Concatenate fresh snapshot records into the historical file, replacing conflicting dates.
+
+    Args:
+        existing_path: Target parquet file holding history.
+        snapshot: New snapshot to merge.
+        date_col: Timestamp column name.
+
+    Returns:
+        pd.DataFrame: Combined sorted history.
+    """
     if existing_path.exists():
         existing = pd.read_parquet(existing_path)
         existing[date_col] = pd.to_datetime(existing[date_col], errors="coerce").dt.normalize()
         dates = set(snapshot[date_col].dropna().unique())
+        # Strip conflicting dates to prevent duplicate rows
         existing = existing.loc[~existing[date_col].isin(dates)].copy()
         snapshot = pd.concat([existing, snapshot], ignore_index=True)
     return snapshot.sort_values([date_col, "SKU"], kind="mergesort").reset_index(drop=True)
 
 
 def write_outputs(detail: pd.DataFrame, args: argparse.Namespace) -> None:
+    """Write snapshots, historical aggregates, and manifest metadata to the output directory.
+
+    Args:
+        detail: Cleaned detailed DataFrame.
+        args: Command parameters.
+    """
     args.output_dir.mkdir(parents=True, exist_ok=True)
     snapshot_date = pd.Timestamp(args.snapshot_date).date().isoformat()
     detail_path = args.output_dir / f"ax_reservation_snapshot_detail_{snapshot_date}.parquet"
@@ -334,6 +403,7 @@ def write_outputs(detail: pd.DataFrame, args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    """Main CLI entry point for reservations extractor."""
     args = parse_args()
     excluded_items = tuple(args.excluded_items or DEFAULT_EXCLUDED_ITEMS)
     engine = get_ax_engine(server=args.server, database=args.database, verbose=True)

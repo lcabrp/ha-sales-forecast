@@ -17,6 +17,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+# Add parent directory to path to locate corporate settings and contract tables
 PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
@@ -24,25 +25,69 @@ if str(PYTHON_DIR) not in sys.path:
 from forecast_replacement_contract import AX_FORWARD_DEMAND_COLUMNS, FD_COLUMNS  # noqa: E402
 from output_paths import PROJECT_ROOT  # noqa: E402
 
-
+# Default target input and output locations for the scaled candidates
 DEFAULT_INPUT_CSV = PROJECT_ROOT / "Output" / "Ingestion" / "FwdDemandCSV_2026-06-16.csv"
-DEFAULT_PLANNER_DAILY_PATH = PROJECT_ROOT / "Output" / "ForecastAccuracy" / "planner" / "planner_daily_totals_2026.parquet"
+DEFAULT_PLANNER_DAILY_PATH = (
+    PROJECT_ROOT / "Output" / "ForecastAccuracy" / "planner" / "planner_daily_totals_2026.parquet"
+)
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "Output" / "ForecastAccuracy" / "replacement_contract"
 PLANNER_COLUMN = "ops_imf_plan_forecasted_units"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the demand scaling runner.
+
+    Returns:
+        argparse.Namespace: Parsed arguments namespaces.
+    """
     parser = argparse.ArgumentParser(description="Scale FD1-FD14 daily totals to Planner OPS/IMF units.")
-    parser.add_argument("--input-csv", type=Path, default=DEFAULT_INPUT_CSV)
-    parser.add_argument("--planner-daily-path", type=Path, default=DEFAULT_PLANNER_DAILY_PATH)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
-    parser.add_argument("--candidate-id")
-    parser.add_argument("--planner-scale", type=float, default=1.0)
-    parser.add_argument("--planner-column", default=PLANNER_COLUMN)
+    parser.add_argument(
+        "--input-csv",
+        type=Path,
+        default=DEFAULT_INPUT_CSV,
+        help="Path to the baseline AX Forward Demand CSV file.",
+    )
+    parser.add_argument(
+        "--planner-daily-path",
+        type=Path,
+        default=DEFAULT_PLANNER_DAILY_PATH,
+        help="Path to the Planner daily totals dataset (CSV or Parquet).",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIR,
+        help="Directory to save the scaled output candidate folder.",
+    )
+    parser.add_argument(
+        "--candidate-id",
+        help="Unique candidate folder identifier. Generates one dynamically if omitted.",
+    )
+    parser.add_argument(
+        "--planner-scale",
+        type=float,
+        default=1.0,
+        help="Scaling factor to apply to target Planner units.",
+    )
+    parser.add_argument(
+        "--planner-column",
+        default=PLANNER_COLUMN,
+        help="Column in the planner dataset containing anchor daily target units.",
+    )
     return parser.parse_args()
 
 
 def load_planner(path: Path, column: str, start: pd.Timestamp) -> pd.DataFrame:
+    """Load daily planner volumes for the 14-day horizon from the target file.
+
+    Args:
+        path (Path): Path to the planner CSV or Parquet file.
+        column (str): Column name containing daily planner units.
+        start (pd.Timestamp): Start date of the 14-day forecast window.
+
+    Returns:
+        pd.DataFrame: Sliced planner totals dataframe containing ForecastDate and PlannerUnits.
+    """
     if not path.exists():
         raise FileNotFoundError(path)
     planner = pd.read_parquet(path) if path.suffix.lower() == ".parquet" else pd.read_csv(path)
@@ -56,6 +101,18 @@ def load_planner(path: Path, column: str, start: pd.Timestamp) -> pd.DataFrame:
 
 
 def integerize_day(group: pd.DataFrame) -> pd.DataFrame:
+    """Distribute scaled fractional forecasts into whole integer units per SKU.
+
+    Uses the Largest Remainder Method (Hamilton method) to adjust rounding errors
+    so that the sum of the integerized forecasts exactly equals the rounded sum of
+    the fractional forecasts.
+
+    Args:
+        group (pd.DataFrame): Dataframe of records for a single forecast day.
+
+    Returns:
+        pd.DataFrame: Modified dataframe with a 'ScaledUnits' integer column.
+    """
     work = group.copy()
     raw = pd.to_numeric(work["ScaledRaw"], errors="coerce").fillna(0).clip(lower=0)
     floors = raw.apply(np.floor).astype(int)
@@ -64,6 +121,8 @@ def integerize_day(group: pd.DataFrame) -> pd.DataFrame:
     extra = target - int(floors.sum())
     work["ScaledUnits"] = floors
     if extra > 0:
+        # Distribute remaining units to SKUs with the largest fractional remainders,
+        # using SKU text code as a deterministic tie-breaker.
         order = (
             pd.DataFrame({"index": work.index, "Remainder": raw - floors, "SKU": work["SKU"].to_numpy()})
             .sort_values(["Remainder", "SKU"], ascending=[False, True])
@@ -79,9 +138,22 @@ def scale_forward_demand(
     start: pd.Timestamp,
     scale: float,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Rescale 14-day daily totals from AX Forward Demand to match Planner volume.
+
+    Args:
+        df (pd.DataFrame): Input AX forward demand records.
+        planner (pd.DataFrame): Target daily planner totals.
+        start (pd.Timestamp): Start date of the 14-day window.
+        scale (float): Adjustment factor applied to the target planner total.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: The scaled forward demand records, and daily audit summary.
+    """
     work = df.copy()
     for col in FD_COLUMNS:
         work[col] = pd.to_numeric(work[col], errors="coerce").fillna(0).clip(lower=0)
+
+    # Melt to long format for SKU-day calculations
     daily = work[["SKU", *FD_COLUMNS]].melt(
         id_vars=["SKU"],
         value_vars=FD_COLUMNS,
@@ -97,10 +169,14 @@ def scale_forward_demand(
     can_scale = daily["TargetUnits"].notna() & daily["TargetUnits"].gt(0) & daily["CurrentUnits"].gt(0)
     daily.loc[can_scale, "ScaleFactor"] = daily.loc[can_scale, "TargetUnits"] / daily.loc[can_scale, "CurrentUnits"]
     daily["ScaledRaw"] = daily["OriginalUnits"] * daily["ScaleFactor"]
+
+    # Re-allocate fractions to integers day-by-day
     daily = pd.concat(
         [integerize_day(group) for _, group in daily.groupby("ForecastDay", sort=False)],
         ignore_index=True,
     )
+
+    # Pivot back to wide format FD1-FD14
     scaled = (
         daily.pivot_table(index="SKU", columns="ForecastDay", values="ScaledUnits", aggfunc="sum", fill_value=0)
         .rename(columns={idx: f"FD{idx}" for idx in range(1, 15)})
@@ -128,6 +204,7 @@ def scale_forward_demand(
 
 
 def main() -> None:
+    """Orchestrate forward demand CSV loading, scaling, saving, and metadata writing."""
     args = parse_args()
     if not args.input_csv.exists():
         raise FileNotFoundError(args.input_csv)
@@ -140,7 +217,10 @@ def main() -> None:
         raise ValueError("Could not find ForecastStartDate in input CSV")
     start = pd.Timestamp(forecast_dates.iloc[0]).normalize()
     planner = load_planner(args.planner_daily_path, args.planner_column, start)
-    candidate_id = args.candidate_id or f"planner_scaled_forward_demand_{args.planner_scale:g}_{datetime.now():%Y%m%d_%H%M%S}"
+    candidate_id = (
+        args.candidate_id
+        or f"planner_scaled_forward_demand_{args.planner_scale:g}_{datetime.now():%Y%m%d_%H%M%S}"
+    )
     candidate_dir = args.output_dir / candidate_id
     candidate_dir.mkdir(parents=True, exist_ok=False)
 
@@ -180,3 +260,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

@@ -16,6 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
+# Add the parent directory to Python path to import sister utilities
 PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
@@ -24,6 +25,11 @@ from output_paths import PROJECT_ROOT  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the orchestrator runner.
+
+    Returns:
+        argparse.Namespace: Populated argument values.
+    """
     parser = argparse.ArgumentParser(description="Orchestrate the forecast training and candidate pipeline.")
     parser.add_argument(
         "--source-file",
@@ -36,22 +42,53 @@ def parse_args() -> argparse.Namespace:
         required=True,
         help="Forecast start date for candidate generation (YYYY-MM-DD).",
     )
-    parser.add_argument("--max-windows", type=int, default=26, help="Maximum windows to evaluate in backtest.")
-    parser.add_argument("--lookback", type=int, default=2, help="Prior windows lookback for recency brake.")
-    parser.add_argument("--threads", type=int, default=8, help="Number of CPU threads to use.")
+    parser.add_argument(
+        "--max-windows",
+        type=int,
+        default=26,
+        help="Maximum windows to evaluate in backtest.",
+    )
+    parser.add_argument(
+        "--lookback",
+        type=int,
+        default=2,
+        help="Prior windows lookback for recency brake.",
+    )
+    parser.add_argument(
+        "--threads",
+        type=int,
+        default=8,
+        help="Number of CPU threads to use.",
+    )
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=PROJECT_ROOT / "Output" / "ForecastAccuracy" / "pipeline_runs",
         help="Target output directory for pipeline run artifacts.",
     )
-    parser.add_argument("--c-over", type=float, default=1.0, help="Unit cost of over-forecasting.")
-    parser.add_argument("--c-under", type=float, default=3.0, help="Unit cost of under-forecasting.")
-    parser.add_argument("--c-zero", type=float, default=6.0, help="Unit cost of zero-forecast missed units.")
+    parser.add_argument(
+        "--c-over",
+        type=float,
+        default=1.0,
+        help="Unit cost of over-forecasting.",
+    )
+    parser.add_argument(
+        "--c-under",
+        type=float,
+        default=3.0,
+        help="Unit cost of under-forecasting.",
+    )
+    parser.add_argument(
+        "--c-zero",
+        type=float,
+        default=6.0,
+        help="Unit cost of zero-forecast missed units.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
+    """Orchestrate backtesting, brake selection, candidate output generation, and operational scoring."""
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -68,7 +105,11 @@ def main() -> None:
         str(args.threads),
         "--output-dir",
         str(backtest_dir),
-        "--hybrid-recent-volume-caps", "0.85", "1.00", "1.10", "1.25"
+        "--hybrid-recent-volume-caps",
+        "0.85",
+        "1.00",
+        "1.10",
+        "1.25",
     ]
     print(f"Running command: {' '.join(cmd_backtest)}")
     subprocess.run(cmd_backtest, check=True)
@@ -78,11 +119,11 @@ def main() -> None:
     print("======================================================================")
     brake_dir = args.output_dir / "recency_brake"
     score_file = backtest_dir / "replacement_ml_backtest_window_scores.csv"
-    
+
     # Check that scores file exists
     if not score_file.exists():
         raise FileNotFoundError(f"Backtest scores not found at {score_file}")
-        
+
     cmd_brake = [
         sys.executable,
         str(PROJECT_ROOT / "scripts" / "python" / "forecast_replacement_recency_brake.py"),
@@ -112,7 +153,7 @@ def main() -> None:
     choices_file = brake_dir / "recency_brake_window_choices.csv"
     if not choices_file.exists():
         raise FileNotFoundError(f"Brake choices not found at {choices_file}")
-    
+
     choices_df = pd.read_csv(choices_file)
     last_row = choices_df.iloc[-1]
     chosen_cap = float(last_row["RequestedCap"])
@@ -144,20 +185,29 @@ def main() -> None:
     combined_scores_path = backtest_dir / "combined_scores.csv"
     backtest_scores = pd.read_csv(score_file)
     brake_scores = pd.read_csv(brake_dir / "recency_brake_window_scores.csv")
-    
+
     dfs = [backtest_scores, brake_scores]
-    baseline_path = PROJECT_ROOT / "Output" / "ForecastAccuracy" / "replacement_backtests" / "replacement_backtest_window_scores.csv"
+    baseline_path = (
+        PROJECT_ROOT
+        / "Output"
+        / "ForecastAccuracy"
+        / "replacement_backtests"
+        / "replacement_backtest_window_scores.csv"
+    )
     if baseline_path.exists():
         print(f"Loading baseline scores from {baseline_path}...")
         dfs.append(pd.read_csv(baseline_path))
     else:
-        print(f"WARNING: Baseline scores not found at {baseline_path}. Baseline candidates will be missing from cost scorecard.")
-        
+        print(
+            f"WARNING: Baseline scores not found at {baseline_path}. "
+            "Baseline candidates will be missing from cost scorecard."
+        )
+
     # Merge and write
     combined_scores = pd.concat(dfs, ignore_index=True)
     combined_scores = combined_scores.drop_duplicates(["ForecastStartDate", "Candidate"], keep="last")
     combined_scores.to_csv(combined_scores_path, index=False)
-    
+
     cmd_scorecard = [
         sys.executable,
         str(PROJECT_ROOT / "scripts" / "python" / "forecast_replacement_cost_scorecard.py"),

@@ -19,10 +19,10 @@ from pathlib import Path
 
 import pandas as pd
 
+# Add parent directory to system path to import modules
 PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
-
 
 import forecast_model_train as fmt  # noqa: E402
 import forecast_replacement_ml_backtest as frmb  # noqa: E402
@@ -73,6 +73,7 @@ from forecast_replacement_ml_cold_start import (  # noqa: E402
 # Set global db_attrs reference for build_future_rows_cold_start override
 import forecast_replacement_ml_cold_start as cold_start_mod  # noqa: E402
 
+# Candidate output metadata and parameters default definitions
 DEFAULT_CANDIDATE_TYPE = "cold_start_hybrid_ml"
 DEFAULT_MODEL = "hgb_cold_start_quantile"
 DEFAULT_THRESHOLD = 20.0
@@ -82,17 +83,67 @@ DEFAULT_OUTPUT_DIR_NAME = "replacement_contract_cold_start"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the cold-start candidate generator.
+
+    Returns:
+        argparse.Namespace: Populated argument values.
+    """
     parser = argparse.ArgumentParser(description="Build a cold-start quantile hybrid ML candidate package.")
-    parser.add_argument("--source-file", type=Path)
-    parser.add_argument("--snapshot-dir", type=Path, default=DEFAULT_SNAPSHOT_DIR)
-    parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
-    parser.add_argument("--candidate-id")
-    parser.add_argument("--forecast-start-date")
-    parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
-    parser.add_argument("--actuals-path", type=Path, default=ACTUALS_PATH)
-    parser.add_argument("--pdl-sku-features-path", type=Path, default=PDL_SKU_FEATURES_PATH)
-    parser.add_argument("--lookback-days", type=int, default=DEFAULT_LOOKBACK_DAYS)
-    parser.add_argument("--quantile", type=float, default=0.35, help="Quantile regression target (e.g. 0.35).")
+    parser.add_argument(
+        "--source-file",
+        type=Path,
+        help="Path to the source planning workbook Excel file.",
+    )
+    parser.add_argument(
+        "--snapshot-dir",
+        type=Path,
+        default=DEFAULT_SNAPSHOT_DIR,
+        help="Directory containing the corporate Forecast DB snapshot files.",
+    )
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        default=DEFAULT_OUTPUT_ROOT,
+        help="Root directory where candidates are saved.",
+    )
+    parser.add_argument(
+        "--candidate-id",
+        help="Unique candidate directory identifier.",
+    )
+    parser.add_argument(
+        "--forecast-start-date",
+        help="Start date of the forecast horizon. Defaults to workbook date if omitted.",
+    )
+    parser.add_argument(
+        "--panel",
+        type=Path,
+        default=DEFAULT_PANEL_PATH,
+        help="Path to the model panel dataset.",
+    )
+    parser.add_argument(
+        "--actuals-path",
+        type=Path,
+        default=ACTUALS_PATH,
+        help="Path to transaction actuals.",
+    )
+    parser.add_argument(
+        "--pdl-sku-features-path",
+        type=Path,
+        default=PDL_SKU_FEATURES_PATH,
+        help="Path to the PDL/promotion SKU feature parquet.",
+    )
+    parser.add_argument(
+        "--lookback-days",
+        type=int,
+        default=DEFAULT_LOOKBACK_DAYS,
+        help="Lookback days for historical actuals velocity calculation.",
+    )
+    parser.add_argument(
+        "--quantile",
+        type=float,
+        default=0.35,
+        help="Quantile regression target (e.g. 0.35).",
+    )
     parser.add_argument(
         "--disable-censoring",
         action="store_true",
@@ -103,14 +154,29 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Disable category-level corporate forecast blending.",
     )
-    parser.add_argument("--ml-threshold-units", type=float, default=DEFAULT_THRESHOLD)
-    parser.add_argument("--recent-fallback-weight", type=float, default=DEFAULT_RECENT_FALLBACK_WEIGHT)
+    parser.add_argument(
+        "--ml-threshold-units",
+        type=float,
+        default=DEFAULT_THRESHOLD,
+        help="Cumulative unit volume requirement below which fallback replaces ML forecast.",
+    )
+    parser.add_argument(
+        "--recent-fallback-weight",
+        type=float,
+        default=DEFAULT_RECENT_FALLBACK_WEIGHT,
+        help="Fallback demand weight scalar for low-volume SKUs.",
+    )
     parser.add_argument(
         "--recent-volume-cap",
         type=float,
         help="Optional cap for FD1-FD14 total units as a multiple of recent no-ML forecast units.",
     )
-    parser.add_argument("--weekly-tail-scale", type=float, default=DEFAULT_WEEKLY_TAIL_SCALE)
+    parser.add_argument(
+        "--weekly-tail-scale",
+        type=float,
+        default=DEFAULT_WEEKLY_TAIL_SCALE,
+        help="Weekly tail scaling multiplier.",
+    )
     parser.add_argument("--max-train-rows", type=int, default=500_000)
     parser.add_argument("--random-state", type=int, default=42)
     parser.add_argument("--max-iter", type=int, default=180)
@@ -150,7 +216,17 @@ def blend_df_14day_with_corporate(
     df_hier: pd.DataFrame,
     group_cols: list[str] = ["Division", "Department", "Class"],
 ) -> pd.DataFrame:
-    """Scale SKU 14-day daily forecasts to match the corporate category totals from the workbook."""
+    """Scale SKU 14-day daily forecasts to match the corporate category totals from the workbook.
+
+    Args:
+        df_14day (pd.DataFrame): Candidate daily forecasts (FD1-FD14).
+        source_14day (pd.DataFrame): Original corporate daily forecasts.
+        df_hier (pd.DataFrame): Product reference hierarchy attributes.
+        group_cols (list[str], optional): Category groupings for summation. Defaults to Division/Dept/Class.
+
+    Returns:
+        pd.DataFrame: Blended daily forecast records.
+    """
     if df_14day.empty or source_14day.empty:
         return df_14day
 
@@ -186,25 +262,28 @@ def blend_df_14day_with_corporate(
     df_blended = df_14day.merge(hier[["SKU", *group_cols]], on="SKU", how="left")
     for col in group_cols:
         df_blended[col] = df_blended[col].fillna("")
-    
+
     df_blended = df_blended.merge(corp_cat, on=group_cols, how="left")
     df_blended = df_blended.merge(model_cat, on=group_cols, how="left")
 
     df_blended["CorpCatUnits"] = df_blended["CorpCatUnits"].fillna(0.0)
     df_blended["ModelCatUnits"] = df_blended["ModelCatUnits"].fillna(0.0)
 
-    # Scale SKU prediction:
+    # Scale SKU prediction to align with corporate target
     can_scale = df_blended["CorpCatUnits"].gt(0) & df_blended["ModelCatUnits"].gt(0)
     df_blended["ScaleFactor"] = 1.0
-    df_blended.loc[can_scale, "ScaleFactor"] = df_blended.loc[can_scale, "CorpCatUnits"] / df_blended.loc[can_scale, "ModelCatUnits"]
+    df_blended.loc[can_scale, "ScaleFactor"] = (
+        df_blended.loc[can_scale, "CorpCatUnits"] / df_blended.loc[can_scale, "ModelCatUnits"]
+    )
 
     for col in FD_COLUMNS:
         df_blended[col] = (df_blended[col] * df_blended["ScaleFactor"]).round().clip(lower=0)
-    
+
     return df_blended.drop(columns=[*group_cols, "CorpCatUnits", "ModelCatUnits", "ScaleFactor"]).copy()
 
 
 def main() -> None:
+    """Load Forecast DB attributes, train cold-start quantile model, scale, and save outputs."""
     args = parse_args()
     configure_threads(args.threads)
 
@@ -232,8 +311,7 @@ def main() -> None:
 
     # Determine window dates
     forecast_start = pd.Timestamp(
-        normalize_optional_date(args.forecast_start_date)
-        or source_header.get("ForecastStartDate")
+        normalize_optional_date(args.forecast_start_date) or source_header.get("ForecastStartDate")
     ).normalize()
 
     universe = source_universe(source_weekly, source_14day, df_hier)
@@ -247,30 +325,39 @@ def main() -> None:
     pdl_horizon = load_pdl_features(
         args.pdl_sku_features_path, forecast_start, forecast_start + pd.Timedelta(days=13)
     )
-    daily_promo = load_daily_promotions(
-        PROMO_DAILY_PATH, forecast_start, forecast_start + pd.Timedelta(days=13)
-    )
+    daily_promo = load_daily_promotions(PROMO_DAILY_PATH, forecast_start, forecast_start + pd.Timedelta(days=13))
     actuals = load_actuals(args.actuals_path)
 
     print("Splitting panel for training...", flush=True)
     train, calibration = train_window(panel, args, forecast_start)
     from forecast_replacement_ml_cold_start import enrich_with_attributes
+
     train = enrich_with_attributes(train, cold_start_mod.db_attrs)
     calibration = enrich_with_attributes(calibration, cold_start_mod.db_attrs)
 
-    # Censoring
+    # Censoring of stockouts to avoid downward bias in forecasts
     if not args.disable_censoring:
         if "InventoryAvailPhysicalLag1" in train.columns:
             if train["InventoryAvailPhysicalLag1"].gt(0.0).any():
-                is_stockout = train["InventoryAvailPhysicalLag1"].eq(0.0) & train["InventoryAvailPhysicalLag1"].notna()
-                print(f"Censoring: dropping {is_stockout.sum():,} training rows due to stockouts (InventoryAvailPhysicalLag1 == 0).", flush=True)
+                is_stockout = (
+                    train["InventoryAvailPhysicalLag1"].eq(0.0) & train["InventoryAvailPhysicalLag1"].notna()
+                )
+                print(
+                    f"Censoring: dropping {is_stockout.sum():,} training rows due to stockouts (InventoryAvailPhysicalLag1 == 0).",
+                    flush=True,
+                )
                 train = train.loc[~is_stockout].copy()
             else:
                 print("Censoring: skipped (no positive InventoryAvailPhysicalLag1 in training split).", flush=True)
         elif "HasAvailableInventoryLag1" in train.columns:
             if train["HasAvailableInventoryLag1"].any():
-                is_stockout = train["HasAvailableInventoryLag1"].eq(False) & train["HasAvailableInventoryLag1"].notna()
-                print(f"Censoring: dropping {is_stockout.sum():,} training rows due to stockouts (HasAvailableInventoryLag1 == False).", flush=True)
+                is_stockout = (
+                    train["HasAvailableInventoryLag1"].eq(False) & train["HasAvailableInventoryLag1"].notna()
+                )
+                print(
+                    f"Censoring: dropping {is_stockout.sum():,} training rows due to stockouts (HasAvailableInventoryLag1 == False).",
+                    flush=True,
+                )
                 train = train.loc[~is_stockout].copy()
             else:
                 print("Censoring: skipped (no True HasAvailableInventoryLag1 in training split).", flush=True)
@@ -288,17 +375,17 @@ def main() -> None:
 
     print("Training and scoring Cold-Start Quantile ML forecast...", flush=True)
     ml = require_sklearn()
-    
+
     args.model = "ml_quantile"
     scored, calibration_factors = run_quantile_stage(ml, train, calibration, future, args)
-    
+
     raw_col = "ml_quantileForecastQty"
     ml_daily, ml_totals = selected_ml_daily(scored, raw_col, args.ml_threshold_units)
     recent_daily, recent_meta = recent_daily_forecast(actuals, forecast_start, args.lookback_days)
-    
+
     ml_daily["ForecastDate"] = pd.to_datetime(ml_daily["ForecastDate"])
     recent_daily["ForecastDate"] = pd.to_datetime(recent_daily["ForecastDate"])
-    
+
     df_14day = combine_daily_forecasts(
         ml_daily,
         recent_daily,
@@ -312,7 +399,7 @@ def main() -> None:
         args.recent_volume_cap,
     )
 
-    # Blending
+    # Blending with corporate categories
     if not args.disable_blending:
         print("Blending: scaling SKU daily forecasts to corporate category totals...", flush=True)
         df_14day = blend_df_14day_with_corporate(df_14day, source_14day, df_hier)
@@ -332,7 +419,9 @@ def main() -> None:
     )
 
     # Setup directories
-    candidate_id = args.candidate_id or f"cold_start_hybrid_cap_{str(args.recent_volume_cap or 1.0).replace('.', 'p')}"
+    candidate_id = (
+        args.candidate_id or f"cold_start_hybrid_cap_{str(args.recent_volume_cap or 1.0).replace('.', 'p')}"
+    )
     candidate_dir = args.output_root / DEFAULT_OUTPUT_DIR_NAME / candidate_id
     candidate_dir.mkdir(parents=True, exist_ok=True)
     workbook_path = candidate_dir / f"Product Info for BRG_{forecast_start.date().isoformat()}_{candidate_id}.xlsx"
@@ -368,3 +457,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

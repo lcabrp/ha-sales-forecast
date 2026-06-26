@@ -33,13 +33,13 @@ PYODBC_PANDAS_WARNING = (
     "(engine/connection) or database string URI or sqlite3 DBAPI2 connection."
 )
 
-
 DEFAULT_SERVER = "azprodfcast01.572f3811ca67.database.windows.net"
 DEFAULT_DATABASE = "Forecast"
 DEFAULT_DRIVER = "ODBC Driver 18 for SQL Server"
 DEFAULT_AUTH = "ActiveDirectoryInteractive"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "Output" / "ForecastAccuracy" / "corporate_forecast"
 
+# List of key Forecast tables grouped by their usage/size categories
 CORE_TABLES = [
     "dbo.Channel_Offer_SKU_Forecast",
     "dbo.Channel_Offer_Forecast",
@@ -104,6 +104,7 @@ TABLE_GROUPS = {
     "support": SUPPORT_TABLES,
 }
 
+# Maps table basenames to their respective date columns for calendar range filtering
 DATE_FILTER_COLUMNS = {
     "Channel_Offer_SKU_Forecast": "CalendarDate",
     "Channel_Offer_SKU_Forecast_Archive": "CalendarDate",
@@ -121,6 +122,7 @@ DATE_FILTER_COLUMNS = {
     "sku_hist": "calendar_date",
 }
 
+# Maps table basenames to their business sorting keys to guarantee deterministic extracts
 ORDER_COLUMNS = {
     "Channel_Offer_SKU_Forecast": ["Channel", "OfferID", "SKU", "CalendarDate"],
     "Channel_Offer_Forecast": ["Channel", "OfferID", "CalendarDate"],
@@ -137,6 +139,7 @@ ORDER_COLUMNS = {
     "Forecast_Job_Log": ["Process_Date"],
 }
 
+# SQL query used to pull catalog metadata about row and column counts
 CATALOG_SQL = """
 WITH row_counts AS (
     SELECT
@@ -170,6 +173,11 @@ ORDER BY s.name, t.name;
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for Azure SQL tables extractor.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Extract selected Azure SQL Forecast DB tables to local Parquet.",
     )
@@ -218,6 +226,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def normalized_table_name(name: str) -> str:
+    """Normalize raw table name by prepending default schema if missing.
+
+    Args:
+        name: Raw input table name (e.g. 'Offers' or 'dbo.Offers').
+
+    Returns:
+        str: Fully qualified 'schema.table' name.
+    """
     parts = name.split(".")
     if len(parts) == 1:
         return f"dbo.{parts[0]}"
@@ -227,31 +243,86 @@ def normalized_table_name(name: str) -> str:
 
 
 def table_key(name: str) -> str:
+    """Get the lower-case lookup key for the table name.
+
+    Args:
+        name: Raw or qualified table name.
+
+    Returns:
+        str: Standardized lower-case lookup key.
+    """
     return normalized_table_name(name).lower()
 
 
 def table_basename(name: str) -> str:
+    """Extract the table name without the schema prefix.
+
+    Args:
+        name: Raw or qualified table name.
+
+    Returns:
+        str: Table name stem (e.g. 'Offers').
+    """
     return normalized_table_name(name).split(".", 1)[1]
 
 
 def quote_name(name: str) -> str:
+    """Wrap identifier in brackets and escape closing brackets.
+
+    Args:
+        name: Database identifier name.
+
+    Returns:
+        str: Safely quoted bracketed identifier (e.g. '[ColumnName]').
+    """
     return "[" + name.replace("]", "]]") + "]"
 
 
 def quote_table(name: str) -> str:
+    """Safely quote table and schema identifiers.
+
+    Args:
+        name: Fully qualified or raw table name.
+
+    Returns:
+        str: Quoted bracketed schema and table name (e.g. '[dbo].[Offers]').
+    """
     schema_name, table_name = normalized_table_name(name).split(".", 1)
     return f"{quote_name(schema_name)}.{quote_name(table_name)}"
 
 
 def safe_path_name(table: str) -> str:
+    """Generate a clean directory path name from table identifier.
+
+    Args:
+        table: Table name.
+
+    Returns:
+        str: Pathname replacing dots with double underscores and stripping special characters.
+    """
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", normalized_table_name(table).replace(".", "__"))
 
 
 def now_utc() -> str:
+    """Get current UTC timestamp string.
+
+    Returns:
+        str: ISO formatted timestamp.
+    """
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 
 def connection_string(args: argparse.Namespace) -> str:
+    """Build pyodbc connection string.
+
+    Uses integrated authentication parameters from command arguments.
+
+    Args:
+        args: Command line parameters.
+
+    Returns:
+        str: Full ODBC driver connection string.
+    """
     server = args.server
     if not server.lower().startswith("tcp:"):
         server = f"tcp:{server},1433"
@@ -271,12 +342,30 @@ def connection_string(args: argparse.Namespace) -> str:
 
 
 def fetch_dicts(cursor: pyodbc.Cursor, sql: str, params: list[Any] | None = None) -> list[dict[str, Any]]:
+    """Execute query and retrieve results as dict records mapped by column headers.
+
+    Args:
+        cursor: Opened pyodbc Cursor.
+        sql: Query string.
+        params: List of bound parameters.
+
+    Returns:
+        list[dict[str, Any]]: List of dictionary records.
+    """
     cursor.execute(sql, params or [])
     columns = [column[0] for column in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
 def selected_tables(args: argparse.Namespace) -> list[str]:
+    """Compile distinct target tables to extract based on group selections and exclusions.
+
+    Args:
+        args: Command parameters.
+
+    Returns:
+        list[str]: Normalized target table names.
+    """
     groups = args.group or ["core"]
     selected: list[str] = []
     for group in groups:
@@ -297,6 +386,12 @@ def selected_tables(args: argparse.Namespace) -> list[str]:
 
 
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+    """Save dictionary records list to a CSV file.
+
+    Args:
+        path: Path to write CSV file.
+        rows: List of dict records.
+    """
     if not rows:
         path.write_text("", encoding="utf-8")
         return
@@ -307,11 +402,28 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
 
 
 def catalog_by_table(cursor: pyodbc.Cursor) -> dict[str, dict[str, Any]]:
+    """Pull metadata catalog rows indexed by standardized table keys.
+
+    Args:
+        cursor: Opened pyodbc Cursor.
+
+    Returns:
+        dict[str, dict[str, Any]]: Catalog metadata mapped by table key.
+    """
     rows = fetch_dicts(cursor, CATALOG_SQL)
     return {table_key(f"{row['schema_name']}.{row['table_name']}"): row for row in rows}
 
 
 def build_query(table: str, args: argparse.Namespace) -> tuple[str, list[Any], dict[str, Any]]:
+    """Build SQL extract query containing filters and ordering instructions.
+
+    Args:
+        table: Target table name.
+        args: Command line parameters.
+
+    Returns:
+        tuple: Query string, parameters list, and filters log mapping.
+    """
     base_table = table_basename(table)
     where_parts: list[str] = []
     params: list[Any] = []
@@ -343,16 +455,30 @@ def build_query(table: str, args: argparse.Namespace) -> tuple[str, list[Any], d
     if args.ordered and order_columns:
         order_clause = " ORDER BY " + ", ".join(quote_name(column) for column in order_columns)
 
+    # Use WITH (NOLOCK) as required by read-only query policies in AGENTS.md
     query = f"SELECT {top_clause}* FROM {quote_table(table)} WITH (NOLOCK){where_clause}{order_clause};"
     return query, params, filters
 
 
 def remove_existing_parts(table_dir: Path) -> None:
+    """Delete pre-existing parquet part files in target folder.
+
+    Args:
+        table_dir: Directory path containing part files.
+    """
     for part_path in table_dir.glob("part-*.parquet"):
         part_path.unlink()
 
 
 def parquet_bytes(table_dir: Path) -> int:
+    """Sum size in bytes of all generated parquet parts in folder.
+
+    Args:
+        table_dir: Directory path containing parquet files.
+
+    Returns:
+        int: Cumulative file size in bytes.
+    """
     return sum(path.stat().st_size for path in table_dir.glob("part-*.parquet"))
 
 
@@ -363,6 +489,18 @@ def extract_table(
     args: argparse.Namespace,
     estimate: dict[str, Any] | None,
 ) -> dict[str, Any]:
+    """Download records from a single database table, storing them in zstd compressed Parquet parts.
+
+    Args:
+        conn: Open database connection.
+        table: Target table.
+        snapshot_dir: Snapshot parent folder.
+        args: Command parameters.
+        estimate: Catalog size metadata.
+
+    Returns:
+        dict[str, Any]: Summary metrics about rows extracted, file paths and time elapsed.
+    """
     table_start = time.perf_counter()
     table_dir = snapshot_dir / "tables" / safe_path_name(table)
     table_dir.mkdir(parents=True, exist_ok=True)
@@ -376,6 +514,7 @@ def extract_table(
     print(f"Extracting {table}...")
     try:
         with warnings.catch_warnings():
+            # Suppress pandas warning about database engine types
             warnings.filterwarnings("ignore", message=f".*{re.escape(PYODBC_PANDAS_WARNING)}.*")
             chunk_iter = pd.read_sql_query(query, conn, params=params, chunksize=args.chunk_rows)
             for chunk in chunk_iter:
@@ -387,6 +526,7 @@ def extract_table(
                 part_count += 1
                 print(f"  {table}: {rows_written:,} rows")
 
+        # Guarantee at least one part file exists even if database table is empty
         if part_count == 0:
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", message=f".*{re.escape(PYODBC_PANDAS_WARNING)}.*")
@@ -424,6 +564,7 @@ def extract_table(
 
 
 def print_group_listing() -> None:
+    """Print registered database table groups and exiting."""
     for group, tables in TABLE_GROUPS.items():
         print(f"[{group}]")
         for table in tables:
@@ -431,6 +572,7 @@ def print_group_listing() -> None:
 
 
 def main() -> None:
+    """Main CLI entry point for database tables extractor."""
     args = parse_args()
     if args.list_groups:
         print_group_listing()
@@ -490,7 +632,6 @@ def main() -> None:
             "output_path": result["output_path"],
             "error": result["error"],
         }
-        for result in results
     ]
     write_csv(snapshot_dir / "extract_summary.csv", summary_rows)
 

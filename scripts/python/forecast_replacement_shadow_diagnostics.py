@@ -33,6 +33,11 @@ DEFAULT_INVENTORY_PATH = FORECAST_ACCURACY_ROOT / "inventory" / "pickface_invent
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for shadow forecast diagnostics.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Summarize daily and SKU-level behavior for a shadow forecast."
     )
@@ -66,16 +71,41 @@ def parse_args() -> argparse.Namespace:
 
 
 def normalize_date(series: pd.Series) -> pd.Series:
+    """Normalize a pandas series of dates to standard normalized datetime.
+
+    Args:
+        series: Pandas series of date-like values.
+
+    Returns:
+        pd.Series: A normalized datetime series.
+    """
     return pd.to_datetime(series, errors="coerce").dt.normalize()
 
 
 def read_metadata(path: Path) -> dict[str, Any]:
+    """Read shadow metadata json descriptor.
+
+    Args:
+        path: Path to json file.
+
+    Returns:
+        dict[str, Any]: Parsed metadata dictionary, or empty dict if not exists.
+    """
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def date_arg(value: str | None, fallback: Any) -> pd.Timestamp:
+    """Parse string date argument with timestamp fallback.
+
+    Args:
+        value: Optional command-line date string.
+        fallback: Fallback date string or timestamp.
+
+    Returns:
+        pd.Timestamp: Standardized normalized Timestamp.
+    """
     if value:
         return pd.Timestamp(value).normalize()
     if fallback:
@@ -89,6 +119,17 @@ def load_forecasts(
     start: pd.Timestamp,
     end: pd.Timestamp,
 ) -> pd.DataFrame:
+    """Load, filter, and type candidate shadow forecasts.
+
+    Args:
+        path: Path to daily forecast Parquet file.
+        candidates: Optional list of candidates to filter.
+        start: Horizon start date.
+        end: Horizon end date.
+
+    Returns:
+        pd.DataFrame: Cleaned daily candidate forecast.
+    """
     forecast = pd.read_parquet(path)
     required = {"Candidate", "SKU", "ForecastDate", "ForecastUnits"}
     missing = required.difference(forecast.columns)
@@ -119,6 +160,16 @@ def load_forecasts(
 
 
 def actual_daily(actuals_path: Path, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Load and aggregate actual SKU demand for the window.
+
+    Args:
+        actuals_path: Path to actual demand Parquet file.
+        start: Horizon start date.
+        end: Horizon end date.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing SKU, ForecastDate, and SoldUnits.
+    """
     actuals = load_actuals(actuals_path)
     actual = actuals.loc[actuals["ActualDate"].between(start, end)].copy()
     if actual.empty:
@@ -131,6 +182,16 @@ def actual_daily(actuals_path: Path, start: pd.Timestamp, end: pd.Timestamp) -> 
 
 
 def compare_candidate(forecast: pd.DataFrame, actual: pd.DataFrame, candidate: str) -> pd.DataFrame:
+    """Compare daily SKU forecasts against actual demand for a single candidate.
+
+    Args:
+        forecast: Combined daily forecast DataFrame.
+        actual: Combined daily actual demand DataFrame.
+        candidate: Name of candidate to evaluate.
+
+    Returns:
+        pd.DataFrame: A comparison DataFrame with daily error metrics by SKU.
+    """
     candidate_forecast = (
         forecast.loc[forecast["Candidate"].eq(candidate)]
         .groupby(["SKU", "ForecastDate"], as_index=False)
@@ -170,6 +231,15 @@ def compare_candidate(forecast: pd.DataFrame, actual: pd.DataFrame, candidate: s
 
 
 def build_detail(forecast: pd.DataFrame, actual: pd.DataFrame) -> pd.DataFrame:
+    """Build detailed daily SKU-level comparison records for all candidates.
+
+    Args:
+        forecast: Combined daily forecast DataFrame.
+        actual: Combined daily actual demand DataFrame.
+
+    Returns:
+        pd.DataFrame: Merged detail records across all candidates.
+    """
     frames = [compare_candidate(forecast, actual, candidate) for candidate in sorted(forecast["Candidate"].unique())]
     if not frames:
         return pd.DataFrame()
@@ -179,6 +249,14 @@ def build_detail(forecast: pd.DataFrame, actual: pd.DataFrame) -> pd.DataFrame:
 
 
 def summarize_daily(detail: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate comparison details to daily metrics per candidate.
+
+    Args:
+        detail: Detailed SKU-day comparisons.
+
+    Returns:
+        pd.DataFrame: Daily candidate summary metrics (WAPE, Bias, Coverage).
+    """
     daily = (
         detail.groupby(["Candidate", "ForecastDate"], as_index=False)
         .agg(
@@ -208,6 +286,14 @@ def summarize_daily(detail: pd.DataFrame) -> pd.DataFrame:
 
 
 def summarize_sku(detail: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate comparison details to overall SKU metrics per candidate.
+
+    Args:
+        detail: Detailed SKU-day comparisons.
+
+    Returns:
+        pd.DataFrame: SKU-level candidate summary metrics.
+    """
     sku = (
         detail.groupby(["Candidate", "SKU"], as_index=False)
         .agg(
@@ -234,6 +320,16 @@ def summarize_sku(detail: pd.DataFrame) -> pd.DataFrame:
 
 
 def inventory_summary(path: Path, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Compile pickface physical inventory metrics over the forecast horizon.
+
+    Args:
+        path: Path to daily pickface inventory snapshot Parquet.
+        start: Horizon start date.
+        end: Horizon end date.
+
+    Returns:
+        pd.DataFrame: Aggregated pickface inventory metrics by SKU.
+    """
     if not path.exists():
         return pd.DataFrame(columns=["SKU"])
     inventory = pd.read_parquet(path)
@@ -269,6 +365,16 @@ def inventory_summary(path: Path, start: pd.Timestamp, end: pd.Timestamp) -> pd.
 
 
 def write_top_outputs(sku: pd.DataFrame, output_dir: Path, top_n: int) -> dict[str, str]:
+    """Identify and export top high-error SKUs to CSV files.
+
+    Args:
+        sku: SKU-level candidate summaries.
+        output_dir: Target output directory.
+        top_n: Number of top SKUs to export per category.
+
+    Returns:
+        dict[str, str]: Map of exported filenames to absolute file paths.
+    """
     outputs = {}
     top_specs = {
         "shadow_top_underforecast_skus.csv": ("UnderForecastUnits", False),
@@ -290,6 +396,7 @@ def write_top_outputs(sku: pd.DataFrame, output_dir: Path, top_n: int) -> dict[s
 
 
 def main() -> None:
+    """Execute the shadow forecast diagnostics pipeline."""
     args = parse_args()
     metadata = read_metadata(args.metadata_path)
     forecast_start = date_arg(args.forecast_start_date, metadata.get("forecast_start"))

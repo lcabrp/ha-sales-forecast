@@ -32,6 +32,7 @@ DEFAULT_SOURCE_REPO = PROJECT_ROOT.parent / "ha-kydc-monitoring"
 DEFAULT_MANIFEST_PATH = FORECAST_ACCURACY_ROOT / "monitoring_artifact_mirror_manifest.json"
 MAX_TRACKED_FILE_BYTES = 90 * 1024 * 1024
 
+# Defines files tracked by the mirror contract for each family (inventory, inbound, etc.)
 CONTRACT_FILES = {
     "inventory": {
         "metadata": "pickface_inventory_metadata.json",
@@ -54,6 +55,11 @@ CONTRACT_FILES = {
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the monitoring mirror sync script.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Copy model-ready monitoring inventory/inbound artifacts into ha-sales-forecast."
     )
@@ -78,6 +84,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def sha256_file(path: Path) -> str:
+    """Compute the SHA-256 hash of a file's content in a memory-efficient chunked manner.
+
+    Args:
+        path: Path to the target file.
+
+    Returns:
+        str: Hexadecimal SHA-256 hash representation.
+    """
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
@@ -86,12 +100,23 @@ def sha256_file(path: Path) -> str:
 
 
 def row_count(path: Path) -> int | None:
+    """Read file and count records/rows based on file type.
+
+    Supported extensions: .parquet, .csv. Returns None for other formats.
+
+    Args:
+        path: Path to the file.
+
+    Returns:
+        int or None: Total rows/records if supported, otherwise None.
+    """
     suffix = path.suffix.lower()
     if suffix == ".parquet":
         return int(len(pd.read_parquet(path)))
     if suffix == ".csv":
         with path.open("r", encoding="utf-8-sig", newline="") as handle:
             reader = csv.reader(handle)
+            # Skip the header row
             next(reader, None)
             return sum(1 for _row in reader)
     if suffix == ".json":
@@ -100,12 +125,31 @@ def row_count(path: Path) -> int | None:
 
 
 def load_json(path: Path) -> dict[str, Any]:
+    """Safely load JSON data from a file.
+
+    Args:
+        path: Path to the JSON file.
+
+    Returns:
+        dict[str, Any]: Decoded JSON dictionary, or empty dict if file does not exist.
+    """
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def contract_paths(source_family_dir: Path, family: str) -> list[Path]:
+    """Resolve all source paths matching the family contract specifications.
+
+    Resolves metadata, rolling files, and any dated snapshot files matching the contract patterns.
+
+    Args:
+        source_family_dir: Source directory for the specific family (e.g. Output/ForecastAccuracy/inbound).
+        family: The family name string ('inventory' or 'inbound').
+
+    Returns:
+        list[Path]: Discovered paths matching the contract definition.
+    """
     contract = CONTRACT_FILES[family]
     paths: list[Path] = []
 
@@ -126,6 +170,17 @@ def contract_paths(source_family_dir: Path, family: str) -> list[Path]:
 
 
 def relative_to_repo(path: Path, repo_root: Path) -> str:
+    """Format an absolute path to be relative to the repository root.
+
+    Falls back to absolute path string if paths do not share a common root.
+
+    Args:
+        path: Absolute path to format.
+        repo_root: Root path of target repository.
+
+    Returns:
+        str: Relative path using forward slashes.
+    """
     try:
         return path.resolve().relative_to(repo_root.resolve()).as_posix()
     except ValueError:
@@ -140,6 +195,25 @@ def copy_one(
     max_file_bytes: int,
     dry_run: bool,
 ) -> dict[str, Any]:
+    """Copy a single file from the source repository to the destination workspace.
+
+    Verifies file size limits, checks hashes to skip copy if unchanged, writes
+    the file to destination, and returns summary metadata.
+
+    Args:
+        source_path: File to copy.
+        source_repo: Source repository root.
+        output_root: Target output directory root.
+        source_root: Source directory root.
+        max_file_bytes: Maximum size allowed for git-tracked files.
+        dry_run: If True, simulates copy without writing data.
+
+    Returns:
+        dict[str, Any]: Summary dictionary containing action performed, paths, and size.
+
+    Raises:
+        ValueError: If file size exceeds max_file_bytes limit.
+    """
     size = source_path.stat().st_size
     if size > max_file_bytes:
         raise ValueError(
@@ -171,6 +245,7 @@ def copy_one(
 
 
 def main() -> None:
+    """Main CLI entry point for monitoring mirror synchronizer."""
     args = parse_args()
     source_repo = args.source_repo.resolve()
     source_root = source_repo / "Output" / "ForecastAccuracy"

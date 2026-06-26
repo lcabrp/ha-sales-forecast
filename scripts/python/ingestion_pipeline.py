@@ -38,11 +38,13 @@ Data Flow (mirrors the legacy tools):
                     36-column AX CSV
                     + Required Slots CSV
 """
+from __future__ import annotations
 
 import argparse
 import contextlib
 import io
 import shutil
+from typing import Any, Callable
 import pandas as pd
 import numpy as np
 import os
@@ -275,8 +277,17 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def run_pipeline_step(label: str, func, *, operator_mode: bool):
-    """Run a pipeline step, suppressing detailed stdout in operator mode."""
+def run_pipeline_step(label: str, func: Callable[[], Any], *, operator_mode: bool) -> Any:
+    """Run a pipeline step, suppressing detailed stdout in operator mode.
+
+    Args:
+        label: Descriptive label of the step for logging.
+        func: Callback function to execute.
+        operator_mode: True to run in quiet/operator mode.
+
+    Returns:
+        The return value of func.
+    """
     if not operator_mode:
         return func()
 
@@ -460,17 +471,22 @@ def maybe_copy_to_ax_share(csv_path: Path, *, prompt: bool, force_copy: bool) ->
     return copied_path
 
 
-def parse_sku(sku_str) -> tuple:
-    """
-    Splits a SKU string into (Item, Color, Size).
+def parse_sku(sku_str: Any) -> tuple[Any, Any, Any]:
+    """Splits a SKU string into (Item, Color, Size).
 
     Legacy formula equivalent (Fwd Demand File):
       G3 = LEFT(F3, 5)          → Item (first 5 chars)
-      H3 = MID(F3, 7, 3)       → Color (chars 7-9)
-      I3 = RIGHT(F3, LEN-10)   → Size (everything after char 10)
+      H3 = MID(F3, 7, 3)        → Color (chars 7-9)
+      I3 = RIGHT(F3, LEN-10)    → Size (everything after char 10)
 
     We use split("-") instead because the delimiter-based approach is more
     robust against variable-length item codes in newer data.
+
+    Args:
+        sku_str: Input SKU identifier (typically Item-Color-Size).
+
+    Returns:
+        A tuple of (Item, Color, Size). If invalid, returns nan/blank fallbacks.
     """
     if pd.isna(sku_str):
         return (np.nan, np.nan, np.nan)
@@ -482,15 +498,31 @@ def parse_sku(sku_str) -> tuple:
     return (sku_str, "", "")
 
 
-def normalize_dimension_code(value) -> str:
-    """Normalize parsed AX dimension codes without inventing missing values."""
+def normalize_dimension_code(value: Any) -> str:
+    """Normalize parsed AX dimension codes without inventing missing values.
+
+    Args:
+        value: Input raw dimension code (e.g. color or size).
+
+    Returns:
+        Cleaned uppercase string, or empty string if null/blank.
+    """
     if is_blank_or_na(value):
         return ""
     return str(value).strip().upper()
 
 
 def format_sku(item: str, color: str, size: str) -> str:
-    """Rebuild SKU from normalized components while preserving blank-size form."""
+    """Rebuild SKU from normalized components while preserving blank-size form.
+
+    Args:
+        item: Canonical product item code.
+        color: Cleaned color code.
+        size: Cleaned size code.
+
+    Returns:
+        Reconstructed SKU string.
+    """
     if color == "":
         return f"{item}--{size}" if size else f"{item}--"
     if size == "":
@@ -498,7 +530,7 @@ def format_sku(item: str, color: str, size: str) -> str:
     return f"{item}-{color}-{size}"
 
 
-def normalize_sku(value) -> str:
+def normalize_sku(value: Any) -> str:
     """Canonicalize SKU casing so AX-equivalent variants dedupe before output.
 
     AX/SQL is case-insensitive for the Forecast replenishment staging key
@@ -507,6 +539,12 @@ def normalize_sku(value) -> str:
     attributes carried uppercase variants of the same SKU. Normalize before
     any source-universe union or aggregation so those rows collapse safely here
     instead of colliding inside DIXF/SSIS.
+
+    Args:
+        value: Input SKU representation.
+
+    Returns:
+        A fully normalized and uppercase canonical SKU string.
     """
     if pd.isna(value):
         return ""
@@ -520,16 +558,22 @@ def normalize_sku(value) -> str:
     return format_sku(item, normalize_dimension_code(color), normalize_dimension_code(size))
 
 
-def map_size_group(size_str) -> str:
-    """Maps a size string to its SizeGroupCode. Unknown sizes default to 'U'."""
+def map_size_group(size_str: Any) -> str:
+    """Maps a size string to its SizeGroupCode. Unknown sizes default to 'U'.
+
+    Args:
+        size_str: Size code to map.
+
+    Returns:
+        The mapped size group code (e.g., 'X', 'S', 'M', 'L', 'I', 'O', or 'U').
+    """
     if pd.isna(size_str):
         return "U"
     return SIZE_TO_SGC.get(str(size_str).strip().upper(), "U")
 
 
-def calculate_velocity(demand_13wk) -> str:
-    """
-    Assigns a velocity tier based on 13-week forecast demand.
+def calculate_velocity(demand_13wk: Any) -> str:
+    """Assigns a velocity tier based on 13-week forecast demand.
 
     This replicates the nested IF in the legacy Slotting Calcs sheet (AG17):
       =IF(AF17 <= D19, B19,           -- <= 20  → "C"
@@ -537,6 +581,12 @@ def calculate_velocity(demand_13wk) -> str:
           IF(AF17 <= D17, B17, B16)))   -- <= 100 → "A", else "AA"
 
     The thresholds come from 'Control and Dashboard' rows 16-19.
+
+    Args:
+        demand_13wk: Cumulative unit demand over first 13 weeks.
+
+    Returns:
+        The velocity classification tier string.
     """
     if pd.isna(demand_13wk) or demand_13wk <= 20:
         return "C"
@@ -548,10 +598,8 @@ def calculate_velocity(demand_13wk) -> str:
         return "B"
 
 
-def calculate_putaway(weekly_demands: list[float], week_dates: list, today: datetime) -> int:
-    """
-    Determines the Putaway Indicator for a SKU based on WHEN demand begins
-    in the weekly forecast timeline.
+def calculate_putaway(weekly_demands: list[float], week_dates: list[pd.Timestamp], today: datetime) -> int:
+    """Determines the Putaway Indicator for a SKU based on WHEN demand begins.
 
     Replicates the legacy formula chain from Slotting Calcs (AO17-AQ17).
     The weekly forecast uses Sunday-start weeks, so Week 1's start date may
@@ -565,7 +613,13 @@ def calculate_putaway(weekly_demands: list[float], week_dates: list, today: date
         > 8 weeks   -> 2 (Offsite)
         No demand   -> 0 (Reserve)
 
-    Returns: 0 = Reserve, 1 = Active, 2 = Offsite
+    Args:
+        weekly_demands: list of weekly demand numbers.
+        week_dates: list of dates for the week columns.
+        today: The reference current date.
+
+    Returns:
+        The putaway indicator code (0 = Reserve, 1 = Active, 2 = Offsite).
     """
     # Step 1: Check if total demand across all weeks is negligible
     total_demand = sum(weekly_demands)
@@ -598,8 +652,7 @@ def calculate_putaway(weekly_demands: list[float], week_dates: list, today: date
 
 
 def calculate_required_slots(weekly_demand: float, velocity: str, case_qty: float) -> float:
-    """
-    Estimates the number of physical pick-face slots a SKU needs.
+    """Estimates the number of physical pick-face slots a SKU needs.
 
     This replicates the slot-requirement math from the legacy Slotting Calcs sheet.
     The legacy tool computes this for EACH of the 26 forecast weeks and then takes
@@ -643,15 +696,29 @@ def calculate_required_slots(weekly_demand: float, velocity: str, case_qty: floa
     return slots
 
 
-def is_blank_or_na(value) -> bool:
-    """Treats NaN, blanks, and 'n/a' strings as missing values."""
+def is_blank_or_na(value: Any) -> bool:
+    """Treats NaN, blanks, and 'n/a' strings as missing values.
+
+    Args:
+        value: The value to evaluate.
+
+    Returns:
+        True if the value represents a missing attribute.
+    """
     if pd.isna(value):
         return True
     return str(value).strip().lower() in {"", "n/a"}
 
 
-def map_product_group_code(division) -> str:
-    """Map Division to ProductGroupCode, including legacy AX label variants."""
+def map_product_group_code(division: Any) -> str:
+    """Map Division to ProductGroupCode, including legacy AX label variants.
+
+    Args:
+        division: The raw division string.
+
+    Returns:
+        The mapped ProductGroupCode, defaulting to 'U' (Unknown) if unmapped.
+    """
     if is_blank_or_na(division):
         return "U"
 
@@ -667,8 +734,15 @@ def map_product_group_code(division) -> str:
     return "U"
 
 
-def product_group_override_for_item(item):
-    """Return a ProductGroupCode override for known item-level corrections."""
+def product_group_override_for_item(item: Any) -> str | None:
+    """Return a ProductGroupCode override for known item-level corrections.
+
+    Args:
+        item: Item number/identifier to look up overrides for.
+
+    Returns:
+        The matching ProductGroupCode override or None if not found.
+    """
     if is_blank_or_na(item):
         return None
     return ITEM_PRODUCT_GROUP_OVERRIDES.get(str(item).strip())
@@ -680,7 +754,17 @@ def parse_forecast_source(
     in_on_hand: bool = False,
     in_inbound: bool = False,
 ) -> str:
-    """Summarizes which forecast tabs or operational sources contributed a SKU."""
+    """Summarizes which forecast tabs or operational sources contributed a SKU.
+
+    Args:
+        in_weekly: True if SKU is present in weekly forecast.
+        in_14day: True if SKU is present in 14-day forecast.
+        in_on_hand: True if SKU is present in on-hand inventory.
+        in_inbound: True if SKU is present in inbound shipments.
+
+    Returns:
+        A text description of the SKU's source origins.
+    """
     parts = []
     if in_weekly:
         parts.append("Weekly")
@@ -696,8 +780,16 @@ def parse_forecast_source(
     return " + ".join(parts)
 
 
-def summarize_missing_fields(row, field_names: list[str]) -> str:
-    """Returns a comma-separated list of missing hierarchy fields for a row."""
+def summarize_missing_fields(row: dict[str, Any] | pd.Series, field_names: list[str]) -> str:
+    """Returns a comma-separated list of missing hierarchy fields for a row.
+
+    Args:
+        row: The dictionary or pandas Series representing a row.
+        field_names: A list of field names to check for missing values.
+
+    Returns:
+        A comma-separated string of the missing field names.
+    """
     missing_fields = [field for field in field_names if is_blank_or_na(row.get(field))]
     return ", ".join(missing_fields)
 
@@ -1065,14 +1157,16 @@ def read_on_hand(filepath: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     return result, df_all_skus
 
 
-def read_guardrail_supply_skus() -> set:
-    """
-    Query live AX supply signals that should block new Active putaway.
+def read_guardrail_supply_skus() -> set[str]:
+    """Query live AX supply signals that should block new Active putaway.
 
     This guardrail is intentionally conservative: if stock is already on the
     pick floor, in Bulk/Overflow (ZONEID: OVFLO), or actively moving to the
     pick floor, AX replenishment/work execution should satisfy demand before
     the forecast file sends another first carton directly to active storage.
+
+    Returns:
+        A set of canonical SKU strings with existing supply.
     """
     query = """
     WITH OnHandSupply AS (
@@ -1150,12 +1244,17 @@ def read_guardrail_supply_skus() -> set:
     return skus
 
 
-def read_guardrail_supply_skus_from_workbook(filepath: Path) -> set:
-    """
-    Uses the Product Info workbook's On Hand snapshot as a fallback for Guardrail 2.
+def read_guardrail_supply_skus_from_workbook(filepath: Path) -> set[str]:
+    """Uses the Product Info workbook's On Hand snapshot as a fallback for Guardrail 2.
 
     Workbook data cannot see pending work, so this fallback only covers existing
     on-hand supply in floor and replenishment source profiles.
+
+    Args:
+        filepath: Path to the Excel workbook containing On Hand by Location data.
+
+    Returns:
+        A set of canonical SKU strings with existing supply in the workbook.
     """
     print("      Falling back to workbook snapshot from 'On Hand by Location'...")
     df = read_on_hand_location_block(filepath)
@@ -1172,14 +1271,19 @@ def read_guardrail_supply_skus_from_workbook(filepath: Path) -> set:
     return skus
 
 
-def get_guardrail_supply_skus(filepath: Path) -> tuple[set, str]:
-    """
-    Returns SKUs with existing or inbound supply plus the source used for Guardrail 2.
+def get_guardrail_supply_skus(filepath: Path) -> tuple[set[str], str]:
+    """Returns SKUs with existing or inbound supply plus the source used for Guardrail 2.
 
     Source order:
       1. Live AX SQL: on-hand floor/source supply plus pending put work to floor
       2. Product Info workbook snapshot: on-hand floor/source supply only
       3. Empty set if both sources fail
+
+    Args:
+        filepath: Path to reference Excel workbook.
+
+    Returns:
+        A tuple of (set of supply SKUs, source descriptor string).
     """
     try:
         return read_guardrail_supply_skus(), "AX"
@@ -1193,13 +1297,15 @@ def get_guardrail_supply_skus(filepath: Path) -> tuple[set, str]:
         return set(), "Unavailable"
 
 
-def read_inbound_coverage_skus() -> set:
-    """
-    Query live AX inbound/Cubiscan signals that should receive forecast rows.
+def read_inbound_coverage_skus() -> set[str]:
+    """Query live AX inbound/Cubiscan signals that should receive forecast rows.
 
     This is a coverage guardrail, not an Active-putaway guardrail.  These SKUs
     are added to the output universe so AX has a SlotTier / Cubiscan-to-active
     decision instead of producing blank Cubiscan labels for unforecasted freight.
+
+    Returns:
+        A set of canonical inbound/Cubiscan SKU strings.
     """
     query = """
     WITH CubeInventory AS (
@@ -1300,13 +1406,15 @@ def read_inbound_coverage_skus() -> set:
     return skus
 
 
-def get_inbound_coverage_skus() -> tuple[set, str]:
-    """
-    Returns live inbound/Cubiscan SKUs that should not be absent from AX forecast.
+def get_inbound_coverage_skus() -> tuple[set[str], str]:
+    """Returns live inbound/Cubiscan SKUs that should not be absent from AX forecast.
 
     There is no workbook fallback for this guardrail. The BRG workbook's Load
     Data can be broad or stale; live AX work/location signals are narrower and
     directly tied to the blank-label failure mode.
+
+    Returns:
+        A tuple of (set of coverage SKUs, source descriptor string).
     """
     try:
         return read_inbound_coverage_skus(), "AX"
@@ -1541,14 +1649,39 @@ def compute_case_qty(
 # OUTPUT BUILDER
 # ══════════════════════════════════════════════════════════════════════════════
 
-def build_output(df_weekly, df_14day, df_hier, df_status, forecast_start,
-                 week_dates, wk_cols, df_case_qty, guardrail_supply_skus=None,
-                 df_on_hand_skus=None, inbound_coverage_skus=None):
-    """
-    Assembles the 36-column AX CSV output and computes Required Slots.
+def build_output(
+    df_weekly: pd.DataFrame,
+    df_14day: pd.DataFrame,
+    df_hier: pd.DataFrame,
+    df_status: pd.DataFrame,
+    forecast_start: Any,
+    week_dates: list[pd.Timestamp],
+    wk_cols: list[str],
+    df_case_qty: pd.DataFrame,
+    guardrail_supply_skus: set[str] | None = None,
+    df_on_hand_skus: pd.DataFrame | None = None,
+    inbound_coverage_skus: set[str] | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Assembles the 36-column AX CSV output and computes Required Slots.
 
     This function mirrors the entire calculation flow of the legacy 'Fwd Demand File'
     and 'Slotting Calcs' sheets, producing the same output structure.
+
+    Args:
+        df_weekly: Weekly forecast dataframe.
+        df_14day: 14-day daily forecast dataframe.
+        df_hier: Product attributes hierarchy details.
+        df_status: Product attributes status details.
+        forecast_start: Forecast start date reference.
+        week_dates: Week start dates list.
+        wk_cols: List of weekly columns in forecast data.
+        df_case_qty: Case quantity calculations dataframe.
+        guardrail_supply_skus: Set of SKUs containing active supply.
+        df_on_hand_skus: Dataframe of SKUs having on-hand inventory.
+        inbound_coverage_skus: Set of inbound coverage SKUs.
+
+    Returns:
+        A tuple of (AX Forward Demand DataFrame, Required Slots DataFrame, Missing Attributes DataFrame).
     """
     print("\n[*] Building output...")
     today = datetime.now()
@@ -2049,7 +2182,16 @@ def build_output(df_weekly, df_14day, df_hier, df_status, forecast_start,
 # MAIN
 # ══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> None:
+    """Orchestrates the entire zoning and slotting ingestion pipeline.
+
+    Parses command-line arguments, locates the latest or specified source workbook,
+    reads various worksheets (weekly forecasts, 14-day forecasts, product attributes,
+    on-hand data, load data), queries AX SQL database for active supply and inbound coverage
+    signals (with workbook fallback), computes case quantities with fallback logic, builds
+    AX Forward Demand and Required Slots outputs, writes final CSV files, and registers
+    data to the SQLite SKU ledger database.
+    """
     args = parse_args()
     operator_mode = args.operator_mode
     prompt_copy_to_ax_share = args.prompt_copy_to_ax_share

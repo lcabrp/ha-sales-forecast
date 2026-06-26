@@ -1,7 +1,7 @@
 """Extract warehouse supply work history for forecast-model diagnostics.
 
 This captures what physically arrived or moved into inventory positions by
-SKU/day from WHS work history.  It is intentionally separate from sales-order
+SKU/day from WHS work history. It is intentionally separate from sales-order
 history: the goal is to describe supply events that can affect forward
 replenishment pressure, not demand itself.
 """
@@ -31,6 +31,11 @@ NON_SELLABLE_LOCATIONS = {"Washed", "Rags", "Quality"}
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for warehouse supply extractor.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(description="Extract SKU/day warehouse supply work history.")
     parser.add_argument("--start-date", default="2025-01-01")
     parser.add_argument("--end-date", default="2026-06-12")
@@ -46,6 +51,16 @@ def parse_args() -> argparse.Namespace:
 
 
 def date_chunks(start: date, end: date, chunk_days: int) -> list[tuple[date, date]]:
+    """Split date interval into chunk windows for batch queries.
+
+    Args:
+        start: Inclusive start date.
+        end: Inclusive end date.
+        chunk_days: Maximum size of chunks in days.
+
+    Returns:
+        list[tuple[date, date]]: List of split date ranges.
+    """
     chunks = []
     current = start
     while current <= end:
@@ -55,6 +70,8 @@ def date_chunks(start: date, end: date, chunk_days: int) -> list[tuple[date, dat
     return chunks
 
 
+# Query to pull completed supply movement details (WORKSTATUS = 4, WORKTYPE = 2 PUT)
+# Filters out dummy items/color keys. Joins WHSWORKTABLE, WHSWORKLINE, INVENTDIM, and WMSLOCATION.
 SUPPLY_WORK_QUERY = sa.text(
     """
     SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -120,6 +137,14 @@ SUPPLY_WORK_QUERY = sa.text(
 
 
 def classify_supply(row: pd.Series) -> str:
+    """Classify the type of supply activity from transaction metadata.
+
+    Args:
+        row: Pandas Series representing columns of a work record row.
+
+    Returns:
+        str: Activity classification (e.g. 'Replenishment', 'ReceivingPutaway').
+    """
     trans_type = int(row["WorkTransType"]) if pd.notna(row["WorkTransType"]) else -1
     template = str(row.get("WorkTemplateCode", "") or "")
     location = str(row.get("TargetLocation", "") or "").strip()
@@ -146,6 +171,14 @@ def classify_supply(row: pd.Series) -> str:
 
 
 def classify_destination(row: pd.Series) -> str:
+    """Classify destination area of warehouse supply movement.
+
+    Args:
+        row: Record row data.
+
+    Returns:
+        str: Destination category (e.g. 'SellableFloor', 'ReserveOrBulk').
+    """
     location = str(row.get("TargetLocation", "") or "").strip()
     profile = str(row.get("TargetLocProfile", "") or "").strip()
     zone = str(row.get("TargetZone", "") or "").strip()
@@ -161,6 +194,14 @@ def classify_destination(row: pd.Series) -> str:
 
 
 def clean_frame(df: pd.DataFrame) -> pd.DataFrame:
+    """Clean and normalize columns, and calculate classifications.
+
+    Args:
+        df: Raw query results DataFrame.
+
+    Returns:
+        pd.DataFrame: Cleaned and labeled DataFrame.
+    """
     output = df.copy()
     output["EventDate"] = pd.to_datetime(output["EventDate"], errors="coerce").dt.normalize()
     for col in (
@@ -187,6 +228,14 @@ def clean_frame(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def aggregate_sku_day(detail: pd.DataFrame) -> pd.DataFrame:
+    """Pivot detailed supply actions into daily SKU summary counts.
+
+    Args:
+        detail: Labeled detail DataFrame.
+
+    Returns:
+        pd.DataFrame: Aggregated daily SKU table.
+    """
     sku_day = (
         detail.groupby(["EventDate", "SKU"], as_index=False)
         .agg(
@@ -253,6 +302,12 @@ def aggregate_sku_day(detail: pd.DataFrame) -> pd.DataFrame:
 
 
 def write_outputs(detail: pd.DataFrame, args: argparse.Namespace) -> None:
+    """Save detail snapshots, historical sku/day datasets, and run manifests.
+
+    Args:
+        detail: Labeled DataFrame.
+        args: Command parameters.
+    """
     args.output_dir.mkdir(parents=True, exist_ok=True)
     sku_day = aggregate_sku_day(detail)
     detail_path = args.output_dir / "warehouse_supply_work_detail.parquet"
@@ -274,6 +329,7 @@ def write_outputs(detail: pd.DataFrame, args: argparse.Namespace) -> None:
         .sort_values(["EventDate", "SupplyCategory", "DestinationGroup"])
     )
     summary.to_csv(summary_path, index=False)
+    
     metadata = {
         "generated_at": datetime.now().replace(microsecond=0).isoformat(),
         "source": "DAX_PROD.dbo.WHSWORKTABLE/WHSWORKLINE",
@@ -299,6 +355,7 @@ def write_outputs(detail: pd.DataFrame, args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    """Main CLI entry point for warehouse supply extractor."""
     args = parse_args()
     start = date.fromisoformat(args.start_date)
     end = date.fromisoformat(args.end_date)

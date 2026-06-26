@@ -1,7 +1,7 @@
 """Extract AX inventory history snapshots for forecast-model features.
 
 AX keeps a limited SKU-level inventory snapshot history in
-``HAINVENTDETAILREPORTBATCHTMPHISTORY``.  This is not a full multi-year
+``HAINVENTDETAILREPORTBATCHTMPHISTORY``. This is not a full multi-year
 availability source, but it is useful for recent backtests and for testing
 whether inventory availability helps distinguish true low demand from
 stockout-censored demand.
@@ -34,6 +34,11 @@ DEFAULT_EXCLUDED_SKUS = ("9999", "30991", "3333")
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for inventory history snapshot extraction script.
+
+    Returns:
+        argparse.Namespace: Checked command line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Extract limited AX inventory history for forecast modeling."
     )
@@ -56,6 +61,16 @@ def parse_args() -> argparse.Namespace:
 
 
 def inventory_history_query(excluded_skus: tuple[str, ...]) -> sa.TextClause:
+    """Generate SQL query to pull SKU inventory snapshots from the AX history report tables.
+
+    Pulls snapshots within target dates for specified warehouse site, and excludes unwanted SKUs.
+
+    Args:
+        excluded_skus: SKUs to discard.
+
+    Returns:
+        sa.TextClause: Query string.
+    """
     excluded_filter = ""
     if excluded_skus:
         escaped = ", ".join(f"'{sku.replace("'", "''")}'" for sku in excluded_skus)
@@ -99,6 +114,14 @@ def inventory_history_query(excluded_skus: tuple[str, ...]) -> sa.TextClause:
 
 
 def clean_inventory(df: pd.DataFrame) -> pd.DataFrame:
+    """Clean column values, map missing indicators, and construct net availability fields.
+
+    Args:
+        df: Raw query data DataFrame.
+
+    Returns:
+        pd.DataFrame: Processed inventory history DataFrame.
+    """
     output = df.copy()
     output.insert(0, "InventorySource", "ax_history")
     output["SnapshotDate"] = pd.to_datetime(output["SnapshotDate"], errors="coerce").dt.normalize()
@@ -129,6 +152,12 @@ def clean_inventory(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def write_outputs(df: pd.DataFrame, args: argparse.Namespace) -> None:
+    """Save cleaned snapshot files, daily statistics summaries, and execution manifests.
+
+    Args:
+        df: Labeled DataFrame.
+        args: Command line parameters.
+    """
     args.output_dir.mkdir(parents=True, exist_ok=True)
     detail_path = args.output_dir / AX_HISTORY_SKU_DAY_FILENAME
     summary_path = args.output_dir / AX_HISTORY_SUMMARY_FILENAME
@@ -178,6 +207,7 @@ def write_outputs(df: pd.DataFrame, args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    """Main CLI entry point for inventory history snapshot extractor."""
     args = parse_args()
     start = date.fromisoformat(args.start_date)
     end = date.fromisoformat(args.end_date)

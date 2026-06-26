@@ -1,5 +1,4 @@
-"""
-SKU Ledger — Persistent, deduplicated registry of SKU → Category mappings.
+"""SKU Ledger — Persistent, deduplicated registry of SKU → Category mappings.
 
 Maintains a SQLite database that accumulates every SKU ever seen across
 all FwdDemand CSV files, storing their ProductGroupCode and SizeGroupCode
@@ -26,6 +25,9 @@ Usage:
     # Export the ledger to CSV (for inspection or ML pipeline consumption)
     python sku_ledger.py export Output\\Ingestion\\sku_ledger_export.csv
 """
+
+from __future__ import annotations
+
 import argparse
 import csv
 import re
@@ -42,7 +44,7 @@ DEFAULT_DB_PATH = INGESTION_OUTPUT_DIR / "sku_ledger.db"
 DEFAULT_CSV_DIR = INGESTION_OUTPUT_DIR
 
 # ---------------------------------------------------------------------------
-# Schema
+# Schema Definitions
 # ---------------------------------------------------------------------------
 CREATE_TABLE_SQL = """
 CREATE TABLE IF NOT EXISTS sku_ledger (
@@ -80,10 +82,20 @@ ON CONFLICT(sku) DO UPDATE SET
 
 
 def init_db(db_path: Path) -> sqlite3.Connection:
-    """Open (or create) the ledger database and ensure schema exists."""
+    """Open (or create) the ledger database and ensure schema and indices exist.
+
+    Configures journal_mode to Write-Ahead Logging (WAL) and synchronous mode
+    to NORMAL for fast performance and concurrent readability/write safety.
+
+    Args:
+        db_path: Absolute Path to the SQLite ledger database file.
+
+    Returns:
+        sqlite3.Connection: An active SQLite connection.
+    """
     conn = sqlite3.connect(str(db_path))
-    conn.execute("PRAGMA journal_mode=WAL;")       # better concurrent perf
-    conn.execute("PRAGMA synchronous=NORMAL;")      # safe + fast
+    conn.execute("PRAGMA journal_mode=WAL;")       # better concurrent performance
+    conn.execute("PRAGMA synchronous=NORMAL;")      # fast and safe transaction commits
     conn.execute(CREATE_TABLE_SQL)
     conn.execute(CREATE_INDEX_SQL)
     conn.commit()
@@ -91,24 +103,31 @@ def init_db(db_path: Path) -> sqlite3.Connection:
 
 
 def extract_date_from_filename(filepath: Path) -> str:
-    """
-    Try to extract a date from the CSV filename for the 'seen' timestamp.
+    """Try to extract a date from the CSV filename to track the 'seen' timestamp.
+
     Handles patterns like:
-        FwdDemandCSV_2026-03-31.csv      -> 2026-03-31
+        FwdDemandCSV_2026-03-31.csv      -> 2026-03-31 (ISO)
         Fwd Demand CSV 33126.csv         -> 2026-03-31 (MDDYY)
         FwdDemandCSV_03242026.csv        -> 2026-03-24 (MMDDYYYY)
         Fwd Demand CSV 32426.csv         -> 2026-03-24 (MDDYY)
-        FwdDemandCSV9.6.csv              -> (fallback to file mtime)
-    Falls back to file modification time, then today's date.
+        FwdDemandCSV9.6.csv              -> (falls back to file mtime)
+
+    Falls back to the file modification time if pattern matching fails.
+
+    Args:
+        filepath: Path of the target file to scan.
+
+    Returns:
+        str: Date string in 'YYYY-MM-DD' format.
     """
     stem = filepath.stem
 
-    # ISO date: 2026-03-31
+    # Match ISO date format: YYYY-MM-DD
     m = re.search(r'(\d{4}-\d{2}-\d{2})', stem)
     if m:
         return m.group(1)
 
-    # MMDDYYYY: 03242026
+    # Match MMDDYYYY format: e.g. 03242026
     m = re.search(r'(\d{8})$', stem.replace(' ', ''))
     if m:
         try:
@@ -117,7 +136,7 @@ def extract_date_from_filename(filepath: Path) -> str:
         except ValueError:
             pass
 
-    # MDDYY or MMDDYY: 33126 = 3/31/26, 32426 = 3/24/26, 22626 = 2/26/26
+    # Match MDDYY or MMDDYY formats: e.g. 33126 = 3/31/26, 32426 = 3/24/26
     m = re.search(r'(\d{4,6})\s*$', stem.replace(' ', '').rstrip('.'))
     if m:
         digits = m.group(1)
@@ -128,7 +147,7 @@ def extract_date_from_filename(filepath: Path) -> str:
                 return dt.strftime('%Y-%m-%d')
             except ValueError:
                 pass
-            # Try as MDD+YY
+            # Try parsing as MDD+YY (e.g. 32426 -> Month 3, Day 24, Year 2026)
             try:
                 dt = datetime(2000 + int(digits[3:5]), int(digits[0]), int(digits[1:3]))
                 return dt.strftime('%Y-%m-%d')
@@ -142,34 +161,42 @@ def extract_date_from_filename(filepath: Path) -> str:
             except ValueError:
                 pass
 
-    # Fallback: use file modification time
+    # Fallback: extract date from file modification timestamp
     try:
         mtime = filepath.stat().st_mtime
         return datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
     except OSError:
+        # Final fallback: use current local date
         return datetime.now().strftime('%Y-%m-%d')
 
 
-def ingest_csv(conn: sqlite3.Connection, csv_path: Path, file_date: str | None = None):
-    """
-    Read a FwdDemand CSV and upsert all SKUs into the ledger.
-    Only reads the columns we need; skips the 14-day forecast columns.
+def ingest_csv(conn: sqlite3.Connection, csv_path: Path, file_date: str | None = None) -> tuple[int, int]:
+    """Read a FwdDemand CSV and upsert all extracted SKUs into the database ledger.
+
+    Only reads header configuration columns to minimize memory footprint.
+    Processes rows in memory and flushes in batches of 5000 records.
+
+    Args:
+        conn: Open SQLite connection.
+        csv_path: Path to the target CSV file.
+        file_date: Date associated with the file. If omitted, parsed from filename.
+
+    Returns:
+        tuple[int, int]: Total rows processed, and new SKU records added.
     """
     if file_date is None:
         file_date = extract_date_from_filename(csv_path)
 
     source_name = csv_path.name
     rows_read = 0
-    rows_new = 0
 
-    # Count existing SKUs before this file
+    # Retrieve row count before transaction for calculations
     (count_before,) = conn.execute("SELECT COUNT(*) FROM sku_ledger").fetchone()
 
     try:
         with open(csv_path, 'r', encoding='utf-8-sig', newline='') as f:
             reader = csv.DictReader(f)
 
-            # Verify required columns exist
             if not reader.fieldnames:
                 print(f"    ⚠ {source_name}: empty or unreadable, skipping")
                 return 0, 0
@@ -186,7 +213,7 @@ def ingest_csv(conn: sqlite3.Connection, csv_path: Path, file_date: str | None =
                 pgc = (row.get('ProductGroupCode') or '').strip()
                 sgc = (row.get('SizeGroupCode') or '').strip()
 
-                # Skip rows with empty key fields
+                # Discard invalid/empty keys
                 if not sku or not pgc or not sgc:
                     continue
 
@@ -198,12 +225,12 @@ def ingest_csv(conn: sqlite3.Connection, csv_path: Path, file_date: str | None =
                               file_date, file_date, source_name))
                 rows_read += 1
 
-                # Batch insert every 5000 rows
+                # Write batch chunks periodically
                 if len(batch) >= 5000:
                     conn.executemany(UPSERT_SQL, batch)
                     batch.clear()
 
-            # Flush remaining
+            # Flush remaining elements
             if batch:
                 conn.executemany(UPSERT_SQL, batch)
             conn.commit()
@@ -218,26 +245,33 @@ def ingest_csv(conn: sqlite3.Connection, csv_path: Path, file_date: str | None =
     return rows_read, rows_new
 
 
-def ingest_path(db_path: Path, target: Path):
-    """Ingest a single CSV or all CSVs in a directory."""
+def ingest_path(db_path: Path, target: Path) -> None:
+    """Ingest a single CSV or all discovered CSVs in a target directory path.
+
+    Scans child directories recursively for FwdDemand naming patterns.
+
+    Args:
+        db_path: Path to database file.
+        target: Target folder or file to ingest.
+    """
     conn = init_db(db_path)
 
     if target.is_file():
         csv_files = [target]
     elif target.is_dir():
-        # Find all CSVs matching FwdDemand / Fwd Demand patterns
+        # Scrape all files matching potential demand sheet naming conventions
         patterns = ['FwdDemand*.csv', 'Fwd Demand*.csv', 'FWDDEMAND*.csv',
                     'FWD Demand*.csv']
         csv_files = []
         for pat in patterns:
             csv_files.extend(target.glob(pat))
-        # Also check subdirectories (Complete, Processing, Error)
+        # Scan subfolders commonly used in extraction drops
         for subdir in target.iterdir():
             if subdir.is_dir():
                 for pat in patterns:
                     csv_files.extend(subdir.glob(pat))
 
-        # Deduplicate and sort by modification time
+        # Deduplicate list and order chronologically by file write timestamp
         csv_files = sorted(set(csv_files), key=lambda p: p.stat().st_mtime)
     else:
         print(f"✗ Path not found: {target}")
@@ -274,8 +308,12 @@ def ingest_path(db_path: Path, target: Path):
     conn.close()
 
 
-def show_stats(db_path: Path):
-    """Print summary statistics about the ledger."""
+def show_stats(db_path: Path) -> None:
+    """Print summary statistics, matrices, and breakdown metrics about the ledger.
+
+    Args:
+        db_path: Database storage path.
+    """
     if not db_path.exists():
         print(f"✗ Ledger not found: {db_path}")
         return
@@ -299,7 +337,7 @@ def show_stats(db_path: Path):
     print(f"  Unique Nodes:   {distinct_nodes} (PGC+SGC combos)")
     print(f"  Date range:     {oldest} → {newest}")
 
-    # --- Category breakdown by Product Group ---
+    # Breakdown by Product Group
     print("\n  Product Groups (all):")
     rows = conn.execute(
         "SELECT product_group, COUNT(*) as cnt, "
@@ -313,7 +351,7 @@ def show_stats(db_path: Path):
         pct = cnt / total * 100
         print(f"    {pgc:<6s} {cnt:>8,}  {pct:>6.1f}%  {div or '—'}")
 
-    # --- Size Group breakdown ---
+    # Breakdown by Size Group
     print("\n  Size Groups (all):")
     rows = conn.execute(
         "SELECT size_group, COUNT(*) as cnt "
@@ -326,7 +364,7 @@ def show_stats(db_path: Path):
         pct = cnt / total * 100
         print(f"    {sgc:<6s} {cnt:>8,}  {pct:>6.1f}%")
 
-    # --- Category matrix (PGC × SGC) ---
+    # Category matrix
     print("\n  Category Matrix (PGC × SGC — top 15 nodes by SKU count):")
     rows = conn.execute(
         "SELECT product_group || size_group as node, "
@@ -341,7 +379,7 @@ def show_stats(db_path: Path):
         pct = cnt / total * 100
         print(f"    {node:<8s} {pgc:<5s} {sgc:<5s} {cnt:>8,}  {pct:>6.1f}%")
 
-    # --- SKU Activity / churn ---
+    # Activity and Churn counts
     print("\n  SKU Activity:")
     (one_time,) = conn.execute(
         "SELECT COUNT(*) FROM sku_ledger WHERE first_seen = last_seen"
@@ -359,8 +397,15 @@ def show_stats(db_path: Path):
     conn.close()
 
 
-def lookup_sku(db_path: Path, sku: str):
-    """Look up a specific SKU in the ledger."""
+def lookup_sku(db_path: Path, sku: str) -> None:
+    """Look up records for a specific SKU key.
+
+    Prints exact matches, or falls back to looking up partial SKU string matches.
+
+    Args:
+        db_path: Database storage path.
+        sku: SKU string (or substring).
+    """
     if not db_path.exists():
         print(f"✗ Ledger not found: {db_path}")
         return
@@ -375,7 +420,7 @@ def lookup_sku(db_path: Path, sku: str):
         for col, val in zip(cols, row):
             print(f"  {col:<16s} {val}")
     else:
-        # Try partial match
+        # Partial match lookup
         rows = conn.execute(
             "SELECT sku, product_group, size_group FROM sku_ledger WHERE sku LIKE ? LIMIT 10",
             (f"%{sku}%",)
@@ -390,8 +435,13 @@ def lookup_sku(db_path: Path, sku: str):
     conn.close()
 
 
-def export_ledger(db_path: Path, export_path: Path):
-    """Export the full ledger to CSV."""
+def export_ledger(db_path: Path, export_path: Path) -> None:
+    """Export the full ledger database table into a CSV file.
+
+    Args:
+        db_path: SQLite source database path.
+        export_path: Destination path for exported CSV.
+    """
     if not db_path.exists():
         print(f"✗ Ledger not found: {db_path}")
         return
@@ -413,10 +463,8 @@ def export_ledger(db_path: Path, export_path: Path):
     conn.close()
 
 
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
-def main():
+def main() -> None:
+    """Main CLI entry point for SKU ledger manager tool."""
     parser = argparse.ArgumentParser(
         description="SKU Ledger — persistent, deduplicated SKU → Category registry"
     )
@@ -427,21 +475,21 @@ def main():
 
     subparsers = parser.add_subparsers(dest='command')
 
-    # ingest
+    # Ingest subcommand
     p_ingest = subparsers.add_parser('ingest', help='Ingest FwdDemand CSVs into the ledger')
     p_ingest.add_argument(
         'path', nargs='?', type=Path, default=DEFAULT_CSV_DIR,
         help='Path to a CSV file or directory containing CSVs'
     )
 
-    # stats
+    # Stats subcommand
     subparsers.add_parser('stats', help='Show ledger statistics')
 
-    # lookup
+    # Lookup subcommand
     p_lookup = subparsers.add_parser('lookup', help='Look up a specific SKU')
     p_lookup.add_argument('sku', help='SKU to look up')
 
-    # export
+    # Export subcommand
     p_export = subparsers.add_parser('export', help='Export ledger to CSV')
     p_export.add_argument(
         'output', type=Path,

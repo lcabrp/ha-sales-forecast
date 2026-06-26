@@ -165,6 +165,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def resolve_forecast_window(panel: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.Timestamp, pd.Timestamp]:
+    """Resolve the start and end dates of the forecast window from panel or args.
+
+    Args:
+        panel: The feature panel history DataFrame.
+        args: The parsed command-line arguments.
+
+    Returns:
+        tuple[pd.Timestamp, pd.Timestamp]: The normalized start and end forecast timestamps.
+    """
     if args.forecast_start:
         start = pd.Timestamp(args.forecast_start)
     else:
@@ -179,6 +188,14 @@ def resolve_forecast_window(panel: pd.DataFrame, args: argparse.Namespace) -> tu
 
 
 def load_export_attributes(panel_path: Path) -> pd.DataFrame:
+    """Load static dimensions and SKU attributes from the panel Parquet source.
+
+    Args:
+        panel_path: Path to the model panel Parquet file/directory.
+
+    Returns:
+        pd.DataFrame: A DataFrame of deduplicated attributes by SKU.
+    """
     schema_columns = set(pq.read_schema(panel_path).names)
     read_columns = ["SKU", *[col for col in ATTRIBUTE_COLUMNS if col in schema_columns]]
     attrs = pd.read_parquet(panel_path, columns=read_columns)
@@ -187,6 +204,15 @@ def load_export_attributes(panel_path: Path) -> pd.DataFrame:
 
 
 def add_export_attributes(panel: pd.DataFrame, panel_path: Path) -> pd.DataFrame:
+    """Ensure all export attribute columns are merged onto the panel DataFrame.
+
+    Args:
+        panel: The target feature panel DataFrame.
+        panel_path: Path to the model panel Parquet source.
+
+    Returns:
+        pd.DataFrame: The merged panel DataFrame with export columns.
+    """
     attrs = load_export_attributes(panel_path)
     missing_export_columns = [col for col in attrs.columns if col != "SKU" and col not in panel.columns]
     if not missing_export_columns:
@@ -195,6 +221,16 @@ def add_export_attributes(panel: pd.DataFrame, panel_path: Path) -> pd.DataFrame
 
 
 def add_window_args(args: argparse.Namespace, start: pd.Timestamp, end: pd.Timestamp) -> argparse.Namespace:
+    """Update command-line arguments in-place with holdout window start and end dates.
+
+    Args:
+        args: Parsed command-line arguments.
+        start: Holdout window start timestamp.
+        end: Holdout window end timestamp.
+
+    Returns:
+        argparse.Namespace: Updated arguments namespace.
+    """
     args.holdout_start = str(start.date())
     args.holdout_end = str(end.date())
     args.holdout_days = 0
@@ -202,11 +238,29 @@ def add_window_args(args: argparse.Namespace, start: pd.Timestamp, end: pd.Times
 
 
 def first_non_null(series: pd.Series) -> Any:
+    """Retrieve the first non-null, non-NA value in a pandas series.
+
+    Args:
+        series: The pandas Series to scan.
+
+    Returns:
+        Any: The first observed non-null value, or an empty string.
+    """
     values = series.dropna()
     return values.iloc[0] if not values.empty else ""
 
 
 def build_sku_day(scored: pd.DataFrame, model_name: str, forecast_source: str) -> pd.DataFrame:
+    """Construct the detailed daily SKU-day forecast output.
+
+    Args:
+        scored: The scored holdout panel DataFrame.
+        model_name: The name of the forecasting model.
+        forecast_source: The source name ('raw' or 'calibrated') used as the selected prediction.
+
+    Returns:
+        pd.DataFrame: Daily SKU-day forecast DataFrame.
+    """
     raw_col = f"{model_name}ForecastQty"
     cal_col = f"{model_name}CalibratedForecastQty"
     selected_col = raw_col if forecast_source == "raw" else cal_col
@@ -246,6 +300,17 @@ def build_ax_shape(
     min_fd14_units: float,
     require_ax_attributes: bool,
 ) -> tuple[pd.DataFrame, int]:
+    """Format daily SKU-day forecasts into the wide FD1-FD14 AX replenishment shape.
+
+    Args:
+        sku_day: Detailed daily SKU-day forecasts.
+        start: Forecast start timestamp.
+        min_fd14_units: Minimum forecast total for a SKU to be kept in output.
+        require_ax_attributes: Whether to drop rows missing required AX attributes.
+
+    Returns:
+        tuple[pd.DataFrame, int]: The formatted AX-style DataFrame and the count of dropped rows.
+    """
     df = sku_day.copy()
     df["DayOffset"] = (df[DATE_COLUMN] - start).dt.days + 1
     df = df.loc[df["DayOffset"].between(1, 14)].copy()
@@ -300,6 +365,14 @@ def build_ax_shape(
 
 
 def build_sku_summary(sku_day: pd.DataFrame) -> pd.DataFrame:
+    """Calculate summary forecast metrics grouped at the SKU level.
+
+    Args:
+        sku_day: Detailed SKU-day forecast DataFrame.
+
+    Returns:
+        pd.DataFrame: Aggregated SKU-level accuracy metrics.
+    """
     agg_spec: dict[str, tuple[str, str]] = {
         "ActualUnits": (TARGET_COLUMN, "sum"),
         "SelectedForecastUnits": ("SelectedForecastQty", "sum"),
@@ -319,6 +392,7 @@ def build_sku_summary(sku_day: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Execute the shadow AX candidate generation pipeline."""
     args = parse_args()
     configure_threads(args.threads)
     ml = require_sklearn()

@@ -3,7 +3,7 @@
 This script implements Phase 1 improvements:
 1. Quantile Loss: Trains the model using HistGradientBoostingRegressor(loss='quantile')
    with a conservative quantile (default: 0.35) to prioritize under-forecasting risk.
-2. Demand Censoring: Drops training rows during known stockout periods (where 1-day lagged 
+2. Demand Censoring: Drops training rows during known stockout periods (where 1-day lagged
    inventory was explicitly 0 and not NaN) so the model does not learn stockouts as zero demand.
 """
 
@@ -44,6 +44,11 @@ DEFAULT_OUTPUT_DIR = MODEL_DIR / "ml_quantile"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the quantile model training pipeline.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Train and backtest a forecast model with Quantile Loss.")
     parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -124,7 +129,18 @@ def build_quantile_model(
     boolean: list[str],
     args: argparse.Namespace,
 ) -> Any:
-    """Build HistGradientBoostingRegressor model configured for Quantile Loss."""
+    """Build a scikit-learn Pipeline with ColumnTransformer preprocessor and HGB regressor for Quantile Loss.
+
+    Args:
+        ml: Dictionary of scikit-learn components.
+        numeric: List of numeric column names.
+        categorical: List of categorical column names.
+        boolean: List of boolean column names.
+        args: Pipeline configuration options.
+
+    Returns:
+        Pipeline: Unfit scikit-learn Pipeline.
+    """
     transformers = []
     if numeric:
         transformers.append(
@@ -167,6 +183,7 @@ def build_quantile_model(
 
 
 def main() -> None:
+    """Execute the command line entry point to train a quantile forest model and run backtests."""
     args = parse_args()
     configure_threads(args.threads)
     try:

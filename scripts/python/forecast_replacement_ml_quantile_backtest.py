@@ -67,6 +67,11 @@ DEFAULT_OUTPUT_DIR = MODEL_DIR.parent / "replacement_ml_quantile_backtests"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the quantile ML forecast backtest pipeline.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Backtest corporate, recent no-ML, and quantile ML forecasts."
     )
@@ -155,7 +160,18 @@ def run_quantile_stage(
     holdout: pd.DataFrame,
     args: argparse.Namespace,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Train a quantile regression model on train, calibrate it, and predict on holdout."""
+    """Train a quantile regression model on train, calibrate it, and predict on holdout.
+
+    Args:
+        ml: Dictionary containing scikit-learn module/class references.
+        train: Training feature panel dataframe.
+        calibration: Calibration panel dataframe.
+        holdout: Holdout/future dataset to predict on.
+        args: Command-line configuration arguments.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: The scored holdout dataframe and calibration factors.
+    """
     x_train, y_train, numeric, categorical, boolean = prepare_xy(
         train,
         args.exclude_corporate_features,
@@ -237,7 +253,21 @@ def blend_with_corporate(
     snapshot_id: str,
     group_cols: list[str] = ["Division", "Department", "Class"],
 ) -> pd.DataFrame:
-    """Scale SKU forecasts so their category-level sum matches the corporate category forecast totals."""
+    """Scale SKU forecasts so their category-level sum matches corporate category totals.
+
+    This ensures that while SKU-level distribution is guided by ML, the overall category
+    volume remains aligned with high-level corporate forecasts (Phase 1 blending).
+
+    Args:
+        forecast: Aggregate model forecast.
+        corporate_sku_day: Daily corporate forecast records.
+        snapshot_attrs: Attribute snapshot data.
+        snapshot_id: ID of the snapshot to filter corporate forecast.
+        group_cols: List of column names representing category hierarchy.
+
+    Returns:
+        pd.DataFrame: A scaled forecast DataFrame with SKU and scaled ForecastUnits.
+    """
     if forecast.empty or corporate_sku_day.empty:
         return forecast.copy()
 
@@ -287,6 +317,7 @@ def blend_with_corporate(
 
 
 def main() -> None:
+    """Execute the ML quantile backtest runner across historical snapshot windows."""
     args = parse_args()
     configure_threads(args.threads)
     for name in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):

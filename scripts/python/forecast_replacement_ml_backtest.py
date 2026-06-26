@@ -204,6 +204,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def load_snapshot_attributes(path: Path, snapshot_ids: list[str]) -> pd.DataFrame:
+    """Load snapshot attribute dimensions for a set of snapshot IDs.
+
+    Args:
+        path: Path to the Parquet file containing snapshot SKU attributes.
+        snapshot_ids: List of snapshot IDs to filter for.
+
+    Returns:
+        pd.DataFrame: A DataFrame of deduplicated attributes by SnapshotId and SKU.
+    """
     attrs = pd.read_parquet(
         path,
         columns=SNAPSHOT_ATTRIBUTE_COLUMNS,
@@ -215,6 +224,16 @@ def load_snapshot_attributes(path: Path, snapshot_ids: list[str]) -> pd.DataFram
 
 
 def load_daily_promotions(path: Path, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Load and normalize daily promotion features within a date range.
+
+    Args:
+        path: Path to the daily promotion Parquet file.
+        start: Start date of the range (inclusive).
+        end: End date of the range (inclusive).
+
+    Returns:
+        pd.DataFrame: Normalized daily promotion flags and statistics.
+    """
     columns = [
         "date",
         "pdl_active_events",
@@ -240,6 +259,16 @@ def load_daily_promotions(path: Path, start: pd.Timestamp, end: pd.Timestamp) ->
 
 
 def load_pdl_features(path: Path, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Load SKU-level PDL promo features within a date range.
+
+    Args:
+        path: Path to the PDL SKU features Parquet file.
+        start: Start date of the range (inclusive).
+        end: End date of the range (inclusive).
+
+    Returns:
+        pd.DataFrame: Cleaned SKU-day PDL features.
+    """
     columns = [
         "Date",
         "SKU",
@@ -269,6 +298,15 @@ def load_pdl_features(path: Path, start: pd.Timestamp, end: pd.Timestamp) -> pd.
 
 
 def latest_prestart_features(panel: pd.DataFrame, start: pd.Timestamp) -> pd.DataFrame:
+    """Extract the latest observed lag features prior to the forecast start date.
+
+    Args:
+        panel: The feature panel history DataFrame.
+        start: The start date of the forecast horizon.
+
+    Returns:
+        pd.DataFrame: A DataFrame indexed by SKU with frozen latest prestart features.
+    """
     columns = ["SKU", *[col for col in FROZEN_FEATURE_COLUMNS if col in panel.columns]]
     if len(columns) == 1:
         return pd.DataFrame(columns=["SKU"])
@@ -289,7 +327,17 @@ def add_same_season_features(
     years: int,
     window_days: int,
 ) -> pd.DataFrame:
-    """Add prior-year same-calendar demand features without resurrecting old SKUs."""
+    """Add prior-year same-calendar demand features without resurrecting old SKUs.
+
+    Args:
+        frame: The future forecast rows or training dataframe to receive features.
+        history: Historical panel or actuals used to aggregate past demand.
+        years: Number of years to look back.
+        window_days: Number of days on each side of the matching calendar date to average over.
+
+    Returns:
+        pd.DataFrame: DataFrame with added seasonal average features.
+    """
     if frame.empty:
         return frame
     required = {
@@ -417,6 +465,26 @@ def build_future_rows(
     start: pd.Timestamp,
     lookback_days: int,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Construct future SKU/day rows with features known prior to forecast start.
+
+    This generates a grid of all SKUs in the candidate universe (active in snapshot,
+    had demand in the lookback window, or have upcoming promotions) mapped to the
+    14-day horizon. It populates lags with frozen pre-start values and merges planned
+    promotions to avoid forward leakage.
+
+    Args:
+        panel: Model panel history containing past features.
+        actuals: Historical actuals.
+        pdl_horizon: Planned PDL promotions for the forecast horizon.
+        daily_promo: Daily promotions active in the range.
+        snapshot_attrs: Attribute metadata from the forecast snapshot.
+        snapshot_id: Target snapshot identifier.
+        start: Forecast start date.
+        lookback_days: Number of days of demand lookback for direct pick signal.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: The future feature panel with filled columns and the metadata dictionary.
+    """
     end = start + pd.Timedelta(days=13)
     attrs = snapshot_attrs.loc[snapshot_attrs["SnapshotId"].eq(snapshot_id)].copy()
     direct, _factors, direct_meta = direct_pick_signal(actuals, start, lookback_days)
@@ -492,6 +560,19 @@ def train_window(
     args: argparse.Namespace,
     start: pd.Timestamp,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Prepare train and calibration datasets for the current forecast window.
+
+    Splits the historical panel into a training set and a calibration set based on the
+    calibration days offset. Adds seasonal features if requested, and samples training rows.
+
+    Args:
+        panel: Entire historical feature panel.
+        args: Pipeline command-line arguments.
+        start: Start date of the current forecast window.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: The sampled training dataset and the calibration dataset.
+    """
     calibration_start = start - pd.Timedelta(days=max(args.calibration_days, 0))
     train = panel.loc[panel[DATE_COLUMN].lt(calibration_start)].copy()
     calibration = panel.loc[
@@ -519,12 +600,30 @@ def train_window(
 
 
 def threshold_label(value: float) -> str:
+    """Format a threshold float value into a clean string label.
+
+    Args:
+        value: Minimum forecast unit threshold.
+
+    Returns:
+        str: A standardized string representation of the threshold.
+    """
     if value == 0:
         return "all_positive"
     return f"min_{str(value).replace('.', 'p')}_units"
 
 
 def aggregate_forecast(scored: pd.DataFrame, forecast_col: str, min_sku_forecast_units: float) -> pd.DataFrame:
+    """Sum SKU-day predictions to SKU level and filter by threshold.
+
+    Args:
+        scored: Scored panel with daily SKU forecasts.
+        forecast_col: Name of the forecast prediction column.
+        min_sku_forecast_units: Minimum forecast total for a SKU to be retained.
+
+    Returns:
+        pd.DataFrame: Aggregate SKU forecasts meeting the threshold.
+    """
     forecast = (
         scored.groupby("SKU", as_index=False)
         .agg(ForecastUnits=(forecast_col, "sum"))
@@ -541,6 +640,19 @@ def combine_with_recent_fallback(
     recent_forecast: pd.DataFrame,
     fallback_weight: float,
 ) -> pd.DataFrame:
+    """Blend ML forecast with recent no-ML forecast for SKUs below threshold.
+
+    For SKUs that did not meet the ML candidate threshold, we fall back to a weighted
+    fraction of their recent no-ML baseline.
+
+    Args:
+        ml_forecast: Aggregate ML forecast for selected SKUs.
+        recent_forecast: Aggregate no-ML baseline forecast.
+        fallback_weight: Multiplier applied to fallback SKU forecasts.
+
+    Returns:
+        pd.DataFrame: Blended hybrid forecast dataframe.
+    """
     fallback_weight = max(0.0, float(fallback_weight))
     if fallback_weight <= 0 or recent_forecast.empty:
         return ml_forecast.copy()
@@ -569,6 +681,16 @@ def apply_recent_volume_cap(
     recent_forecast: pd.DataFrame,
     cap_multiple: float,
 ) -> pd.DataFrame:
+    """Scale forecast down if total volume exceeds a multiple of the recent baseline.
+
+    Args:
+        forecast: The candidate forecast to potentially scale down.
+        recent_forecast: The recent baseline forecast.
+        cap_multiple: The maximum allowed ratio of forecast to baseline volume.
+
+    Returns:
+        pd.DataFrame: Volume-capped forecast dataframe.
+    """
     cap_multiple = max(0.0, float(cap_multiple))
     if cap_multiple <= 0 or forecast.empty or recent_forecast.empty:
         return forecast.copy()
@@ -586,6 +708,7 @@ def apply_recent_volume_cap(
 
 
 def main() -> None:
+    """Execute the ML guardrail backtest pipeline across historical windows."""
     args = parse_args()
     configure_threads(args.threads)
     for name in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):

@@ -19,6 +19,7 @@ from typing import Any
 
 import pandas as pd
 
+# Add parent directory to system path to import modules
 PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
@@ -63,6 +64,7 @@ from forecast_replacement_ml_backtest import (  # noqa: E402
     threshold_label,
 )
 
+# Standard default paths to corporate forecast snapshots and outputs
 DEFAULT_SNAPSHOT_DIR = (
     PROJECT_ROOT
     / "Output"
@@ -78,12 +80,32 @@ db_attrs: pd.DataFrame = pd.DataFrame()
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the cold start backtester.
+
+    Returns:
+        argparse.Namespace: Parsed arguments values.
+    """
     parser = argparse.ArgumentParser(
         description="Backtest cold-start ML forecast model with DB attributes."
     )
-    parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
-    parser.add_argument("--snapshot-dir", type=Path, default=DEFAULT_SNAPSHOT_DIR)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument(
+        "--panel",
+        type=Path,
+        default=DEFAULT_PANEL_PATH,
+        help="Path to the model panel dataset parts.",
+    )
+    parser.add_argument(
+        "--snapshot-dir",
+        type=Path,
+        default=DEFAULT_SNAPSHOT_DIR,
+        help="Directory containing corporate Forecast DB tables.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIR,
+        help="Output directory to save the scorecard and diagnostics CSVs.",
+    )
     parser.add_argument("--snapshot-summary-path", type=Path, default=SNAPSHOT_SUMMARY_PATH)
     parser.add_argument("--forecast-snapshot-path", type=Path, default=FORECAST_SNAPSHOT_PATH)
     parser.add_argument("--forecast-day-path", type=Path, default=FORECAST_DAY_PATH)
@@ -161,6 +183,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def load_forecast_db_attributes(snapshot_dir: Path) -> pd.DataFrame:
+    """Load SKU product dimensions and coalesce launch dates.
+
+    Args:
+        snapshot_dir (Path): Snapshot directory containing DB parquets.
+
+    Returns:
+        pd.DataFrame: Normalized SKU lifecycle attributes dataframe.
+    """
     path = snapshot_dir / "tables" / "dbo__Product_Dimensions_Hierarchy_Attributes"
     if not path.exists():
         raise FileNotFoundError(f"Forecast DB product attributes table not found: {path}")
@@ -192,6 +222,14 @@ def load_forecast_db_attributes(snapshot_dir: Path) -> pd.DataFrame:
 
 
 def classify_newness(days_since_go_live: float | None) -> str:
+    """Categorize SKU maturity status based on elapsed days since go-live launch.
+
+    Args:
+        days_since_go_live (float | None): Days between observation and go-live date.
+
+    Returns:
+        str: Cohort tag.
+    """
     if days_since_go_live is None or pd.isna(days_since_go_live):
         return "UnknownGoLive"
     if days_since_go_live < 0:
@@ -204,6 +242,15 @@ def classify_newness(days_since_go_live: float | None) -> str:
 
 
 def enrich_with_attributes(df: pd.DataFrame, db_attrs: pd.DataFrame) -> pd.DataFrame:
+    """Merge lifecycle attributes and calculate go-live elapsed days and newness cohorts.
+
+    Args:
+        df (pd.DataFrame): Target panel or features dataframe.
+        db_attrs (pd.DataFrame): Lifecyle dimensions reference dataframe.
+
+    Returns:
+        pd.DataFrame: Enriched dataframe.
+    """
     if df.empty:
         return df.copy()
     df = df.merge(
@@ -241,7 +288,16 @@ def enrich_with_attributes(df: pd.DataFrame, db_attrs: pd.DataFrame) -> pd.DataF
 original_build_future_rows = frmb.build_future_rows
 
 
-def build_future_rows_cold_start(*args, **kwargs) -> tuple[pd.DataFrame, dict[str, Any]]:
+def build_future_rows_cold_start(*args: Any, **kwargs: Any) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Generate future forecasting rows enriched with cold-start lifecycle features.
+
+    Args:
+        *args (Any): Variable arguments passed to build_future_rows.
+        **kwargs (Any): Keyword arguments passed to build_future_rows.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Future SKU-day features dataframe and input metadata.
+    """
     # Call original build_future_rows
     future, meta = original_build_future_rows(*args, **kwargs)
 
@@ -289,6 +345,15 @@ frmqb.build_future_rows = build_future_rows_cold_start
 
 
 def shift_date_years(series: pd.Series, y: int) -> pd.Series:
+    """Shift timestamps forward by y years, safely handling Leap Day adjustments.
+
+    Args:
+        series (pd.Series): Timestamp date series.
+        y (int): Year shift count.
+
+    Returns:
+        pd.Series: Shifted dates.
+    """
     unique_dates = series.dropna().unique()
     mapping = {}
     for d in unique_dates:
@@ -307,6 +372,17 @@ def fast_add_same_season_features(
     years: int,
     window_days: int,
 ) -> pd.DataFrame:
+    """Compute same-season average sales over past years to serve as features.
+
+    Args:
+        frame (pd.DataFrame): Target prediction records to enrich.
+        history (pd.DataFrame): Historical transaction records.
+        years (int): Number of historical years to evaluate.
+        window_days (int): Half-width window size around target day.
+
+    Returns:
+        pd.DataFrame: Enriched dataframe.
+    """
     if frame.empty:
         return frame
     
@@ -396,6 +472,7 @@ frmqb.add_same_season_features = fast_add_same_season_features
 
 
 def main() -> None:
+    """Run rolling window backtests for the cold-start quantile model across historical windows."""
     global db_attrs
     args = parse_args()
     configure_threads(args.threads)

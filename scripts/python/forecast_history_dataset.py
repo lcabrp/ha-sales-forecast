@@ -56,10 +56,16 @@ SNAPSHOT_COLUMNS = [
     "PutawayIndicator",
     "ForecastStartDate",
 ]
+# Regex to match forward demand or forecast CSV files
 CSV_NAME_RE = re.compile(r"(fwd|forward).*demand|forecast", re.IGNORECASE)
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for building historical forecast accuracy datasets.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Build historical forecast accuracy datasets.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -84,6 +90,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def sha256(path: Path) -> str:
+    """Compute the SHA-256 checksum of a file in a memory-efficient chunked manner.
+
+    Args:
+        path: The path to the file.
+
+    Returns:
+        str: Hexadecimal SHA-256 hash.
+    """
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
@@ -92,24 +106,62 @@ def sha256(path: Path) -> str:
 
 
 def safe_name(value: str) -> str:
+    """Clean a string for safe usage in file names.
+
+    Replaces non-alphanumeric/dot/dash characters with underscores and strips leading/trailing
+    punctuation.
+
+    Args:
+        value: The raw string to clean.
+
+    Returns:
+        str: The sanitized string safe for file naming.
+    """
     cleaned = re.sub(r"[^A-Za-z0-9._-]+", "_", value.strip())
     return cleaned.strip("._") or "forecast"
 
 
 def normalize_text(series: pd.Series) -> pd.Series:
+    """Normalize string columns by filling NaNs, casting to string, and stripping whitespace.
+
+    Args:
+        series: The pandas Series to clean.
+
+    Returns:
+        pd.Series: Normalized text series.
+    """
     return series.fillna("").astype(str).str.strip()
 
 
 def candidate_dates_from_name(name: str, modified_date: date) -> list[date]:
+    """Extract candidate dates from a file name based on common date pattern heuristics.
+
+    This function searches the filename for:
+    - YYYY-MM-DD patterns
+    - MM-DD-YYYY or MM-DD-YY patterns
+    - Compact formats (e.g. MMDDYY or MDDYY)
+    If no matches are found, it defaults to the file's OS modified date.
+
+    Args:
+        name: The filename to inspect.
+        modified_date: The file modification date to fallback on or compare with.
+
+    Returns:
+        list[date]: Sorted list of unique candidate dates, ordered by absolute difference
+            from the file's modification date (closest first).
+    """
     candidates: list[date] = []
+    # Match YYYY-MM-DD, YYYY_MM_DD, YYYY.MM.DD
     for year, month, day in re.findall(r"(20\d{2})[-_.](\d{1,2})[-_.](\d{1,2})", name):
         candidates.append(date(int(year), int(month), int(day)))
+    # Match MM-DD-YYYY or MM-DD-YY style patterns
     for month, day, year in re.findall(r"(?<!\d)(\d{1,2})[._-](\d{1,2})[._-](\d{2,4})(?!\d)", name):
         y = int(year)
         if y < 100:
             y += 2000
         candidates.append(date(y, int(month), int(day)))
 
+    # Match compact formats (e.g., MMDDYY or MDDYY)
     compact_values = re.findall(r"(?<!\d)(\d{3,6})(?!\d)", name)
     for value in compact_values:
         if len(value) in {3, 4, 5, 6}:
@@ -127,11 +179,26 @@ def candidate_dates_from_name(name: str, modified_date: date) -> list[date]:
                     pass
     if not candidates:
         candidates.append(modified_date)
+    # Sort candidates by proximity to the file modification date to find the most probable match
     unique = sorted(set(candidates), key=lambda d: abs((d - modified_date).days))
     return unique
 
 
 def read_forecast(path: Path) -> pd.DataFrame:
+    """Read and validate a forecast CSV file.
+
+    Loads required forecast columns, normalizes text columns, enforces types, and fills in
+    invalid ForecastStartDate values with the mode of valid dates in the file.
+
+    Args:
+        path: Path to the forecast CSV file.
+
+    Returns:
+        pd.DataFrame: Cleaned and typed forecast dataframe.
+
+    Raises:
+        ValueError: If required columns are missing or if the file contains no valid ForecastStartDate.
+    """
     df = pd.read_csv(path, usecols=lambda col: col in {*SNAPSHOT_COLUMNS, *FD_COLUMNS}, low_memory=False)
     missing = sorted({"SKU", "ForecastStartDate", *FD_COLUMNS} - set(df.columns))
     if missing:
@@ -164,6 +231,15 @@ def read_forecast(path: Path) -> pd.DataFrame:
 
 
 def list_forecast_files(folders: list[Path], since: date) -> list[Path]:
+    """Scan directory folders for forecast CSV files modified on or after a given date.
+
+    Args:
+        folders: List of directories to search.
+        since: Earliest modification date to include.
+
+    Returns:
+        list[Path]: Sorted list of matching file paths.
+    """
     paths = []
     for folder in folders:
         if not folder.exists():
@@ -181,9 +257,22 @@ def list_forecast_files(folders: list[Path], since: date) -> list[Path]:
 
 
 def select_weekly(metadata: pd.DataFrame) -> pd.DataFrame:
+    """Filter duplicate forecast snapshots to retain a single canonical weekly snapshot.
+
+    Deduplicates snapshots using the forecast payload keys: ForecastStartDateMin,
+    ForecastedSKUs, and TotalForecastUnits. If multiple snapshots match, we prioritize Complete
+    and Processing folders over Error, and resolve ties using the file modification timestamp.
+
+    Args:
+        metadata: Dataframe of metadata rows for parsed files.
+
+    Returns:
+        pd.DataFrame: Deduplicated metadata with an IsSelectedWeekly boolean column added.
+    """
     metadata = metadata.copy()
     metadata["IsSelectedWeekly"] = False
     metadata["SelectionReason"] = "not_selected"
+    # Complete and Processing are preferred sources over Error folder.
     metadata["FolderPriority"] = metadata["SourceFolderName"].map(
         {"Error": 0, "Complete": 1, "Processing": 2}
     ).fillna(9)
@@ -197,6 +286,13 @@ def select_weekly(metadata: pd.DataFrame) -> pd.DataFrame:
 
 
 def collect_forecasts(output_dir: Path, folders: list[Path], since_text: str) -> None:
+    """Collect, copy, and parse forecast CSV files, saving them as Parquet datasets.
+
+    Args:
+        output_dir: Target output directory.
+        folders: Folders to scan for forecast CSVs.
+        since_text: YYYY-MM-DD string representing the oldest modified file date to scan.
+    """
     since = date.fromisoformat(since_text)
     raw_dir = output_dir / "raw_forecasts"
     parquet_dir = output_dir / "parquet"
@@ -302,6 +398,18 @@ def collect_forecasts(output_dir: Path, folders: list[Path], since_text: str) ->
 
 
 def actuals_query(schema: str, date_expr: str) -> sa.TextClause:
+    """Build the SQL query to fetch sales/picks actuals from AX.
+
+    Uses READ UNCOMMITTED for read safety and WITH (NOLOCK) as standard read patterns.
+    Filters on direct pick lines and defaults for HA data partition and data area ID.
+
+    Args:
+        schema: AX database schema (e.g. 'DAX_PROD.dbo' or 'DAX_Archive.arc').
+        date_expr: The datetime field used as basis (e.g. 'wkln.MODIFIEDDATETIME').
+
+    Returns:
+        sa.TextClause: Executable SQLAlchemy query text.
+    """
     return sa.text(
         f"""
         SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -345,6 +453,14 @@ def actuals_query(schema: str, date_expr: str) -> sa.TextClause:
 
 
 def detect_archive_boundary(engine: sa.Engine) -> date | None:
+    """Query DAX_Archive to find the boundary date between archive and active transactions.
+
+    Args:
+        engine: Database connection engine.
+
+    Returns:
+        date | None: The maximum date present in the archive, or None if detection fails.
+    """
     query = sa.text(
         """
         SELECT CAST(MAX(CREATEDDATETIME) AS DATE) AS MaxArchiveDate
@@ -366,6 +482,17 @@ def detect_archive_boundary(engine: sa.Engine) -> date | None:
 
 
 def source_segments(start: date, end: date, archive_boundary: date | None) -> list[tuple[str, date, date]]:
+    """Partition the query date range between archive and production tables to avoid overlap.
+
+    Args:
+        start: Inclusive start date.
+        end: Inclusive end date.
+        archive_boundary: Boundary date dividing archive and production tables.
+
+    Returns:
+        list[tuple[str, date, date]]: List of tuples with (schema_name, start_date, end_date)
+            specifying which table to pull from for each segment.
+    """
     if archive_boundary is None:
         return [("DAX_Archive.arc", start, end), ("DAX_PROD.dbo", start, end)]
     segments: list[tuple[str, date, date]] = []
@@ -384,6 +511,19 @@ def collect_actuals(
     server: str,
     database: str,
 ) -> None:
+    """Fetch and aggregate transaction actuals (picks/sales) from AX database tables.
+
+    Pulls from appropriate tables based on the archive boundary and writes a consolidated
+    Parquet file.
+
+    Args:
+        output_dir: Target output directory.
+        start_text: Start date string (YYYY-MM-DD).
+        end_text: End date string (YYYY-MM-DD).
+        date_field: Name of the transaction timestamp column to use ('modified' or 'created').
+        server: SQL server host name.
+        database: SQL database name.
+    """
     start = date.fromisoformat(start_text)
     end = date.fromisoformat(end_text)
     parquet_dir = output_dir / "parquet"
@@ -448,6 +588,12 @@ def collect_actuals(
 
 
 def build_summaries(output_dir: Path, date_basis: str) -> None:
+    """Build aggregated forecast accuracy summaries (e.g. WAPE, coverage, variance buckets).
+
+    Args:
+        output_dir: Path containing the parquet inputs and where outputs will be saved.
+        date_basis: Date field key ('modified') used for matching.
+    """
     parquet_dir = output_dir / "parquet"
     metadata = pd.read_parquet(parquet_dir / "forecast_snapshot_files.parquet")
     sku = pd.read_parquet(parquet_dir / "forecast_sku_snapshot.parquet")
@@ -577,6 +723,7 @@ def build_summaries(output_dir: Path, date_basis: str) -> None:
 
 
 def main() -> None:
+    """Execute the command line entry point for historical forecast accuracy datasets."""
     args = parse_args()
     if args.command == "collect-forecasts":
         collect_forecasts(args.output_dir, args.folders or DEFAULT_FOLDERS, args.since)

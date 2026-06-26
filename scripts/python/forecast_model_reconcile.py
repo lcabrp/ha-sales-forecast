@@ -29,12 +29,6 @@ aggregate matches a more reliable target:
 The aggregate target can be the corporate aggregate, a recent-demand aggregate, or
 a blend (``--target`` and ``--blend-alpha``). Rescaling factors are clipped to
 ``--max-factor`` to avoid runaway corrections from tiny denominators.
-
-EXAMPLE
--------
-    uv run python scripts/python/forecast_model_reconcile.py \
-        --forecast Output/ForecastAccuracy/model/horizon_consistent/forecast_sku_day.parquet \
-        --base HorizonConsistentMLForecastQty --target blend --blend-alpha 0.5
 """
 
 from __future__ import annotations
@@ -70,6 +64,11 @@ TARGET_SOURCES = {
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for forecast reconciliation.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Hierarchical reconciliation of SKU/day forecasts.")
     parser.add_argument("--forecast", type=Path, default=DEFAULT_FORECAST_PATH)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -97,14 +96,40 @@ def parse_args() -> argparse.Namespace:
 
 
 def safe_factor(target: pd.Series, base: pd.Series, max_factor: float) -> pd.Series:
+    """Calculate the ratio factor to scale the base forecast to target, clipping to boundaries.
+
+    Args:
+        target: Target aggregate forecast series.
+        base: Base forecast series.
+        max_factor: Max scaling factor allowed.
+
+    Returns:
+        pd.Series: Clipped scaling factors.
+    """
     factor = np.where(base.to_numpy() > 0, target.to_numpy() / np.where(base.to_numpy() > 0, base.to_numpy(), 1.0), 1.0)
     return pd.Series(np.clip(factor, 1.0 / max_factor, max_factor), index=base.index)
 
 
-def aggregate_target(group_base: pd.Series, group_corp: pd.Series, target: str, alpha: float) -> pd.Series:
+def aggregate_target(
+    group_base: pd.Series,
+    group_corp: pd.Series,
+    target: str,
+    alpha: float,
+) -> pd.Series:
+    """Compute the combined target sum using option settings.
+
+    Args:
+        group_base: Sum of the base forecast.
+        group_corp: Sum of the target forecast.
+        target: Selected target mode.
+        alpha: Blend weight value.
+
+    Returns:
+        pd.Series: Computed target series.
+    """
     if target == "blend":
         return alpha * group_corp + (1.0 - alpha) * group_base
-    return group_corp  # corporate/recent column already selected upstream
+    return group_corp
 
 
 def reconcile_grouped(
@@ -116,7 +141,22 @@ def reconcile_grouped(
     alpha: float,
     max_factor: float,
 ) -> pd.Series:
-    """Rescale base forecast within each group so the group sum hits the target."""
+    """Rescale base forecast within each group so the group sum hits the target.
+
+    Preserves base SKU share layout shapes while aligning totals.
+
+    Args:
+        df: Forecast dataset.
+        base_col: Column name of base forecast.
+        target_col: Column name of target forecast.
+        group_cols: Group columns to segment by.
+        target_mode: Selected target mode.
+        alpha: Blend weight value.
+        max_factor: Max scaling factor.
+
+    Returns:
+        pd.Series: Calibrated and reconciled SKU forecast series.
+    """
     base_sum = df.groupby(group_cols)[base_col].transform("sum")
     target_raw_sum = df.groupby(group_cols)[target_col].transform("sum")
     if target_mode == "blend":
@@ -128,6 +168,15 @@ def reconcile_grouped(
 
 
 def wape_bias(df: pd.DataFrame, col: str) -> dict[str, float]:
+    """Calculate bias percentage and WAPE error metric for a forecast column.
+
+    Args:
+        df: Scored dataset.
+        col: Forecast column name.
+
+    Returns:
+        dict[str, float]: Evaluation metrics.
+    """
     actual = float(df[ACTUAL_COLUMN].sum())
     forecast = float(df[col].sum())
     abs_err = float((df[col] - df[ACTUAL_COLUMN]).abs().sum())
@@ -140,6 +189,15 @@ def wape_bias(df: pd.DataFrame, col: str) -> dict[str, float]:
 
 
 def evaluate(df: pd.DataFrame, forecast_cols: list[str]) -> pd.DataFrame:
+    """Evaluate all forecast candidates grouped by window.
+
+    Args:
+        df: Scored dataset.
+        forecast_cols: Forecast columns to evaluate.
+
+    Returns:
+        pd.DataFrame: Evaluation metrics grouped by window.
+    """
     rows = []
     for window, group in df.groupby("WindowLabel"):
         for col in forecast_cols:
@@ -148,6 +206,7 @@ def evaluate(df: pd.DataFrame, forecast_cols: list[str]) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Execute the command line entry point to perform hierarchical forecast reconciliation."""
     args = parse_args()
     if not args.forecast.exists():
         raise SystemExit(

@@ -19,6 +19,7 @@ from pathlib import Path
 
 import pandas as pd
 
+# Add parent directory to system path to import modules
 PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
@@ -66,6 +67,7 @@ from forecast_replacement_hybrid_candidate import (  # noqa: E402
 )
 from forecast_replacement_ml_quantile_backtest import run_quantile_stage  # noqa: E402
 
+# Candidate output metadata and parameters default definitions
 DEFAULT_CANDIDATE_TYPE = "quantile_hybrid_ml_baseline"
 DEFAULT_MODEL = "hgb_quantile_log"
 DEFAULT_THRESHOLD = 20.0
@@ -75,16 +77,61 @@ DEFAULT_OUTPUT_DIR_NAME = "replacement_contract_quantile"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the hybrid quantile candidate generator.
+
+    Returns:
+        argparse.Namespace: Populated argument values.
+    """
     parser = argparse.ArgumentParser(description="Build a quantile hybrid ML BRG-like candidate package.")
-    parser.add_argument("--source-file", type=Path)
-    parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
-    parser.add_argument("--candidate-id")
-    parser.add_argument("--forecast-start-date")
-    parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
-    parser.add_argument("--actuals-path", type=Path, default=ACTUALS_PATH)
-    parser.add_argument("--pdl-sku-features-path", type=Path, default=PDL_SKU_FEATURES_PATH)
-    parser.add_argument("--lookback-days", type=int, default=DEFAULT_LOOKBACK_DAYS)
-    parser.add_argument("--quantile", type=float, default=0.35, help="Quantile regression target (e.g. 0.35).")
+    parser.add_argument(
+        "--source-file",
+        type=Path,
+        help="Path to the source planning workbook Excel file.",
+    )
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        default=DEFAULT_OUTPUT_ROOT,
+        help="Root directory where candidates are saved.",
+    )
+    parser.add_argument(
+        "--candidate-id",
+        help="Unique candidate directory identifier.",
+    )
+    parser.add_argument(
+        "--forecast-start-date",
+        help="Start date of the forecast horizon. Defaults to workbook date if omitted.",
+    )
+    parser.add_argument(
+        "--panel",
+        type=Path,
+        default=DEFAULT_PANEL_PATH,
+        help="Path to the model panel dataset.",
+    )
+    parser.add_argument(
+        "--actuals-path",
+        type=Path,
+        default=ACTUALS_PATH,
+        help="Path to transaction actuals.",
+    )
+    parser.add_argument(
+        "--pdl-sku-features-path",
+        type=Path,
+        default=PDL_SKU_FEATURES_PATH,
+        help="Path to the PDL/promotion SKU feature parquet.",
+    )
+    parser.add_argument(
+        "--lookback-days",
+        type=int,
+        default=DEFAULT_LOOKBACK_DAYS,
+        help="Lookback days for historical actuals velocity calculation.",
+    )
+    parser.add_argument(
+        "--quantile",
+        type=float,
+        default=0.35,
+        help="Quantile regression target (e.g. 0.35).",
+    )
     parser.add_argument(
         "--disable-censoring",
         action="store_true",
@@ -95,14 +142,29 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Disable category-level corporate forecast blending.",
     )
-    parser.add_argument("--ml-threshold-units", type=float, default=DEFAULT_THRESHOLD)
-    parser.add_argument("--recent-fallback-weight", type=float, default=DEFAULT_RECENT_FALLBACK_WEIGHT)
+    parser.add_argument(
+        "--ml-threshold-units",
+        type=float,
+        default=DEFAULT_THRESHOLD,
+        help="Cumulative unit volume requirement below which fallback replaces ML forecast.",
+    )
+    parser.add_argument(
+        "--recent-fallback-weight",
+        type=float,
+        default=DEFAULT_RECENT_FALLBACK_WEIGHT,
+        help="Fallback demand weight scalar for low-volume SKUs.",
+    )
     parser.add_argument(
         "--recent-volume-cap",
         type=float,
         help="Optional cap for FD1-FD14 total units as a multiple of recent no-ML forecast units.",
     )
-    parser.add_argument("--weekly-tail-scale", type=float, default=DEFAULT_WEEKLY_TAIL_SCALE)
+    parser.add_argument(
+        "--weekly-tail-scale",
+        type=float,
+        default=DEFAULT_WEEKLY_TAIL_SCALE,
+        help="Weekly tail scaling multiplier.",
+    )
     parser.add_argument("--max-train-rows", type=int, default=500_000)
     parser.add_argument("--random-state", type=int, default=42)
     parser.add_argument("--max-iter", type=int, default=180)
@@ -137,7 +199,17 @@ def blend_df_14day_with_corporate(
     df_hier: pd.DataFrame,
     group_cols: list[str] = ["Division", "Department", "Class"],
 ) -> pd.DataFrame:
-    """Scale SKU 14-day daily forecasts to match the corporate category totals from the workbook."""
+    """Scale SKU 14-day daily forecasts to match the corporate category totals from the workbook.
+
+    Args:
+        df_14day (pd.DataFrame): Candidate daily forecasts (FD1-FD14).
+        source_14day (pd.DataFrame): Original corporate daily forecasts.
+        df_hier (pd.DataFrame): Product reference hierarchy attributes.
+        group_cols (list[str], optional): Category groupings for summation. Defaults to Division/Dept/Class.
+
+    Returns:
+        pd.DataFrame: Blended daily forecast records.
+    """
     if df_14day.empty or source_14day.empty:
         return df_14day
 
@@ -183,7 +255,9 @@ def blend_df_14day_with_corporate(
     # Scale factor
     can_scale = df_blended["CorpCatUnits"].gt(0) & df_blended["ModelCatUnits"].gt(0)
     df_blended["ScaleFactor"] = 1.0
-    df_blended.loc[can_scale, "ScaleFactor"] = df_blended.loc[can_scale, "CorpCatUnits"] / df_blended.loc[can_scale, "ModelCatUnits"]
+    df_blended.loc[can_scale, "ScaleFactor"] = (
+        df_blended.loc[can_scale, "CorpCatUnits"] / df_blended.loc[can_scale, "ModelCatUnits"]
+    )
 
     # Proportions scale daily columns
     for col in FD_COLUMNS:
@@ -193,6 +267,7 @@ def blend_df_14day_with_corporate(
 
 
 def main() -> None:
+    """Train ML quantile model, blend with historical fallbacks, write workbook, and save contract logs."""
     args = parse_args()
     configure_threads(args.threads)
     for name in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
@@ -236,11 +311,17 @@ def main() -> None:
     if not args.disable_censoring:
         if "InventoryAvailPhysicalLag1" in train.columns:
             is_stockout = train["InventoryAvailPhysicalLag1"].eq(0.0) & train["InventoryAvailPhysicalLag1"].notna()
-            print(f"Censoring: dropping {is_stockout.sum():,} training rows due to stockouts (InventoryAvailPhysicalLag1 == 0).", flush=True)
+            print(
+                f"Censoring: dropping {is_stockout.sum():,} training rows due to stockouts (InventoryAvailPhysicalLag1 == 0).", 
+                flush=True
+            )
             train = train.loc[~is_stockout].copy()
         elif "HasAvailableInventoryLag1" in train.columns:
             is_stockout = train["HasAvailableInventoryLag1"].eq(False) & train["HasAvailableInventoryLag1"].notna()
-            print(f"Censoring: dropping {is_stockout.sum():,} training rows due to stockouts (HasAvailableInventoryLag1 == False).", flush=True)
+            print(
+                f"Censoring: dropping {is_stockout.sum():,} training rows due to stockouts (HasAvailableInventoryLag1 == False).", 
+                flush=True
+            )
             train = train.loc[~is_stockout].copy()
 
     future, future_meta = build_future_rows(
@@ -311,11 +392,21 @@ def main() -> None:
     daily_contract = build_daily_contract(df_14day, forecast_start, candidate_id, workbook_path.name)
     weekly_contract = build_weekly_contract(df_weekly, week_dates, week_dates, candidate_id, workbook_path.name)
     outputs = {
-        "daily_forecast": write_frame_with_sample(daily_contract, contract_dir / "daily_forecast.parquet", args.sample_rows),
-        "weekly_forecast": write_frame_with_sample(weekly_contract, contract_dir / "weekly_forecast.parquet", args.sample_rows),
-        "product_hierarchy": write_frame_with_sample(df_hier, contract_dir / "product_hierarchy.parquet", args.sample_rows),
-        "product_status": write_frame_with_sample(df_status, contract_dir / "product_status.parquet", args.sample_rows),
-        "signal_sku_summary": write_frame_with_sample(signal, contract_dir / "signal_sku_summary.parquet", args.sample_rows),
+        "daily_forecast": write_frame_with_sample(
+            daily_contract, contract_dir / "daily_forecast.parquet", args.sample_rows
+        ),
+        "weekly_forecast": write_frame_with_sample(
+            weekly_contract, contract_dir / "weekly_forecast.parquet", args.sample_rows
+        ),
+        "product_hierarchy": write_frame_with_sample(
+            df_hier, contract_dir / "product_hierarchy.parquet", args.sample_rows
+        ),
+        "product_status": write_frame_with_sample(
+            df_status, contract_dir / "product_status.parquet", args.sample_rows
+        ),
+        "signal_sku_summary": write_frame_with_sample(
+            signal, contract_dir / "signal_sku_summary.parquet", args.sample_rows
+        ),
     }
     
     method_meta = {

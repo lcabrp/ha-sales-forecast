@@ -62,6 +62,11 @@ DEFAULT_MODEL = "hgb_absolute_log"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the shadow window scoring pipeline.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Score a recent shadow forecast window.")
     parser.add_argument("--source-file", type=Path)
     parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
@@ -206,6 +211,16 @@ def parse_args() -> argparse.Namespace:
 
 
 def wide_to_daily(df_14day: pd.DataFrame, forecast_start: pd.Timestamp, candidate: str) -> pd.DataFrame:
+    """Melt a 14-day wide forecast DataFrame to SKU-day daily format.
+
+    Args:
+        df_14day: Wide format forecast DataFrame.
+        forecast_start: Horizon start date.
+        candidate: Candidate forecast name.
+
+    Returns:
+        pd.DataFrame: Cleaned SKU-day forecast DataFrame.
+    """
     daily = df_14day.melt(
         id_vars=["SKU"],
         value_vars=[col for col in FD_COLUMNS if col in df_14day.columns],
@@ -227,6 +242,17 @@ def cap_daily_to_recent(
     cap_multiple: float,
     candidate: str,
 ) -> pd.DataFrame:
+    """Apply recent volume cap scaling factors back down to daily SKU-day level.
+
+    Args:
+        daily: The original daily forecast.
+        recent_daily: Recent baseline forecast.
+        cap_multiple: Cap multiplier.
+        candidate: Target candidate name.
+
+    Returns:
+        pd.DataFrame: Daily scaled/capped forecast DataFrame.
+    """
     forecast = (
         daily.groupby("SKU", as_index=False)
         .agg(ForecastUnits=("ForecastUnits", "sum"))
@@ -256,6 +282,15 @@ def cap_daily_to_recent(
 
 
 def recent_to_daily(recent_daily: pd.DataFrame, candidate: str) -> pd.DataFrame:
+    """Transform recent baseline forecast to a formatted candidate forecast.
+
+    Args:
+        recent_daily: Daily recent baseline forecast.
+        candidate: Target candidate name.
+
+    Returns:
+        pd.DataFrame: Cleaned daily forecast DataFrame.
+    """
     daily = recent_daily.rename(columns={"ForecastUnits": "ForecastUnits"}).copy()
     daily["ForecastUnits"] = pd.to_numeric(
         daily["ForecastUnits"], errors="coerce"
@@ -265,6 +300,14 @@ def recent_to_daily(recent_daily: pd.DataFrame, candidate: str) -> pd.DataFrame:
 
 
 def load_latest_category_map(panel_path: Path) -> pd.DataFrame:
+    """Build a map of the latest known category hierarchy columns for each SKU.
+
+    Args:
+        panel_path: Path to the model panel parquet file/directory.
+
+    Returns:
+        pd.DataFrame: A DataFrame of SKU to category mappings.
+    """
     columns = ["SKU", "Date", "Division", "Department", "Class", "KeyCategoryView"]
     if panel_path.is_dir():
         parquet_files = sorted(panel_path.glob("*.parquet"))
@@ -285,6 +328,15 @@ def load_latest_category_map(panel_path: Path) -> pd.DataFrame:
 
 
 def attach_category_map(frame: pd.DataFrame, category_map: pd.DataFrame) -> pd.DataFrame:
+    """Merge the SKU category hierarchy attributes onto a DataFrame.
+
+    Args:
+        frame: The target DataFrame.
+        category_map: The category map DataFrame.
+
+    Returns:
+        pd.DataFrame: DataFrame with attached category columns.
+    """
     output = frame.copy()
     output["SKU"] = normalize_sku_series(output["SKU"])
     output = output.merge(category_map, on="SKU", how="left")
@@ -294,10 +346,23 @@ def attach_category_map(frame: pd.DataFrame, category_map: pd.DataFrame) -> pd.D
 
 
 def category_columns() -> list[str]:
+    """Get the list of standard category grouping column names.
+
+    Returns:
+        list[str]: Standard category hierarchy columns.
+    """
     return ["Division", "Department", "Class", "KeyCategoryView"]
 
 
 def load_yoy_direct_pick(path: Path) -> pd.DataFrame:
+    """Load historical YoY DirectPick actual units.
+
+    Args:
+        path: Path to the historical YoY actuals Parquet file.
+
+    Returns:
+        pd.DataFrame: Cleaned date-SKU actual pick units.
+    """
     if not path.exists():
         raise FileNotFoundError(f"Missing YoY DirectPick history: {path}")
     direct = pd.read_parquet(path)
@@ -327,6 +392,25 @@ def category_lift_table(
     lift_cap: float,
     shrink_units: float,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Compute category-level demand lift ratios from historical YoY sale windows.
+
+    Applies Empirical Bayes shrinkage toward the overall lift to handle small volume
+    or noisy categories.
+
+    Args:
+        direct: Historical YoY actual units.
+        category_map: SKU to category mapping.
+        sale_start: Start date of the analog sale period.
+        sale_end: End date of the analog sale period.
+        baseline_start: Start date of the analog baseline.
+        baseline_end: End date of the analog baseline.
+        lift_floor: Minimum allowed lift ratio.
+        lift_cap: Maximum allowed lift ratio.
+        shrink_units: Shrinkage target sample weight in baseline expected units.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: A DataFrame with category lifts and a metadata dict.
+    """
     direct = attach_category_map(direct, category_map)
     sale = direct.loc[direct["Date"].between(sale_start, sale_end)].copy()
     baseline = direct.loc[direct["Date"].between(baseline_start, baseline_end)].copy()
@@ -385,6 +469,17 @@ def build_pdl_shape(
     forecast_start: pd.Timestamp,
     forecast_end: pd.Timestamp,
 ) -> pd.DataFrame:
+    """Construct PDL promotion based shape allocation units.
+
+    Args:
+        pdl_path: Path to PDL SKU features Parquet.
+        category_map: SKU to category mapping.
+        forecast_start: Horizon start date.
+        forecast_end: Horizon end date.
+
+    Returns:
+        pd.DataFrame: Daily allocation shape units.
+    """
     columns = ["Date", "SKU", "pdl_sku_lw_unit_sales", "pdl_sku_total_avail_inv"]
     if not pdl_path.exists():
         return pd.DataFrame(columns=["SKU", "ForecastDate", "ShapeUnits", *category_columns()])
@@ -413,6 +508,21 @@ def add_yoy_sale_lift_overlay(
     forecast_start: pd.Timestamp,
     forecast_end: pd.Timestamp,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Generate YoY July sale category-lift overlay forecasts.
+
+    Blends analog lifts from 2024 and 2025, calculates targets against current pre-sale baseline,
+    and distributes category-level lift targets onto SKU-day allocation shapes.
+
+    Args:
+        forecasts: Existing daily forecasts DataFrame.
+        actuals: Recent historical actuals.
+        args: Command line arguments containing YoY paths and parameters.
+        forecast_start: Start date of the forecast.
+        forecast_end: End date of the forecast.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Forecasts with the overlay candidate and metadata.
+    """
     category_map = load_latest_category_map(args.panel)
     
     # 2025 Category Lift
@@ -602,6 +712,17 @@ def load_corporate_exact(
     forecast_start: pd.Timestamp,
     forecast_end: pd.Timestamp,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Load the exact corporate forecast snapshot from the database extract.
+
+    Args:
+        summary_path: Path to snapshot summary Parquet.
+        forecast_day_path: Path to SKU/day corporate forecast Parquet.
+        forecast_start: Forecast start date.
+        forecast_end: Forecast end date.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Corporate forecasts and status metadata.
+    """
     summary = pd.read_parquet(summary_path)
     summary["ForecastStartDate"] = pd.to_datetime(summary["ForecastStartDate"], errors="coerce").dt.normalize()
     exact = summary.loc[summary["ForecastStartDate"].eq(forecast_start)].copy()
@@ -636,6 +757,16 @@ def load_corporate_exact(
 
 
 def actual_daily(actuals: pd.DataFrame, forecast_start: pd.Timestamp, forecast_end: pd.Timestamp) -> pd.DataFrame:
+    """Extract and aggregate actual daily SKU demand for the window.
+
+    Args:
+        actuals: Historical actuals DataFrame.
+        forecast_start: Horizon start date.
+        forecast_end: Horizon end date.
+
+    Returns:
+        pd.DataFrame: Cleaned actual demand.
+    """
     actual = actuals.loc[actuals["ActualDate"].between(forecast_start, forecast_end)].copy()
     actual = (
         actual.groupby(["SKU", "ActualDate"], as_index=False)
@@ -646,6 +777,16 @@ def actual_daily(actuals: pd.DataFrame, forecast_start: pd.Timestamp, forecast_e
 
 
 def score_daily(forecast: pd.DataFrame, actual: pd.DataFrame, candidate: str) -> dict[str, Any]:
+    """Score a daily forecast candidate against actual demand.
+
+    Args:
+        forecast: Daily candidate forecasts.
+        actual: Daily actual demand.
+        candidate: Candidate name to score.
+
+    Returns:
+        dict[str, Any]: Scored error metrics (WAPE, Bias, Coverage).
+    """
     candidate_forecast = forecast.loc[forecast["Candidate"].eq(candidate), ["SKU", "ForecastDate", "ForecastUnits"]]
     compare = candidate_forecast.merge(actual, on=["SKU", "ForecastDate"], how="outer")
     compare["ForecastUnits"] = pd.to_numeric(compare["ForecastUnits"], errors="coerce").fillna(0)
@@ -676,6 +817,7 @@ def score_daily(forecast: pd.DataFrame, actual: pd.DataFrame, candidate: str) ->
 
 
 def main() -> None:
+    """Execute the shadow window forecast generation and scoring pipeline."""
     args = parse_args()
     configure_threads(args.threads)
     for name in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):

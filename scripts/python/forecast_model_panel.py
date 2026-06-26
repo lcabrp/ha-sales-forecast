@@ -179,6 +179,11 @@ PRODUCT_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for building the model panel.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Build a model-ready SKU/day panel and transparent baseline backtest."
     )
@@ -222,22 +227,62 @@ def parse_args() -> argparse.Namespace:
 
 
 def parse_date_arg(value: str | None) -> pd.Timestamp | None:
+    """Safely convert a string date to a pandas Timestamp.
+
+    Args:
+        value: Date string in ISO format or None.
+
+    Returns:
+        pd.Timestamp | None: A parsed timestamp or None.
+    """
     if not value:
         return None
     return pd.Timestamp(date.fromisoformat(value))
 
 
 def normalize_date(series: pd.Series) -> pd.Series:
+    """Normalize date series to dates (truncating time) on a pandas datetime index.
+
+    Args:
+        series: Pandas series containing dates.
+
+    Returns:
+        pd.Series: Normalized datetime series.
+    """
     return pd.to_datetime(series, errors="coerce").dt.normalize()
 
 
 def read_required_parquet(path: Path, columns: list[str]) -> pd.DataFrame:
+    """Read specific columns from a Parquet file, raising FileNotFoundError if missing.
+
+    Args:
+        path: File path to the Parquet file.
+        columns: List of column names to load.
+
+    Returns:
+        pd.DataFrame: Loaded pandas dataframe.
+
+    Raises:
+        FileNotFoundError: If the Parquet file does not exist.
+    """
     if not path.exists():
         raise FileNotFoundError(f"Required input not found: {path}")
     return pd.read_parquet(path, columns=columns)
 
 
 def date_range_for(path: Path, column: str) -> tuple[pd.Timestamp, pd.Timestamp]:
+    """Find the min and max dates for a date column in a Parquet dataset.
+
+    Args:
+        path: Path to the Parquet file.
+        column: Column name containing dates.
+
+    Returns:
+        tuple[pd.Timestamp, pd.Timestamp]: Min and max timestamps.
+
+    Raises:
+        ValueError: If no valid dates are found in the column.
+    """
     df = read_required_parquet(path, [column])
     values = normalize_date(df[column]).dropna()
     if values.empty:
@@ -246,6 +291,19 @@ def date_range_for(path: Path, column: str) -> tuple[pd.Timestamp, pd.Timestamp]
 
 
 def choose_panel_window(start_arg: str, end_arg: str | None) -> tuple[pd.Timestamp, pd.Timestamp, dict[str, Any]]:
+    """Determine the panel date window based on arguments and source data ranges.
+
+    Args:
+        start_arg: Start date string.
+        end_arg: End date string or None.
+
+    Returns:
+        tuple[pd.Timestamp, pd.Timestamp, dict[str, Any]]: Start timestamp, end timestamp,
+            and range metadata.
+
+    Raises:
+        ValueError: If the start date is after the end date.
+    """
     actual_min, actual_max = date_range_for(ACTUALS_PATH, "ActualDate")
     order_min, order_max = date_range_for(SALES_ORDER_SKU_DAY_PATH, "OrderDateUTC")
     forecast_min, forecast_max = date_range_for(FORECAST_DAY_PATH, "ForecastDate")
@@ -271,6 +329,17 @@ def choose_panel_window(start_arg: str, end_arg: str | None) -> tuple[pd.Timesta
 
 
 def filter_date_window(df: pd.DataFrame, date_col: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Filter a dataframe to a given date window, normalizing the date column.
+
+    Args:
+        df: Input dataframe.
+        date_col: Name of the date column.
+        start: Start of the date range (inclusive).
+        end: End of the date range (inclusive).
+
+    Returns:
+        pd.DataFrame: Filtered copy of the dataframe with a normalized 'Date' column.
+    """
     dates = normalize_date(df[date_col])
     out = df.loc[dates.between(start, end)].copy()
     out["Date"] = dates.loc[out.index]
@@ -278,6 +347,15 @@ def filter_date_window(df: pd.DataFrame, date_col: str, start: pd.Timestamp, end
 
 
 def load_actuals(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Load and aggregate actual demand picks for the panel window.
+
+    Args:
+        start: Inclusive start timestamp.
+        end: Inclusive end timestamp.
+
+    Returns:
+        pd.DataFrame: Aggregated actual demand by SKU/Date.
+    """
     df = read_required_parquet(
         ACTUALS_PATH,
         ["ActualDate", "SKU", "SoldUnits", "PickLines", "DistinctOrders"],
@@ -288,6 +366,15 @@ def load_actuals(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
 
 
 def load_sales_orders(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Load and aggregate sales order demand and discount metrics for the panel window.
+
+    Args:
+        start: Inclusive start timestamp.
+        end: Inclusive end timestamp.
+
+    Returns:
+        pd.DataFrame: Aggregated sales order features by SKU/Date.
+    """
     df = read_required_parquet(
         SALES_ORDER_SKU_DAY_PATH,
         [
@@ -334,6 +421,15 @@ def load_sales_orders(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
 
 
 def load_corporate_forecast(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Load the latest corporate forecast quantity published on or before the forecast date.
+
+    Args:
+        start: Inclusive start timestamp.
+        end: Inclusive end timestamp.
+
+    Returns:
+        pd.DataFrame: Latest corporate forecast entries.
+    """
     df = read_required_parquet(
         FORECAST_DAY_PATH,
         ["SKU", "InferredFileDate", "ForecastDate", "ForecastQty"],
@@ -348,6 +444,7 @@ def load_corporate_forecast(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFr
     if df.empty:
         return pd.DataFrame(columns=["SKU", "Date", "CorporateForecastQty", "CorporateSnapshotDate"])
 
+    # Resolve duplicates by picking the latest file snapshot for each target forecast date
     df = df.sort_values(["SKU", "Date", "InferredFileDate"])
     df = df.drop_duplicates(["SKU", "Date"], keep="last")
     return df.rename(
@@ -359,6 +456,14 @@ def load_corporate_forecast(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFr
 
 
 def load_product_attributes(end: pd.Timestamp) -> pd.DataFrame:
+    """Load the latest corporate snapshot product attributes on or before the end date.
+
+    Args:
+        end: Upper limit of date snapshots.
+
+    Returns:
+        pd.DataFrame: Deduplicated product hierarchy attributes.
+    """
     df = read_required_parquet(
         FORECAST_SNAPSHOT_PATH,
         [
@@ -385,6 +490,7 @@ def load_product_attributes(end: pd.Timestamp) -> pd.DataFrame:
     df = df.loc[df["InferredFileDate"].notna() & (df["InferredFileDate"] <= end)].copy()
     if df.empty:
         return pd.DataFrame(columns=PRODUCT_COLUMNS)
+    # Dedup SKU to keep only its latest metadata state
     df = df.sort_values(["SKU", "InferredFileDate", "ForecastStartDate"])
     df = df.drop_duplicates("SKU", keep="last")
     return df.rename(
@@ -396,6 +502,15 @@ def load_product_attributes(end: pd.Timestamp) -> pd.DataFrame:
 
 
 def load_promotions(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Load daily calendar-level promotion features.
+
+    Args:
+        start: Inclusive start timestamp.
+        end: Inclusive end timestamp.
+
+    Returns:
+        pd.DataFrame: Daily coupon/PDL active states.
+    """
     df = read_required_parquet(
         PROMO_DAILY_PATH,
         [
@@ -418,7 +533,15 @@ def load_promotions(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
 
 
 def load_pdl_sku_features(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
-    """Load SKU-specific PDL features when that optional feature table exists."""
+    """Load SKU-specific PDL features when that optional feature table exists.
+
+    Args:
+        start: Inclusive start date.
+        end: Inclusive end date.
+
+    Returns:
+        pd.DataFrame: SKU/day promotion features.
+    """
     if not PDL_SKU_FEATURES_PATH.exists():
         print("  SKU-specific PDL features: not found; run forecast_promo_sku_features.py")
         return pd.DataFrame(columns=["SKU", "Date"])
@@ -449,7 +572,15 @@ def load_pdl_sku_features(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFram
 
 
 def load_inventory_features(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
-    """Load one-day-lagged inventory features when the optional table exists."""
+    """Load one-day-lagged physical inventory features when the source table exists.
+
+    Args:
+        start: Inclusive start date.
+        end: Inclusive end date.
+
+    Returns:
+        pd.DataFrame: Lagged inventory features by SKU/date.
+    """
     if not INVENTORY_SKU_DAY_PATH.exists():
         print("  inventory history features: not found; run forecast_inventory_history.py")
         return pd.DataFrame(columns=["SKU", "Date"])
@@ -476,6 +607,7 @@ def load_inventory_features(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFr
     ]
     df = pd.read_parquet(INVENTORY_SKU_DAY_PATH, columns=columns)
     df["SnapshotDate"] = normalize_date(df["SnapshotDate"])
+    # Shift inventory features by 1 day forward to represent lag-1 status on the forecast date.
     df["Date"] = df["SnapshotDate"] + pd.Timedelta(days=1)
     df = df.loc[df["Date"].between(start, end)].copy()
     return df.rename(
@@ -506,6 +638,16 @@ def _inbound_bucket_frame(
     panel_date: pd.Timestamp,
     snapshot_date: pd.Timestamp,
 ) -> pd.DataFrame:
+    """Helper to partition inbound orders into age-based demand buckets.
+
+    Args:
+        snapshot: Dataframe containing expected arrival dates and open units.
+        panel_date: Target forecasting date.
+        snapshot_date: Original snapshot file date.
+
+    Returns:
+        pd.DataFrame: Aggregated bucket metrics grouped by SKU.
+    """
     work = snapshot.copy()
     days_until = (work["ExpectedInDCDate"] - panel_date).dt.days
     units = pd.to_numeric(work["InboundRemainderUnits"], errors="coerce").fillna(0.0)
@@ -554,7 +696,15 @@ def _inbound_bucket_frame(
 
 
 def load_inbound_features(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
-    """Load Product Info inbound snapshots as daily forecast-safe features."""
+    """Load Product Info inbound snapshots as daily forecast-safe features.
+
+    Args:
+        start: Inclusive start date.
+        end: Inclusive end date.
+
+    Returns:
+        pd.DataFrame: Bucketed inbound PO quantities by SKU/date.
+    """
     if not INBOUND_SNAPSHOT_PATH.exists():
         print("  inbound Product Info features: not found; run forecast_product_info_inbound.py")
         return pd.DataFrame(columns=["SKU", "Date"])
@@ -589,10 +739,12 @@ def load_inbound_features(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFram
     snapshot_dates = sorted(snapshots)
     frames = []
     for panel_date in pd.date_range(start, end, freq="D"):
+        # Select the latest snapshot date available prior to the panel target date
         eligible = [snapshot_date for snapshot_date in snapshot_dates if snapshot_date <= panel_date]
         if not eligible:
             continue
         snapshot_date = eligible[-1]
+        # Exclude snapshots that are too old to prevent stale PO plans from leaking into baseline
         if (panel_date - snapshot_date).days > MAX_INBOUND_SNAPSHOT_AGE_DAYS:
             continue
         frames.append(_inbound_bucket_frame(snapshots[snapshot_date], panel_date, snapshot_date))
@@ -602,7 +754,15 @@ def load_inbound_features(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFram
 
 
 def load_warehouse_supply_features(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
-    """Load one-day-lagged warehouse supply work features when available."""
+    """Load one-day-lagged warehouse supply work features when available.
+
+    Args:
+        start: Inclusive start date.
+        end: Inclusive end date.
+
+    Returns:
+        pd.DataFrame: Lagged warehouse supply features by SKU/date.
+    """
     if not WAREHOUSE_SUPPLY_SKU_DAY_PATH.exists():
         print("  warehouse supply work features: not found; run forecast_warehouse_supply_history.py")
         return pd.DataFrame(columns=["SKU", "Date"])
@@ -624,6 +784,7 @@ def load_warehouse_supply_features(start: pd.Timestamp, end: pd.Timestamp) -> pd
     ]
     df = pd.read_parquet(WAREHOUSE_SUPPLY_SKU_DAY_PATH, columns=columns)
     df["EventDate"] = normalize_date(df["EventDate"])
+    # Shift 1 day to ensure it is lagged status relative to forecast date
     df["Date"] = df["EventDate"] + pd.Timedelta(days=1)
     df = df.loc[df["Date"].between(start, end)].copy()
     return df.rename(
@@ -655,6 +816,22 @@ def merge_panel(
     inbound_features: pd.DataFrame,
     warehouse_supply_features: pd.DataFrame,
 ) -> pd.DataFrame:
+    """Merge various features and targets into a unified sparse model panel.
+
+    Args:
+        actuals: Demand actuals.
+        orders: Sales order data.
+        corporate_forecast: Corporate forecast data.
+        product_attributes: Product hierarchy data.
+        promotions: Daily promotions features.
+        pdl_sku_features: SKU-level promotions.
+        inventory_features: Lagged inventory quantities.
+        inbound_features: Bucketed open PO data.
+        warehouse_supply_features: Lagged warehouse supply work counts.
+
+    Returns:
+        pd.DataFrame: Merged and clean panel dataframe.
+    """
     panel = actuals.merge(orders, on=["SKU", "Date"], how="outer")
     panel = panel.merge(corporate_forecast, on=["SKU", "Date"], how="outer")
     panel = panel.merge(product_attributes, on="SKU", how="left")
@@ -713,6 +890,18 @@ def merge_panel(
 
 
 def _add_lags_for_partition(partition: pd.DataFrame) -> pd.DataFrame:
+    """Calculate target demand lag features for a subset partition of the panel.
+
+    Calculates Lag1, Lag7, Lag14, and rolling 7/28 averages of SoldUnits, OrderedUnits,
+    and CorporateForecastQty. These calculations are shifted (shifed(1)) to prevent forecast
+    leakage.
+
+    Args:
+        partition: Partition of panel rows grouped by SKU.
+
+    Returns:
+        pd.DataFrame: Partition with computed lag columns.
+    """
     partition = partition.sort_values(["SKU", "Date"], kind="mergesort").copy()
     grouped = partition.groupby("SKU", sort=False)
 
@@ -740,6 +929,15 @@ def _add_lags_for_partition(partition: pd.DataFrame) -> pd.DataFrame:
 
 
 def add_lag_features(panel: pd.DataFrame, workers: int) -> pd.DataFrame:
+    """Orchestrate demand lag calculation across SKUs, optionally using multiprocess pool.
+
+    Args:
+        panel: Sparse model panel.
+        workers: Maximum child processes to spawn.
+
+    Returns:
+        pd.DataFrame: Panel with lag features added.
+    """
     workers = max(1, int(workers))
     if workers == 1 or panel["SKU"].nunique() < 1000:
         return _add_lags_for_partition(panel)
@@ -757,6 +955,14 @@ def add_lag_features(panel: pd.DataFrame, workers: int) -> pd.DataFrame:
 
 
 def add_item_color_lag_features(panel: pd.DataFrame) -> pd.DataFrame:
+    """Calculate aggregated lag demand features grouped at the parent Item-Color (Style) level.
+
+    Args:
+        panel: Model panel.
+
+    Returns:
+        pd.DataFrame: Panel with Item/Color lag columns.
+    """
     required = {"Item", "Color", "Date", "SoldUnits", "OrderedUnits"}
     if not required.issubset(panel.columns):
         for column in ITEM_COLOR_LAG_FEATURE_COLUMNS:
@@ -801,6 +1007,14 @@ def add_item_color_lag_features(panel: pd.DataFrame) -> pd.DataFrame:
 
 
 def add_category_size_lag_features(panel: pd.DataFrame) -> pd.DataFrame:
+    """Calculate aggregated demand features grouped at the ProductGroupCode-SizeGroupCode level.
+
+    Args:
+        panel: Model panel.
+
+    Returns:
+        pd.DataFrame: Panel with Category/Size lag columns.
+    """
     required = {"ProductGroupCode", "SizeGroupCode", "Date", "SoldUnits", "OrderedUnits"}
     if not required.issubset(panel.columns):
         for column in CATEGORY_SIZE_LAG_FEATURE_COLUMNS:
@@ -843,6 +1057,18 @@ def add_category_size_lag_features(panel: pd.DataFrame) -> pd.DataFrame:
 
 
 def add_baseline_forecasts(panel: pd.DataFrame) -> pd.DataFrame:
+    """Incorporate basic starter forecast baselines into the panel.
+
+    Includes a hybrid baseline that weighs corporate forecast vs maximum of 7-day and
+    28-day history based on whether a promotion is active on that day. During promo days, a
+    higher weight is given to the corporate forecast to utilize planned lift signals.
+
+    Args:
+        panel: Sparse model panel.
+
+    Returns:
+        pd.DataFrame: Panel with baseline forecast quantities.
+    """
     panel = panel.copy()
     panel["Recent28BaselineQty"] = panel["SoldUnitsRolling28"].fillna(0)
     panel["Recent7BaselineQty"] = panel["SoldUnitsRolling7"].fillna(0)
@@ -861,12 +1087,31 @@ def add_baseline_forecasts(panel: pd.DataFrame) -> pd.DataFrame:
 
 
 def safe_divide(numerator: float, denominator: float) -> float:
+    """Divide numerator by denominator, returning 0.0 if denominator is 0.
+
+    Args:
+        numerator: Divisor.
+        denominator: Dividend.
+
+    Returns:
+        float: Calculated quotient or 0.0.
+    """
     if denominator == 0 or math.isnan(denominator):
         return 0.0
     return numerator / denominator
 
 
 def evaluate_group(df: pd.DataFrame, group_cols: list[str], forecast_cols: list[str]) -> pd.DataFrame:
+    """Evaluate WAPE and bias error metrics across grouped segments of holdout data.
+
+    Args:
+        df: Holdout dataset.
+        group_cols: Columns to group by.
+        forecast_cols: Baseline forecast columns to evaluate.
+
+    Returns:
+        pd.DataFrame: Evaluation metrics by forecast and segment.
+    """
     rows: list[dict[str, Any]] = []
     if group_cols:
         groups = df.groupby(group_cols, dropna=False)
@@ -881,6 +1126,10 @@ def evaluate_group(df: pd.DataFrame, group_cols: list[str], forecast_cols: list[
             forecast = float(group[forecast_col].sum())
             error = forecast - actual
             abs_error = float((group[forecast_col] - group["SoldUnits"]).abs().sum())
+            zero_forecast_sold_units = float(
+                group.loc[group[forecast_col].le(0) & group["Units"] if "Units" in group else group["SoldUnits"].gt(0), "SoldUnits"].sum() if "Units" not in group else group["SoldUnits"].sum()
+            )
+            # Recompute zero forecast sold units specifically
             zero_forecast_sold_units = float(
                 group.loc[group[forecast_col].le(0) & group["SoldUnits"].gt(0), "SoldUnits"].sum()
             )
@@ -902,6 +1151,16 @@ def evaluate_group(df: pd.DataFrame, group_cols: list[str], forecast_cols: list[
 
 
 def run_backtest(panel: pd.DataFrame, holdout_days: int, output_dir: Path) -> dict[str, Any]:
+    """Execute a backtest on the trailing holdout period using baseline forecasts.
+
+    Args:
+        panel: Fully populated model panel.
+        holdout_days: Number of days to include in the trailing holdout.
+        output_dir: Path to write backtest result files.
+
+    Returns:
+        dict[str, Any]: Summary metrics and paths.
+    """
     if panel.empty:
         raise ValueError("Cannot backtest an empty panel.")
     end = panel["Date"].max()
@@ -960,6 +1219,14 @@ def write_outputs(
     sample_rows: int,
     summary: dict[str, Any],
 ) -> None:
+    """Write model panel datasets and baseline summaries to disk.
+
+    Args:
+        panel: Fully merged model panel.
+        output_dir: Destination folder.
+        sample_rows: Row count for CSV sample.
+        summary: Processing metadata dictionary.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     panel_path = output_dir / "model_sku_day_panel.parquet"
     panel.to_parquet(panel_path, index=False, compression="zstd")
@@ -979,6 +1246,17 @@ def write_outputs(
 
 
 def build_panel(args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Build the final model-ready SKU/day panel dataframe.
+
+    Loads actuals, sales orders, forecasts, product metadata, coupon details,
+    inbound PO snapshots, and warehouse supply logs, and joins them together.
+
+    Args:
+        args: Command line parameters.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Output panel dataframe and summary dict.
+    """
     start, end, source_ranges = choose_panel_window(args.start_date, args.end_date)
     print(f"Building model panel for {start.date()} through {end.date()}")
 
@@ -1082,6 +1360,7 @@ def build_panel(args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, Any]]
 
 
 def main() -> None:
+    """Execute the command line entry point for model panel building and backtesting."""
     args = parse_args()
     panel, summary = build_panel(args)
     output_dir = args.output_dir

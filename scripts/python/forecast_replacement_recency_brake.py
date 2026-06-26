@@ -76,6 +76,11 @@ REQUIRED_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the recency brake backtest.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Self-calibrating recency/regime brake policy backtest.")
     parser.add_argument("--score-file", action="append", type=Path, dest="score_files", required=True)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -96,6 +101,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def load_scores(paths: list[Path]) -> pd.DataFrame:
+    """Load and validate window-score CSV files.
+
+    Args:
+        paths: List of score file paths to load.
+
+    Returns:
+        pd.DataFrame: A DataFrame of loaded scores with normalized dates.
+    """
     frames = []
     for path in paths:
         if not path.exists():
@@ -111,6 +124,14 @@ def load_scores(paths: list[Path]) -> pd.DataFrame:
 
 
 def parse_cap_variants(raw: list[str]) -> list[tuple[float, str]]:
+    """Parse list of CAP:CANDIDATE string arguments.
+
+    Args:
+        raw: List of configuration strings.
+
+    Returns:
+        list[tuple[float, str]]: Sorted list of parsed cap variants in descending order.
+    """
     variants = []
     for item in raw:
         cap_str, _, candidate = item.partition(":")
@@ -122,10 +143,28 @@ def parse_cap_variants(raw: list[str]) -> list[tuple[float, str]]:
 
 
 def normalize_coverage(value: float) -> float:
+    """Normalize percentage-based or ratio-based coverage metric.
+
+    Args:
+        value: Raw coverage metric.
+
+    Returns:
+        float: Normalized ratio value between 0.0 and 1.0.
+    """
     return value / 100.0 if value > 1.0 else value
 
 
 def recent_ratio(scores: pd.DataFrame, candidate: str, prior_dates: list[pd.Timestamp]) -> float | None:
+    """Compute the actual-to-forecast ratio for a candidate over prior windows.
+
+    Args:
+        scores: Full candidate scores DataFrame.
+        candidate: Candidate name to analyze.
+        prior_dates: List of prior window dates to aggregate over.
+
+    Returns:
+        float | None: The actual/forecast ratio, or None if forecast sum is 0.
+    """
     prior = scores.loc[scores["Candidate"].eq(candidate) & scores["ForecastStartDate"].isin(prior_dates)]
     forecast = float(prior["ForecastUnits"].sum())
     sold = float(prior["SoldUnits"].sum())
@@ -135,6 +174,16 @@ def recent_ratio(scores: pd.DataFrame, candidate: str, prior_dates: list[pd.Time
 
 
 def recent_coverage(scores: pd.DataFrame, candidate: str, prior_dates: list[pd.Timestamp]) -> float:
+    """Calculate the average forecast coverage for a candidate over prior windows.
+
+    Args:
+        scores: Full candidate scores DataFrame.
+        candidate: Candidate name to analyze.
+        prior_dates: List of prior window dates to aggregate over.
+
+    Returns:
+        float: Mean normalized coverage ratio.
+    """
     prior = scores.loc[scores["Candidate"].eq(candidate) & scores["ForecastStartDate"].isin(prior_dates)]
     if prior.empty:
         return 0.0
@@ -150,6 +199,20 @@ def choose_candidate(
     min_cap: float,
     min_coverage: float,
 ) -> tuple[str, float]:
+    """Select the best candidate for the next window based on prior-window performance.
+
+    Args:
+        scores: Full candidate scores DataFrame.
+        prior_dates: List of prior start date timestamps to evaluate.
+        reference: Reference uncapped candidate.
+        cap_variants: Available cap options sorted descending.
+        floor_candidate: Fallback high-coverage candidate.
+        min_cap: Maximum allowed braking intensity.
+        min_coverage: Minimum acceptable historical coverage ratio.
+
+    Returns:
+        tuple[str, float]: The chosen candidate name and its applied cap.
+    """
     ratio = recent_ratio(scores, reference, prior_dates)
     # Loosest variant (highest cap) is the default when nothing says to brake.
     if ratio is None:
@@ -176,13 +239,28 @@ def choose_candidate(
 
 
 def score_row(scores: pd.DataFrame, start: pd.Timestamp, candidate: str) -> dict[str, Any] | None:
-    match = scores.loc[scores["ForecastStartDate"].eq(start) & scores["Candidate"].eq(candidate)]
-    if match.empty:
-        return None
-    return match.iloc[0].to_dict()
+    """Retrieve a single candidate score record for a window.
+
+    Args:
+        scores: Full candidate scores DataFrame.
+        start: Forecast start timestamp.
+        candidate: Candidate name to match.
+
+    Returns:
+        dict[str, Any] | None: The row as a dict, or None if no match.
+    """
 
 
 def summarize(rows: list[dict[str, Any]], name: str) -> dict[str, Any]:
+    """Aggregate window-level records to calculate policy summary metrics.
+
+    Args:
+        rows: List of dictionary rows containing error metrics.
+        name: Name of the policy evaluated.
+
+    Returns:
+        dict[str, Any]: A dictionary of aggregated metrics including WAPE and Bias.
+    """
     df = pd.DataFrame(rows)
     sold = float(df["SoldUnits"].sum())
     forecast = float(df["ForecastUnits"].sum())
@@ -199,6 +277,7 @@ def summarize(rows: list[dict[str, Any]], name: str) -> dict[str, Any]:
 
 
 def main() -> None:
+    """Execute the self-calibrating recency brake policy backtest."""
     args = parse_args()
     scores = load_scores(args.score_files)
     cap_variants = parse_cap_variants(args.cap_variants)

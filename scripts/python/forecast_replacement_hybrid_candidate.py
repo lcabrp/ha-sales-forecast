@@ -24,6 +24,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+# Add parent directory to system path to import modules
 PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
@@ -63,7 +64,7 @@ from forecast_replacement_ml_backtest import (  # noqa: E402
     train_window,
 )
 
-
+# Standard parameter defaults for candidate builder options
 DEFAULT_CANDIDATE_TYPE = "hybrid_ml_baseline"
 DEFAULT_MODEL = "hgb_absolute_log"
 DEFAULT_THRESHOLD = 20.0
@@ -75,24 +76,84 @@ PLANNER_ANCHOR_COLUMN = "ops_imf_plan_forecasted_units"
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the hybrid candidate generator.
+
+    Returns:
+        argparse.Namespace: Populated argument namespaces.
+    """
     parser = argparse.ArgumentParser(description="Build a hybrid ML BRG-like candidate package.")
-    parser.add_argument("--source-file", type=Path)
-    parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
-    parser.add_argument("--candidate-id")
-    parser.add_argument("--forecast-start-date")
-    parser.add_argument("--panel", type=Path, default=DEFAULT_PANEL_PATH)
-    parser.add_argument("--actuals-path", type=Path, default=ACTUALS_PATH)
-    parser.add_argument("--pdl-sku-features-path", type=Path, default=PDL_SKU_FEATURES_PATH)
-    parser.add_argument("--lookback-days", type=int, default=DEFAULT_LOOKBACK_DAYS)
-    parser.add_argument("--model", choices=[DEFAULT_MODEL], default=DEFAULT_MODEL)
-    parser.add_argument("--ml-threshold-units", type=float, default=DEFAULT_THRESHOLD)
-    parser.add_argument("--recent-fallback-weight", type=float, default=DEFAULT_RECENT_FALLBACK_WEIGHT)
+    parser.add_argument(
+        "--source-file",
+        type=Path,
+        help="Path to the source planning workbook Excel file.",
+    )
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        default=DEFAULT_OUTPUT_ROOT,
+        help="Root directory where candidates are exported.",
+    )
+    parser.add_argument(
+        "--candidate-id",
+        help="Unique candidate directory identifier.",
+    )
+    parser.add_argument(
+        "--forecast-start-date",
+        help="Start date of the forecast horizon. Defaults to workbook date if omitted.",
+    )
+    parser.add_argument(
+        "--panel",
+        type=Path,
+        default=DEFAULT_PANEL_PATH,
+        help="Path to panel data parts.",
+    )
+    parser.add_argument(
+        "--actuals-path",
+        type=Path,
+        default=ACTUALS_PATH,
+        help="Path to historical actuals parquet.",
+    )
+    parser.add_argument(
+        "--pdl-sku-features-path",
+        type=Path,
+        default=PDL_SKU_FEATURES_PATH,
+        help="Path to PDL/promotional SKU features.",
+    )
+    parser.add_argument(
+        "--lookback-days",
+        type=int,
+        default=DEFAULT_LOOKBACK_DAYS,
+        help="Days lookback to calculate baseline actuals velocity.",
+    )
+    parser.add_argument(
+        "--model",
+        choices=[DEFAULT_MODEL],
+        default=DEFAULT_MODEL,
+        help="ML model architecture name.",
+    )
+    parser.add_argument(
+        "--ml-threshold-units",
+        type=float,
+        default=DEFAULT_THRESHOLD,
+        help="Unit threshold below which the model is bypassed in favor of fallback.",
+    )
+    parser.add_argument(
+        "--recent-fallback-weight",
+        type=float,
+        default=DEFAULT_RECENT_FALLBACK_WEIGHT,
+        help="Fraction weight applied to fallbacks for low-volume SKUs.",
+    )
     parser.add_argument(
         "--recent-volume-cap",
         type=float,
         help="Optional cap for FD1-FD14 total units as a multiple of recent no-ML forecast units.",
     )
-    parser.add_argument("--planner-daily-path", type=Path, default=DEFAULT_PLANNER_DAILY_PATH)
+    parser.add_argument(
+        "--planner-daily-path",
+        type=Path,
+        default=DEFAULT_PLANNER_DAILY_PATH,
+        help="Path to daily planner anchor units file.",
+    )
     parser.add_argument(
         "--planner-total-anchor",
         choices=["none", "ops_imf"],
@@ -105,7 +166,12 @@ def parse_args() -> argparse.Namespace:
         default=1.0,
         help="Multiplier applied to Planner daily totals, e.g. 0.95 for a conservative volume posture.",
     )
-    parser.add_argument("--weekly-tail-scale", type=float, default=DEFAULT_WEEKLY_TAIL_SCALE)
+    parser.add_argument(
+        "--weekly-tail-scale",
+        type=float,
+        default=DEFAULT_WEEKLY_TAIL_SCALE,
+        help="Weekly tail scaling multiplier for outer weeks (W3-W13).",
+    )
     parser.add_argument("--max-train-rows", type=int, default=500_000)
     parser.add_argument("--random-state", type=int, default=42)
     parser.add_argument("--max-iter", type=int, default=180)
@@ -135,13 +201,35 @@ def parse_args() -> argparse.Namespace:
 
 
 def parse_size_from_sku(series: pd.Series) -> pd.Series:
+    """Extract sizing suffix codes from a standard SKU string series.
+
+    Args:
+        series (pd.Series): Series of SKU string identifiers.
+
+    Returns:
+        pd.Series: Suffix size code series.
+    """
     parts = series.fillna("").astype(str).str.rsplit("-", n=1, expand=True)
     if isinstance(parts, pd.DataFrame) and parts.shape[1] > 1:
         return parts[1].fillna("").astype(str)
     return pd.Series("", index=series.index)
 
 
-def source_universe(source_weekly: pd.DataFrame, source_14day: pd.DataFrame, df_hier: pd.DataFrame) -> pd.DataFrame:
+def source_universe(
+    source_weekly: pd.DataFrame,
+    source_14day: pd.DataFrame,
+    df_hier: pd.DataFrame,
+) -> pd.DataFrame:
+    """Consolidate the union of all active SKUs across source sheets.
+
+    Args:
+        source_weekly (pd.DataFrame): Weekly forecast sheet.
+        source_14day (pd.DataFrame): 14-day daily forecast sheet.
+        df_hier (pd.DataFrame): Product hierarchy attributes sheet.
+
+    Returns:
+        pd.DataFrame: Distinct set of normalized SKU values.
+    """
     frames = [
         source_weekly[["SKU"]],
         source_14day[["SKU"]],
@@ -153,6 +241,15 @@ def source_universe(source_weekly: pd.DataFrame, source_14day: pd.DataFrame, df_
 
 
 def source_snapshot_attributes(df_hier: pd.DataFrame, universe: pd.DataFrame) -> pd.DataFrame:
+    """Rebuild product attributes and slotting tiers for the consolidated SKU universe.
+
+    Args:
+        df_hier (pd.DataFrame): Reference hierarchy attributes.
+        universe (pd.DataFrame): Targeted SKU universe.
+
+    Returns:
+        pd.DataFrame: Standardized product attributes dataframe.
+    """
     attrs = universe.copy()
     hier = df_hier.copy()
     hier["SKU"] = normalize_sku_series(hier["SKU"])
@@ -198,6 +295,16 @@ def recent_daily_forecast(
     forecast_start: pd.Timestamp,
     lookback_days: int,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Determine recent base demand and apply day-of-week scaling indexes.
+
+    Args:
+        actuals (pd.DataFrame): Historical transaction records.
+        forecast_start (pd.Timestamp): Start date of the 14-day horizon.
+        lookback_days (int): Baseline history lookup window.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: A long SKU-day forecast and metadata stats.
+    """
     direct, factors, metadata = direct_pick_signal(actuals, forecast_start, lookback_days)
     if direct.empty:
         return pd.DataFrame(columns=["SKU", "ForecastDay", "ForecastDate", "ForecastUnits"]), metadata
@@ -218,7 +325,19 @@ def selected_ml_daily(
     scored: pd.DataFrame,
     forecast_col: str,
     threshold: float,
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Filter out ML predictions below an aggregate 14-day threshold.
+
+    SKUs with forecast volumes below this limit are pushed to fallback.
+
+    Args:
+        scored (pd.DataFrame): Raw ML predictions.
+        forecast_col (str): Target prediction column name.
+        threshold (float): Cumulative unit requirement over the 14-day horizon.
+
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: Sliced daily records, and total forecast per SKU.
+    """
     daily = scored[["SKU", DATE_COLUMN, forecast_col]].copy()
     daily = daily.rename(columns={DATE_COLUMN: "ForecastDate", forecast_col: "ForecastUnitsRaw"})
     daily["ForecastUnitsRaw"] = pd.to_numeric(
@@ -239,6 +358,17 @@ def combine_daily_forecasts(
     forecast_start: pd.Timestamp,
     fallback_weight: float,
 ) -> pd.DataFrame:
+    """Blend high-volume ML predictions with scaled fallback forecasts for low-volume SKUs.
+
+    Args:
+        ml_daily (pd.DataFrame): Active ML daily forecasts.
+        recent_daily (pd.DataFrame): Baseline recent daily actuals.
+        forecast_start (pd.Timestamp): Start date of the window.
+        fallback_weight (float): Scalar applied to low-volume fallback units.
+
+    Returns:
+        pd.DataFrame: Pivot-table wide dataframe (FD1 to FD14).
+    """
     selected_skus = set(ml_daily["SKU"].dropna().astype(str))
     fallback = recent_daily.loc[~recent_daily["SKU"].astype(str).isin(selected_skus)].copy()
     fallback["ForecastUnitsRaw"] = (
@@ -277,6 +407,19 @@ def cap_14day_to_recent(
     forecast_start: pd.Timestamp,
     cap_multiple: float | None,
 ) -> pd.DataFrame:
+    """Scale down the forecast if it exceeds recent baseline demand by a given threshold.
+
+    This prevents anomalous spikes in the ML forecasts from driving excessive inventory allocations.
+
+    Args:
+        df_14day (pd.DataFrame): Wide format daily forecasts (FD1-FD14).
+        recent_daily (pd.DataFrame): Long format recent daily baseline forecasts.
+        forecast_start (pd.Timestamp): Start date of the forecast window.
+        cap_multiple (float | None): Maximum allowed scale factor.
+
+    Returns:
+        pd.DataFrame: Scaled (or untouched) daily forecast wide-format records.
+    """
     if cap_multiple is None or cap_multiple <= 0:
         return df_14day
     forecast_units = float(df_14day[FD_COLUMNS].sum().sum())
@@ -317,6 +460,14 @@ def cap_14day_to_recent(
 
 
 def integerize_by_forecast_day(daily: pd.DataFrame) -> pd.DataFrame:
+    """Perform deterministic largest remainder allocation day-by-day.
+
+    Args:
+        daily (pd.DataFrame): Long format forecast records containing ForecastDay and ForecastUnitsRaw.
+
+    Returns:
+        pd.DataFrame: Enriched long format dataframe with integerized ForecastUnits.
+    """
     pieces = []
     for _, group in daily.sort_values(["ForecastDay", "SKU"], kind="mergesort").groupby("ForecastDay", sort=False):
         work = group.copy()
@@ -352,6 +503,17 @@ def apply_planner_daily_anchor(
     forecast_start: pd.Timestamp,
     total_scale: float,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Rescale each day's cumulative unit volume to match target Planner daily anchors.
+
+    Args:
+        df_14day (pd.DataFrame): Forecast wide records.
+        planner_path (Path): Path to daily planner values dataset.
+        forecast_start (pd.Timestamp): Start date of forecast.
+        total_scale (float): Scale multiplier.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Rescaled daily forecasts and execution metadata.
+    """
     if not planner_path.exists():
         raise FileNotFoundError(f"Planner daily totals not found: {planner_path}")
     planner = pd.read_parquet(planner_path) if planner_path.suffix.lower() == ".parquet" else pd.read_csv(planner_path)
@@ -465,6 +627,20 @@ def build_weekly_from_daily(
     forecast_start: pd.Timestamp,
     weekly_tail_scale: float,
 ) -> tuple[pd.DataFrame, list[pd.Timestamp], dict[str, Any]]:
+    """Convert daily forecast records into standard weekly buckets.
+
+    Extrapolates outer weeks W3 to W13 using a conservative minimum of recent demand
+    and candidate W1-W2 average, scaled down by weekly_tail_scale.
+
+    Args:
+        df_14day (pd.DataFrame): Daily forecast records (FD1-FD14).
+        recent_daily (pd.DataFrame): Baseline recent daily actuals.
+        forecast_start (pd.Timestamp): Start date of forecast.
+        weekly_tail_scale (float): Scalar applied to W3-W13 forecasts.
+
+    Returns:
+        tuple[pd.DataFrame, list[pd.Timestamp], dict[str, Any]]: Weekly dataframe, week dates, and metadata.
+    """
     week_dates = forecast_week_dates(forecast_start)
     daily_long = df_14day.melt(
         id_vars=["SKU"],
@@ -535,6 +711,18 @@ def build_signal_summary(
     threshold: float,
     fallback_weight: float,
 ) -> pd.DataFrame:
+    """Generate diagnostic comparison metrics between ML and fallback sources.
+
+    Args:
+        df_14day (pd.DataFrame): Final hybrid daily units.
+        ml_totals (pd.DataFrame): Raw ML cumulative predictions.
+        recent_daily (pd.DataFrame): Fallback daily predictions.
+        threshold (float): Active ML unit limit.
+        fallback_weight (float): Fallback weighting scalar.
+
+    Returns:
+        pd.DataFrame: Summary diagnostics table.
+    """
     signal = df_14day[["SKU"]].copy()
     signal["FD1ToFD14Units"] = df_14day[FD_COLUMNS].sum(axis=1)
     signal = signal.merge(ml_totals, on="SKU", how="left")
@@ -551,6 +739,7 @@ def build_signal_summary(
 
 
 def main() -> None:
+    """Train ML models, blend with historical fallbacks, write workbook, and save contract logs."""
     args = parse_args()
     configure_threads(args.threads)
     for name in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
@@ -582,7 +771,11 @@ def main() -> None:
     panel = load_panel(args.panel, args.start_date)
     actuals = load_actuals(args.actuals_path)
     horizon_end = forecast_start + pd.Timedelta(days=13)
-    daily_promo = load_daily_promotions(args.pdl_sku_features_path.parent / "combined_daily_promo_features.parquet", forecast_start, horizon_end)
+    daily_promo = load_daily_promotions(
+        args.pdl_sku_features_path.parent / "combined_daily_promo_features.parquet",
+        forecast_start,
+        horizon_end,
+    )
     pdl_horizon = load_pdl_features(args.pdl_sku_features_path, forecast_start, horizon_end)
     train, calibration = train_window(panel, args, forecast_start)
     future, future_meta = build_future_rows(
@@ -651,11 +844,21 @@ def main() -> None:
     daily_contract = build_daily_contract(df_14day, forecast_start, candidate_id, workbook_path.name)
     weekly_contract = build_weekly_contract(df_weekly, week_dates, week_dates, candidate_id, workbook_path.name)
     outputs = {
-        "daily_forecast": write_frame_with_sample(daily_contract, contract_dir / "daily_forecast.parquet", args.sample_rows),
-        "weekly_forecast": write_frame_with_sample(weekly_contract, contract_dir / "weekly_forecast.parquet", args.sample_rows),
-        "product_hierarchy": write_frame_with_sample(df_hier, contract_dir / "product_hierarchy.parquet", args.sample_rows),
-        "product_status": write_frame_with_sample(df_status, contract_dir / "product_status.parquet", args.sample_rows),
-        "signal_sku_summary": write_frame_with_sample(signal, contract_dir / "signal_sku_summary.parquet", args.sample_rows),
+        "daily_forecast": write_frame_with_sample(
+            daily_contract, contract_dir / "daily_forecast.parquet", args.sample_rows
+        ),
+        "weekly_forecast": write_frame_with_sample(
+            weekly_contract, contract_dir / "weekly_forecast.parquet", args.sample_rows
+        ),
+        "product_hierarchy": write_frame_with_sample(
+            df_hier, contract_dir / "product_hierarchy.parquet", args.sample_rows
+        ),
+        "product_status": write_frame_with_sample(
+            df_status, contract_dir / "product_status.parquet", args.sample_rows
+        ),
+        "signal_sku_summary": write_frame_with_sample(
+            signal, contract_dir / "signal_sku_summary.parquet", args.sample_rows
+        ),
     }
     method_meta = {
         "method": DEFAULT_CANDIDATE_TYPE,
@@ -672,7 +875,9 @@ def main() -> None:
         "recent_direct_pick": recent_meta,
         "planner_total_anchor": planner_anchor_meta,
         "weekly_policy": weekly_meta,
-        "calibration_factors_sample": calibration_factors.head(50).replace({np.nan: None}).to_dict(orient="records"),
+        "calibration_factors_sample": calibration_factors.head(50)
+        .replace({np.nan: None})
+        .to_dict(orient="records"),
         "forecast_totals": {
             "fd1_to_fd14_units": float(df_14day[FD_COLUMNS].sum().sum()),
             "first_13_week_units": float(df_weekly[week_dates[:13]].sum().sum()),
@@ -722,3 +927,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

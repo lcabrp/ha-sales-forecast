@@ -46,6 +46,11 @@ PDL_SKU_FEATURES_PATH = FORECAST_ACCURACY_ROOT / "promotions" / "pdl_sku_day_fea
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the replacement forecast backtest pipeline.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(
         description="Backtest corporate, recent no-ML, and seasonal no-ML forecast candidates."
     )
@@ -67,10 +72,26 @@ def parse_args() -> argparse.Namespace:
 
 
 def normalize_date(series: pd.Series) -> pd.Series:
+    """Normalize a pandas series containing dates.
+
+    Args:
+        series: Pandas series containing dates.
+
+    Returns:
+        pd.Series: Normalized datetime series.
+    """
     return pd.to_datetime(series, errors="coerce").dt.normalize()
 
 
 def load_actuals(path: Path) -> pd.DataFrame:
+    """Load, type, and filter historical DirectPick actual demand series.
+
+    Args:
+        path: Path to actuals Parquet file.
+
+    Returns:
+        pd.DataFrame: Cleaned actual demand dataset.
+    """
     actuals = pd.read_parquet(path, columns=["ActualDate", "SKU", "SoldUnits"])
     actuals["ActualDate"] = normalize_date(actuals["ActualDate"])
     actuals["SKU"] = normalize_sku_series(actuals["SKU"])
@@ -81,6 +102,14 @@ def load_actuals(path: Path) -> pd.DataFrame:
 
 
 def load_promo(path: Path) -> pd.DataFrame:
+    """Load daily SKU promotion features.
+
+    Args:
+        path: Path to the PDL SKU promotion Parquet file.
+
+    Returns:
+        pd.DataFrame: Promotion feature records.
+    """
     columns = [
         "Date",
         "SKU",
@@ -100,13 +129,39 @@ def load_promo(path: Path) -> pd.DataFrame:
 
 
 def load_promo_for_window(path: Path, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Filter SKU promotion features to a specific date interval window.
+
+    Args:
+        path: Path to promotions Parquet.
+        start: Start date.
+        end: End date.
+
+    Returns:
+        pd.DataFrame: Filtered daily promotions.
+    """
     promo = load_promo(path)
     if promo.empty:
         return promo
     return promo.loc[promo["Date"].between(start, end)].copy()
 
 
-def choose_windows(summary_path: Path, start_date: str, end_date: str | None, max_windows: int) -> pd.DataFrame:
+def choose_windows(
+    summary_path: Path,
+    start_date: str,
+    end_date: str | None,
+    max_windows: int,
+) -> pd.DataFrame:
+    """Select complete historical forecast windows within the desired time bounds.
+
+    Args:
+        summary_path: Path to snapshot summary manifest.
+        start_date: Start date boundary.
+        end_date: Optional end date boundary.
+        max_windows: Maximum windows limit.
+
+    Returns:
+        pd.DataFrame: Sorted windows table.
+    """
     summary = pd.read_parquet(summary_path)
     summary["ForecastStartDate"] = normalize_date(summary["ForecastStartDate"])
     summary["ForecastEndDate"] = normalize_date(summary["ForecastEndDate"])
@@ -124,6 +179,15 @@ def choose_windows(summary_path: Path, start_date: str, end_date: str | None, ma
 
 
 def corporate_forecast(forecast_day: pd.DataFrame, snapshot_id: str) -> pd.DataFrame:
+    """Extract corporate forecast quantities for a single snapshot window.
+
+    Args:
+        forecast_day: Forecast day records.
+        snapshot_id: Target snapshot UUID.
+
+    Returns:
+        pd.DataFrame: Summed corporate forecast units by SKU.
+    """
     corp = forecast_day.loc[forecast_day["SnapshotId"].eq(snapshot_id)].copy()
     corp = (
         corp.groupby("SKU", as_index=False)
@@ -134,12 +198,31 @@ def corporate_forecast(forecast_day: pd.DataFrame, snapshot_id: str) -> pd.DataF
 
 
 def snapshot_universe(snapshot_sku: pd.DataFrame, snapshot_id: str) -> pd.DataFrame:
+    """Fetch unique SKU values present in the snapshot metadata state.
+
+    Args:
+        snapshot_sku: Snapshot SKU metadata rows.
+        snapshot_id: Target snapshot ID.
+
+    Returns:
+        pd.DataFrame: Unique SKU identifiers list.
+    """
     universe = snapshot_sku.loc[snapshot_sku["SnapshotId"].eq(snapshot_id), ["SKU"]].copy()
     universe["SKU"] = normalize_sku_series(universe["SKU"])
     return universe.loc[universe["SKU"].ne("")].drop_duplicates("SKU")
 
 
 def dow_factors(window_actuals: pd.DataFrame, lookback_days: int, window_start: pd.Timestamp) -> dict[int, float]:
+    """Calculate day-of-week scale adjustments based on historical demand ratios.
+
+    Args:
+        window_actuals: Historical actuals window.
+        lookback_days: Length of history lookback.
+        window_start: Target start timestamp.
+
+    Returns:
+        dict[int, float]: Day-of-week scaling multipliers mapped 0 (Monday) to 6 (Sunday).
+    """
     if window_actuals.empty:
         return {idx: 1.0 for idx in range(7)}
     calendar = pd.DataFrame({"Date": pd.date_range(window_start, periods=lookback_days)})
@@ -155,6 +238,14 @@ def dow_factors(window_actuals: pd.DataFrame, lookback_days: int, window_start: 
 
 
 def promo_multiplier(promo: pd.DataFrame) -> pd.Series:
+    """Derive promotion volume lift multiplier based on discount percentage.
+
+    Args:
+        promo: Dataframe containing PDL discount rates.
+
+    Returns:
+        pd.Series: Lift factor series.
+    """
     discount = pd.to_numeric(
         promo.get("pdl_sku_max_discount_pct", 0), errors="coerce"
     ).fillna(0)
@@ -164,6 +255,16 @@ def promo_multiplier(promo: pd.DataFrame) -> pd.Series:
 
 
 def promo_daily_signal(promo: pd.DataFrame, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    """Build daily promotion uplift scaling factor and unit floors.
+
+    Args:
+        promo: Input promotion records.
+        start: Window start date.
+        end: Window end date.
+
+    Returns:
+        pd.DataFrame: Daily promotion multiplier and floor signals by SKU/Date.
+    """
     if promo.empty:
         return pd.DataFrame(columns=["SKU", "ForecastDate", "PromoMultiplier", "PromoDailyFloor"])
     work = promo.loc[promo["Date"].between(start, end)].copy()
@@ -188,6 +289,17 @@ def direct_pick_signal(
     start: pd.Timestamp,
     lookback_days: int,
 ) -> tuple[pd.DataFrame, dict[int, float], dict[str, Any]]:
+    """Compute recent DirectPick daily average base rates and seasonality profiles.
+
+    Args:
+        actuals: Demand actuals.
+        start: Forecast origin start date.
+        lookback_days: Length of lookback window.
+
+    Returns:
+        tuple[pd.DataFrame, dict[int, float], dict[str, Any]]: Average base rates table,
+            day-of-week factors map, and metadata metrics.
+    """
     window_start = start - pd.Timedelta(days=lookback_days)
     window = actuals.loc[actuals["ActualDate"].ge(window_start) & actuals["ActualDate"].lt(start)].copy()
     if window.empty:
@@ -216,6 +328,18 @@ def seasonal_daily_signal(
     seasonal_years: int,
     seasonal_window_days: int,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Compute prior-year same-season daily average demand rates.
+
+    Args:
+        actuals: Demand actuals.
+        forecast_dates: Target forecast timeline.
+        start: Forecast origin start date.
+        seasonal_years: Prior years back to query.
+        seasonal_window_days: Calendar window margin on each side of date center.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Seasonal base rate table and metadata dictionary.
+    """
     historical_years = [start.year - offset for offset in range(1, seasonal_years + 1)]
     min_year = int(actuals["ActualDate"].dt.year.min())
     historical_years = [year for year in historical_years if year >= min_year]
@@ -293,6 +417,23 @@ def no_ml_forecast(
     seasonal_window_days: int,
     seasonal_recent_weight: float,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Synthesize a deterministic no-ML forecast using recent volume and promotions logic.
+
+    Args:
+        actuals: Demand actuals.
+        promo: Promotion records.
+        source_universe: active SKU universe list.
+        start: Forecast origin start date.
+        lookback_days: Lookback window length.
+        include_seasonal: Whether to blend same-season history.
+        include_promo_floor: Whether to apply last-week-sales floor from PDL files.
+        seasonal_years: Backtest years count.
+        seasonal_window_days: Seasonal calendar margin size.
+        seasonal_recent_weight: Weight applied to recent demand vs seasonal.
+
+    Returns:
+        tuple[pd.DataFrame, dict[str, Any]]: Reconciled SKU-level forecast and metadata dict.
+    """
     end = start + pd.Timedelta(days=13)
     forecast_dates = [start + pd.Timedelta(days=idx) for idx in range(14)]
     direct, factors, direct_meta = direct_pick_signal(actuals, start, lookback_days)
@@ -367,7 +508,7 @@ def no_ml_forecast(
         "forecast_units": float(forecast["ForecastUnits"].sum()),
         "include_promo_floor": include_promo_floor,
         "notes": [
-            "Historical backtest excludes reservations and inbound because point-in-time history is not available.",
+            "Historical backtest excludes reservations and inbound floors because point-in-time history is not available.",
             "Seasonal history shapes the candidate universe but cannot add rows by itself.",
         ],
     }
@@ -375,6 +516,15 @@ def no_ml_forecast(
 
 
 def actual_window(actuals: pd.DataFrame, start: pd.Timestamp) -> pd.DataFrame:
+    """Retrieve actual units sold for a 14-day window.
+
+    Args:
+        actuals: Historical actuals.
+        start: Start timestamp.
+
+    Returns:
+        pd.DataFrame: Summed units sold by SKU.
+    """
     end = start + pd.Timedelta(days=13)
     return (
         actuals.loc[actuals["ActualDate"].between(start, end)]
@@ -389,6 +539,17 @@ def score_forecast(
     candidate_id: str,
     snapshot: pd.Series,
 ) -> dict[str, Any]:
+    """Score forecast metrics (WAPE, Bias, coverage, zeros) against actuals.
+
+    Args:
+        forecast: Forecasted units dataframe.
+        actual: Actual demand units dataframe.
+        candidate_id: Forecast candidate label.
+        snapshot: Snapshot metadata series.
+
+    Returns:
+        dict[str, Any]: Compiled evaluation metrics.
+    """
     compare = forecast.merge(actual, on="SKU", how="outer")
     compare["ForecastUnits"] = compare["ForecastUnits"].fillna(0).astype(float)
     compare["SoldUnits"] = compare["SoldUnits"].fillna(0).astype(float)
@@ -431,6 +592,14 @@ def score_forecast(
 
 
 def summarize_by_candidate(scores: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate window scorecard metrics grouped by candidate.
+
+    Args:
+        scores: Scored window logs.
+
+    Returns:
+        pd.DataFrame: Aggregated candidates leaderboard.
+    """
     summary = (
         scores.groupby("Candidate", as_index=False)
         .agg(
@@ -454,6 +623,7 @@ def summarize_by_candidate(scores: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Execute the command line entry point to backtest no-ML candidates against corporate."""
     args = parse_args()
     for name in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
         os.environ.setdefault(name, str(args.threads))

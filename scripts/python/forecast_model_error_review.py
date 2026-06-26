@@ -45,6 +45,11 @@ REQUIRED_AX_COLUMNS = [
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command line arguments for the error review report.
+
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Review champion forecast errors.")
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
@@ -53,10 +58,29 @@ def parse_args() -> argparse.Namespace:
 
 
 def safe_divide(numerator: float, denominator: float) -> float:
+    """Safely perform division, returning 0.0 if the denominator is 0.
+
+    Args:
+        numerator: Divisor.
+        denominator: Dividend.
+
+    Returns:
+        float: Quotient.
+    """
     return 0.0 if denominator == 0 else numerator / denominator
 
 
 def metric_row(df: pd.DataFrame, forecast_col: str, extra: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Calculate basic forecast accuracy metrics (Bias, WAPE) for a forecast column.
+
+    Args:
+        df: Scored dataset.
+        forecast_col: Forecast column to evaluate.
+        extra: Additional metrics or categories to merge in.
+
+    Returns:
+        dict[str, Any]: Calculated metrics.
+    """
     actual = float(df[TARGET_COLUMN].sum())
     forecast = float(df[forecast_col].sum())
     abs_error = float((df[forecast_col] - df[TARGET_COLUMN]).abs().sum())
@@ -74,11 +98,29 @@ def metric_row(df: pd.DataFrame, forecast_col: str, extra: dict[str, Any] | None
 
 
 def overall_summary(df: pd.DataFrame) -> pd.DataFrame:
+    """Compute global forecast accuracy summaries across all selected candidates.
+
+    Args:
+        df: Input scored dataset.
+
+    Returns:
+        pd.DataFrame: Metric summary sorted by WAPE.
+    """
     rows = [metric_row(df, col) for col in REVIEW_FORECAST_COLUMNS if col in df.columns]
     return pd.DataFrame(rows).sort_values(["WAPE", "BiasPct"])
 
 
 def grouped_comparison(df: pd.DataFrame, group_cols: list[str], top_n: int) -> pd.DataFrame:
+    """Build a side-by-side grouped segment performance comparison.
+
+    Args:
+        df: Input scored dataset.
+        group_cols: Columns to group and aggregate by.
+        top_n: Max rows to return.
+
+    Returns:
+        pd.DataFrame: Grouped comparison dataset showing advantages/disadvantages.
+    """
     rows: list[dict[str, Any]] = []
     for key, group in df.groupby(group_cols, dropna=False):
         key_values = key if isinstance(key, tuple) else (key,)
@@ -110,6 +152,15 @@ def grouped_comparison(df: pd.DataFrame, group_cols: list[str], top_n: int) -> p
 
 
 def sku_comparison(df: pd.DataFrame, top_n: int) -> pd.DataFrame:
+    """Compile accuracy metrics for individual SKUs, highlighting the worst model errors.
+
+    Args:
+        df: Input scored dataset.
+        top_n: Max SKU rows to return.
+
+    Returns:
+        pd.DataFrame: Ranked comparison of SKU-level model vs corporate metrics.
+    """
     rows: list[dict[str, Any]] = []
     attrs = [col for col in [*FAMILY_COLUMNS, "Size", "Velocity", "SlotTier", "HasSkuPDLPromotion"] if col in df.columns]
     for sku, group in df.groupby("SKU", dropna=False):
@@ -140,10 +191,19 @@ def sku_comparison(df: pd.DataFrame, top_n: int) -> pd.DataFrame:
 
 
 def missing_attribute_rows(df: pd.DataFrame) -> pd.DataFrame:
+    """Scan and list rows missing mandatory AX metadata (e.g. Division, Department, etc.).
+
+    Args:
+        df: Input scored dataset.
+
+    Returns:
+        pd.DataFrame: Aggregated summary of rows missing attributes, sorted by forecast units.
+    """
     available = [col for col in REQUIRED_AX_COLUMNS if col in df.columns]
     if not available:
         return pd.DataFrame()
     required = df[available].fillna("").astype(str)
+    # Filter for rows missing any of the required attributes
     missing = df.loc[~required.ne("").all(axis=1)].copy()
     if missing.empty:
         return pd.DataFrame()
@@ -161,6 +221,7 @@ def missing_attribute_rows(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Execute the command line entry point to run forecast error reviews and write reports."""
     args = parse_args()
     df = pd.read_parquet(args.input)
     for col in REVIEW_FORECAST_COLUMNS:
