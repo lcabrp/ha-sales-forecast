@@ -105,6 +105,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--yoy-analog-sale-end", default="2025-07-04")
     parser.add_argument("--yoy-analog-baseline-start", default="2025-05-24")
     parser.add_argument("--yoy-analog-baseline-end", default="2025-06-20")
+    parser.add_argument(
+        "--yoy-direct-pick-history-path-2024",
+        type=Path,
+        default=Path(__file__).resolve().parents[2]
+        / "Output"
+        / "ForecastAccuracy"
+        / "direct_pick_history"
+        / "parquet"
+        / "direct_pick_sku_day_modified_2024.parquet",
+    )
+    parser.add_argument("--yoy-analog-sale-start-2024", default="2024-06-18")
+    parser.add_argument("--yoy-analog-sale-end-2024", default="2024-07-06")
+    parser.add_argument("--yoy-analog-baseline-start-2024", default="2024-05-21")
+    parser.add_argument("--yoy-analog-baseline-end-2024", default="2024-06-17")
+    parser.add_argument("--yoy-weight-2025", type=float, default=0.6)
+    parser.add_argument("--yoy-weight-2024", type=float, default=0.4)
     parser.add_argument("--yoy-current-baseline-days", type=int, default=56)
     parser.add_argument("--yoy-lift-floor", type=float, default=0.75)
     parser.add_argument("--yoy-lift-cap", type=float, default=3.0)
@@ -250,7 +266,11 @@ def recent_to_daily(recent_daily: pd.DataFrame, candidate: str) -> pd.DataFrame:
 
 def load_latest_category_map(panel_path: Path) -> pd.DataFrame:
     columns = ["SKU", "Date", "Division", "Department", "Class", "KeyCategoryView"]
-    panel = pd.read_parquet(panel_path, columns=columns)
+    if panel_path.is_dir():
+        parquet_files = sorted(panel_path.glob("*.parquet"))
+        panel = pd.concat([pd.read_parquet(f, columns=columns) for f in parquet_files], ignore_index=True)
+    else:
+        panel = pd.read_parquet(panel_path, columns=columns)
     panel["SKU"] = normalize_sku_series(panel["SKU"])
     panel["Date"] = pd.to_datetime(panel["Date"], errors="coerce")
     category_map = (
@@ -394,9 +414,11 @@ def add_yoy_sale_lift_overlay(
     forecast_end: pd.Timestamp,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     category_map = load_latest_category_map(args.panel)
-    direct = load_yoy_direct_pick(args.yoy_direct_pick_history_path)
-    lift, lift_meta = category_lift_table(
-        direct,
+    
+    # 2025 Category Lift
+    direct_2025 = load_yoy_direct_pick(args.yoy_direct_pick_history_path)
+    lift_2025, lift_meta_2025 = category_lift_table(
+        direct_2025,
         category_map,
         sale_start=pd.Timestamp(args.yoy_analog_sale_start).normalize(),
         sale_end=pd.Timestamp(args.yoy_analog_sale_end).normalize(),
@@ -406,6 +428,46 @@ def add_yoy_sale_lift_overlay(
         lift_cap=args.yoy_lift_cap,
         shrink_units=args.yoy_shrink_units,
     )
+    
+    # 2024 Category Lift
+    direct_2024 = load_yoy_direct_pick(args.yoy_direct_pick_history_path_2024)
+    lift_2024, lift_meta_2024 = category_lift_table(
+        direct_2024,
+        category_map,
+        sale_start=pd.Timestamp(args.yoy_analog_sale_start_2024).normalize(),
+        sale_end=pd.Timestamp(args.yoy_analog_sale_end_2024).normalize(),
+        baseline_start=pd.Timestamp(args.yoy_analog_baseline_start_2024).normalize(),
+        baseline_end=pd.Timestamp(args.yoy_analog_baseline_end_2024).normalize(),
+        lift_floor=args.yoy_lift_floor,
+        lift_cap=args.yoy_lift_cap,
+        shrink_units=args.yoy_shrink_units,
+    )
+    
+    # Blend Lifts
+    keys = category_columns()
+    blended = lift_2025[[*keys, "AppliedCategoryLift"]].rename(columns={"AppliedCategoryLift": "Lift2025"}).merge(
+        lift_2024[[*keys, "AppliedCategoryLift"]].rename(columns={"AppliedCategoryLift": "Lift2024"}),
+        on=keys,
+        how="outer"
+    )
+    blended["Lift2025"] = blended["Lift2025"].fillna(lift_meta_2025["overall_lift"])
+    blended["Lift2024"] = blended["Lift2024"].fillna(lift_meta_2024["overall_lift"])
+    
+    w_sum = args.yoy_weight_2025 + args.yoy_weight_2024
+    w_2025 = args.yoy_weight_2025 / w_sum if w_sum else 0.5
+    w_2024 = args.yoy_weight_2024 / w_sum if w_sum else 0.5
+    
+    blended["AppliedCategoryLift"] = blended["Lift2025"] * w_2025 + blended["Lift2024"] * w_2024
+    overall_lift_blended = lift_meta_2025["overall_lift"] * w_2025 + lift_meta_2024["overall_lift"] * w_2024
+    
+    lift = blended[[*keys, "AppliedCategoryLift"]]
+    lift_meta = {
+        "overall_lift": overall_lift_blended,
+        "weight_2025": w_2025,
+        "weight_2024": w_2024,
+        "lift_2025": lift_meta_2025,
+        "lift_2024": lift_meta_2024,
+    }
 
     baseline_start = forecast_start - pd.Timedelta(days=max(args.yoy_current_baseline_days, 1))
     current = actuals.loc[

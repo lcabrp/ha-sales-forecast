@@ -1,0 +1,43 @@
+{
+  "generated_at_utc": "2026-06-26T17:25:16+00:00",
+  "forecast_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\shadow_daily_forecasts.parquet",
+  "actuals_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\history\\parquet\\actual_sku_day_modified.parquet",
+  "metadata_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\shadow_metadata.json",
+  "inventory_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\inventory\\pickface_inventory_sku_day.parquet",
+  "forecast_start": "2026-06-18",
+  "full_forecast_end": "2026-07-01",
+  "scored_actual_end": "2026-06-25",
+  "candidates": [
+    "hybrid_ml_raw_min20_recent_w0p05",
+    "hybrid_ml_raw_min20_recent_w0p05_cap_recent_x0p85",
+    "hybrid_ml_raw_min20_recent_w0p05_cap_recent_x1p0",
+    "hybrid_ml_raw_min20_recent_w0p05_cap_recent_x1p1",
+    "hybrid_ml_raw_min20_recent_w0p1",
+    "hybrid_ml_raw_min20_recent_w0p1_cap_recent_x0p85",
+    "hybrid_ml_raw_min20_recent_w0p1_cap_recent_x1p0",
+    "hybrid_ml_raw_min20_recent_w0p1_cap_recent_x1p1",
+    "recent_no_ml_no_promo_floor"
+  ],
+  "rows": {
+    "forecast_rows": 399456,
+    "actual_sku_days": 51292,
+    "detail_rows": 674349,
+    "daily_summary_rows": 72,
+    "sku_summary_rows": 124194,
+    "inventory_skus": 12509
+  },
+  "outputs": {
+    "detail": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\diagnostics\\shadow_sku_day_detail.parquet",
+    "daily_summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\diagnostics\\shadow_daily_candidate_summary.csv",
+    "sku_summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\diagnostics\\shadow_sku_candidate_summary.csv",
+    "shadow_top_underforecast_skus": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\diagnostics\\shadow_top_underforecast_skus.csv",
+    "shadow_top_overforecast_skus": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\diagnostics\\shadow_top_overforecast_skus.csv",
+    "shadow_zero_forecast_sold_skus": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\diagnostics\\shadow_zero_forecast_sold_skus.csv",
+    "shadow_forecast_no_sale_skus": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_shadow_pdl_sku_refreshed\\shadow_2026-06-18_2026-07-01\\diagnostics\\shadow_forecast_no_sale_skus.csv"
+  },
+  "notes": [
+    "Diagnostics score the frozen shadow forecast against available actuals.",
+    "If actuals are partial, rerun after the window closes for final sale-window scores.",
+    "Inventory annotations are based on mirrored pickface snapshots and may not cover every forecast date."
+  ]
+}

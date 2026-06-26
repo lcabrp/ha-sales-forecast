@@ -297,7 +297,11 @@ def load_panel(path: Path, start_date: str) -> pd.DataFrame:
     # keeps the script tolerant when a feature family has not been generated yet.
     schema_columns = available_columns(path)
     read_columns = [col for col in columns if col in schema_columns]
-    panel = pd.read_parquet(path, columns=read_columns)
+    if path.is_dir():
+        parquet_files = sorted(path.glob("*.parquet"))
+        panel = pd.concat([pd.read_parquet(f, columns=read_columns) for f in parquet_files], ignore_index=True)
+    else:
+        panel = pd.read_parquet(path, columns=read_columns)
     panel[DATE_COLUMN] = normalize_date(panel[DATE_COLUMN])
     return panel.loc[panel[DATE_COLUMN].ge(pd.Timestamp(date.fromisoformat(start_date)))].copy()
 

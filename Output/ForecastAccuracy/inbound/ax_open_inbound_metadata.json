@@ -1,15 +1,16 @@
 {
-  "updated_at_utc": "2026-06-18T23:46:19.632437+00:00",
+  "updated_at_utc": "2026-06-26T15:41:54.384183+00:00",
   "source": "DAX_PROD.dbo.PURCHLINE/PURCHTABLE/INVENTDIM",
-  "snapshot_count": 6,
-  "latest_snapshot_date": "2026-06-18",
+  "snapshot_count": 8,
+  "latest_snapshot_date": "2026-06-26",
   "outputs": {
-    "dated_detail": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inbound\\ax_open_inbound_detail_2026-06-18.parquet",
-    "detail_fact": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inbound\\ax_open_inbound_detail.parquet",
-    "sku_day": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inbound\\ax_open_inbound_sku_day.parquet",
-    "summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\inbound\\ax_open_inbound_snapshot_summary.csv"
+    "dated_detail": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-26.parquet",
+    "detail_fact": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
+    "sku_day": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
+    "summary": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv"
   },
   "notes": [
+    "Paths are repo-relative when output_dir is under this repo root.",
     "Open PO/inbound state is current as of SnapshotDate.",
     "Use daily snapshots for historical model features; do not use current open PO state for older holdouts."
   ]

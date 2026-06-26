@@ -238,6 +238,12 @@ Rules of thumb:
   - **Params:** `--source-file`, `--panel`, `--actuals-path`, `--pdl-sku-features-path`, `--forecast-day-path`, `--snapshot-summary-path`, `--output-dir`, `--forecast-start-date`, `--forecast-days`, `--lookback-days`, `--model`, `--ml-threshold-units`, `--recent-fallback-weights`, `--recent-volume-caps`, `--base-frozen-forecast-path`, `--include-yoy-sale-lift-overlay`, `--yoy-direct-pick-history-path`, `--yoy-analog-sale-start`, `--yoy-analog-sale-end`, `--yoy-analog-baseline-start`, `--yoy-analog-baseline-end`, `--yoy-current-baseline-days`, `--yoy-lift-floor`, `--yoy-lift-cap`, `--yoy-total-cap-mode`, `--yoy-total-cap-units`, `--yoy-shrink-units`, `--yoy-overlay-shape-candidate`, `--yoy-overlay-candidate-name`, `--max-train-rows`, `--random-state`, `--max-iter`, `--learning-rate`, `--max-leaf-nodes`, `--calibration-days`, `--calibration-mode`, `--calibration-min-rows`, `--calibration-min-actual-units`, `--threads`, `--start-date`, `--exclude-corporate-features`, `--include-product-identity-features`, `--overwrite-frozen-forecast`, `--allow-partial-actuals`.
   - **Trigger:** Run for forecast extract, model, backtest, candidate, or scorecard work.
 
+- **Script Name:** `forecast_replacement_shadow_diagnostics.py`
+  - **Path:** `scripts/python/forecast_replacement_shadow_diagnostics.py`
+  - **Goal:** Report daily totals, SKU-level misses/overages, zero-forecast sold SKUs, and optional pickface inventory annotations for a frozen shadow forecast.
+  - **Params:** `--forecast-path`, `--actuals-path`, `--metadata-path`, `--inventory-path`, `--output-dir`, `--forecast-start-date`, `--forecast-end-date`, `--score-through-date`, `--candidate`, `--top-n`, `--skip-inventory`.
+  - **Trigger:** Run after `forecast_replacement_shadow_window.py` when reviewing how a shadow forecast behaved by day or by SKU.
+
 - **Script Name:** `forecast_reservation_snapshot.py`
   - **Path:** `scripts/python/forecast_reservation_snapshot.py`
   - **Goal:** Capture live AX WMS reservation snapshots for forecast-model features.

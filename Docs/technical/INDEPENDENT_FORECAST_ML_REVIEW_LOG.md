@@ -4,6 +4,34 @@ A running, dated log of independent ML-expert review of the forecast-replacement
 work. Each entry is a checkpoint so progress can be measured over time. Newest
 entry first.
 
+## 2026-06-26 - Multi-Year Blended Overlay & ML vs Statistics Tradeoffs
+
+### Context reviewed
+- [forecast_replacement_shadow_window.py](file:///c:/Users/labreu/Documents/Projects/ha-sales-forecast/scripts/python/forecast_replacement_shadow_window.py)
+- `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2024.parquet`
+- `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2025.parquet`
+- `Docs/technical/INDEPENDENT_FORECAST_ML_REVIEW_LOG.md`
+
+### Core Principles Grounding the Project
+
+1. **ML Extrapolation Limits vs. Statistical Event Lift (Regime Spikes)**:
+   - Tree-based ML algorithms (like `HistGradientBoostingRegressor`) predict by averaging target observations inside leaf nodes. They **cannot extrapolate** beyond the historical bounds of their training partitions.
+   - When a coordinated promotional event (like the July 4th sale) creates a sitewide demand spike, individual SKU features don't have enough statistical weight to predict the magnitude of the spike. The model minimizes global error (MSE/MAE) by playing it safe and predicting conservative baseline means.
+   - A **hybrid approach** (using a category-level statistical lift multiplier overlay for massive events, combined with ML regression for normal seasonal velocities) is the standard industry best practice.
+
+2. **Assortment Churn: Categories as the Core Demand Signal**:
+   - Individual SKUs churn heavily from year to year (due to style, size, and color replacements). However, customer demand patterns remain highly stable at the **category/class level** (e.g. *Girls Dress*, *Kids Unisex Sleep*).
+   - Historical demand patterns are learned at the category level and projected onto the active SKU set using current allocation shapes. This resolves the SKU lifecycle / cold-start issue.
+
+### Work Completed Today
+1. **Partitioned Folder Robustness**:
+   - Modified category-map loaders in [forecast_replacement_shadow_window.py](file:///c:/Users/labreu/Documents/Projects/ha-sales-forecast/scripts/python/forecast_replacement_shadow_window.py) and [forecast_model_train.py](file:///c:/Users/labreu/Documents/Projects/ha-sales-forecast/scripts/python/forecast_model_train.py) to ignore non-parquet metadata files (like `manifest.json`) when loading partitioned parquet directories.
+2. **Multi-Year Weighted Blend Overlay**:
+   - Implemented Option B, enabling a weighted blending of 2025 (60% default) and 2024 (40% default) historical lifts.
+   - Verified that blending 2024's moderate lift footprint (1.56x) with 2025's strong lift footprint (2.13x) successfully calibrated the 2026 forward forecast, reducing partial WAPE from 253.2% to 223.9% and partial Bias from +154.2% to +117.8% while maintaining **99.8% sold-unit coverage**.
+
+---
+
 ## 2026-06-18 - July sale DirectPick YoY lift overlay decision
 
 ### Context reviewed

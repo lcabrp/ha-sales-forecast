@@ -126,6 +126,29 @@ Refresh AX saved inventory history:
 uv run python scripts/python/forecast_inventory_history.py
 ```
 
+Mirror compact daily monitoring forecast artifacts from `ha-kydc-monitoring`:
+
+```powershell
+uv run python scripts/python/sync_monitoring_forecast_artifacts.py
+```
+
+This copies the forecast-facing inventory and inbound contract files from the
+sibling monitoring repo into:
+
+```text
+Output/ForecastAccuracy/inventory/
+Output/ForecastAccuracy/inbound/
+```
+
+and writes:
+
+```text
+Output/ForecastAccuracy/monitoring_artifact_mirror_manifest.json
+```
+
+`ha-kydc-monitoring` remains the daily producer; this repo keeps the compact
+GitHub-trackable consumer copy for forecast modeling and cloud-LLM review.
+
 Extract Planner daily totals and preserve a timestamped 2026 snapshot:
 
 ```powershell
