@@ -1,0 +1,20 @@
+{
+  "origin": "2026-07-07",
+  "partial_through": "2026-07-09",
+  "corporate_source": "C:\\Users\\lcabr\\Documents\\Projects\\ha-ingestion-pipeline\\Source\\Product Info for BRG_2026-07-06.xlsx",
+  "corporate_start": "2026-07-07",
+  "corporate_14d_total": 204654.0,
+  "recent_daily_meta": {
+    "window_start": "2026-05-12",
+    "window_end_exclusive": "2026-07-07",
+    "rows": 354633,
+    "distinct_skus": 16947,
+    "sold_units": 1255240.0
+  },
+  "partial_sold_units": 75753.0,
+  "notes": [
+    "Partial scores use FD days 1-3 only (Jul 7-9) against modified actuals.",
+    "corporate_total_recent_shape allocates each corporate FD-day total by that day's recent SKU shares.",
+    "independent_recent_shape uses free recent total (diagnostic)."
+  ]
+}

@@ -1,0 +1,2 @@
+Candidate,Windows,ForecastUnits,SoldUnits,AbsErrorUnits,ZeroForecastSoldUnits,MissedHighVolumeUnitsSoldGE10,AvgForecastedSKUs,AvgCoverage,WAPE,BiasPct,ZeroForecastSoldUnitPct,HandoffLabel,SameWindowContractAsAbove
+ml_hgb_absolute_log_raw_future_guardrail_min_20p0_units,26,6916529.827683892,7334496.0,6298901.459341827,2538289.0,1866702.0,4308.461538461538,0.5973848979941603,0.8588049484711461,-0.0569863522069011,0.3460754494923714,independent_total_model_shape,False

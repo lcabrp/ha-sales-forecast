@@ -1,0 +1,186 @@
+{
+  "candidate_id": "independent_hybrid_absolute_log_2026-07-07",
+  "candidate_type": "hybrid_ml_baseline",
+  "created_at": "2026-07-11T10:32:08",
+  "source_workbook": "C:\\Users\\lcabr\\Documents\\Projects\\ha-ingestion-pipeline\\Source\\Product Info for BRG_2026-07-06.xlsx",
+  "source_workbook_name": "Product Info for BRG_2026-07-06.xlsx",
+  "source_workbook_sha256": "11076c2b5f75680b35304d7bcbcf30c75301fc470bec884b906db8aa75e81ff7",
+  "clone_workbook": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\input\\Product Info for BRG_2026-07-06__independent_hybrid_absolute_log_2026-07-07.xlsx",
+  "clone_workbook_sha256": "a50dd898b93ddde3ef3ea0a9d93fd0b47a72d68b284c06bbff380a008135a8de",
+  "forecast_start_date": "2026-07-07",
+  "ax_forward_demand_columns": [
+    "Division",
+    "Department",
+    "Class",
+    "Subclass",
+    "KeyCategoryView",
+    "SKU",
+    "Item",
+    "Color",
+    "Size",
+    "ProductGroupCode",
+    "SizeGroupCode",
+    "Velocity",
+    "SlotTier",
+    "ReplenishmentThreshold",
+    "PutawayIndicator",
+    "ProductStatus",
+    "ProductStatusDate",
+    "ProductStage",
+    "ReturnAction",
+    "ReturnActionDate",
+    "NVARExpectedQty",
+    "ForecastStartDate",
+    "FD1",
+    "FD2",
+    "FD3",
+    "FD4",
+    "FD5",
+    "FD6",
+    "FD7",
+    "FD8",
+    "FD9",
+    "FD10",
+    "FD11",
+    "FD12",
+    "FD13",
+    "FD14"
+  ],
+  "hybrid_method": {
+    "method": "hybrid_ml_baseline",
+    "forecast_start_date": "2026-07-07",
+    "model": "hgb_absolute_log",
+    "ml_threshold_units": 20.0,
+    "recent_fallback_weight": 0.1,
+    "recent_volume_cap": null,
+    "weekly_tail_scale": 0.5,
+    "train_rows": 500000,
+    "calibration_rows": 0,
+    "future_rows": 3381980,
+    "future_inputs": {
+      "candidate_universe_skus": 241570,
+      "snapshot_attribute_skus": 241559,
+      "direct_pick_signal": {
+        "window_start": "2026-05-12",
+        "window_end_exclusive": "2026-07-07",
+        "rows": 354633,
+        "distinct_skus": 16947,
+        "sold_units": 1255240.0
+      },
+      "promo_horizon_skus": 0,
+      "future_rows": 3381980,
+      "feature_policy": "Rows are generated from snapshot, prior DirectPick, and known PDL SKU universe. Demand/inventory/supply lag features are frozen at latest prestart values; future actual/order rows are not used to create holdout rows."
+    },
+    "recent_direct_pick": {
+      "window_start": "2026-05-12",
+      "window_end_exclusive": "2026-07-07",
+      "rows": 354633,
+      "distinct_skus": 16947,
+      "sold_units": 1255240.0
+    },
+    "planner_total_anchor": null,
+    "weekly_policy": {
+      "weekly_tail_scale": 0.5,
+      "tail_week_count": 23,
+      "first_13_week_units": 407191.5,
+      "notes": [
+        "Weeks overlapping FD1-FD14 are built from the hybrid daily forecast.",
+        "Weeks after the 14-day horizon use a conservative scaled continuation from recent demand and candidate first-14-day demand."
+      ]
+    },
+    "calibration_factors_sample": [
+      {
+        "CalibrationMode": "none",
+        "CalibrationRows": 0,
+        "CalibrationFactor": 1.0
+      }
+    ],
+    "forecast_totals": {
+      "fd1_to_fd14_units": 157409.0,
+      "first_13_week_units": 407191.5,
+      "selected_ml_skus": 3212,
+      "forecast_skus": 17988
+    },
+    "risk_posture": [
+      "Configured to prefer under-forecast risk over over-forecast risk for replenishment slotting.",
+      "Recent fallback is deliberately small to avoid keeping low-demand SKUs in pick locations.",
+      "Weekly tail is conservative and should be reviewed before production use."
+    ]
+  },
+  "outputs": {
+    "daily_forecast": {
+      "path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\daily_forecast.parquet",
+      "sample_path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\daily_forecast_sample.csv",
+      "rows": 251832,
+      "columns": [
+        "CandidateID",
+        "SourceWorkbook",
+        "ForecastStartDate",
+        "SKU",
+        "ForecastDay",
+        "ForecastDate",
+        "ForecastUnits"
+      ]
+    },
+    "weekly_forecast": {
+      "path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\weekly_forecast.parquet",
+      "sample_path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\weekly_forecast_sample.csv",
+      "rows": 467688,
+      "columns": [
+        "CandidateID",
+        "SourceWorkbook",
+        "SKU",
+        "WeekIndex",
+        "WeekStartDate",
+        "ForecastUnits",
+        "IsFirst13Weeks"
+      ]
+    },
+    "product_hierarchy": {
+      "path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\product_hierarchy.parquet",
+      "sample_path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\product_hierarchy_sample.csv",
+      "rows": 238210,
+      "columns": [
+        "Offer",
+        "SKU",
+        "Division",
+        "Department",
+        "Class",
+        "KeyCategoryView",
+        "SizeGroup",
+        "GoLiveDate",
+        "OfferCount",
+        "Item",
+        "Color"
+      ]
+    },
+    "product_status": {
+      "path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\product_status.parquet",
+      "sample_path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\product_status_sample.csv",
+      "rows": 66112,
+      "columns": [
+        "StatusSKU",
+        "ProductStatus",
+        "ProductStatusDate"
+      ]
+    },
+    "signal_sku_summary": {
+      "path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\signal_sku_summary.parquet",
+      "sample_path": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\signal_sku_summary_sample.csv",
+      "rows": 17988,
+      "columns": [
+        "SKU",
+        "FD1ToFD14Units",
+        "ML14DayForecastUnits",
+        "Recent14DayUnits",
+        "SelectedByMLThreshold",
+        "RecentFallbackWeight"
+      ]
+    }
+  },
+  "notes": [
+    "FD1-FD14 comes from the conservative future-safe hybrid ML candidate.",
+    "Weekly forecast is a conservative continuation for ingestion and slotting impact review.",
+    "The generated workbook is local/generated output and should not be committed."
+  ]
+}

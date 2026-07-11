@@ -1,0 +1,7 @@
+{
+  "generated_at_utc": "2026-07-11T14:30:25.418194+00:00",
+  "sale_holdout": "C:\\Users\\lcabr\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\handoff_eval\\sale_holdout_2026-06-18",
+  "sale_best": "independent_recent_shape",
+  "forward": "C:\\Users\\lcabr\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\handoff_eval\\forward_2026-07-07_challenger",
+  "forward_best_partial": "corporate_total_recent_shape"
+}

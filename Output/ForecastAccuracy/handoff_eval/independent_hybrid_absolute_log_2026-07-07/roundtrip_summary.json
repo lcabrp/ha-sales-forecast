@@ -1,0 +1,32 @@
+{
+  "candidate_id": "independent_hybrid_absolute_log_2026-07-07",
+  "candidate_type": "hybrid_ml_baseline",
+  "candidate_dir": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07",
+  "contract": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\candidate_contract.json",
+  "roundtrip": {
+    "roundtrip_status": "pass",
+    "command": [
+      "C:\\Users\\lcabr\\Documents\\Projects\\ha-sales-forecast\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\lcabr\\Documents\\Projects\\ha-sales-forecast\\scripts\\python\\ingestion_pipeline.py",
+      "--source-file",
+      "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\input\\Product Info for BRG_2026-07-06__independent_hybrid_absolute_log_2026-07-07.xlsx",
+      "--output-dir",
+      "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\ingestion_output"
+    ],
+    "ingestion_output_dir": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\ingestion_output",
+    "forward_demand_csv": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\ingestion_output\\FwdDemandCSV_2026-07-11.csv",
+    "required_slots_csv": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\ingestion_output\\RequiredSlots_2026-07-11.csv",
+    "forward_demand_rows": 20449,
+    "forward_demand_columns": 36,
+    "missing_forward_demand_columns": [],
+    "extra_forward_demand_columns": [],
+    "duplicate_item_color_size_keys": 0,
+    "fd1_to_fd14_units": 157399.0,
+    "required_slot_tiers": 201,
+    "required_slots_total": 12155.7,
+    "logs": {
+      "stdout": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\logs\\ingestion_stdout.log",
+      "stderr": "Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\logs\\ingestion_stderr.log"
+    }
+  }
+}

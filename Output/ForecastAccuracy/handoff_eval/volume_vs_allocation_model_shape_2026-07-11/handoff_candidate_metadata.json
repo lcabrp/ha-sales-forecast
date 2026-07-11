@@ -1,0 +1,22 @@
+{
+  "generated_at_utc": "2026-07-11T14:04:00.919755+00:00",
+  "windows": 26,
+  "window_start_min": "2025-12-09",
+  "window_start_max": "2026-06-02",
+  "threads": 8,
+  "model": "hgb_absolute_log",
+  "sku_min_units": 20.0,
+  "lookback_days": 56,
+  "candidates": [
+    "corporate_raw",
+    "corporate_total_recent_shape",
+    "corporate_total_model_shape",
+    "independent_total_model_shape",
+    "recent_no_ml_no_promo_floor"
+  ],
+  "notes": [
+    "corporate_total_* candidates hold corporate 14-day total fixed and reallocate by shape.",
+    "Corporate total is an informed soft reference, not a hard production constraint.",
+    "independent_total_model_shape and recent_no_ml_no_promo_floor are free-total diagnostics."
+  ]
+}

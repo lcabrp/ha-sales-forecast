@@ -1,0 +1,9 @@
+SKU,Item,Color,Size,SourceFoundIn,13Wk_Demand,FD1_to_FD14_Total,ForecastStartDate,MissingHierarchyFields
+47042-BF9-M,47042,BF9,M,On-Hand,0.0,0,7/7/2026,"Division, Department, Class, KeyCategoryView, SizeGroup, GoLiveDate"
+47042-BF9-S,47042,BF9,S,On-Hand,0.0,0,7/7/2026,"Division, Department, Class, KeyCategoryView, SizeGroup, GoLiveDate"
+47054-FS5-80,47054,FS5,80,On-Hand,0.0,0,7/7/2026,"Division, Department, Class, KeyCategoryView, SizeGroup, GoLiveDate"
+48551-M23-XXS,48551,M23,XXS,On-Hand,0.0,0,7/7/2026,"Division, Department, Class, KeyCategoryView, SizeGroup, GoLiveDate"
+48552-M23-S,48552,M23,S,On-Hand,0.0,0,7/7/2026,"Division, Department, Class, KeyCategoryView, SizeGroup, GoLiveDate"
+30991--,30991,,,Weekly + 14-Day,0.0,0,7/7/2026,"Division, Department, Class, KeyCategoryView, SizeGroup, GoLiveDate"
+3333--,3333,,,Weekly + 14-Day,3.5,1,7/7/2026,"Division, Department, Class, KeyCategoryView, SizeGroup, GoLiveDate"
+9998--,9998,,,Weekly + 14-Day,0.0,0,7/7/2026,"Division, Department, Class, KeyCategoryView, SizeGroup, GoLiveDate"

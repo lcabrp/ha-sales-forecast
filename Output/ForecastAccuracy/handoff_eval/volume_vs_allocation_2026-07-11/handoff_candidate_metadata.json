@@ -1,0 +1,24 @@
+{
+  "generated_at_utc": "2026-07-11T13:33:00.014273+00:00",
+  "windows": 26,
+  "window_start_min": "2025-12-09",
+  "window_start_max": "2026-06-02",
+  "lookback_days": 56,
+  "candidates": [
+    "corporate_raw",
+    "corporate_total_recent_shape",
+    "recent_no_ml_no_promo_floor"
+  ],
+  "notes": [
+    "Same 26-window contract for corporate_raw, corporate_total_recent_shape, recent_no_ml_no_promo_floor.",
+    "corporate_total_recent_shape = corporate 14-day total allocated by recent_no_ml_no_promo_floor SKU shares (strict total match).",
+    "independent_total_model_shape is reported separately from June combined scores (different sold-units window); not decision-comparable here.",
+    "corporate_total_model_shape not yet scored; needs June ML SKU shapes + allocate_total_by_shape.",
+    "July 10 quantile cold-start shapes intentionally excluded (unit collapse audit)."
+  ],
+  "inputs": {
+    "forecast_day": "C:\\Users\\lcabr\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\history\\parquet\\forecast_sku_day.parquet",
+    "actuals": "C:\\Users\\lcabr\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\history\\parquet\\actual_sku_day_modified.parquet",
+    "combined_summary": "C:\\Users\\lcabr\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\replacement_ml_backtests\\combined_replacement_candidate_summary.csv"
+  }
+}

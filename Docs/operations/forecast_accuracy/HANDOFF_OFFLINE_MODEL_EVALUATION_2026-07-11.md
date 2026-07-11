@@ -224,3 +224,19 @@ of the following:
 The practical finish line is not “replace every part of corporate forecasting.”
 It is “use the best credible total signal, and demonstrably allocate it to SKUs
 better than the current corporate SKU forecast.”
+
+## Session Results (same day, offline PC)
+
+See
+`Docs/operations/forecast_accuracy/HANDOFF_VOLUME_VS_ALLOCATION_FINDINGS_2026-07-11.md`
+for the full write-up. Short version:
+
+- July 10 cold-start “unit collapse” explained: near-dead quantile ML + 10%
+  recent fallback + upper-bound-only caps (not a brake-tuning problem).
+- Corporate totals recently ~+3% over 7–14 days; daily timing still noisy.
+- Lead challenger: `corporate_total_recent_shape` on the 26-window contract and
+  sale holdout (allocation), with free recent / absolute-log hybrid kept as
+  independent diagnostics.
+- Frozen forward package for **2026-07-07 → 2026-07-20** lives under
+  `Output/ForecastAccuracy/handoff_eval/`. Full evaluation waits on actuals
+  through 2026-07-20.
