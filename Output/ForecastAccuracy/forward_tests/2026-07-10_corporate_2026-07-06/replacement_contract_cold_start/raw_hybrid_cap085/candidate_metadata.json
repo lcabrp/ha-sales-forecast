@@ -1,0 +1,25 @@
+{
+  "candidate_id": "raw_hybrid_cap085",
+  "features": [
+    "Division",
+    "Department",
+    "Class",
+    "KeyCategoryView",
+    "ProductGroupCode",
+    "SizeGroupCode",
+    "Velocity",
+    "SlotTier",
+    "pdl_sku_primary_sheet_type",
+    "pdl_sku_primary_scope",
+    "gender",
+    "material_group",
+    "fabric_group",
+    "season",
+    "theme",
+    "collection",
+    "NewnessBucket"
+  ],
+  "forecast_start_date": "2026-07-07",
+  "quantile": 0.35,
+  "recent_volume_cap": 0.85
+}

@@ -26,12 +26,14 @@ tracked scripts, forecast snapshots, and AX.
 
 1. Clone or pull the latest `ha-sales-forecast` repo.
 2. Confirm the PC can run the project with `uv`.
-3. Confirm the PC can connect to AX SQL Server with Windows authentication.
+3. For offline work, confirm the copied forecast CSV snapshots are present in
+   the forecast-owned local folder below. AX access is only needed when
+   refreshing actuals or recovering additional uploads.
 4. Confirm the forecast CSV snapshots are present in one or both locations:
 
 ```text
 Output/Ingestion/FwdDemandCSV_*.csv
-Output/Monitoring/forecast_snapshots/confirmed_raw/FwdDemandCSV_*.csv
+Output/ForecastAccuracy/confirmed_forecasts/FwdDemandCSV_*.csv
 ```
 
 The confirmed raw folder can contain hash-suffixed files such as:
@@ -51,7 +53,7 @@ uv run python scripts\python\forecast_accuracy.py import-forecasts
 Then import the confirmed raw forecast snapshots, if present:
 
 ```powershell
-uv run python scripts\python\forecast_accuracy.py import-forecasts --input-dir Output\Monitoring\forecast_snapshots\confirmed_raw
+uv run python scripts\python\forecast_accuracy.py import-forecasts --input-dir Output\ForecastAccuracy\confirmed_forecasts
 ```
 
 The importer skips snapshots that are already present by exact source file and
@@ -71,8 +73,9 @@ Use this rule of thumb:
 1. If the same content hash appears twice, keep only one copy.
 2. If multiple files have the same `ForecastStartDate`, forecasted SKU count, and
    total forecast units, treat them as the same weekly forecast quantity.
-3. Prefer `Output/Monitoring/forecast_snapshots/confirmed_raw` when available,
-   because those are the preserved confirmed uploads.
+3. Prefer the copied files under `Output/ForecastAccuracy/confirmed_forecasts`,
+   because they are the forecast-owned copies of preserved confirmed uploads
+   from `ha-kydc-monitoring`.
 4. Use `Output/Ingestion` files as fallback or for pipeline/debug comparisons.
 
 Known examples from June 2026 project data:

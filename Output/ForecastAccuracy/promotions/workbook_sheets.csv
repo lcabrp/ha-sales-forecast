@@ -623,6 +623,19 @@ a0fddef2f62d,6.3.25 All Sleep up to 50 off.xlsx,clearance - 6.7.25 extra 20% of,
 3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Sales & Inv,ok,40,27,,6.9.26 RWB & Swim & Dresses up to 50% Off,6.9.26-6.17.26,2026-06-09,2026-06-17,False,False,non_offer,0
 3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Swim up to 50%,ok,921,43,4.0,Sleep up to 50%,6.9.26-6.12.26,2026-06-09,2026-06-12,True,False,promo_detail,198
 3a0dc46f1597,6.9.26 RWB & Swim & Dresses up to 50% Off PDL.xlsx,Tier 1 Recommendations,ok,17,11,16.0,6.9.26 RWB & Swim & Dresses up to 50% Off,6.9.26-6.17.26,2026-06-09,2026-06-17,False,False,tier1_recommendation,0
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,$15 Sleep,ok,710,48,5.0,$15 Sleep,7.14-7.20,2026-07-14,2026-07-20,True,False,promo_detail,703
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,0% Offers,ok,40,48,5.0,0% Offers,7.14-7.20,2026-07-14,2026-07-20,False,False,zero_percent_offers,0
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Data,ok,40,8,,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,False,False,support,0
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Dresses up to 30%,ok,89,48,5.0,Dresses up to 30%,7.14-7.20,2026-07-14,2026-07-20,True,False,promo_detail,83
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Images,ok,8818,5,2.0,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,True,False,promo_detail,8814
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,MSRPs,ok,40,2,,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,False,False,non_offer,0
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Marketing Dropdown,ok,4,1,,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,False,False,support,0
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Promo Offers,ok,1374,50,5.0,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,True,True,aggregate_promo_offers,676
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Roll Up,ok,40,34,,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,False,False,rollup_or_pivot,0
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Sales & Inv,ok,40,27,,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,False,False,non_offer,0
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Sheet1,ok,882,22,0.0,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,True,False,promo_detail,881
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Sheet2,ok,40,16,,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,False,False,non_offer,0
+f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Tier 1 Recommendations,ok,17,11,16.0,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,False,False,tier1_recommendation,0
 b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,ALL OFFERS,ok,1672,32,11.0,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,True,False,promo_detail,1653
 b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,In Stock,ok,40,5,,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,False,False,non_offer,0
 b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,KS CHEAT SHEET,ok,14,4,,HOT SUMMER DAYS - Kids Summer Apparel up to 60% off,7.15.25-7.21.25,2025-07-15,2025-07-21,False,False,non_offer,0
@@ -650,6 +663,18 @@ b95a95ed3c00,7.15.25 Kids Summer up to 60 off.xlsx,swim,ok,56,32,11.0,HOT SUMMER
 4f272317f643,7.30.24 All Sleep on Sale starting from $25 + Mix & Match PDL.xlsx,All Promo Discounts,ok,1729,13,3.0,7.30.24 All Sleep on Sale starting from $25,7.30.24-8.5.24,2024-07-30,2024-08-05,True,True,aggregate_promo_offers,741
 4f272317f643,7.30.24 All Sleep on Sale starting from $25 + Mix & Match PDL.xlsx,Mix & Match,ok,1360,12,3.0,7.30.24 Mix & Match Get it in Time for Picture Day,7.30.24-8.5.24,2024-07-30,2024-08-05,True,False,promo_detail,553
 4f272317f643,7.30.24 All Sleep on Sale starting from $25 + Mix & Match PDL.xlsx,Sleep Revisions,ok,1339,15,3.0,Sleep Corrections,11.18.20- 11.28.20,2020-11-18,2020-11-28,True,False,correction,79
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,0% Offers,ok,40,43,4.0,0% Offers,7.7-7.13,2026-07-07,2026-07-13,False,False,zero_percent_offers,0
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Clearance Offers,ok,1918,48,4.0,Clearance Offers,7.7-7.13,2026-07-07,2026-07-13,True,False,promo_detail,826
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Data,ok,40,8,,7.7.26 Xmas in July Sleep Starting @ $20 PDL,7.7-7.13,2026-07-07,2026-07-13,False,False,support,0
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Holiday Sleep Starting @ $20,ok,976,43,4.0,Holiday Sleep Starting @ $20,7.7-7.13,2026-07-07,2026-07-13,True,False,promo_detail,113
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,MSRPs,ok,40,2,,7.7.26 Xmas in July Sleep Starting @ $20 PDL,7.7-7.13,2026-07-07,2026-07-13,False,False,non_offer,0
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Marketing Dropdown,ok,4,1,,7.7.26 Xmas in July Sleep Starting @ $20 PDL,7.7-7.13,2026-07-07,2026-07-13,False,False,support,0
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Pin Recommendations,ok,38,10,18.0,7.7.26 Xmas in July Sleep Starting @ $20 PDL,7.7-7.13,2026-07-07,2026-07-13,True,False,promo_detail,19
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Promo Offers,ok,1498,43,4.0,7.7.26 Xmas in July Sleep Starting @ $20 PDL,7.7-7.13,2026-07-07,2026-07-13,True,True,aggregate_promo_offers,845
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Roll Up,ok,40,34,,7.7.26 Xmas in July Sleep Starting @ $20 PDL,7.7-7.13,2026-07-07,2026-07-13,False,False,rollup_or_pivot,0
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Sales & Inv,ok,40,27,,7.7.26 Xmas in July Sleep Starting @ $20 PDL,7.7-7.13,2026-07-07,2026-07-13,False,False,non_offer,0
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Sleep Starting @ $20,ok,712,43,4.0,Sleep Starting @ $20,7.7-7.13,2026-07-07,2026-07-13,True,False,promo_detail,358
+3e32c04d2160,7.7.26 Xmas in July Sleep Starting @ $20 PDL.xlsx,Swim 50% Off,ok,1196,44,4.0,Swim 50% Off,7.11-7.13,2026-07-11,2026-07-13,True,False,promo_detail,51
 513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,ALL OFFERS,ok,986,31,11.0,BABY/TODDLER & KIDS SLEEP + 50% OFF BLUEY,7.9.25-7.14.25,2025-07-09,2025-07-14,True,False,promo_detail,974
 513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,BLUEY UP TO 50% OFF,ok,32,31,11.0,BLUEY UP TO 50% OFF,7.9.25-7.14.25,2025-07-09,2025-07-14,True,False,promo_detail,20
 513b1efdeffd,7.9.25 Kids and Baby Sleep + 50% off Bluey PDL.xlsx,In Stock,ok,40,5,,BABY/TODDLER & KIDS SLEEP + 50% OFF BLUEY,7.9.25-7.14.25,2025-07-09,2025-07-14,False,False,non_offer,0

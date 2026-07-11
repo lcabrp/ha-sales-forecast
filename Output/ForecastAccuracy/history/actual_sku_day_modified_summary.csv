@@ -1,2 +1,2 @@
 DateBasis,StartDate,EndDate,Rows,DistinctSKUs,SoldUnits,OutputPath
-modified,2025-11-01,2026-06-25,1520069,28575,5318631.0,C:\Users\labreu\Documents\Projects\ha-sales-forecast\Output\ForecastAccuracy\history\parquet\actual_sku_day_modified.parquet
+modified,2025-11-01,2026-07-09,1614433,30224,5759792.0,C:\Users\labreu\Documents\Projects\ha-sales-forecast\Output\ForecastAccuracy\history\parquet\actual_sku_day_modified.parquet

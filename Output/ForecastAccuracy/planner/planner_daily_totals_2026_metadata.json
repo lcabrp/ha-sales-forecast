@@ -16,12 +16,12 @@
     "forecasted_demand_units"
   ],
   "generated_at": "2026-06-16T15:11:58",
-  "source_file": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Source\\Planner\\2026 Planner.xlsx",
+  "source_file": "Source/Planner/2026 Planner.xlsx",
   "source_mtime": "2026-06-16T13:57:01",
-  "output_parquet": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\planner_daily_totals_2026.parquet",
-  "output_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\planner_daily_totals_2026.csv",
-  "snapshot_parquet": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\snapshots\\planner_daily_totals_2026_snapshot_20260616_151158.parquet",
-  "snapshot_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\snapshots\\planner_daily_totals_2026_snapshot_20260616_151158.csv",
+  "output_parquet": "Output/ForecastAccuracy/planner/planner_daily_totals_2026.parquet",
+  "output_csv": "Output/ForecastAccuracy/planner/planner_daily_totals_2026.csv",
+  "snapshot_parquet": "Output/ForecastAccuracy/planner/snapshots/planner_daily_totals_2026_snapshot_20260616_151158.parquet",
+  "snapshot_csv": "Output/ForecastAccuracy/planner/snapshots/planner_daily_totals_2026_snapshot_20260616_151158.csv",
   "kpi_sheet": "KPI DC Forecast link file",
   "kpi_rows": 364
 }

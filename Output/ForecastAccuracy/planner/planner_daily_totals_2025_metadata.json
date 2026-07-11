@@ -15,10 +15,10 @@
   },
   "missing_output_columns": [],
   "generated_at": "2026-06-16T15:10:38",
-  "source_file": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Source\\Planner\\2025 Planner.xlsx",
+  "source_file": "Source/Planner/2025 Planner.xlsx",
   "source_mtime": "2026-06-16T14:03:33",
-  "output_parquet": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\planner_daily_totals_2025.parquet",
-  "output_csv": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\planner\\planner_daily_totals_2025.csv",
+  "output_parquet": "Output/ForecastAccuracy/planner/planner_daily_totals_2025.parquet",
+  "output_csv": "Output/ForecastAccuracy/planner/planner_daily_totals_2025.csv",
   "kpi_sheet": "KPI DC Forecast link file",
   "kpi_rows": 364
 }

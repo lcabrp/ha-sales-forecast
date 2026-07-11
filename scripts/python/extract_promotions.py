@@ -1458,9 +1458,14 @@ def main() -> None:
     args = parse_args()
     source_dir = args.source_dir
     output_dir = args.output_dir
-    paths = sorted(path for path in source_dir.glob("*.xlsx") if not path.name.startswith("~$"))
+    paths = sorted(
+        path
+        for pattern in ("*.xlsx", "*.xlsm")
+        for path in source_dir.glob(pattern)
+        if not path.name.startswith("~$")
+    )
     if not paths:
-        raise FileNotFoundError(f"No .xlsx files found in {source_dir}")
+        raise FileNotFoundError(f"No .xlsx or .xlsm files found in {source_dir}")
 
     workbook_rows = []
     sheet_rows = []

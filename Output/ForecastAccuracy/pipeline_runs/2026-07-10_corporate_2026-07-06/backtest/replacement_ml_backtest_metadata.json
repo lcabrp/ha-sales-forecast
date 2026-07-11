@@ -1,0 +1,27 @@
+{
+  "censoring": true,
+  "features": [
+    "Division",
+    "Department",
+    "Class",
+    "KeyCategoryView",
+    "ProductGroupCode",
+    "SizeGroupCode",
+    "Velocity",
+    "SlotTier",
+    "pdl_sku_primary_sheet_type",
+    "pdl_sku_primary_scope",
+    "gender",
+    "material_group",
+    "fabric_group",
+    "season",
+    "theme",
+    "collection",
+    "NewnessBucket"
+  ],
+  "generated_at_utc": "2026-07-10T22:59:02.768967+00:00",
+  "panel": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\model\\model_sku_day_panel_parts",
+  "quantile": 0.35,
+  "snapshot_dir": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\corporate_forecast\\snapshots\\20260617_173252",
+  "windows": 26
+}
