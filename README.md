@@ -31,9 +31,13 @@ Docs/operations/forecast_accuracy/  Forecast runbooks, reset contracts, and port
 Docs/technical/                 Forecast and velocity-policy technical notes
 Source/Planner/                 Local planner workbooks, ignored by Git
 Source/Promotions/              Local promotion workbooks, ignored by Git
-Output/ForecastAccuracy/        Local/generated forecast artifacts, mostly ignored by Git
+Output/ForecastAccuracy/        Forecast facts and eval outputs; prefer compact tracked Parquet/CSV (see portable-artifacts doc). Large monoliths and *.db stay local.
 scratch/                        One-off forecast investigations
 ```
+
+Latest evaluation handoff:
+[Docs/operations/forecast_accuracy/HANDOFF_VOLUME_VS_ALLOCATION_FINDINGS_2026-07-11.md](Docs/operations/forecast_accuracy/HANDOFF_VOLUME_VS_ALLOCATION_FINDINGS_2026-07-11.md)
+(includes 2026-07-12 multi-PC / May-June / seasonal clarifications).
 
 ## Setup
 

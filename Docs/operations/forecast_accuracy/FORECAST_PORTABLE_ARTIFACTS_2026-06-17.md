@@ -5,9 +5,33 @@ artifacts in `ha-sales-forecast`. The goal is to keep as much useful forecast
 data as possible in Git while avoiding GitHub's `100 MB` single-file limit and
 keeping regenerable bulky artifacts local.
 
+**Multi-PC rule (2026-07-12):** this work moves between machines. Prefer **several
+small Parquet/CSV/JSON files** over one large file. Commit compact evaluation
+outputs and score tables when under the practical ~90 MB ceiling so a `git pull`
+restores yesterday's evidence without re-running long jobs. Split panels and
+dated shards beat monolithic blobs.
+
 Extraction update, 2026-06-25: monitoring, market-basket, zone-map generation,
 and daily layout-compliance artifacts belong to sibling repos unless they are
 copied here as compact forecast facts with a documented forecast use.
+
+## Handoff eval pack (2026-07-11) — track these
+
+Under `Output/ForecastAccuracy/handoff_eval/` (already on `main` as of 2026-07-11):
+
+- volume-vs-allocation window scores / summaries (no-ML and model-shape);
+- sale holdout scores and SKU total CSVs;
+- forward `2026-07-07` challenger FD14 CSVs + `forward_daily_forecasts.parquet`;
+- independent hybrid absolute-log contract samples + `daily_forecast.parquet`;
+- partial Jul 7–9 score CSVs.
+
+Do **not** rely on ignored `*.db` / `*.log` under that tree moving with Git.
+After clone/pull on a new PC, rebuild the combined model panel from parts before
+ML:
+
+```powershell
+uv run python scripts/python/forecast_model_split_panel.py --combine
+```
 
 ## Size Audit
 

@@ -240,3 +240,9 @@ for the full write-up. Short version:
 - Frozen forward package for **2026-07-07 → 2026-07-20** lives under
   `Output/ForecastAccuracy/handoff_eval/`. Full evaluation waits on actuals
   through 2026-07-20.
+
+2026-07-12 clarifications (see findings doc addendum): May/June retrospective
+evaluation is already covered — do not redo as a large campaign; waiting is only
+for the Jul 7–20 forward closeout; lead challenger uses recent shape + corporate
+total, not explicit prior-year July 4 SKU patterns; prefer small portable
+Parquet/CSV artifacts for multi-PC `git pull` continuity.

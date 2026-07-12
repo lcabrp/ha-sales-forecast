@@ -128,11 +128,14 @@ independent_recent_shape / independent_total_model_shape / independent hybrid
 
 ### Do not
 
+- Re-run a large May/June Monday evaluation campaign (already covered; 2026-07-12).
 - Re-run July quantile cold-start / `forecast_pipeline_runner` as-is.
 - Add new ML families before the Jul 7–20 full-window score.
 - Treat partial Jul 7–9 scores as a winner decision.
 - Use `ha-zoning-slotting` as the active execution root.
 - Select cost-scorecard winners without approved weights.
+- Leave long-run score CSVs / small Parquets only on one PC — commit compact
+  outputs under `handoff_eval/` (or equivalent) before switching machines.
 
 ## Scripts To Reuse
 
@@ -158,3 +161,61 @@ collapse; one untouched forward shadow completes with actuals.
 
 Practical finish line: best credible total + demonstrably better SKU allocation
 than the current corporate SKU forecast — not “replace every part of corporate.”
+
+## Addendum - 2026-07-12 (multi-PC continuation notes)
+
+### Historical May/June evaluation — already done; do not redo as R&D
+
+Assumptions clarified:
+
+- Years of DirectPick/actuals + promotion Parquet extracts **are** enough to
+  evaluate candidates on May/June (and earlier) without waiting for July 20.
+- Retrospective method: freeze an origin, use only then-knowable features /
+  corporate books, score the next 14 days vs actuals and vs corporate.
+
+We already have that light:
+
+- 26-window contract through early June (`2025-12-09` … `2026-06-02`);
+- sale holdout covering mid/late June.
+
+**Decision (2026-07-12): do not run a new May/June Monday campaign** unless a
+specific exact-start corporate book is missing and needed for ops storytelling.
+More of the same tables will reconfirm `corporate_total_recent_shape`, not unlock
+a new model family. That would waste time.
+
+### What we *are* waiting on
+
+Only the **frozen forward shadow** for **2026-07-07 → 2026-07-20**.
+Partial Jul 7–9 scores exist; full closeout needs actuals through 2026-07-20.
+That is not a claim that history is unevaluable.
+
+### Past-year / July 4 signals — what the lead challenger uses
+
+| Signal | In `corporate_total_recent_shape`? | Notes |
+| --- | --- | --- |
+| Recent DirectPick (56d) SKU shares + DOW | **Yes** | Shape only |
+| Corporate FD day / 14d totals | **Yes** | Soft volume reference (may embed planning/July-4 judgment) |
+| Explicit prior-year July 4 / same-season SKU shape | **No** | Not in lead challenger (`include_seasonal=False`) |
+| YoY sale overlays / seasonal no-ML / optional ML same-season features | Tried elsewhere | Overlays fixed totals, weak SKU WAPE; not the frozen challenger |
+
+Known gap: holiday **day profile** (e.g. July 4) can miss even when 14d totals are
+close. A future controlled seasonal *day-profile or shape* test is allowed; do not
+restart end-to-end ML thrash to chase it.
+
+### Multi-PC portability (save online)
+
+Work spans different PCs without AX on every machine. Prefer:
+
+- **several small Parquet/CSV/JSON files** over one large blob;
+- commit compact evaluation outputs under `Output/ForecastAccuracy/handoff_eval/`
+  and score summaries when under the ~90 MB practical limit;
+- keep monolithic `model_sku_day_panel.parquet` local; use tracked monthly parts +
+  `forecast_model_split_panel.py --combine` on the destination PC;
+- ignore SQLite (`*.db`) and logs; rebuild or re-run roundtrip if needed.
+
+Jul 11 long runs: critical `handoff_eval` scores, forward FD14 CSVs, hybrid
+`contract/daily_forecast.parquet`, and window-score CSVs **are on `origin/main`**.
+Ignored locally only: hybrid `sku_ledger.db` and ingestion `*.log`. After `git pull`
+on the next PC, combine the model panel parts before any ML retrain.
+
+See also `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` (updated same day).
