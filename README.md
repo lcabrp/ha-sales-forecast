@@ -72,12 +72,13 @@ Some replacement-forecast scripts still import `ingestion_pipeline.py` to genera
 
 ## Tracked Artifact Policy
 
-This repo should track useful forecast artifacts when reasonable so future work does not have to rebuild every dataset. The practical per-file ceiling is 90 MB to stay below GitHub's hard 100 MB push limit with margin.
+This repo should track useful forecast artifacts when reasonable so future work does not have to rebuild every dataset — especially when switching PCs. The practical per-file ceiling is **90 MB** (GitHub hard limit 100 MB). Prefer several smaller files over one large file.
 
 Current large-file handling:
 
 - `Output/ForecastAccuracy/model/model_sku_day_panel.parquet` is local-only because it is about 221 MB.
 - The default portable replacement is `Output/ForecastAccuracy/model/model_sku_day_panel_parts/`, split into Parquet parts with `manifest.json`; model scripts read this directory by default.
 - `Output/ForecastAccuracy/promotions/pdl_offer_rows.csv` is local-only because it is about 122 MB; the smaller Parquet/sample promotion artifacts are tracked instead.
-- `Output/ForecastAccuracy/promotions/promotions.db` and source workbooks above the 90 MB practical limit are local-only; smaller source workbooks may be tracked when useful.
+- `Output/ForecastAccuracy/promotions/promotions.db` stays local when oversized/regenerable; other compact SQLite under `Output/ForecastAccuracy/` (e.g. handoff `sku_ledger.db`) may be tracked when under 90 MB.
+- Agents pushing for multi-PC continuity: see `AGENTS.md` and `Docs/operations/forecast_accuracy/FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md`.
 

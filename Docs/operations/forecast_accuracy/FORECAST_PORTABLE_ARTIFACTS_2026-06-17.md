@@ -5,11 +5,16 @@ artifacts in `ha-sales-forecast`. The goal is to keep as much useful forecast
 data as possible in Git while avoiding GitHub's `100 MB` single-file limit and
 keeping regenerable bulky artifacts local.
 
-**Multi-PC rule (2026-07-12):** this work moves between machines. Prefer **several
-small Parquet/CSV/JSON files** over one large file. Commit compact evaluation
-outputs and score tables when under the practical ~90 MB ceiling so a `git pull`
-restores yesterday's evidence without re-running long jobs. Split panels and
-dated shards beat monolithic blobs.
+**Multi-PC rule (2026-07-12):** this work moves between machines. When pushing to
+the online repo, commit **everything relevant under ~90 MB per file** (GitHub
+hard stop 100 MB). Prefer **several small Parquet/CSV/JSON/SQLite files** over
+one large file. Score tables, challenger forecasts, compact ledgers, and
+evaluation packs belong in Git so `git pull` restores yesterday's evidence
+without re-running long jobs. Split panels and dated shards beat monolithic
+blobs. Still exclude secrets, `.venv`, and `*.log`.
+
+Agents updating the remote for another PC must follow this rule (also in
+`AGENTS.md`).
 
 Extraction update, 2026-06-25: monitoring, market-basket, zone-map generation,
 and daily layout-compliance artifacts belong to sibling repos unless they are
@@ -23,11 +28,11 @@ Under `Output/ForecastAccuracy/handoff_eval/` (already on `main` as of 2026-07-1
 - sale holdout scores and SKU total CSVs;
 - forward `2026-07-07` challenger FD14 CSVs + `forward_daily_forecasts.parquet`;
 - independent hybrid absolute-log contract samples + `daily_forecast.parquet`;
-- partial Jul 7–9 score CSVs.
+- partial Jul 7–9 score CSVs;
+- hybrid roundtrip `sku_ledger.db` (~3 MB; promoted 2026-07-12 — under 90 MB).
 
-Do **not** rely on ignored `*.db` / `*.log` under that tree moving with Git.
-After clone/pull on a new PC, rebuild the combined model panel from parts before
-ML:
+Logs (`*.log`) stay ignored. After clone/pull on a new PC, rebuild the combined
+model panel from parts before ML:
 
 ```powershell
 uv run python scripts/python/forecast_model_split_panel.py --combine
@@ -112,22 +117,20 @@ Track these when under `100 MB`:
 
 Keep local by default:
 
-- raw source Excel workbooks in `Source/*.xlsx`;
+- raw source Excel workbooks in `Source/*.xlsx` when huge or regenerable from
+  sibling repos (small workbooks may be tracked when useful and under 90 MB);
 - raw promotion workbooks in `Source/Promotions/*.xlsx`; keep
   `Source/Promotions/.gitkeep` tracked so the local drop folder exists after
   clone;
-- the monolithic model panel `model_sku_day_panel.parquet`;
-- raw replacement candidate package folders under
-  `Output/ForecastAccuracy/replacement_contract/`;
-- local SQLite convenience DBs;
-- raw allocation-link facts with sales-order identifiers.
+- the monolithic model panel `model_sku_day_panel.parquet` (use monthly parts);
+- `Output/ForecastAccuracy/promotions/promotions.db` when oversized/regenerable;
+- `*.db-shm` / `*.db-wal` / `*.db-journal` sidecars;
+- `*.log` and `.venv`;
+- secrets (`.env`, credentials).
 
-Replacement candidate package folders are intentionally ignored for now even
-though the current files are below `100 MB`. They contain generated workbook
-clones and ingestion round-trip folders that can grow quickly. The safer
-portable contract is to track the scripts, source facts, Planner totals,
-confirmed AX snapshots, and candidate comparison summaries, then regenerate a
-candidate package when needed.
+Compact SQLite under `Output/ForecastAccuracy/**` (other than
+`promotions/promotions.db`) **may be tracked** when under ~90 MB — e.g. handoff
+eval `sku_ledger.db`.
 
 ## Rebuild Commands
 

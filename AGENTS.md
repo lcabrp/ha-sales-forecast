@@ -18,7 +18,8 @@ This is the Hanna Andersson KYDC sales forecast repo. It was extracted from `ha-
 - Keep one-off investigations in `scratch/` unless they become repeatable forecast reports or datasets.
 - When editing AX SQL, always join AX tables on `DATAAREAID` and `[PARTITION]`; warehouse `4010`, company `ha`, and partition `5637144576` are the normal defaults.
 - For production analysis queries, use read-only patterns already present in the repo, usually `READ UNCOMMITTED` or `WITH (NOLOCK)`.
-- Do not commit large workbooks, local SQLite databases, or generated model artifacts unless a reset/portable-artifact contract explicitly says they are promoted.
+- **Online-repo / multi-PC artifact rule (2026-07-12):** when updating the remote repo so work continues on another PC, commit **all relevant forecast evidence and tooling** unless a file is over the practical **~90 MB** ceiling (GitHub hard limit 100 MB). Prefer **several smaller Parquet/CSV/JSON/SQLite files** over one large blob. Split panels beat monoliths. Do not leave long-run score tables, challenger forecasts, or compact ledgers only on one machine. Still never commit secrets (`.env`, credentials). Known exceptions that stay local are listed in `Docs/operations/forecast_accuracy/FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` (e.g. monolithic `model_sku_day_panel.parquet`, `promotions.db` when oversized/regenerable).
+- Ignore regenerable noise (`*.log`, `__pycache__`, `.venv`) even when small.
 
 ## Verification
 

@@ -214,8 +214,12 @@ Work spans different PCs without AX on every machine. Prefer:
 - ignore SQLite (`*.db`) and logs; rebuild or re-run roundtrip if needed.
 
 Jul 11 long runs: critical `handoff_eval` scores, forward FD14 CSVs, hybrid
-`contract/daily_forecast.parquet`, and window-score CSVs **are on `origin/main`**.
-Ignored locally only: hybrid `sku_ledger.db` and ingestion `*.log`. After `git pull`
-on the next PC, combine the model panel parts before any ML retrain.
+`contract/daily_forecast.parquet`, window-score CSVs, and hybrid
+`ingestion_output/sku_ledger.db` (~3 MB) **are on `origin/main`**.
+Logs stay ignored. After `git pull` on the next PC, combine the model panel
+parts before any ML retrain.
+
+**Commit policy for agents:** push everything relevant under ~90 MB; prefer
+many small files; see `AGENTS.md` and this portable-artifacts note.
 
 See also `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` (updated same day).

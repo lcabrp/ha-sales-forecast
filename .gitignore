@@ -18,12 +18,17 @@ credentials.json
 *.key
 .credentials
 
-# Local databases and database sidecars
+# Local databases and database sidecars (default ignore).
+# Compact forecast SQLite under Output/ForecastAccuracy/ is promoted when under
+# the ~90 MB multi-PC ceiling — see Docs/operations/forecast_accuracy/
+# FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md and AGENTS.md.
 *.db
 *.sqlite
 *.db-shm
 *.db-wal
 *.db-journal
+!Output/ForecastAccuracy/**/*.db
+Output/ForecastAccuracy/promotions/promotions.db
 
 # Excel lock/temp files. Source workbooks are trackable when under the 90 MB practical limit.
 ~$*.xlsx
