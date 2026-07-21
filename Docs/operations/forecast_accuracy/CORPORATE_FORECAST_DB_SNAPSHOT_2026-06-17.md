@@ -1,5 +1,10 @@
 # Corporate Forecast DB Snapshot
 
+Historical provenance only. This is a point-in-time 2026-06-17 extract, not the
+current corporate forecast or a model input for the July 21 shadow. The large
+tracked snapshot should be moved to durable artifact storage before being
+untracked; retain its manifest and extract summary in this repo.
+
 Captured: 2026-06-17
 
 ## Source

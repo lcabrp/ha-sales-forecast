@@ -2,6 +2,10 @@
 
 Generated: 2026-06-08
 
+Historical evidence only. This multi-year corporate-upload analysis remains
+useful, but it does not supersede `FORECAST_CURRENT_STATE.md` or the completed
+July 7-20 forward closeout.
+
 This note preserves the multi-year forecast accuracy results so the slow
 historical rebuild does not need to be rerun just to recover the current
 business answer.
@@ -89,11 +93,11 @@ The compact tracked CSV tables are saved next to this note:
 - `historical_forecast_accuracy_inflection_months.csv`
 - `historical_forecast_accuracy_ba_comparison.csv`
 
-The full generated outputs are local-only and ignored by Git:
+The full historical fact and summary outputs are under:
 
 - `Output/ForecastAccuracy/history/forecast_accuracy_snapshot_summary.csv`
 - `Output/ForecastAccuracy/history/forecast_accuracy_variance_buckets.csv`
 - `Output/ForecastAccuracy/history/parquet/*.parquet`
 
-To rebuild the heavy artifacts only when necessary, use
-`Docs/operations/FORECAST_ACCURACY_DB_RUNBOOK.md`.
+To rebuild them only when necessary, use the historical commands in
+`ARTIFACTS_AND_REBUILD.md`.
