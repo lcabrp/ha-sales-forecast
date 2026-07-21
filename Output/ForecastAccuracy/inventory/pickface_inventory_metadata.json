@@ -1,9 +1,9 @@
 {
-  "updated_at_utc": "2026-07-10T01:26:43.883021+00:00",
+  "updated_at_utc": "2026-07-21T13:28:05.326823+00:00",
   "source": "DAX_PROD.dbo.INVENTSUM/INVENTDIM/WMSLOCATION + HAFORECASTREPLENISHMENTTABLE",
-  "latest_snapshot_date": "2026-07-09",
+  "latest_snapshot_date": "2026-07-21",
   "outputs": {
-    "dated_detail": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-09.parquet",
+    "dated_detail": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-21.parquet",
     "detail_fact": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail.parquet",
     "sku_day": "Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet"
   },

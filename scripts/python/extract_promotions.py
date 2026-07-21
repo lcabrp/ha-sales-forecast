@@ -841,6 +841,16 @@ def extract_sheet(
     return SheetExtract(sheet_row=sheet_row, event_row=event_row, offers=offers)
 
 
+def excel_engine(path: Path) -> str:
+    """Choose the stable reader for each workbook container.
+
+    The July 21, 2026 macro-enabled PDL exits inside the calamine reader before
+    Python can raise a recoverable exception.  Openpyxl reads that workbook and
+    preserves cached cell values, while calamine remains faster for plain xlsx.
+    """
+    return "openpyxl" if path.suffix.lower() == ".xlsm" else "calamine"
+
+
 def extract_workbook(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], list[pd.DataFrame]]:
     """Parse and extract all sheets within a workbook Excel file.
 
@@ -868,7 +878,7 @@ def extract_workbook(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]], 
     offer_frames: list[pd.DataFrame] = []
 
     try:
-        excel = pd.ExcelFile(path, engine="calamine")
+        excel = pd.ExcelFile(path, engine=excel_engine(path))
     except Exception as exc:
         workbook_row["workbook_type"] = "unreadable"
         sheet_rows.append(
@@ -1016,7 +1026,13 @@ def extract_coupon_rows(path: Path) -> pd.DataFrame:
         pd.DataFrame: DataFrame containing mapped and cleaned coupon records.
     """
     try:
-        df = pd.read_excel(path, sheet_name="COUPON TRACKER", header=0, dtype=object, engine="calamine")
+        df = pd.read_excel(
+            path,
+            sheet_name="COUPON TRACKER",
+            header=0,
+            dtype=object,
+            engine=excel_engine(path),
+        )
     except Exception:
         return pd.DataFrame(columns=COUPON_OUTPUT_COLUMNS)
     df = df.dropna(how="all").copy()

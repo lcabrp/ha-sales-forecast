@@ -39,7 +39,10 @@ from forecast_replacement_backtest import (  # noqa: E402
     score_forecast,
 )
 from forecast_replacement_contract import DEFAULT_LOOKBACK_DAYS, FD_COLUMNS  # noqa: E402
-from forecast_replacement_hybrid_candidate import recent_daily_forecast  # noqa: E402
+from forecast_replacement_hybrid_candidate import (  # noqa: E402
+    integerize_by_forecast_day,
+    recent_daily_forecast,
+)
 from ingestion_pipeline import read_14day_forecast  # noqa: E402
 
 INGESTION_SOURCE = ROOT.parent / "ha-ingestion-pipeline" / "Source"
@@ -64,10 +67,10 @@ def allocate_total_by_shape(shape: pd.DataFrame, total_units: float) -> pd.DataF
     total_units = float(total_units)
     if frame.empty or shape_total <= 0 or total_units <= 0:
         return frame.iloc[0:0].copy()
-    frame["ForecastUnits"] = (
-        frame["ForecastUnits"] / shape_total * total_units
-    ).round().clip(lower=0)
-    return frame.loc[frame["ForecastUnits"].gt(0)].copy()
+    frame["ForecastUnitsRaw"] = frame["ForecastUnits"] / shape_total * total_units
+    frame["ForecastDay"] = 1
+    frame = integerize_by_forecast_day(frame)
+    return frame.loc[frame["ForecastUnits"].gt(0), ["SKU", "ForecastUnits"]].copy()
 
 
 def wide_to_sku_total(wide: pd.DataFrame) -> pd.DataFrame:

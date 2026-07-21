@@ -38,6 +38,7 @@ Output/ForecastAccuracy/model/model_sku_day_panel.parquet
 Output/ForecastAccuracy/promotions/pdl_offer_rows.csv
 Output/ForecastAccuracy/promotions/promotions.db
 Source/Promotions/6.18.26 Hanna Sale PDL.xlsx
+Source/Promotions/7.21.26 BTS & Sleep Up to 30% Off + New Markdowns.xlsm
 
 # Generated environments/caches/logs
 *.log
