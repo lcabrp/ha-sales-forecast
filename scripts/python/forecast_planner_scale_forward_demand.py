@@ -22,7 +22,7 @@ PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
 
-from forecast_replacement_contract import AX_FORWARD_DEMAND_COLUMNS, FD_COLUMNS  # noqa: E402
+from forecast_schema import AX_FORWARD_DEMAND_COLUMNS, FD_COLUMNS  # noqa: E402
 from output_paths import PROJECT_ROOT  # noqa: E402
 
 # Default target input and output locations for the scaled candidates

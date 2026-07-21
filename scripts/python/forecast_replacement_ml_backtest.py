@@ -61,7 +61,7 @@ from forecast_replacement_backtest import (  # noqa: E402
     score_forecast,
     summarize_by_candidate,
 )
-from forecast_replacement_contract import normalize_sku_series  # noqa: E402
+from forecast_schema import normalize_sku_series  # noqa: E402
 
 
 DEFAULT_OUTPUT_DIR = MODEL_DIR.parent / "replacement_ml_backtests"

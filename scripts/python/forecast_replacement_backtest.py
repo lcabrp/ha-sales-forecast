@@ -21,7 +21,7 @@ PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
 
-from forecast_replacement_contract import (  # noqa: E402
+from forecast_schema import (  # noqa: E402
     DEFAULT_LOOKBACK_DAYS,
     DEFAULT_SEASONAL_RECENT_WEIGHT,
     DEFAULT_SEASONAL_WINDOW_DAYS,
@@ -319,6 +319,29 @@ def direct_pick_signal(
         "sold_units": float(window["SoldUnits"].sum()),
     }
     return grouped, dow_factors(window, lookback_days, window_start), metadata
+
+
+def recent_daily_forecast(
+    actuals: pd.DataFrame,
+    forecast_start: pd.Timestamp,
+    lookback_days: int,
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Allocate a recent DirectPick rate across the next 14 weekdays."""
+    direct, factors, metadata = direct_pick_signal(actuals, forecast_start, lookback_days)
+    if direct.empty:
+        columns = ["SKU", "ForecastDay", "ForecastDate", "ForecastUnits"]
+        return pd.DataFrame(columns=columns), metadata
+    frames: list[pd.DataFrame] = []
+    for day_idx in range(1, 15):
+        forecast_date = forecast_start + pd.Timedelta(days=day_idx - 1)
+        frame = direct[["SKU", "DailyBaseUnits"]].copy()
+        frame["ForecastDay"] = day_idx
+        frame["ForecastDate"] = forecast_date
+        frame["ForecastUnits"] = (
+            frame["DailyBaseUnits"] * factors.get(int(forecast_date.dayofweek), 1.0)
+        )
+        frames.append(frame[["SKU", "ForecastDay", "ForecastDate", "ForecastUnits"]])
+    return pd.concat(frames, ignore_index=True), metadata
 
 
 def seasonal_daily_signal(

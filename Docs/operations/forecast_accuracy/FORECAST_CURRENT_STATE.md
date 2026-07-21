@@ -71,8 +71,9 @@ Other ownership boundaries:
 - `ha-zoning-slotting` is provenance only.
 
 Compatibility copies of ingestion modules in this repo are not production
-sources of truth. Validate any upload-facing candidate with the active ingestion
-repo.
+sources of truth. They were removed on 2026-07-21. Validate any upload-facing
+candidate with the active ingestion repo; do not restore copied parsers or
+roundtrip code here.
 
 ## Frozen Evaluation Rules
 
@@ -141,17 +142,13 @@ For the transparent corporate-total/recent-shape forward shadow, use
 ## Open Work, In Order
 
 1. Mirror the current ingestion-ledger SKU/category crosswalk with provenance.
-2. Discuss the copied `ingestion_pipeline.py` before the next code-cleanup
-   phase. Extract only the Product Info reader/roundtrip functions that forecast
-   tooling still needs into a small adapter, then remove forecast-repo copies of
-   ingestion or slotting responsibilities only after their callers pass.
-3. Implement and evaluate category-total to current-SKU allocation.
-4. Add an explicit occurrence/selection threshold and precision/coverage
+2. Implement and evaluate category-total to current-SKU allocation.
+3. Add an explicit occurrence/selection threshold and precision/coverage
    scorecard.
-5. Add the carton-use simulator.
-6. Rebuild a future-safe model panel before testing ML occurrence or residual
+4. Add the carton-use simulator.
+5. Rebuild a future-safe model panel before testing ML occurrence or residual
    challengers.
-7. Use BigQuery inventory history only after its schema and as-of coverage are
+6. Use BigQuery inventory history only after its schema and as-of coverage are
    confirmed; monitoring remains the current operational source.
 
 ## Reading Order

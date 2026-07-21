@@ -57,8 +57,6 @@ These are supported only for an explicitly designed future-safe experiment:
 | `scripts/python/forecast_model_split_panel.py` | Split or recombine the legacy panel for portability. |
 | `scripts/python/forecast_model_frozen_origin_eval.py` | Diagnose leakage by scoring one fixed-origin horizon. Treat old smoke outputs as historical only. |
 | `scripts/python/forecast_replacement_backtest.py` | Shared normalization, actual loading, and scoring helpers used by current evaluation tooling. |
-| `scripts/python/forecast_replacement_contract.py` | Build historical BRG-like candidate packages and validate local roundtrips. It depends on a compatibility ingestion copy. |
-| `scripts/python/forecast_replacement_hybrid_candidate.py` | Build the prior hybrid candidate family. The July closeout did not promote it. |
 
 The remaining `forecast_model_*` and `forecast_replacement_*` scripts are June
 experiments, quantile/cold-start variants, old reconciliation/overlay tests, or
@@ -66,16 +64,19 @@ operational scorecards. They are not part of the current execution path. Use Git
 history and the script itself only when a specific provenance question requires
 one; do not browse the whole family by default.
 
-## Shared Helpers And Compatibility Copies
+## Shared Helpers
 
 | Script | Status |
 |---|---|
 | `scripts/python/output_paths.py` | Current shared local path helper. |
 | `scripts/python/sql_utils.py` | Current AX connection helper. |
-| `scripts/python/ingestion_pipeline.py` | Diverged compatibility copy. Production authority is `ha-ingestion-pipeline`; planned replacement is a small forecast-facing workbook adapter. |
-| `scripts/python/sku_ledger.py` | Compatibility copy. Current category authority is the ingestion repo ledger. |
-| `scripts/python/live_inventory_classifier.py` | Slotting/ingestion compatibility code, not current forecast modeling. |
-| `scripts/python/sharepoint_source.py` | Ingestion-era downloader, not the current forecast source contract. |
+| `scripts/python/forecast_schema.py` | Forecast-owned Forward Demand column names and consumed-SKU normalization; contains no workbook parsing or ingestion behavior. |
+
+Product Info parsing, current SKU-ledger production, SharePoint acquisition,
+SlotTier classification, and AX output generation belong exclusively to
+`ha-ingestion-pipeline`. Forecast tooling consumes its artifacts and invokes its
+CLI for upload-facing validation; there is no local ingestion compatibility
+copy.
 
 ## Scratch
 

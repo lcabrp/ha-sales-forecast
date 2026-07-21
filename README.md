@@ -77,7 +77,11 @@ For rebuild and restore steps, see [Docs/operations/forecast_accuracy/ARTIFACTS_
 
 ## Extraction Notes
 
-Some replacement-forecast scripts still import `ingestion_pipeline.py` to generate AX-shaped roundtrip outputs. Those compatibility modules are copied here for now so the extracted repo can run. A later cleanup can narrow that dependency into a small forecast-to-ingestion contract helper.
+Product Info parsing, SKU-ledger maintenance, SharePoint download, SlotTier
+classification, and AX-shaped output generation live only in
+`ha-ingestion-pipeline`. This repo consumes its dated outputs and ledgers; it
+does not carry or import a second ingestion implementation. Upload-facing
+validation must run in the ingestion repo.
 
 ## Tracked Artifact Policy
 

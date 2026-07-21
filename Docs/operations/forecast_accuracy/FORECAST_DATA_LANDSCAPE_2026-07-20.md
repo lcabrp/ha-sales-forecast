@@ -79,12 +79,13 @@ promotion/newness, and residual-ranking jobs.
 
 ### Important split boundaries
 
-- The copies of `ingestion_pipeline.py`, `sku_ledger.py`,
-  `live_inventory_classifier.py`, `output_paths.py`, and `sql_utils.py` in this
-  repo are compatibility copies, not the production ingestion source of truth.
-  They have already diverged from `ha-ingestion-pipeline`.
-- A replacement candidate can use those copies for a local roundtrip test, but
-  production parity must ultimately be validated by the active ingestion repo.
+- Ingestion, SKU-ledger, SharePoint, and live SlotTier compatibility copies were
+  removed from this repo on 2026-07-21. Product Info parsing and AX-shaped output
+  generation must use `ha-ingestion-pipeline`.
+- `output_paths.py`, `sql_utils.py`, and `forecast_schema.py` are forecast-owned
+  helpers. They contain no Product Info workbook parser or ingestion pipeline.
+- Production parity and every upload-facing roundtrip must be validated by the
+  active ingestion repo.
 - The monitoring-to-forecast inventory/inbound mirror in this repo was refreshed
   on `2026-07-21` and now matches the producer through that capture.
 
@@ -178,10 +179,10 @@ By contrast, the latest-category map built from the existing model panel has
 | 2025 | 100.0% | 100.0% |
 | 2026 through June 25 | 98.6% | 100.0% |
 
-This is the most important newly confirmed error in the current sale overlay:
-`forecast_replacement_shadow_window.py` maps both 2024 and 2025 history through
-the 2025-2026 panel. Roughly `37.1%` of 2024 units therefore collapse into the
-`Unknown` hierarchy instead of their real family.
+This exposed the most important error in the retired sale overlay: it mapped
+both 2024 and 2025 history through the 2025-2026 panel. Roughly `37.1%` of 2024
+units therefore collapsed into the `Unknown` hierarchy instead of their real
+family. The faulty overlay implementation has been removed.
 
 ### Required category artifact contract
 
@@ -229,10 +230,9 @@ than raw totals. The very different 2024 and 2025 lifts also show why one prior
 year should not be copied literally. Use a shrunk multi-year event estimate,
 current run rate, current promotion depth, and the current assortment.
 
-## Existing July Overlay: What Is Right and What Is Not
+## Retired July Overlay: Reusable Lesson
 
-The intended design already exists in
-`scripts/python/forecast_replacement_shadow_window.py`:
+The retired implementation attempted to:
 
 - compute prior-event category lift;
 - shrink/cap noisy categories;
@@ -240,8 +240,8 @@ The intended design already exists in
 - limit the overlay to current promoted categories;
 - allocate the category target onto current hybrid/recent/PDL SKU shape.
 
-That is the correct structural idea. It is not yet a trustworthy production
-candidate because:
+That structural idea remains worth testing, but the implementation was removed
+because:
 
 1. **Historical category mapping is incomplete.** The 2024 history uses the
    2025-starting model-panel map instead of the persistent ingestion ledger.
@@ -263,8 +263,8 @@ candidate because:
    driven by unit error and coverage, not probability that a pulled carton will
    actually be consumed.
 
-Do not rewrite or tune the frozen July 7 forecast before closeout. Apply these
-corrections to the next pre-origin challenger and compare it honestly.
+Apply these corrections only to a future pre-origin challenger and compare it
+honestly. Do not reconstruct the retired script from its generated outputs.
 
 ## Correct Event-to-SKU Forecast Contract
 
