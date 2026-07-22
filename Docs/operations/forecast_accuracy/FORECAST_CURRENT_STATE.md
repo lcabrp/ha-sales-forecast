@@ -194,5 +194,18 @@ For the transparent corporate-total/recent-shape forward shadow, use
 4. `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` only when moving, rebuilding, or
    committing artifacts.
 
+### Active research candidate (2026-07-22, not yet champion)
+
+A runnable two-stage category-pool candidate now implements the direction below.
+For continuation start with `FORECAST_HANDOFF_2026-07-22.md`, then
+`FORECAST_MODEL_PROPOSALS_2026-07-22.md` (models + July-7 result) and
+`FORECAST_MODEL_VALIDATION_2026-07-22.md` (tests, the "why", and honest negative
+results). Scripts: `forecast_model_category_pool.py`,
+`forecast_backtest_category_pool.py`, `forecast_validate_category_pool.py`.
+Headline: corporate-anchored + category-reconciled + activation beats the July
+champion (SKU WAPE 1.05→0.96, coverage 0.67→0.76) but activation is
+season-conditional and must be gated; treat as research until a multi-window
+frozen corporate comparison exists.
+
 Older conclusions are not active guidance. Recover them from Git history only
 when a provenance question specifically requires them.

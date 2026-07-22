@@ -64,6 +64,17 @@ operational scorecards. They are not part of the current execution path. Use Git
 history and the script itself only when a specific provenance question requires
 one; do not browse the whole family by default.
 
+### Category-pool research candidate (2026-07-22)
+
+New two-stage category-pool candidate. Research only; not a promoted champion.
+See `Docs/operations/forecast_accuracy/FORECAST_HANDOFF_2026-07-22.md`.
+
+| Script | Use |
+|---|---|
+| `scripts/python/forecast_model_category_pool.py` | Build category-pool candidates (independent lift or corporate anchor; optional `--activation`). Preserves category/daily totals with largest-remainder rounding. |
+| `scripts/python/forecast_backtest_category_pool.py` | Frozen 2026-07-07 backtest vs saved closeout actuals; reproduces published corporate numbers as a check. |
+| `scripts/python/forecast_validate_category_pool.py` | Guardrail assertions + multi-window oracle-total allocation and activation backtests (offline, no AX). |
+
 ## Shared Helpers
 
 | Script | Status |

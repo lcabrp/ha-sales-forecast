@@ -105,8 +105,11 @@ Category cells (SKU WAPE, lower is better):
   the layer ablation shows category reconciliation *by itself* slightly **hurts**
   at this post-sale origin (1.05 → 1.18) because the 56-day run-rate is
   contaminated by the June 21–July 4 sale and over-weights GIRM; the activation
-  layer more than recovers it (→ 0.96). See
-  `FORECAST_MODEL_VALIDATION_2026-07-22.md` §2 for the full ablation. The July 6
+  layer more than recovers it (→ 0.96). **Important nuance:** activation is
+  *season-conditional* — it is the large lever at the early-July seasonal reset
+  but a **net negative mid-season** (Apr–Jun oracle backtest: WAPE 0.64→0.71,
+  use rate 0.81→0.48), so it must be gated on assortment turnover, not left
+  always-on. See `FORECAST_MODEL_VALIDATION_2026-07-22.md` §2 and §3b. The July 6
   snapshot activated 16,092 brand-new SKUs, boosted 17,685 low-history active
   SKUs, and down-weighted 6,290 unsupported ending-season SKUs.
 - The **independent (no-corporate) volume anchor over-forecasts ~+47%** because

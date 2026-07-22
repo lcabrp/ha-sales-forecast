@@ -68,9 +68,8 @@ on every axis.
 ## 3. Oracle-total allocation backtest — 11 windows (2025-06 → 2026-06)
 
 Every method receives the **actual** 14-day total, so this measures allocation
-shape only (volume neutralized). Activation is **not** included here because
-origin-safe inventory/inbound snapshots only exist from 2026-06-19; this
-experiment therefore isolates the *category-mix* lever.
+shape only (volume neutralized). This experiment isolates the *category-mix*
+lever (activation is tested separately in §3b).
 
 | Method | Mean WAPE | Mean coverage | WAPE wins (of 11) |
 |---|---:|---:|---:|
@@ -92,17 +91,45 @@ experiment therefore isolates the *category-mix* lever.
   (2025-11-15: 0.510 vs 0.537; 2025-12-08: 0.766 vs 0.791) and slightly hurts at
   quiet windows (2026-04-15: 0.800 vs 0.771) where lift ≈ 1 adds noise.
 
+## 3b. Activation backtest — 7 windows (Apr–Jun 2026, oracle total)
+
+This is the multi-window generalization of the activation layer that was only
+testable on one window before. It uses the tracked, origin-safe
+`ax_inventory_history_sku_day.parquet` (daily 2026-04-01→06-14) plus
+`product_info_inbound_snapshots.parquet` as activation evidence, holds the
+category mix fixed to lift-mix, and holds the total to the oracle, so the ONLY
+difference is base vs activation within-category SKU weighting.
+
+| Method | Mean WAPE | Mean coverage | Mean use rate |
+|---|---:|---:|---:|
+| catpool_liftmix (base) | **0.6443** | 0.9894 | **0.8061** |
+| catpool_liftmix_activation | 0.7081 | **0.9993** | 0.4782 |
+
+**What this proves — activation is SEASON-CONDITIONAL, not always-on.** In the
+stable mid-season Apr–Jun windows, activation **hurts** WAPE (0.64 → 0.71) and
+roughly halves box precision (use rate 0.81 → 0.48), buying only a tiny coverage
+gain. Contrast with the July-7 season-onset window (§2), where the same layer
+**helped a lot** (anchored WAPE 1.18 → 0.96, coverage 0.62 → 0.76). The reason is
+structural: activation's value is proportional to how much sold volume lands on
+**newly active SKUs with no recent history**. That share is large at a seasonal
+assortment reset (early July back-to-school) and ~zero in a stable mid-season,
+where blanket activation just injects thousands of low-probability SKUs
+(it activated ~16k new SKUs even mid-season). **The current implementation
+over-activates and must be gated** (see next steps).
+
 ## 4. Honest synthesis for the next maintainer
 
 - **Direction is validated.** Corporate = volume anchor; the category-anchored
-  allocation with activation is a real, measured improvement on the one full
-  window we can test, and the allocation mechanism holds up (does not regress)
-  across 11 volume-neutralized windows.
-- **The activation layer is the money.** Category reconciliation alone is a
-  no-op; event-lift mix is a small consistent edge; **activation is the large
-  lever** — but it is currently validated on only one origin because inventory/
-  inbound snapshots start 2026-06-19. Priority: accumulate more post-2026-06-19
-  closeouts (or backfill snapshots) to multi-window the activation layer.
+  allocation with activation is a real, measured improvement on the July-7
+  season-onset window, and the category-mix mechanism holds up (does not
+  regress) across 11 volume-neutralized windows.
+- **Activation is SEASON-CONDITIONAL — do not leave it always-on.** It is the
+  large lever *at a seasonal assortment reset* (July-7: WAPE 1.18→0.96) but a
+  net negative *mid-season* (Apr–Jun: WAPE 0.64→0.71, use rate 0.81→0.48). The
+  current blanket implementation over-activates (~16k new SKUs even mid-season).
+  Gate it on a season-transition / assortment-turnover signal before promotion.
+- **Category reconciliation alone is a no-op** (proven by the identity control);
+  the **event-lift category mix** is a small consistent edge.
 - **Known weakness — run-rate spike contamination.** The flat 56-day run-rate
   inflates categories that had a sale inside the lookback. This is why the
   independent volume anchor over-forecasts ~+47% and why lift-mix can hurt right
@@ -110,10 +137,10 @@ experiment therefore isolates the *category-mix* lever.
   in-window sale days, or shrink toward a non-event baseline, before trusting
   the independent Stage-1 total. The corporate anchor sidesteps this and should
   remain the default volume source until this is fixed.
-- **What is NOT yet proven:** multi-window corporate-anchored performance;
-  activation across seasons; physical carton/pull efficiency (still a SKU-use
-  proxy). Do not call this a champion until a multi-window frozen corporate
-  comparison exists.
+- **What is NOT yet proven:** multi-window *corporate-anchored* performance;
+  a proper *gated* activation across several transition windows; physical
+  carton/pull efficiency (still a SKU-use proxy). Do not call this a champion
+  until a multi-window frozen corporate comparison and a season gate exist.
 
 ## 5. Output artifacts
 

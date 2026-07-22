@@ -59,6 +59,7 @@ from forecast_model_category_pool import (  # noqa: E402
     HORIZON_DAYS,
     ModelConfig,
     _read_direct_pick_year,
+    apply_activation_layer,
     build_candidates,
     category_run_rate,
     hamilton_round,
@@ -94,6 +95,19 @@ DEFAULT_ORIGINS = [
     "2026-06-11",
 ]
 
+# Activation-layer origins: need a daily ax_inventory_history snapshot on/before
+# the origin (history covers 2026-04-01..06-14) AND a closed 14-day horizon
+# inside the strict actuals (<= 2026-06-25). So origins run ~mid-April..June 11.
+DEFAULT_ACTIVATION_ORIGINS = [
+    "2026-04-15",
+    "2026-04-29",
+    "2026-05-13",
+    "2026-05-20",
+    "2026-05-27",
+    "2026-06-03",
+    "2026-06-11",
+]
+
 
 def load_all_history(directory: Path) -> pd.DataFrame:
     """Load every strict DirectPick shard once (cached across windows)."""
@@ -126,7 +140,7 @@ def score_allocation(forecast_sku: pd.DataFrame, actual_sku: pd.DataFrame) -> di
 
 def allocate_by_category(
     category_weights: pd.DataFrame, weight_col: str,
-    sku_weights: pd.DataFrame, total: int,
+    sku_weights: pd.DataFrame, total: int, sku_weight_col: str = "RecentUnits",
 ) -> pd.DataFrame:
     """Two-level Hamilton: total -> categories -> SKUs. Preserves total exactly."""
     cats = category_weights["Category"].to_numpy()
@@ -138,9 +152,9 @@ def allocate_by_category(
         if units <= 0:
             continue
         grp = by_cat.get(category)
-        if grp is None or grp["RecentUnits"].sum() <= 0:
+        if grp is None or grp[sku_weight_col].sum() <= 0:
             continue
-        alloc = hamilton_round(grp["RecentUnits"].to_numpy(dtype=float), int(units))
+        alloc = hamilton_round(grp[sku_weight_col].to_numpy(dtype=float), int(units))
         mask = alloc > 0
         rows.append(pd.DataFrame({"SKU": grp["SKU"].to_numpy()[mask], "ForecastUnits": alloc[mask]}))
     if not rows:
@@ -180,6 +194,52 @@ def run_window(all_history: pd.DataFrame, crosswalk: pd.DataFrame, origin: pd.Ti
         "global_recent": score_allocation(global_fcst, actual),
         "catpool_recentmix": score_allocation(recentmix, actual),
         "catpool_liftmix": score_allocation(liftmix, actual),
+    }
+
+
+def run_window_activation(
+    all_history: pd.DataFrame, crosswalk: pd.DataFrame, origin: pd.Timestamp,
+    config: ModelConfig,
+) -> dict[str, dict[str, float]] | None:
+    """Isolate the ACTIVATION layer with oracle total, using alternate sources.
+
+    WHY: the pickface inventory/open-inbound snapshots only start 2026-06-19, so
+    the flagship July-7 result validates activation on a single window. This
+    routine instead uses the tracked, origin-safe ``ax_inventory_history``
+    (daily 2026-04-01..06-14) and ``product_info_inbound_snapshots`` so the
+    activation layer can be tested across April-June origins offline. Category
+    mix is held to the lift-adjusted mix for BOTH candidates so the ONLY
+    difference is the within-category SKU weighting (base recent shape vs the
+    activation-reshaped shape). Total is the actual 14-day total (oracle), so
+    this measures allocation quality only.
+    """
+    horizon_end = origin + pd.Timedelta(days=HORIZON_DAYS - 1)
+    hist_pre = all_history.loc[all_history["ActualDate"].lt(origin)]
+    actual = (
+        all_history.loc[all_history["ActualDate"].between(origin, horizon_end)]
+        .groupby("SKU", as_index=False)["SoldUnits"].sum()
+    )
+    total = int(round(float(actual["SoldUnits"].sum())))
+    if total <= 0:
+        return None
+
+    sku_w = sku_recent_weights(hist_pre, crosswalk, config)
+    lift_targets = stage1_independent_targets(hist_pre, crosswalk, config)
+
+    base = allocate_by_category(lift_targets, "CategoryTarget", sku_w, total, "RecentUnits")
+
+    act_w, meta = apply_activation_layer(sku_w, crosswalk, config)
+    if meta.get("inventory_snapshot") is None and meta.get("inbound_snapshot") is None:
+        return None  # no origin-safe activation evidence for this origin; skip honestly
+    act_w = act_w.rename(columns={"Weight": "RecentUnits"})
+    activation = allocate_by_category(lift_targets, "CategoryTarget", act_w, total, "RecentUnits")
+
+    return {
+        "catpool_liftmix": score_allocation(base, actual),
+        "catpool_liftmix_activation": {
+            **score_allocation(activation, actual),
+            "ActivatedNewSKUs": meta.get("activated_brand_new_skus", 0),
+        },
     }
 
 
@@ -239,6 +299,7 @@ def guardrails(crosswalk: pd.DataFrame) -> list[dict[str, Any]]:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--origins", nargs="*", default=DEFAULT_ORIGINS)
+    parser.add_argument("--activation-origins", nargs="*", default=DEFAULT_ACTIVATION_ORIGINS)
     parser.add_argument("--ledger-db", type=Path, default=DEFAULT_LEDGER)
     parser.add_argument("--lookback-days", type=int, default=56)
     parser.add_argument("--seasonal-years", type=int, default=3)
@@ -299,6 +360,47 @@ def main() -> int:
     pivot = detail.pivot(index="Origin", columns="Method", values="SKU_WAPE")
     print(pivot.to_string())
     pivot.to_csv(args.output_dir / "allocation_backtest_wape_by_window.csv")
+
+    # ------------------------------------------------------------------ #
+    # Activation multi-window backtest (offline, alternate sources).
+    # Uses ax_inventory_history (daily 2026-04-01..06-14) + product_info_inbound
+    # as origin-safe activation evidence so the activation layer is tested on
+    # more than the single pickface-era July window.
+    # ------------------------------------------------------------------ #
+    inv_hist = FA_ROOT / "inventory" / "ax_inventory_history_sku_day.parquet"
+    inb_hist = FA_ROOT / "inbound" / "product_info_inbound_snapshots.parquet"
+    act_rows: list[dict[str, Any]] = []
+    if inv_hist.exists():
+        print("\nRunning offline activation backtest (ax_inventory_history + product_info_inbound)...")
+        for origin_str in args.activation_origins:
+            origin = pd.Timestamp(origin_str).normalize()
+            cfg = ModelConfig(origin=origin, lookback_days=args.lookback_days,
+                              seasonal_years=args.seasonal_years, use_activation=True,
+                              inventory_path=inv_hist, inbound_path=inb_hist)
+            scored = run_window_activation(all_history, crosswalk, origin, cfg)
+            if scored is None:
+                print(f"  skipped {origin.date()} (no origin-safe activation evidence)")
+                continue
+            for method, metrics in scored.items():
+                act_rows.append({"Origin": origin.date().isoformat(), "Method": method,
+                                 **{k: v for k, v in metrics.items() if k != "ActivatedNewSKUs"}})
+            print(f"  scored {origin.date()}")
+    if act_rows:
+        act_detail = pd.DataFrame(act_rows)
+        act_detail.to_csv(args.output_dir / "activation_backtest_detail.csv", index=False)
+        act_agg = act_detail.groupby("Method").agg(
+            Windows=("Origin", "nunique"),
+            MeanWAPE=("SKU_WAPE", "mean"),
+            MeanCoverage=("SoldUnitCoveragePct", "mean"),
+            MeanUseRate=("SKUUseRatePct", "mean"),
+        ).reset_index().sort_values("MeanWAPE").reset_index(drop=True)
+        act_agg.to_csv(args.output_dir / "activation_backtest_summary.csv", index=False)
+        act_pivot = act_detail.pivot(index="Origin", columns="Method", values="SKU_WAPE")
+        act_pivot.to_csv(args.output_dir / "activation_backtest_wape_by_window.csv")
+        print("\n=== Activation backtest (oracle total; base vs +activation) ===")
+        print(act_agg.to_string(index=False))
+        print("\nPer-window WAPE:")
+        print(act_pivot.to_string())
 
     (args.output_dir / "validation_metadata.json").write_text(json.dumps({
         "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),

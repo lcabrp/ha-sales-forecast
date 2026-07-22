@@ -330,14 +330,35 @@ def apply_activation_layer(
     inventory = _latest_snapshot(config.inventory_path, config.origin)
     inbound = _latest_snapshot(config.inbound_path, config.origin)
 
+    # WHY flexible column detection: the activation evidence can come from more
+    # than one origin-safe source, and their schemas differ. We support all of:
+    #   * pickface_inventory_sku_day.parquet -> HasPickableInventory (2026-06-19+)
+    #   * ax_inventory_history_sku_day.parquet -> HasAvailableInventory (2026-04-01..06-14, daily)
+    #   * ax_open_inbound_sku_day.parquet -> InboundTotalUnits (2026-06-19+)
+    #   * product_info_inbound_snapshots.parquet -> InboundRemainderUnits (sparse, 2024+)
+    # This is what lets the layer be multi-window tested offline before the
+    # pickface snapshot era. See FORECAST_HANDOFF_2026-07-22.md.
     has_inv = set()
     if not inventory.empty:
-        col = "HasPickableInventory" if "HasPickableInventory" in inventory.columns else None
-        pos = inventory if col is None else inventory.loc[inventory[col].fillna(False).astype(bool)]
+        inv_col = next(
+            (c for c in ("HasPickableInventory", "HasAvailableInventory",
+                         "HasNetAvailableInventory") if c in inventory.columns),
+            None,
+        )
+        pos = inventory if inv_col is None else inventory.loc[inventory[inv_col].fillna(False).astype(bool)]
         has_inv = set(pos["SKU"])
     has_inb = set()
     if not inbound.empty:
-        units = pd.to_numeric(inbound.get("InboundTotalUnits", 0), errors="coerce").fillna(0)
+        inb_col = next(
+            (c for c in ("InboundTotalUnits", "InboundRemainderUnits") if c in inbound.columns),
+            None,
+        )
+        if inb_col is None:
+            unit_cols = [c for c in inbound.columns if c.startswith("Inbound") and c.endswith("Units")]
+            units = inbound[unit_cols].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1) \
+                if unit_cols else pd.Series(0, index=inbound.index)
+        else:
+            units = pd.to_numeric(inbound[inb_col], errors="coerce").fillna(0)
         has_inb = set(inbound.loc[units.gt(0), "SKU"])
 
     active_evidence = has_inv | has_inb
@@ -549,7 +570,12 @@ def build_candidates(
         # which is the main reason the non-activation anchor UNDER-covers sold
         # units at a season transition. The July-7 ablation shows this directly:
         # anchor WAPE 1.05 (champion) -> 1.18 (add lift-mix, no activation) ->
-        # 0.96 (add activation). Activation is the decisive layer.
+        # 0.96 (add activation). BUT activation is SEASON-CONDITIONAL: the
+        # Apr-Jun multi-window backtest shows blanket activation HURTS mid-season
+        # (WAPE 0.64 -> 0.71, use rate 0.81 -> 0.48) because it injects thousands
+        # of low-probability SKUs. Gate --activation on an assortment-turnover /
+        # season-transition signal before treating it as always-on. See
+        # FORECAST_MODEL_VALIDATION_2026-07-22.md sections 2 and 3b.
         sku_weights_alloc = sku_weights.rename(columns={"RecentUnits": "Weight"})[
             ["SKU", "Category", "Weight"]
         ]
