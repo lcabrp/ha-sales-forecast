@@ -1,0 +1,62 @@
+{
+  "generated_at_utc": "2026-07-21T14:36:17+00:00",
+  "status": "forward_shadow_not_yet_evaluable",
+  "corporate": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-ingestion-pipeline\\Output\\Ingestion\\velocity_freeze\\FwdDemandCSV_2026-07-21_velocity_frozen.csv",
+    "rows": 31407,
+    "distinct_skus": 31407,
+    "forecast_start": "2026-07-21",
+    "forecast_end": "2026-08-03",
+    "forecast_units": 165008.0,
+    "daily_units": {
+      "FD1": 11067.0,
+      "FD2": 10790.0,
+      "FD3": 8901.0,
+      "FD4": 8563.0,
+      "FD5": 15975.0,
+      "FD6": 16252.0,
+      "FD7": 10347.0,
+      "FD8": 10779.0,
+      "FD9": 10536.0,
+      "FD10": 10372.0,
+      "FD11": 10114.0,
+      "FD12": 13596.0,
+      "FD13": 16207.0,
+      "FD14": 11509.0
+    }
+  },
+  "lookback": {
+    "start_date": "2026-05-26",
+    "through_date": "2026-07-20",
+    "days": 56,
+    "rows": 330048,
+    "distinct_skus": 19013,
+    "sold_units": 1117444.0,
+    "source": {
+      "kind": "portable_sku_day",
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\forward_tests\\2026-07-21_corporate_2026-07-20\\recent_shape_shadow\\lookback_actual_sku_day.parquet"
+    },
+    "recent_shape_metadata": {
+      "window_start": "2026-05-26",
+      "window_end_exclusive": "2026-07-21",
+      "rows": 330048,
+      "distinct_skus": 19013,
+      "sold_units": 1117444.0
+    }
+  },
+  "generated_candidates": [
+    {
+      "kind": "generated_daily_anchor",
+      "candidate": "corporate_total_recent_shape",
+      "shape_candidate": "independent_recent_shape",
+      "total_candidate": "corporate_raw",
+      "window_rows": 100549,
+      "window_units": 165008.0
+    }
+  ],
+  "notes": [
+    "Corporate daily totals are preserved exactly.",
+    "SKU allocation uses only DirectPick history before the forecast start.",
+    "This statistical shadow is not the independent ML hybrid and must not be scored until the horizon closes."
+  ]
+}

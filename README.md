@@ -27,17 +27,26 @@ This repo does not own:
 ```text
 scripts/python/                 Forecast scripts and shared local helpers
 scripts/sql/                    Forecast-related SQL deployment/reference scripts
-Docs/operations/forecast_accuracy/  Forecast runbooks, reset contracts, and portable artifact notes
-Docs/technical/                 Forecast and velocity-policy technical notes
-Source/Planner/                 Local planner workbooks, ignored by Git
-Source/Promotions/              Local promotion workbooks, ignored by Git
-Output/ForecastAccuracy/        Forecast facts and eval outputs; prefer compact tracked Parquet/CSV (see portable-artifacts doc). Large monoliths and *.db stay local.
+Docs/operations/forecast_accuracy/  Current contract, data map, runbooks, and evidence
+Source/Planner/                 Planner source workbooks retained when portable
+Source/Promotions/              Promotion sources; oversized workbooks stay local
+Output/ForecastAccuracy/        Forecast facts and evaluation outputs governed by the portable-artifact contract
 scratch/                        One-off forecast investigations
 ```
 
-Latest evaluation handoff:
-[Docs/operations/forecast_accuracy/HANDOFF_VOLUME_VS_ALLOCATION_FINDINGS_2026-07-11.md](Docs/operations/forecast_accuracy/HANDOFF_VOLUME_VS_ALLOCATION_FINDINGS_2026-07-11.md)
-(includes 2026-07-12 multi-PC / May-June / seasonal clarifications).
+Start with the current forecast contract and decision state:
+[Docs/operations/forecast_accuracy/FORECAST_CURRENT_STATE.md](Docs/operations/forecast_accuracy/FORECAST_CURRENT_STATE.md).
+
+Latest completed 14-day evaluation:
+[Docs/operations/forecast_accuracy/FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md](Docs/operations/forecast_accuracy/FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md).
+It records the final corporate-versus-independent scorecard, the rounding fix,
+promotion/legacy audit, and the frozen July 21-August 3 forward shadow.
+
+Cross-repo forecast data map:
+[Docs/operations/forecast_accuracy/FORECAST_DATA_LANDSCAPE_2026-07-20.md](Docs/operations/forecast_accuracy/FORECAST_DATA_LANDSCAPE_2026-07-20.md).
+Use it to locate DirectPick, category, promotion, inventory, inbound, and
+monitoring facts after the split, and to understand the category-total ->
+current-SKU allocation direction.
 
 ## Setup
 
@@ -68,7 +77,11 @@ For rebuild and restore steps, see [Docs/operations/forecast_accuracy/ARTIFACTS_
 
 ## Extraction Notes
 
-Some replacement-forecast scripts still import `ingestion_pipeline.py` to generate AX-shaped roundtrip outputs. Those compatibility modules are copied here for now so the extracted repo can run. A later cleanup can narrow that dependency into a small forecast-to-ingestion contract helper.
+Product Info parsing, SKU-ledger maintenance, SharePoint download, SlotTier
+classification, and AX-shaped output generation live only in
+`ha-ingestion-pipeline`. This repo consumes its dated outputs and ledgers; it
+does not carry or import a second ingestion implementation. Upload-facing
+validation must run in the ingestion repo.
 
 ## Tracked Artifact Policy
 

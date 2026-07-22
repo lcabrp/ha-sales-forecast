@@ -1,0 +1,81 @@
+{
+  "requested_window": {
+    "start_date": "2026-07-07",
+    "through_date": "2026-07-20"
+  },
+  "monitoring_daily_pick_totals": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-kydc-monitoring\\Output\\Monitoring\\Monitoring_History.db",
+    "exists": true,
+    "grain": "operational_day_total",
+    "date_basis": "Eastern monitoring window",
+    "target_notes": "Pickface/profile-filtered completed DirectPick from the layout monitor",
+    "available_min_date": "2026-05-08",
+    "available_max_date": "2026-07-20",
+    "available_days": 73,
+    "window_min_date": "2026-07-07",
+    "window_max_date": "2026-07-20",
+    "window_days": 14,
+    "expected_window_days": 14,
+    "window_pick_units": 203347.0,
+    "complete_window": true,
+    "sku_day_capable": false
+  },
+  "monitoring_sku_day_candidates": [
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-kydc-monitoring\\Output\\ForecastAccuracy\\direct_pick\\actual_sku_day_modified.parquet",
+      "source_role": "monitoring_canonical_candidate",
+      "exists": false
+    },
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-kydc-monitoring\\Output\\ForecastAccuracy\\history\\parquet\\actual_sku_day_modified.parquet",
+      "source_role": "monitoring_canonical_candidate",
+      "exists": false
+    }
+  ],
+  "monitoring_diagnostic_export": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-kydc-monitoring\\scratch\\velocity_policy_replay\\direct_pick_sku_day_15mo.parquet",
+    "source_role": "monitoring_diagnostic_scratch_export",
+    "exists": true,
+    "bytes": 9550051,
+    "columns": [
+      "PickDate",
+      "SKU",
+      "PickLines",
+      "DistinctOrders",
+      "PickUnits"
+    ],
+    "date_column": "PickDate",
+    "unit_column": "PickUnits",
+    "sku_day_capable": true,
+    "min_date": "2025-03-04",
+    "max_date": "2026-06-02",
+    "rows": 2929501
+  },
+  "forecast_repo_local_actuals": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\history\\parquet\\actual_sku_day_modified.parquet",
+    "source_role": "forecast_repo_portable_mirror",
+    "exists": true,
+    "bytes": 5232280,
+    "columns": [
+      "ActualDate",
+      "DateBasis",
+      "SKU",
+      "SoldUnits",
+      "PickLines",
+      "DistinctOrders"
+    ],
+    "date_column": "ActualDate",
+    "unit_column": "SoldUnits",
+    "sku_day_capable": true,
+    "min_date": "2025-11-01",
+    "max_date": "2026-07-09",
+    "rows": 1614433
+  },
+  "decision": {
+    "aggregate_volume_ready_from_monitoring": true,
+    "allocation_score_ready": false,
+    "recommended_source": "live_ax_fallback_required_for_sku_day_refresh",
+    "selected_sku_day_path": null,
+    "reason": "Monitoring daily Pick totals can validate aggregate volume, but SKU allocation metrics require a current SKU-day fact. Live AX is only the fallback when no canonical monitoring artifact or forecast-repo mirror covers the window."
+  }
+}

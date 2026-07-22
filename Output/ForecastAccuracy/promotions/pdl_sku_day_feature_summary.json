@@ -1,24 +1,26 @@
 {
   "date_range": [
-    "2023-12-08",
-    "2026-07-06"
+    "2026-07-07",
+    "2026-07-21"
   ],
-  "distinct_skus_with_sku_pdl": 77902,
-  "expanded_offer_day_rows": 1321140,
+  "distinct_skus_with_sku_pdl": 80485,
+  "expanded_offer_day_rows": 104572,
   "feature_date_range": [
     "2023-12-08",
-    "2026-07-06"
+    "2026-07-21"
   ],
-  "generated_at_utc": "2026-06-18T14:26:37.286288+00:00",
-  "joined_offer_sku_day_rows": 9765330,
+  "generated_at_utc": "2026-07-21T14:19:41.684751+00:00",
+  "generated_sku_day_feature_rows": 493275,
+  "joined_offer_sku_day_rows": 658229,
+  "merge_existing": true,
   "outputs": {
-    "pdl_sku_day_feature_summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_feature_summary.json",
-    "pdl_sku_day_features": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_features.parquet",
-    "pdl_sku_day_features_sample": "C:\\Users\\labreu\\Documents\\Projects\\ha-zoning-slotting\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_features_sample.csv"
+    "pdl_sku_day_feature_summary": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_feature_summary.json",
+    "pdl_sku_day_features": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_features.parquet",
+    "pdl_sku_day_features_sample": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\promotions\\pdl_sku_day_features_sample.csv"
   },
-  "parseable_offer_color_keys": 12686,
-  "parseable_offer_rows": 216929,
-  "sku_day_feature_rows": 7566230,
+  "parseable_offer_color_keys": 9057,
+  "parseable_offer_rows": 24582,
+  "sku_day_feature_rows": 8059505,
   "sku_universe_rows": 114059,
-  "source_offer_rows": 219052
+  "source_offer_rows": 243641
 }

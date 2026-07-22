@@ -1,224 +1,141 @@
-# Forecast Portable Artifacts - 2026-06-17
+# Forecast Portable Artifact Contract
 
-This note records the current portability contract for the forecast-replacement
-artifacts in `ha-sales-forecast`. The goal is to keep as much useful forecast
-data as possible in Git while avoiding GitHub's `100 MB` single-file limit and
-keeping regenerable bulky artifacts local.
+Current as of 2026-07-21. Read `FORECAST_CURRENT_STATE.md` first. This document
+only governs what forecast evidence should travel with the repository and what
+must remain producer-owned or local.
 
-**Multi-PC rule (2026-07-12):** this work moves between machines. When pushing to
-the online repo, commit **everything relevant under ~90 MB per file** (GitHub
-hard stop 100 MB). Prefer **several small Parquet/CSV/JSON/SQLite files** over
-one large file. Score tables, challenger forecasts, compact ledgers, and
-evaluation packs belong in Git so `git pull` restores yesterday's evidence
-without re-running long jobs. Split panels and dated shards beat monolithic
-blobs. Still exclude secrets, `.venv`, and `*.log`.
+## Rule
 
-Agents updating the remote for another PC must follow this rule (also in
-`AGENTS.md`).
+Work moves between PCs. Commit relevant forecast evidence when each file is
+under the practical `~90 MB` ceiling and the artifact is not a secret,
+regenerable duplicate, or producer-owned operational detail. GitHub rejects
+single files at 100 MB.
 
-Extraction update, 2026-06-25: monitoring, market-basket, zone-map generation,
-and daily layout-compliance artifacts belong to sibling repos unless they are
-copied here as compact forecast facts with a documented forecast use.
+Prefer compact Parquet/CSV/JSON/SQLite facts, manifests, hashes, and score tables
+over copied workbooks, repeated roundtrip packages, or monolithic databases.
+Split facts by stable partitions when a portable dataset is genuinely needed.
 
-## Handoff eval pack (2026-07-11) — track these
+## Track
 
-Under `Output/ForecastAccuracy/handoff_eval/` (already on `main` as of 2026-07-11):
+Keep these current, compact contracts in Git:
 
-- volume-vs-allocation window scores / summaries (no-ML and model-shape);
-- sale holdout scores and SKU total CSVs;
-- forward `2026-07-07` challenger FD14 CSVs + `forward_daily_forecasts.parquet`;
-- independent hybrid absolute-log contract samples + `daily_forecast.parquet`;
-- partial Jul 7–9 score CSVs;
-- hybrid roundtrip `sku_ledger.db` (~3 MB; promoted 2026-07-12 — under 90 MB).
+- `Output/ForecastAccuracy/direct_pick_history/`: annual strict DirectPick
+  SKU/day shards, manifest, and summaries;
+- `Output/ForecastAccuracy/history/parquet/`: selected historical corporate
+  forecast facts and documented historical actual mirrors;
+- `Output/ForecastAccuracy/promotions/`: compact extracted promotion events,
+  offer Parquet, SKU/day features, and extraction summaries;
+- compact planner, sales-order, inventory, inbound, reservation, and warehouse
+  supply facts that are forecast-owned and expensive to recreate;
+- `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/`;
+- `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/recent_shape_shadow/`;
+- score tables, candidate metadata, manifests, and source hashes required to
+  reproduce a documented decision.
 
-Logs (`*.log`) stay ignored. After clone/pull on a new PC, rebuild the combined
-model panel from parts before ML:
+The July closeout pack contains the exact 14-day scorecard,
+monitoring-scope evaluation actual, category/SKU diagnostics, and frozen
+pre-rounding-fix evidence. The July 21 forward pack contains the frozen
+corporate benchmark and total-preserving recent-shape shadow. These are current
+decision evidence and belong in Git.
 
-```powershell
-uv run python scripts/python/forecast_model_split_panel.py --combine
-```
+## Keep Local Or Producer-Owned
 
-## Size Audit
+Do not add these to Git:
 
-Checked on 2026-06-17:
+- secrets, credentials, `.env`, authentication caches, or database tokens;
+- `.venv`, caches, logs, temporary databases, and database sidecars;
+- `Output/ForecastAccuracy/model/model_sku_day_panel.parquet`; use the tracked
+  split parts while that stale panel is still required;
+- `Output/ForecastAccuracy/promotions/pdl_offer_rows.csv`; the compact Parquet
+  is the portable form;
+- `Output/ForecastAccuracy/promotions/promotions.db`;
+- raw source workbooks above the practical ceiling;
+- generated candidate packages that duplicate an input workbook, ingestion
+  roundtrip, hierarchy, and full forecast when compact metadata/scores suffice;
+- monitoring-owned dated detail when the producer repo and a compact consumer
+  fact already preserve the contract.
 
-```powershell
-# Tracked working-tree files over 100 MB
-$limit=100MB
-git ls-files | ForEach-Object {
-  if (Test-Path -LiteralPath $_ -PathType Leaf) {
-    $item=Get-Item -LiteralPath $_
-    if ($item.Length -ge $limit) {
-      [pscustomobject]@{SizeMB=[math]::Round($item.Length/1MB,2); Path=$_}
-    }
-  }
-}
+Known local-only promotion sources:
 
-# Untracked, not-ignored files over 100 MB
-$files=git ls-files -o --exclude-standard
-foreach ($f in $files) {
-  if (Test-Path -LiteralPath $f -PathType Leaf) {
-    $item=Get-Item -LiteralPath $f
-    if ($item.Length -ge $limit) {
-      [pscustomobject]@{SizeMB=[math]::Round($item.Length/1MB,2); Path=$f}
-    }
-  }
-}
+- `Source/Promotions/6.18.26 Hanna Sale PDL.xlsx`;
+- `Source/Promotions/7.21.26 BTS & Sleep Up to 30% Off + New Markdowns.xlsm`
+  (`~95.7 MB`);
+- `Output/ForecastAccuracy/promotions/pdl_offer_rows.csv` (`~142.1 MB`).
 
-# Tracked Git blob objects over 100 MB
-git ls-files -s |
-  ForEach-Object { ($_ -split '\s+')[1] } |
-  git cat-file --batch-check='%(objectname) %(objectsize)'
-```
+Their compact derived promotion tables must remain portable. The July 21
+workbook contains only a July 21 effective date; portability does not authorize
+inventing later campaign dates.
 
-Result:
+## Current Large Legacy Exceptions
 
-- no tracked working-tree file over `100 MB`;
-- no untracked/not-ignored file over `100 MB`;
-- no tracked Git blob over `100 MB`.
+Two large tracked families require deliberate cleanup, not silent deletion:
 
-Largest tracked portable artifacts at the time of the audit:
+1. `corporate_forecast/snapshots/20260617_173252/` is a unique 666 MB database
+   snapshot. It is not a current forecast input and should be moved to durable
+   artifact storage before being untracked. Keep its manifest and extract
+   summary in this repo.
+2. `model/model_sku_day_panel_parts/` is a 293 MB portable split of the current
+   model panel. It ends on 2026-06-08 and is not current July evidence. Keep it
+   until a future-safe replacement panel is built and verified, then retire the
+   old parts as one unit.
 
-| Artifact | Approx size | Keep tracked? | Reason |
-| --- | ---: | --- | --- |
-| `Output/ForecastAccuracy/sales_orders/sales_order_sku_day.parquet` | `68.4 MB` | Yes | Core SKU/day demand fact, expensive to rebuild |
-| `Output/ForecastAccuracy/history/parquet/forecast_sku_day.parquet` | `28.3 MB` | Yes | Historical corporate forecast fact |
-| `Output/ForecastAccuracy/inventory/inventory_sku_day.parquet` | `27.2 MB` | Yes | Forecast inventory feature fact |
+Removing these paths from a future commit will not shrink existing Git history.
+History rewriting is a separate high-risk operation and is not part of normal
+artifact cleanup.
 
-Largest untracked/not-ignored candidates at the time of the audit:
+## Cross-Repo Ownership
 
-| Artifact | Approx size | Recommendation |
-| --- | ---: | --- |
-| `Output/ForecastAccuracy/inventory/ax_inventory_history_sku_day.parquet` | `27.3 MB` | Safe to track; useful model input |
-| `Output/Ingestion/FwdDemandCSV_2026-06-16.csv` | `5.5 MB` | Safe to track; confirmed AX upload |
-| `Source/Planner/2024 Planner.xlsx` through `2026 Planner.xlsx` | `1.9-2.5 MB` | Safe to track if the team is comfortable storing Planner workbooks |
+- `ha-kydc-monitoring` owns daily monitoring, pick-face inventory detail, open
+  inbound detail, confirmed forecast timelines, and `Monitoring_History.db`.
+- `ha-ingestion-pipeline` owns Product Info parsing, production AX-shaped
+  outputs, and the current SKU/category ledger.
+- `ha-sales-forecast` may mirror compact read-only facts needed for forecast
+  research; a mirror does not transfer producer ownership.
 
-## Deliberately Local Or Ignored
+The current monitoring sync script mirrors compact and detailed inventory/inbound
+files. Forecast code should consume the compact SKU/day facts and metadata. The
+detailed consumer copies are cleanup candidates once the sync contract is
+narrowed; do not treat them as a second producer.
 
-These files are over `100 MB` locally and should stay ignored:
+## Rebuild And Refresh
 
-| Artifact | Approx size | Why local |
-| --- | ---: | --- |
-| `Output/ForecastAccuracy/model/model_sku_day_panel.parquet` | `221 MB` | Monolithic model panel; split monthly parts are the portable form |
-| `tmp/forecast_history_smoke_20260601_v2.db` | `183 MB` | Temporary smoke-test database |
-| `.venv/Lib/site-packages/xgboost/lib/xgboost.dll` | `137 MB` | Environment dependency, rebuilt by `uv` |
-
-## Portable Data Contract
-
-Track these when under `100 MB`:
-
-- confirmed AX forward-demand CSV snapshots only when promoted under this repo's
-  forecast-artifact folders;
-- compact sales, promotion, inbound, inventory, warehouse-supply, reservation,
-  and Planner Parquet/CSV/JSON facts under `Output/ForecastAccuracy/`;
-- Planner extracted totals and snapshots under
-  `Output/ForecastAccuracy/planner/`;
-- source and script files that rebuild or explain the artifacts.
-
-Keep local by default:
-
-- raw source Excel workbooks in `Source/*.xlsx` when huge or regenerable from
-  sibling repos (small workbooks may be tracked when useful and under 90 MB);
-- raw promotion workbooks in `Source/Promotions/*.xlsx`; keep
-  `Source/Promotions/.gitkeep` tracked so the local drop folder exists after
-  clone;
-- the monolithic model panel `model_sku_day_panel.parquet` (use monthly parts);
-- `Output/ForecastAccuracy/promotions/promotions.db` when oversized/regenerable;
-- `*.db-shm` / `*.db-wal` / `*.db-journal` sidecars;
-- `*.log` and `.venv`;
-- secrets (`.env`, credentials).
-
-Compact SQLite under `Output/ForecastAccuracy/**` (other than
-`promotions/promotions.db`) **may be tracked** when under ~90 MB — e.g. handoff
-eval `sku_ledger.db`.
-
-## Rebuild Commands
-
-Recreate the monolithic model panel from tracked monthly parts:
+Recombine the currently tracked model parts only when an old-model investigation
+requires the monolith:
 
 ```powershell
 uv run python scripts/python/forecast_model_split_panel.py --combine
 ```
 
-Rebuild the panel from source facts if monthly parts are missing:
-
-```powershell
-uv run python scripts/python/forecast_model_panel.py --workers 8
-uv run python scripts/python/forecast_model_split_panel.py
-```
-
-Refresh AX saved inventory history:
-
-```powershell
-uv run python scripts/python/forecast_inventory_history.py
-```
-
-Mirror compact daily monitoring forecast artifacts from `ha-kydc-monitoring`:
+Refresh monitoring mirrors:
 
 ```powershell
 uv run python scripts/python/sync_monitoring_forecast_artifacts.py
 ```
 
-This copies the forecast-facing inventory and inbound contract files from the
-sibling monitoring repo into:
-
-```text
-Output/ForecastAccuracy/inventory/
-Output/ForecastAccuracy/inbound/
-```
-
-and writes:
-
-```text
-Output/ForecastAccuracy/monitoring_artifact_mirror_manifest.json
-```
-
-`ha-kydc-monitoring` remains the daily producer; this repo keeps the compact
-GitHub-trackable consumer copy for forecast modeling and cloud-LLM review.
-
-Extract Planner daily totals and preserve a timestamped 2026 snapshot:
-
-```powershell
-uv run python scripts/python/forecast_planner_extract.py --year 2024
-uv run python scripts/python/forecast_planner_extract.py --year 2025
-uv run python scripts/python/forecast_planner_extract.py --year 2026 --snapshot
-```
-
-Merge newly downloaded PDL/coupon workbooks into the portable promotion parquet
+Refresh only a bounded promotion tail and merge it into the portable feature
 store:
 
 ```powershell
-uv run python scripts/python/extract_promotions.py
-uv run python scripts/python/forecast_promo_sku_features.py
+uv run python scripts/python/extract_promotions.py --no-sqlite
+uv run python scripts/python/forecast_promo_sku_features.py `
+  --start-date YYYY-MM-DD --merge-existing
 ```
 
-`extract_promotions.py` preserves existing extracted promotion history by
-default and replaces rows only for matching workbook filenames found in
-`Source/Promotions/`. Use `--replace-existing` only for an intentional full
-rebuild from a complete source workbook folder.
+The `.xlsm` reader uses `openpyxl`; `.xlsx` extraction uses `python-calamine`.
+Do not infer a missing promotion end date.
 
-Rebuild a Planner-scaled corporate candidate from the confirmed June 16 upload:
+## Before Committing Artifacts
 
-```powershell
-uv run python scripts/python/forecast_planner_scale_forward_demand.py `
-  --input-csv Output/Ingestion/FwdDemandCSV_2026-06-16.csv `
-  --candidate-id planner_scaled_corporate_100_2026-06-16_v2 `
-  --planner-scale 1.0
-```
+For every new or refreshed fact, report:
 
-Rebuild the current velocity-policy shadow panel after confirmed forecast
-uploads:
+- producer/source and exact path;
+- query or event window;
+- row and distinct-SKU counts;
+- whether the result came from monitoring, live AX, corporate DB, Product Info,
+  planner workbooks, cached Parquet, or SQLite;
+- whether the file is immutable evidence, a rolling mirror, or regenerable
+  output;
+- individual file sizes and any local-only exception.
 
-```powershell
-uv run python scripts/python/forecast_direct_pick_history.py --overwrite
-uv run python scratch/backtest_velocity_stability_controls.py --overwrite
-```
-
-## Current Caveat
-
-At the time of this audit, several previously tracked model candidate outputs
-and monthly model-panel parts are marked deleted in the working tree. They are
-all below the `100 MB` limit and are useful for avoiding rebuilds. Do not
-commit those deletions unless the team intentionally decides that model output
-artifacts should be local-only. If they are needed on this machine again, either
-restore them from Git or rebuild with the commands above.
+Do not preserve an obsolete experiment merely because it is under 90 MB. The
+size ceiling is a safety limit, not a retention requirement.

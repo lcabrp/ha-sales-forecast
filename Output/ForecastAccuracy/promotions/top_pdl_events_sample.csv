@@ -1,10 +1,11 @@
 file_id,source_file,sheet_name,sheet_type,event_name,effective_date_text,start_date,end_date,source_file_date,promo_scope,row_count,distinct_style_count,distinct_offer_cc_count,total_avail_inv
 f45655a4ec41,7.14.26 Dresses up to 30.xlsm,Images,promo_detail,Dresses up to 30% & Baby Gifts up to 50%,7.14-7.20,2026-07-14,2026-07-20,2026-07-14,Dresses|Baby,8814,3771,8789,0.0
+a8efadadcbf2,7.21.26 BTS & Sleep Up to 30% Off + New Markdowns.xlsm,Images,markdown,BTS & Sleep Up to 30%,2026-07-21 00:00:00,2026-07-21,2026-07-21,2026-07-21,Sleep/PJs|Clearance,8814,3771,8789,0.0
 4b2c01e634c2,6.18.26 Hanna Sale PDL.xlsx,Images,promo_detail,Hanna Sale up to 60% Off,6.18-6.24,2026-06-18,2026-06-24,2026-06-18,Clearance,8718,3737,8693,0.0
 c60394dfe5d9,12.26.23 Hanna Sale Up to 60% off PDL.xlsx,All Markdowns,markdown,12.26.23 Hanna Sale Markdowns,12.26.23,2023-12-26,2023-12-26,2023-12-26,Clearance,2195,839,2194,791151.0
 0d56f224a7b3,3.4.25 Spring Break up to 30 off PDL.xlsx,All Promo Discounts,aggregate_promo_offers,3.4.25 Spring Break up to 30% off + Easter up to 30% off,3.4.25-3.10.25,2025-03-04,2025-03-10,2025-03-04,Easter,2025,683,2025,2496408.0
-d95833a4db23,3.21.25 Spring Sale up to 40% off PDL.xlsx,All Promo Discounts,aggregate_promo_offers,3.21.25 Spring Sale up to 40% off,3.21.25-3.24.25,2025-03-21,2025-03-24,2025-03-21,,2022,684,2022,2358326.0
 894508f889ba,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25 PDL.xlsx,All Promo Discounts,aggregate_promo_offers,3.18.25 Dresses up to 30% off + Signature HannaSoft PJs starting at $25,3.18.25-3.20.25,2025-03-18,2025-03-20,2025-03-18,Dresses|Sleep/PJs,2022,683,2022,2361259.0
+d95833a4db23,3.21.25 Spring Sale up to 40% off PDL.xlsx,All Promo Discounts,aggregate_promo_offers,3.21.25 Spring Sale up to 40% off,3.21.25-3.24.25,2025-03-21,2025-03-24,2025-03-21,,2022,684,2022,2358326.0
 aeaf06546186,3.11.25 Kids + Baby Sleep 30 off PDL.xlsx,All Promo Discounts,aggregate_promo_offers,3.11.25 Kids + Baby Sleep 30% off + All Swim up to 30% off,3.11.25-3.17.25,2025-03-11,2025-03-17,2025-03-11,Sleep/PJs|Swim|Baby|Kids,2016,679,2016,2439874.0
 167bf60cfea5,4.21.26 Friends & Family 40% Off Sitewide PDL.xlsx,Promo Offers,aggregate_promo_offers,4.21.26 Friends & Family 40% Off Sitewide,4.21-5.4,2026-04-21,2026-05-04,2026-04-21,Sitewide,2014,749,2014,3038689.0
 8cf2c202e48f,3.25.25 Easter up to 40 off + New Markdowns PDL.xlsx,All Promo Discounts,markdown,3.25.25 Easter up to 40% off + All Swim 30% off,3.25.25-3.31.25,2025-03-25,2025-03-31,2025-03-25,Swim|Clearance|Easter,1977,668,1977,2327412.0
@@ -23,4 +24,3 @@ e5d376d272a8,12.1.25 Cyber Monday 50% Off Everything w $20 Sleep PDL.xlsx,Promo 
 245791c4f0f2,5.14.26 Memorial Day up to 50% Off Everything PDL.xlsx,Promo Offers,aggregate_promo_offers,5.14.26 Memorial Day up to 50% Off Everything,5.14-5.25,2026-05-14,2026-05-25,2026-05-14,Sitewide,1751,634,1751,2443097.0
 2e5c3adccaa5,11.24.25 BLACK FRIDAY 50% OFF EVERYTHIG PDL.xlsx,Promo Offers 11.24-11.28,aggregate_promo_offers,BLACK FRIDAY 50% OFF EVERYTHIG,11.24 - 11.28,2025-11-24,2025-11-28,2025-11-24,Holiday,1747,592,1747,3149335.0
 646f46fa83d6,7.22.25 Sleep up to 40 off.xlsx,ALL OFFERS,promo_detail,Sleep up to 40% off + Swim up to 50% off,7.22.25 - 7.28.25,2025-07-22,2025-07-28,2025-07-22,Sleep/PJs|Swim,1733,567,1733,2449484.0
-fad258b29082,5.27.25 Summer Dresses up to 50 off.xlsx,ALL OFFERS,promo_detail,Summer Dresses up to 50% off + All Kids up to 40% off (Camp and Play),5.27.25-6.2.25,2025-05-27,2025-06-02,2025-05-27,Dresses|Kids,1733,559,1733,2509325.0

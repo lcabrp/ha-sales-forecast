@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-07-21T14:07:30+00:00",
+  "window": {
+    "start_date": "2026-07-07",
+    "through_date": "2026-07-20",
+    "days": 14
+  },
+  "forecast_sources": [
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\handoff_eval\\forward_2026-07-07_challenger\\forward_daily_forecasts.parquet",
+      "assigned_candidate": null,
+      "window_rows": 274431,
+      "window_units": 714762.0
+    },
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\contract\\daily_forecast.parquet",
+      "assigned_candidate": "independent_hybrid_absolute_log",
+      "window_rows": 251832,
+      "window_units": 157409.0
+    },
+    {
+      "kind": "generated_daily_anchor",
+      "candidate": "corporate_total_recent_shape_exact",
+      "shape_candidate": "independent_recent_shape",
+      "total_candidate": "corporate_raw",
+      "window_rows": 123890,
+      "window_units": 204654.0
+    }
+  ],
+  "actual_source": {
+    "kind": "portable_sku_day",
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\handoff_eval\\forward_2026-07-07_closeout\\actual_sku_day.parquet"
+  },
+  "actuals": {
+    "rows": 77892,
+    "distinct_skus": 15828,
+    "sold_units": 203327.0
+  },
+  "monitoring_validation": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-kydc-monitoring\\Output\\Monitoring\\Monitoring_History.db",
+    "exists": true,
+    "start_date": "2026-07-07",
+    "through_date": "2026-07-20",
+    "days": 14,
+    "expected_days": 14,
+    "pick_units": 203347.0,
+    "complete": true,
+    "ax_or_portable_minus_monitoring_units": -20.0
+  },
+  "category_crosswalk": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-ingestion-pipeline\\Output\\Ingestion\\sku_ledger.db",
+    "rows": 113824
+  },
+  "outputs": {
+    "actual_sku_day": "actual_sku_day.parquet",
+    "scores": "forecast_window_scores.csv",
+    "daily_totals": "forecast_daily_totals.csv",
+    "category_scores": "forecast_category_scores.csv",
+    "sku_comparison": "forecast_sku_comparison.parquet"
+  },
+  "metric_notes": {
+    "ForecastSKUUseRatePct": "Share of forecast-positive SKUs that had positive DirectPick demand; this is a SKU/box-avoidance proxy, not a physical carton measurement.",
+    "ZeroDemandForecastUnitPct": "Share of forecast units assigned to SKUs with zero DirectPick demand in the window."
+  }
+}

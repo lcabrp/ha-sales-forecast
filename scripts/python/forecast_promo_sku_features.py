@@ -23,6 +23,9 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import pyarrow as pa
+import pyarrow.compute as pc
+import pyarrow.parquet as pq
 
 PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
@@ -73,6 +76,14 @@ def parse_args() -> argparse.Namespace:
         help="Skip suspiciously long PDL event windows. Date-level coupon features handle long campaigns.",
     )
     parser.add_argument("--sample-rows", type=int, default=5000)
+    parser.add_argument(
+        "--merge-existing",
+        action="store_true",
+        help=(
+            "Replace the generated date range inside an existing feature Parquet instead of "
+            "rebuilding all history in memory. Requires --start-date."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -413,7 +424,17 @@ def write_outputs(output: pd.DataFrame, summary: dict[str, Any], args: argparse.
     """
     args.output_dir.mkdir(parents=True, exist_ok=True)
     feature_path = args.output_dir / "pdl_sku_day_features.parquet"
-    output.to_parquet(feature_path, index=False, compression="zstd")
+    if args.merge_existing and feature_path.exists():
+        merge_existing_feature_store(feature_path, output)
+        store_summary = summarize_feature_store(feature_path)
+        summary["generated_sku_day_feature_rows"] = summary["sku_day_feature_rows"]
+        summary["sku_day_feature_rows"] = store_summary["rows"]
+        summary["distinct_skus_with_sku_pdl"] = store_summary["distinct_skus"]
+        summary["feature_date_range"] = store_summary["date_range"]
+        summary["merge_existing"] = True
+    else:
+        output.to_parquet(feature_path, index=False, compression="zstd")
+        summary["merge_existing"] = False
     if args.sample_rows > 0:
         output.head(args.sample_rows).to_csv(args.output_dir / "pdl_sku_day_features_sample.csv", index=False)
     summary["generated_at_utc"] = datetime.now(timezone.utc).isoformat()
@@ -428,9 +449,74 @@ def write_outputs(output: pd.DataFrame, summary: dict[str, Any], args: argparse.
         json.dump(summary, handle, indent=2, sort_keys=True)
 
 
+def merge_existing_feature_store(feature_path: Path, output: pd.DataFrame) -> None:
+    """Stream an incremental date replacement into the existing Parquet store."""
+    if output.empty:
+        return
+    date_min = pd.Timestamp(output["Date"].min())
+    date_max = pd.Timestamp(output["Date"].max())
+    parquet_file = pq.ParquetFile(feature_path)
+    schema = parquet_file.schema_arrow
+    date_type = schema.field("Date").type
+    lower = pa.scalar(date_min.to_pydatetime(), type=date_type)
+    upper = pa.scalar(date_max.to_pydatetime(), type=date_type)
+    temp_path = feature_path.with_name(f".{feature_path.name}.merge.tmp")
+
+    writer = pq.ParquetWriter(temp_path, schema=schema, compression="zstd")
+    try:
+        for batch in parquet_file.iter_batches(batch_size=250_000):
+            table = pa.Table.from_batches([batch], schema=schema)
+            dates = table.column("Date")
+            keep = pc.or_(pc.less(dates, lower), pc.greater(dates, upper))
+            retained = table.filter(keep)
+            if retained.num_rows:
+                writer.write_table(retained)
+
+        generated = pa.Table.from_pandas(
+            output[schema.names],
+            schema=schema,
+            preserve_index=False,
+            safe=False,
+        )
+        writer.write_table(generated)
+    finally:
+        writer.close()
+        parquet_file.close()
+    temp_path.replace(feature_path)
+
+
+def summarize_feature_store(feature_path: Path) -> dict[str, Any]:
+    """Summarize a large feature store without materializing it in pandas."""
+    parquet_file = pq.ParquetFile(feature_path)
+    date_min: pd.Timestamp | None = None
+    date_max: pd.Timestamp | None = None
+    distinct_skus: set[str] = set()
+    for batch in parquet_file.iter_batches(batch_size=500_000, columns=["Date", "SKU"]):
+        dates = pd.to_datetime(batch.column("Date").to_pandas(), errors="coerce")
+        if not dates.dropna().empty:
+            batch_min = pd.Timestamp(dates.min())
+            batch_max = pd.Timestamp(dates.max())
+            date_min = batch_min if date_min is None else min(date_min, batch_min)
+            date_max = batch_max if date_max is None else max(date_max, batch_max)
+        distinct_skus.update(
+            value for value in batch.column("SKU").to_pylist() if value not in (None, "")
+        )
+    parquet_file.close()
+    return {
+        "rows": int(parquet_file.metadata.num_rows),
+        "distinct_skus": int(len(distinct_skus)),
+        "date_range": [
+            None if date_min is None else date_min.date().isoformat(),
+            None if date_max is None else date_max.date().isoformat(),
+        ],
+    }
+
+
 def main() -> None:
     """Execute the command line entry point for promotion SKU feature generation."""
     args = parse_args()
+    if args.merge_existing and not args.start_date:
+        raise ValueError("--merge-existing requires --start-date for a bounded replacement.")
     output, summary = build_sku_day_features(args)
     write_outputs(output, summary, args)
     print(f"PDL SKU/day feature rows: {len(output):,}")

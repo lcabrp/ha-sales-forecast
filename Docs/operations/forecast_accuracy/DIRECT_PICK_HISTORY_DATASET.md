@@ -9,14 +9,15 @@ Current useful pick artifacts found on disk:
 
 | File | Grain | Date Span | Use |
 |---|---|---:|---|
-| `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2025.parquet` | SKU/day DirectPick totals by work-created date | 2025-01-01 through 2025-12-31 | Useful for July sale analogs and forecast work. |
-| `Output/ForecastAccuracy/history/parquet/actual_sku_day_modified.parquet` | SKU/day DirectPick totals by pick-line modified date | 2025-11-01 through 2026-06-18 | Current model target and scorecard actuals. |
-| `Output/MarketBasket/Market_Basket_Data_12mo.parquet` | pick line/order/SKU | 2025-04-01 through 2026-04-06 | Co-purchase/pathing analysis, not needed for forecast target training. |
-| `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2024.parquet` | replenishment touch | 2024-01-01 through 2024-12-31 | Supply/labor pressure, not demand. Do not use as sold-unit history. |
+| `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2022.parquet` through `..._2026.parquet` | SKU/day DirectPick totals by pick-line modified date | 2022-01-02 through 2026-06-25 | Canonical strict fulfilled-demand history for event/category learning and backtests. |
+| `Output/ForecastAccuracy/history/parquet/actual_sku_day_modified.parquet` | SKU/day DirectPick totals by pick-line modified date | 2025-11-01 through 2026-07-09 | Recent model target/scorecard mirror; refresh when the requested closeout extends past its max date. |
+| `../ha-kydc-monitoring/Output/Monitoring/Monitoring_History.db` | Date/activity aggregate | Current completed Pick day through 2026-07-19 at the 2026-07-20 audit | Primary completed-day/aggregate check, but not an SKU allocation fact. |
+| `../ha-warehouse-layout/Output/MarketBasket/Market_Basket_Data_12mo.parquet` | Pick line/order/SKU | Historical layout-analysis window | Co-purchase/pathing analysis, not needed for forecast target training. |
 
-The gap for event learning is older fulfilled DirectPick demand. The local
-DirectPick demand caches do not reach October 2024/2023, so they are not enough
-to learn Friends and Family or earlier peak-season event behavior.
+The earlier gap in older DirectPick demand has been closed: strict yearly shards
+now reach 2022 and include multiple July, October, and holiday analog periods.
+The remaining history gap is deep inventory availability, not fulfilled pick
+history.
 
 ## Dataset Contract
 
@@ -75,14 +76,14 @@ Output/ForecastAccuracy/direct_pick_history/direct_pick_history_year_summary.csv
 ```powershell
 uv run python scripts/python/forecast_direct_pick_history.py `
   --start-date 2022-01-01 `
-  --end-date 2026-06-19 `
+  --end-date 2026-06-26 `
   --overwrite
 ```
 
-Use an end date that is exclusive. For example, `2026-06-19` includes picks
-through `2026-06-18`.
+Use an end date that is exclusive. For example, `2026-06-26` includes picks
+through `2026-06-25`.
 
-## Collection Result - 2026-06-18
+## Scope Decision - 2026-06-18
 
 Scope audit:
 
@@ -93,7 +94,7 @@ Scope audit:
 - Follow-up review: `invalid` source locations were valid at historical pick
   time and should be included. `W001` is Amazon/wholesale-related and remains
   excluded from replenished pick-face forecasting.
-- Final regenerated training scope units: `38,574,387`.
+- Final regenerated training scope units through 2026-06-18: `38,574,387`.
 - The remaining excluded units are `W001` / `No LP Track` profile rows, plus
   explicit `Bander` / `AutoBagger` source locations.
 - The yearly shards below were regenerated with the final scope.
@@ -122,7 +123,10 @@ Output/ForecastAccuracy/direct_pick_history/direct_pick_top_14d_windows_by_year.
 Output/ForecastAccuracy/direct_pick_history/direct_pick_october_top_14d_windows.csv
 ```
 
-Collection scope:
+## Current Collection Result - 2026-06-25
+
+The current manifest was refreshed on 2026-06-25 with an exclusive end date of
+2026-06-26. Collection scope:
 
 | Year | Date span | SKU/day rows | Distinct SKUs | Pick units |
 |---:|---|---:|---:|---:|
@@ -130,11 +134,12 @@ Collection scope:
 | 2023 | 2023-01-02 through 2023-12-31 | 2,154,543 | 32,348 | 9,021,926 |
 | 2024 | 2024-01-02 through 2024-12-31 | 2,289,654 | 36,340 | 9,085,238 |
 | 2025 | 2025-01-02 through 2025-12-31 | 2,366,162 | 36,963 | 8,440,037 |
-| 2026 | 2026-01-02 through 2026-06-18 | 985,883 | 24,569 | 2,728,805 |
-| **Total** | 2022-01-02 through 2026-06-18 | **9,915,420** |  | **38,574,387** |
+| 2026 | 2026-01-02 through 2026-06-25 | 1,031,435 | 24,794 | 2,908,823 |
+| **Total** | 2022-01-02 through 2026-06-25 | **9,960,972** |  | **38,754,405** |
 
-AX archive boundary during the run was `2026-06-13`; rows before that came from
-`DAX_Archive.arc`, and rows from `2026-06-13` forward came from `DAX_PROD.dbo`.
+AX archive boundary during the current run was `2026-06-20`; rows before that
+came from `DAX_Archive.arc`, and rows from `2026-06-20` forward came from
+`DAX_PROD.dbo`.
 
 Quick event checks:
 
@@ -159,6 +164,33 @@ generic event-lift layer before Friends and Family / peak season. July should be
 used as the current live shadow validation, but October and holiday do not need
 to wait for a manual rescue.
 
+## Category Crosswalk
+
+The yearly facts do **not** embed `Division`, `Department`, `Class`,
+`KeyCategoryView`, `ProductGroupCode`, `SizeGroupCode`, or historical velocity.
+Category is a dimension and should be joined separately so a corrected mapping
+does not require rewriting every demand shard.
+
+The active crosswalk currently lives in:
+
+```text
+../ha-ingestion-pipeline/Output/Ingestion/sku_ledger.db
+```
+
+At the 2026-07-20 audit it mapped `99.7%` of 2024 DirectPick units and `99.9%`
+of 2025 units. The current model-panel category map covers only `62.9%` of 2024
+units because the panel starts on 2025-01-01. Do not use that panel map for the
+2024 sale overlay.
+
+Use `ProductGroupCode + SizeGroupCode` for stable operational cells such as
+`GIRM` or `BOYM`. A code such as `GIRMA` adds the current velocity `A`; velocity
+is an allocation/slotting result and is not a stable prior-year category without
+an as-of velocity history.
+
+See `FORECAST_DATA_LANDSCAPE_2026-07-20.md` for coverage counts, the required
+portable category-crosswalk contract, the July analog examples, and the
+confirmed sale-overlay misalignments.
+
 ## Modeling Use
 
 This dataset should feed a reusable sale-event layer, not one-off hard-coded
@@ -169,3 +201,8 @@ sale totals:
 - promoted-SKU allocation using PDLs plus recent velocity;
 - post-event reversion/cooldown;
 - leave-one-event-out backtests before trusting an event rule for peak season.
+
+Event calculations must build a complete calendar date spine. Do not infer the
+number of baseline days from dates present in this sparse positive-activity fact:
+a zero-pick day is intentionally absent and must remain a zero when forecasting
+a calendar horizon.
