@@ -30,20 +30,28 @@ current SKUs; ML stays narrow (occurrence/residual). Optimize precision/coverage
 - NEW `scripts/python/forecast_backtest_category_pool.py`: honest frozen backtest
   (origin 2026-07-07) vs saved closeout actuals; reuses repo metrics; reproduces
   published corporate_raw / corporate_total_recent_shape numbers as a check.
-- Result: `catpool_corporate_anchor_activation` beats current champion on every
-  axis — SKU WAPE 1.05→0.96, coverage 0.67→0.76, box precision 0.86→0.89,
-  wasted units 0.09→0.06, bias +0.01% (corporate total preserved). Wins GIRM
-  (1.17 vs 1.26) and BOYM (0.80 vs 1.00) cells too.
+- NEW `scripts/python/forecast_validate_category_pool.py`: guardrail assertions
+  (leakage / exact total-preservation / determinism — all PASS) + 11-window
+  oracle-total allocation backtest (volume neutralized to isolate allocation).
+- Result (July-7, real corporate+actuals): `catpool_corporate_anchor_activation`
+  beats champion on every axis — SKU WAPE 1.05→0.96, coverage 0.67→0.76, box
+  precision 0.86→0.89, wasted units 0.09→0.06, bias +0.01% (total preserved).
+- Layer ablation (KEY finding): category reconciliation ALONE is a no-op /
+  slightly hurts post-sale (1.05→1.18); ACTIVATION is the driver (→0.96).
+  11-window oracle backtest: event-lift mix small consistent edge (7/11 wins,
+  mean WAPE 0.7999 vs 0.8024); recentmix ≈ global confirms the identity control.
 - NEW frozen July 21–Aug 3 shadow built alongside (not modifying) the Aug 4 model:
   `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`
   (165,008 units, corporate total preserved). Evaluable Aug 4.
-- Doc: `Docs/operations/forecast_accuracy/FORECAST_MODEL_PROPOSALS_2026-07-22.md`.
+- Docs: `Docs/operations/forecast_accuracy/FORECAST_MODEL_PROPOSALS_2026-07-22.md`
+  and `FORECAST_MODEL_VALIDATION_2026-07-22.md` (explains the why for next LLM).
 
 ## Known limitations
-- Independent volume anchor over-forecasts (+47%): 56d lookback includes
-  June 21–Jul 4 sale spike; category mix over-weights GIRM. Corporate anchor
-  unaffected (preserves total). Portable-facts only; no live-AX. Crosswalk from
-  Jul-6 handoff ledger (98.6% unit coverage).
+- Independent volume anchor over-forecasts (+47%): 56d run-rate is
+  sale-spike-contaminated (June 21–Jul 4 inside lookback) → over-weights GIRM.
+  Corporate anchor sidesteps this (preserves total). Activation validated on ONE
+  origin only (inventory/inbound snapshots start 2026-06-19). Portable-facts
+  only; no live-AX. Crosswalk from Jul-6 handoff ledger (98.6% unit coverage).
 
 ## Backlog / next
 - P1: Multi-window frozen backtest to confirm not a single-window artifact.

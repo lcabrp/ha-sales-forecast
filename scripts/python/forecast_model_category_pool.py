@@ -193,6 +193,16 @@ def category_run_rate(history: pd.DataFrame, crosswalk: pd.DataFrame, config: Mo
     Uses ``lookback_days`` as the denominator (not the number of non-zero
     calendar days) so closed / zero-pick days remain zeros. This fixes the
     documented ``nunique()`` denominator bug in the retired overlay.
+
+    WHY / KNOWN CAVEAT (read before tuning): a flat 56-day run-rate is
+    *spike-contaminated* when a promotional sale falls inside the lookback
+    window. For a 2026-07-07 origin the lookback contains the June 21-July 4
+    sale, so the GIRM run-rate is inflated and the independent volume anchor
+    (and the lift-adjusted category *mix*) over-forecast that cell. This is why
+    the corporate anchor is preferred for total volume, and why open backlog
+    item "calendar-aware baseline" matters: exclude prior in-window sale days,
+    or shrink the run-rate toward a non-event baseline, before trusting the
+    independent Stage-1 total.
     """
     start = config.origin - pd.Timedelta(days=config.lookback_days)
     end = config.origin - pd.Timedelta(days=1)
@@ -534,6 +544,12 @@ def build_candidates(
     if config.use_activation:
         sku_weights_alloc, activation_meta = apply_activation_layer(sku_weights, crosswalk, config)
     else:
+        # WHY: without activation, Stage-2 weights are recent within-category
+        # units only. New/returning SKUs with no recent history get zero weight,
+        # which is the main reason the non-activation anchor UNDER-covers sold
+        # units at a season transition. The July-7 ablation shows this directly:
+        # anchor WAPE 1.05 (champion) -> 1.18 (add lift-mix, no activation) ->
+        # 0.96 (add activation). Activation is the decisive layer.
         sku_weights_alloc = sku_weights.rename(columns={"RecentUnits": "Weight"})[
             ["SKU", "Category", "Weight"]
         ]

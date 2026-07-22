@@ -1,0 +1,32 @@
+[
+  {
+    "check": "no_leakage_load_history",
+    "passed": true,
+    "detail": "max=2026-05-14 < origin=2026-05-15"
+  },
+  {
+    "check": "hamilton_sum_exact",
+    "passed": true,
+    "detail": "sum=12345"
+  },
+  {
+    "check": "hamilton_nonnegative",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "check": "hamilton_zero_total",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "check": "deterministic_output",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "check": "corporate_daily_total_preserved",
+    "passed": true,
+    "detail": "corp_total=165008 anchor_total=165008"
+  }
+]

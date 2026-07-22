@@ -101,9 +101,14 @@ Category cells (SKU WAPE, lower is better):
   0.67 → 0.76, raises box/SKU precision 0.86 → 0.89, and cuts wasted units
   0.09 → 0.06. It wins at the GIRM and BOYM cell level too.
 - The **activation layer is the difference-maker**: without it the same anchor
-  scores WAPE 1.18 / coverage 0.62; with it WAPE 0.96 / coverage 0.76. The
-  July 6 snapshot activated 16,092 brand-new SKUs, boosted 17,685 low-history
-  active SKUs, and down-weighted 6,290 unsupported ending-season SKUs.
+  scores WAPE 1.18 / coverage 0.62; with it WAPE 0.96 / coverage 0.76. In fact
+  the layer ablation shows category reconciliation *by itself* slightly **hurts**
+  at this post-sale origin (1.05 → 1.18) because the 56-day run-rate is
+  contaminated by the June 21–July 4 sale and over-weights GIRM; the activation
+  layer more than recovers it (→ 0.96). See
+  `FORECAST_MODEL_VALIDATION_2026-07-22.md` §2 for the full ablation. The July 6
+  snapshot activated 16,092 brand-new SKUs, boosted 17,685 low-history active
+  SKUs, and down-weighted 6,290 unsupported ending-season SKUs.
 - The **independent (no-corporate) volume anchor over-forecasts ~+47%** because
   the 56-day lookback contains the June 21–July 4 sale spike. This confirms the
   project's standing finding that corporate is the better *total-volume* anchor;
@@ -133,6 +138,8 @@ New scripts (research candidates, not yet a promoted champion):
 
 - `scripts/python/forecast_model_category_pool.py` — model + CLI.
 - `scripts/python/forecast_backtest_category_pool.py` — frozen backtest/scorer.
+- `scripts/python/forecast_validate_category_pool.py` — guardrails + multi-window
+  oracle-total allocation backtest. See `FORECAST_MODEL_VALIDATION_2026-07-22.md`.
 
 ## 5. Limitations and honest caveats
 
