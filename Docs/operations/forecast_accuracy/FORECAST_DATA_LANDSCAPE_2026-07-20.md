@@ -289,7 +289,16 @@ For each forecast origin and event:
 4. **Build the current eligible assortment.** Use current Product Info, PDL,
    recent DirectPick, go-live/status, positive or incoming supply, and valid
    reservation signals. Historical SKUs must not be resurrected merely because
-   they sold in the analog year.
+   they sold in the analog year. During a seasonal assortment reset, use
+   origin-safe inventory appearance/growth, inbound, lifecycle state, and the
+   creation of replenishment demand as activation evidence. Give a new SKU a
+   category/size prior rather than requiring 56 days of its own pick history.
+   Conversely, downweight an ending-season SKU when declining supply, inactive
+   lifecycle state, no inbound/promotion support, and absent recent demand agree.
+   Do not interpret the SKU's actual landing zone as demand evidence: when AA
+   sub-zones are full, AX fallback placement reflects capacity pressure rather
+   than expected sales. Replenishment activity is an assortment/supply clue,
+   not customer-demand proof.
 5. **Estimate use probability and conditional quantity separately.** Rank by
    probability of consuming at least one replenishment carton in the horizon;
    estimate units conditional on use. Recent statistical demand should remain

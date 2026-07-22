@@ -120,6 +120,38 @@ It cannot be evaluated until the horizon closes. No hindsight ML candidate was
 created for this origin. The existing model panel ends on 2026-06-08, and the
 July 21 promotion workbook provides only a one-day effective date.
 
+### Season-transition limitation
+
+The 56-day recent shape is a valid frozen baseline, but it assumes that the SKU
+assortment is reasonably stable. A major seasonal reset can violate that
+assumption: ending-season SKUs retain historical weight while newly activated
+SKUs have little or no pick history. Do not modify the frozen July 21 candidate;
+measure this failure mode at closeout and address it in the next pre-origin
+challenger.
+
+An operational investigation reported a July 15-20 collapse in exact
+replenishment-zone placement concentrated in Velocity AA. It also reported a
+large July 14-21 pick-face inflow and no empty locations in the examined AA
+sub-zones. Treat these figures as operational context until reproduced from a
+saved report in this repo. The important forecast interpretation is:
+
+- inventory appearance, inventory growth, inbound, lifecycle status, and a
+  replenishment request can be evidence that a SKU is entering the active
+  assortment;
+- the zone where replenishment actually landed is not a demand or season
+  signal when intended zones are full;
+- replenishment volume alone is not proof of customer demand;
+- an ending-season SKU should not retain weight solely because it sold during
+  the trailing 56 days.
+
+The next prospectively frozen challenger should keep the best known corporate
+daily totals, forecast stable category/size pools, build an origin-safe active
+assortment, and give new SKUs category/size priors instead of requiring their
+own 56-day history. Use promotion eligibility only for dates supported by the
+source workbook; the July 21 PDL must not be extended through August 3 without
+an explicit end date. Any candidate created after the July 21 origin is a
+late-origin diagnostic, not a third frozen contestant.
+
 ## Active Workflow
 
 ```powershell
@@ -142,7 +174,9 @@ For the transparent corporate-total/recent-shape forward shadow, use
 ## Open Work, In Order
 
 1. Mirror the current ingestion-ledger SKU/category crosswalk with provenance.
-2. Implement and evaluate category-total to current-SKU allocation.
+2. Implement and evaluate a season-transition-aware category-total to
+   current-SKU allocation using origin-safe lifecycle, inventory, inbound,
+   replenishment-activation, and promotion evidence.
 3. Add an explicit occurrence/selection threshold and precision/coverage
    scorecard.
 4. Add the carton-use simulator.
