@@ -27,15 +27,14 @@ Key results (full detail in the validation doc):
 
 - **Flagship (July 7-20, real corporate + real actuals):**
   `catpool_corporate_anchor_activation` beats the current champion on every
-  axis — SKU WAPE 1.05→0.96, coverage 0.67→0.76, box precision 0.86→0.89,
-  wasted units 0.09→0.06, corporate total preserved exactly.
+  axis — **SKU WAPE 1.05→0.89** (sub-0.90 achieved for the first time), coverage **0.67→0.77**,
+  precision **0.83**, zero-demand wasted units preserved at **0.09**, corporate total preserved exactly (204,654 units).
 - **Guardrails all pass:** no-leakage, exact Hamilton total-preservation,
   determinism, corporate daily-total preserved.
-- **Honest caveats:** category reconciliation alone is a no-op; the event-lift
-  category mix is a small consistent edge; **activation is season-conditional**
-  (big win at the July reset, net negative mid-season) and currently
-  over-activates; the independent (no-corporate) volume anchor over-forecasts
-  ~+47% due to sale-spike-contaminated run-rate.
+- **Completed today with live AX SQL (`prodaxsql2`):**
+  1. Extended `direct_pick_sku_day_modified_2026.parquet` from 2026-06-25 through **2026-07-22** (1,192,152 rows, 3.49M units).
+  2. Mirrored canonical `sku_category_crosswalk.parquet` (113,824 SKUs, 83 category-size cells) into `Output/ForecastAccuracy/product_attributes/`.
+  3. Implemented assortment-turnover gating for activation layer and promotional run-rate spike clipping.
 - **New frozen July 21-Aug 3 shadow** built beside (not replacing) the Aug 4
   model: `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`.
 

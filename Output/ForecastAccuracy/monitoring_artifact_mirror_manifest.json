@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-07-21T13:54:30+00:00",
+  "generated_at_utc": "2026-07-22T16:47:03+00:00",
   "mode": "mirror",
   "producer_repo": "C:\\Users\\labreu\\Documents\\Projects\\ha-kydc-monitoring",
   "producer_contract_root": "Output/ForecastAccuracy",
@@ -12,12 +12,12 @@
   ],
   "source_metadata": {
     "inbound": {
-      "updated_at_utc": "2026-07-21T13:28:09.394853+00:00",
+      "updated_at_utc": "2026-07-22T16:44:32.101515+00:00",
       "source": "DAX_PROD.dbo.PURCHLINE/PURCHTABLE/INVENTDIM",
-      "snapshot_count": 28,
-      "latest_snapshot_date": "2026-07-21",
+      "snapshot_count": 29,
+      "latest_snapshot_date": "2026-07-22",
       "outputs": {
-        "dated_detail": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-21.parquet",
+        "dated_detail": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
         "detail_fact": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
         "sku_day": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
         "summary": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv"
@@ -29,11 +29,11 @@
       ]
     },
     "inventory": {
-      "updated_at_utc": "2026-07-21T13:28:05.326823+00:00",
+      "updated_at_utc": "2026-07-22T16:44:26.542714+00:00",
       "source": "DAX_PROD.dbo.INVENTSUM/INVENTDIM/WMSLOCATION + HAFORECASTREPLENISHMENTTABLE",
-      "latest_snapshot_date": "2026-07-21",
+      "latest_snapshot_date": "2026-07-22",
       "outputs": {
-        "dated_detail": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-21.parquet",
+        "dated_detail": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-22.parquet",
         "detail_fact": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail.parquet",
         "sku_day": "Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet"
       },
@@ -50,7 +50,7 @@
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_metadata.json",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_metadata.json",
       "bytes": 827,
-      "sha256": "42522bfb6fbb7b0711ed3ff04433c8a69d8973481d9633eaa236942c86edeee9",
+      "sha256": "aa0eb5d25edad76ead2d434d1a3d15b0d7500ea404370c4469fd049c07a975a5",
       "row_count": null
     },
     {
@@ -58,27 +58,27 @@
       "action": "update",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
-      "bytes": 9897866,
-      "sha256": "e8080180899e3885edade05553c8c961ae1836b314dc1d09e9fc36e238b38423",
-      "row_count": 656913
+      "bytes": 10222776,
+      "sha256": "ad2110556e99e65f0c39db29c7934d172d14256ae5a9053fb15ce08fee1619f0",
+      "row_count": 679294
     },
     {
       "family": "inbound",
       "action": "update",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
-      "bytes": 2281688,
-      "sha256": "fad5a94717c156946542d1dbf487b27369ea26ef521b4543f8cd0983fe722260",
-      "row_count": 427014
+      "bytes": 2348152,
+      "sha256": "0201f67954ccd37d40587dca3185ad8d8016ffdc02a8b213aa400b09f5c5673f",
+      "row_count": 441080
     },
     {
       "family": "inbound",
       "action": "update",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv",
-      "bytes": 3456,
-      "sha256": "8ec2463d5bb72e6d8589f9b62d855220cbe88eb78127d799b6690c8ca5133e08",
-      "row_count": 28
+      "bytes": 3569,
+      "sha256": "5453de170e8c079fd798bee3ed1eaa87d182230b342da07ad455125446947e88",
+      "row_count": 29
     },
     {
       "family": "inbound",
@@ -262,7 +262,7 @@
     },
     {
       "family": "inbound",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-10.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-10.parquet",
       "bytes": 511685,
@@ -271,7 +271,7 @@
     },
     {
       "family": "inbound",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-11.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-11.parquet",
       "bytes": 512196,
@@ -280,7 +280,7 @@
     },
     {
       "family": "inbound",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-13.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-13.parquet",
       "bytes": 504681,
@@ -289,7 +289,7 @@
     },
     {
       "family": "inbound",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-14.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-14.parquet",
       "bytes": 502438,
@@ -298,7 +298,7 @@
     },
     {
       "family": "inbound",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-16.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-16.parquet",
       "bytes": 494695,
@@ -307,7 +307,7 @@
     },
     {
       "family": "inbound",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-17.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-17.parquet",
       "bytes": 491631,
@@ -316,7 +316,7 @@
     },
     {
       "family": "inbound",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-20.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-20.parquet",
       "bytes": 481710,
@@ -325,7 +325,7 @@
     },
     {
       "family": "inbound",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-21.parquet",
       "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-21.parquet",
       "bytes": 499160,
@@ -333,12 +333,21 @@
       "row_count": 22145
     },
     {
+      "family": "inbound",
+      "action": "create",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
+      "bytes": 502606,
+      "sha256": "1d99a02c1061ace29306942315427027293ecc4a493c99aa2ff9396439c59154",
+      "row_count": 22381
+    },
+    {
       "family": "inventory",
       "action": "update",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_metadata.json",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_metadata.json",
       "bytes": 703,
-      "sha256": "2638b12c480ed4fdc09f49b12b09e50501788bcc179f4136b69edb085eac2f36",
+      "sha256": "a8c350f14f74a9417e3f3bda0be411501598c6690a83551d748abb158bad6c98",
       "row_count": null
     },
     {
@@ -346,18 +355,18 @@
       "action": "update",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail.parquet",
-      "bytes": 3581474,
-      "sha256": "fe42a65162f0eaeac5266881283aec6121ee93231a0dd5a6ebb29c7108f75a74",
-      "row_count": 366648
+      "bytes": 3721705,
+      "sha256": "3b8526e068368f069ddf39fcc0e539c5e2cf018f2db0497d554bbe95d4660805",
+      "row_count": 380594
     },
     {
       "family": "inventory",
       "action": "update",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet",
-      "bytes": 1591097,
-      "sha256": "03b02181c39485452463da273b272f62b6a20bcd9e6d64d910fb68a8a67f7045",
-      "row_count": 322422
+      "bytes": 1651144,
+      "sha256": "381dfee0eea2a4761f801c3b755e9d257c93421b776eea5e19ad9ffdd3a32613",
+      "row_count": 335078
     },
     {
       "family": "inventory",
@@ -541,7 +550,7 @@
     },
     {
       "family": "inventory",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-10.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-10.parquet",
       "bytes": 235714,
@@ -550,7 +559,7 @@
     },
     {
       "family": "inventory",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-11.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-11.parquet",
       "bytes": 234341,
@@ -559,7 +568,7 @@
     },
     {
       "family": "inventory",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-13.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-13.parquet",
       "bytes": 243262,
@@ -568,7 +577,7 @@
     },
     {
       "family": "inventory",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-14.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-14.parquet",
       "bytes": 239244,
@@ -577,7 +586,7 @@
     },
     {
       "family": "inventory",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-16.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-16.parquet",
       "bytes": 248667,
@@ -586,7 +595,7 @@
     },
     {
       "family": "inventory",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-17.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-17.parquet",
       "bytes": 247123,
@@ -595,7 +604,7 @@
     },
     {
       "family": "inventory",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-20.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-20.parquet",
       "bytes": 253940,
@@ -604,20 +613,29 @@
     },
     {
       "family": "inventory",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-21.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-21.parquet",
       "bytes": 255365,
       "sha256": "d62725945c580f9111b86493e9a9d7fa900f59025202b10fb39c15c759471aac",
       "row_count": 13916
+    },
+    {
+      "family": "inventory",
+      "action": "create",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-22.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-22.parquet",
+      "bytes": 254960,
+      "sha256": "b46436af0e9ef5fbc0a2003377beaa1181b352c93a16d46bd405be62e07d1f8b",
+      "row_count": 13946
     }
   ],
   "summary": {
-    "files_seen": 63,
-    "created": 16,
+    "files_seen": 65,
+    "created": 2,
     "updated": 7,
-    "unchanged": 40,
-    "bytes_seen": 38782795
+    "unchanged": 56,
+    "bytes_seen": 40132126
   },
   "notes": [
     "ha-kydc-monitoring remains the daily producer for these contract artifacts.",

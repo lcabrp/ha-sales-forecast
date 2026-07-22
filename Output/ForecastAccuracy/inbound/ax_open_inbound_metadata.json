@@ -1,10 +1,10 @@
 {
-  "updated_at_utc": "2026-07-21T13:28:09.394853+00:00",
+  "updated_at_utc": "2026-07-22T16:44:32.101515+00:00",
   "source": "DAX_PROD.dbo.PURCHLINE/PURCHTABLE/INVENTDIM",
-  "snapshot_count": 28,
-  "latest_snapshot_date": "2026-07-21",
+  "snapshot_count": 29,
+  "latest_snapshot_date": "2026-07-22",
   "outputs": {
-    "dated_detail": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-21.parquet",
+    "dated_detail": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
     "detail_fact": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
     "sku_day": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
     "summary": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv"

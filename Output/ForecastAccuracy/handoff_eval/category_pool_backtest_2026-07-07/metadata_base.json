@@ -3,19 +3,19 @@
   "horizon_end": "2026-07-20",
   "lookback_days": 56,
   "seasonal_years": 3,
-  "history_rows": 1036187,
+  "history_rows": 1110365,
   "categories_modeled": 59,
-  "independent_category_units": 299899.5941955663,
+  "independent_category_units": 450829.8170865633,
   "activation": {
     "status": "disabled"
   },
   "corporate_anchor": {
     "status": "ok",
     "corporate_total_units": 204654.0,
-    "reconciled_categories": 55
+    "reconciled_categories": 57
   },
   "candidate_units": {
     "catpool_corporate_anchor": 204654.0,
-    "catpool_independent": 299901.0
+    "catpool_independent": 450827.0
   }
 }

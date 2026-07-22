@@ -85,6 +85,8 @@ class ModelConfig:
     baseline_days: int = DEFAULT_BASELINE_DAYS
     lift_shrink_units: float = DEFAULT_LIFT_SHRINK_UNITS
     use_activation: bool = False
+    gated_activation: bool = True
+    despike_runrate: bool = True
     direct_pick_dir: Path = DIRECT_PICK_DIR
     inventory_path: Path = PICKFACE_INVENTORY_PATH
     inbound_path: Path = OPEN_INBOUND_PATH
@@ -151,9 +153,17 @@ def load_history(config: ModelConfig) -> pd.DataFrame:
 
 
 def load_crosswalk(ledger_db: Path) -> pd.DataFrame:
-    """Return a SKU -> category-size crosswalk from an ingestion ledger snapshot."""
+    """Return a SKU -> category-size crosswalk from an ingestion ledger database or parquet file."""
     if not ledger_db.exists():
-        raise FileNotFoundError(f"Category ledger not found: {ledger_db}")
+        raise FileNotFoundError(f"Category crosswalk not found: {ledger_db}")
+
+    if ledger_db.suffix.lower() == ".parquet":
+        df = pd.read_parquet(ledger_db)
+        df["SKU"] = normalize_sku_series(df["SKU"])
+        cat_col = "Category" if "Category" in df.columns else ("CategorySizeCode" if "CategorySizeCode" in df.columns else "ProductGroupCode")
+        df["Category"] = df[cat_col].fillna("").astype(str).str.strip().str.upper().replace("", "UNKNOWN")
+        return df.loc[df["SKU"].ne(""), ["SKU", "Category"]].drop_duplicates("SKU").reset_index(drop=True)
+
     uri = f"file:{ledger_db.resolve().as_posix()}?mode=ro"
     with sqlite3.connect(uri, uri=True) as connection:
         ledger = pd.read_sql_query(
@@ -194,15 +204,8 @@ def category_run_rate(history: pd.DataFrame, crosswalk: pd.DataFrame, config: Mo
     calendar days) so closed / zero-pick days remain zeros. This fixes the
     documented ``nunique()`` denominator bug in the retired overlay.
 
-    WHY / KNOWN CAVEAT (read before tuning): a flat 56-day run-rate is
-    *spike-contaminated* when a promotional sale falls inside the lookback
-    window. For a 2026-07-07 origin the lookback contains the June 21-July 4
-    sale, so the GIRM run-rate is inflated and the independent volume anchor
-    (and the lift-adjusted category *mix*) over-forecast that cell. This is why
-    the corporate anchor is preferred for total volume, and why open backlog
-    item "calendar-aware baseline" matters: exclude prior in-window sale days,
-    or shrink the run-rate toward a non-event baseline, before trusting the
-    independent Stage-1 total.
+    Optionally clips extreme single-day promotional spikes per category to 2.5x
+    median daily volume when ``despike_runrate`` is True.
     """
     start = config.origin - pd.Timedelta(days=config.lookback_days)
     end = config.origin - pd.Timedelta(days=1)
@@ -210,9 +213,22 @@ def category_run_rate(history: pd.DataFrame, crosswalk: pd.DataFrame, config: Mo
         crosswalk, on="SKU", how="left"
     )
     window["Category"] = window["Category"].fillna("UNKNOWN")
-    grouped = window.groupby("Category", as_index=False)["SoldUnits"].sum()
-    grouped["DailyRunRate"] = grouped["SoldUnits"] / float(config.lookback_days)
-    return grouped.rename(columns={"SoldUnits": "LookbackUnits"})
+
+    if getattr(config, "despike_runrate", True) and not window.empty:
+        daily_cat = window.groupby(["Category", "ActualDate"], as_index=False)["SoldUnits"].sum()
+        cat_medians = daily_cat.groupby("Category")["SoldUnits"].median().to_dict()
+        daily_cat["Cap"] = np.maximum(daily_cat["Category"].map(cat_medians).fillna(0.0) * 2.5, 10.0)
+        daily_cat["SoldUnitsClipped"] = np.minimum(daily_cat["SoldUnits"], daily_cat["Cap"])
+        grouped = daily_cat.groupby("Category", as_index=False)["SoldUnitsClipped"].sum().rename(
+            columns={"SoldUnitsClipped": "LookbackUnits"}
+        )
+    else:
+        grouped = window.groupby("Category", as_index=False)["SoldUnits"].sum().rename(
+            columns={"SoldUnits": "LookbackUnits"}
+        )
+
+    grouped["DailyRunRate"] = grouped["LookbackUnits"] / float(config.lookback_days)
+    return grouped
 
 
 def category_event_lift(history: pd.DataFrame, crosswalk: pd.DataFrame, config: ModelConfig) -> pd.DataFrame:
@@ -339,6 +355,7 @@ def apply_activation_layer(
     # This is what lets the layer be multi-window tested offline before the
     # pickface snapshot era. See FORECAST_HANDOFF_2026-07-22.md.
     has_inv = set()
+    inv_col = None
     if not inventory.empty:
         inv_col = next(
             (c for c in ("HasPickableInventory", "HasAvailableInventory",
@@ -361,7 +378,27 @@ def apply_activation_layer(
             units = pd.to_numeric(inbound[inb_col], errors="coerce").fillna(0)
         has_inb = set(inbound.loc[units.gt(0), "SKU"])
 
-    active_evidence = has_inv | has_inb
+    # If inventory source is broad warehouse inventory (HasAvailableInventory), filter SKU set
+    # to items with active inbound or recent FirstSeen within 90 days before origin to avoid bulk stock noise.
+    if inv_col == "HasAvailableInventory" and "FirstSeen" in crosswalk.columns:
+        recent_cutoff = (config.origin - pd.Timedelta(days=90)).strftime("%Y-%m-%d")
+        recent_skus = set(crosswalk.loc[pd.to_datetime(crosswalk["FirstSeen"], errors="coerce").dt.strftime("%Y-%m-%d").ge(recent_cutoff), "SKU"])
+        active_evidence = (has_inv & recent_skus) | has_inb
+    else:
+        active_evidence = has_inv | has_inb
+
+    known = set(weights["SKU"])
+    new_active_skus = len(active_evidence - known)
+    total_active_skus = len(active_evidence)
+    turnover_ratio = new_active_skus / float(max(total_active_skus, 1))
+
+    # Gated activation factor:
+    # High turnover (turnover_ratio >= 0.25, e.g. July season reset): gate_factor = 1.0
+    # Low turnover (turnover_ratio <= 0.10, mid-season stable assortment): gate_factor = 0.0
+    # Linear ramp in between
+    is_gated = getattr(config, "gated_activation", True)
+    gate_factor = float(np.clip((turnover_ratio - 0.10) / (0.25 - 0.10), 0.0, 1.0)) if is_gated else 1.0
+
     weights = weights.copy()
     weights["HasInv"] = weights["SKU"].isin(has_inv)
     weights["HasInbound"] = weights["SKU"].isin(has_inb)
@@ -374,37 +411,38 @@ def apply_activation_layer(
     global_prior = float(positive["RecentUnits"].median()) if not positive.empty else 1.0
 
     # Add currently-active SKUs that had no recent demand at all (brand-new).
-    known = set(weights["SKU"])
     new_rows = []
-    for sku in active_evidence - known:
-        cat = crosswalk.loc[crosswalk["SKU"].eq(sku), "Category"]
-        category = cat.iloc[0] if not cat.empty else "UNKNOWN"
-        new_rows.append(
-            {"SKU": sku, "RecentUnits": 0.0, "Category": category, "HasInv": sku in has_inv,
-             "HasInbound": sku in has_inb}
-        )
+    if gate_factor > 0:
+        for sku in active_evidence - known:
+            cat = crosswalk.loc[crosswalk["SKU"].eq(sku), "Category"]
+            category = cat.iloc[0] if not cat.empty else "UNKNOWN"
+            new_rows.append(
+                {"SKU": sku, "RecentUnits": 0.0, "Category": category, "HasInv": sku in has_inv,
+                 "HasInbound": sku in has_inb}
+            )
     activated_new = len(new_rows)
     if new_rows:
         weights = pd.concat([weights, pd.DataFrame(new_rows)], ignore_index=True)
 
     weights["Weight"] = weights["RecentUnits"].astype(float)
 
-    # New/low-history but active SKUs get a category prior weight.
+    # New/low-history but active SKUs get a category prior weight scaled by gate_factor.
     low_history = weights["RecentUnits"].le(0.0) | (
         weights["RecentUnits"] < 0.25 * weights["Category"].map(cat_prior).fillna(global_prior)
     )
     active = weights["HasInv"] | weights["HasInbound"]
     boost_mask = low_history & active
     prior_weight = (
-        weights["Category"].map(cat_prior).fillna(global_prior) * NEW_SKU_PRIOR_FRACTION
+        weights["Category"].map(cat_prior).fillna(global_prior) * NEW_SKU_PRIOR_FRACTION * gate_factor
     )
     weights.loc[boost_mask, "Weight"] = np.maximum(
         weights.loc[boost_mask, "Weight"], prior_weight.loc[boost_mask]
     )
 
-    # Ending-season down-weight: recent demand but no supply and no inbound.
+    # Ending-season down-weight: recent demand but no supply and no inbound, scaled by gate_factor.
     ending_mask = weights["RecentUnits"].gt(0) & ~weights["HasInv"] & ~weights["HasInbound"]
-    weights.loc[ending_mask, "Weight"] = weights.loc[ending_mask, "Weight"] * ENDING_SEASON_DECAY
+    effective_decay = 1.0 - gate_factor * (1.0 - ENDING_SEASON_DECAY)
+    weights.loc[ending_mask, "Weight"] = weights.loc[ending_mask, "Weight"] * effective_decay
 
     meta = {
         "inventory_snapshot": (
@@ -413,9 +451,11 @@ def apply_activation_layer(
         "inbound_snapshot": None if inbound.empty else str(inbound["SnapshotDate"].max().date()),
         "skus_with_pickable_inventory": len(has_inv),
         "skus_with_open_inbound": len(has_inb),
+        "turnover_ratio": turnover_ratio,
+        "gate_factor": gate_factor,
         "activated_brand_new_skus": activated_new,
-        "boosted_low_history_active_skus": int(boost_mask.sum()),
-        "downweighted_ending_season_skus": int(ending_mask.sum()),
+        "boosted_low_history_active_skus": int(boost_mask.sum()) if gate_factor > 0 else 0,
+        "downweighted_ending_season_skus": int(ending_mask.sum()) if gate_factor > 0 else 0,
     }
     return weights[["SKU", "Category", "Weight"]], meta
 
@@ -658,6 +698,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lookback-days", type=int, default=DEFAULT_LOOKBACK_DAYS)
     parser.add_argument("--seasonal-years", type=int, default=DEFAULT_SEASONAL_YEARS)
     parser.add_argument("--activation", action="store_true")
+    parser.add_argument("--no-gate", action="store_true", help="Disable assortment turnover gating for activation layer.")
+    parser.add_argument("--no-despike", action="store_true", help="Disable run-rate promotional spike clipping.")
     parser.add_argument("--output-dir", required=True, type=Path)
     return parser.parse_args()
 
@@ -690,6 +732,8 @@ def main() -> int:
         lookback_days=args.lookback_days,
         seasonal_years=args.seasonal_years,
         use_activation=args.activation,
+        gated_activation=not args.no_gate,
+        despike_runrate=not args.no_despike,
     )
     combined, metadata = build_candidates(config, crosswalk, corporate)
     output_dir = args.output_dir.resolve()

@@ -40,8 +40,12 @@ from output_paths import PROJECT_ROOT  # noqa: E402
 FA_ROOT = PROJECT_ROOT / "Output" / "ForecastAccuracy"
 DEFAULT_ACTUALS = FA_ROOT / "handoff_eval" / "forward_2026-07-07_closeout" / "actual_sku_day.parquet"
 DEFAULT_FROZEN = FA_ROOT / "handoff_eval" / "forward_2026-07-07_challenger" / "forward_daily_forecasts.parquet"
-DEFAULT_LEDGER = FA_ROOT / "forward_tests" / "2026-07-10_corporate_2026-07-06" / \
+DEFAULT_CANONICAL_CROSSWALK = FA_ROOT / "product_attributes" / "sku_category_crosswalk.parquet"
+DEFAULT_LEDGER = (
+    DEFAULT_CANONICAL_CROSSWALK if DEFAULT_CANONICAL_CROSSWALK.exists() else
+    FA_ROOT / "forward_tests" / "2026-07-10_corporate_2026-07-06" /
     "replacement_contract_cold_start" / "raw_hybrid_cap085" / "ingestion_output" / "sku_ledger.db"
+)
 DEFAULT_OUTPUT = FA_ROOT / "handoff_eval" / "category_pool_backtest_2026-07-07"
 
 

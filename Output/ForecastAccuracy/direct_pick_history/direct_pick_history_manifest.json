@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-06-25T19:53:22.754525+00:00",
+  "generated_at_utc": "2026-07-22T16:58:08.281739+00:00",
   "mode": "forecast_training_direct_pick_history",
   "source": "DAX_Archive.arc/DAX_PROD.dbo WHSWORKTABLE/WHSWORKLINE/INVENTDIM",
   "date_basis": "modified",
   "window": {
     "start_date": "2022-01-01",
-    "end_date_exclusive": "2026-06-26"
+    "end_date_exclusive": "2026-07-23"
   },
-  "archive_boundary": "2026-06-20",
+  "archive_boundary": "2026-07-18",
   "filters": {
     "DATAAREAID": "ha",
     "PARTITION": 5637144576,
@@ -93,21 +93,21 @@
     },
     {
       "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2026.parquet",
-      "bytes": 3501378,
-      "sha256": "cfe00164994601c32079d235bca77a71436383ed76d04a20eae87575807045bf",
-      "rows": 1031435,
-      "distinct_skus": 24794,
-      "pick_units": 2908823.0,
-      "pick_lines": 2862351,
+      "bytes": 4105335,
+      "sha256": "5c51acce417ea0a49ba74f7e67d0d323f24da5593a151f66b498221fbb047ae2",
+      "rows": 1192152,
+      "distinct_skus": 28978,
+      "pick_units": 3497867.0,
+      "pick_lines": 3437245,
       "start_date": "2026-01-02",
-      "end_date": "2026-06-25",
+      "end_date": "2026-07-22",
       "year": 2026
     }
   ],
   "totals": {
-    "rows": 9960972,
-    "pick_units": 38754405.0,
-    "pick_lines": 37479877
+    "rows": 10121689,
+    "pick_units": 39343449.0,
+    "pick_lines": 38054771
   },
   "outputs": {
     "manifest": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\direct_pick_history\\direct_pick_history_manifest.json",
