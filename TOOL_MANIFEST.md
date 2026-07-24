@@ -1,6 +1,6 @@
 # Supported Forecast Tooling
 
-Current as of 2026-07-21. This is a routing index, not an inventory of every
+Current as of 2026-07-23. This is a routing index, not an inventory of every
 Python file. Read `Docs/operations/forecast_accuracy/FORECAST_CURRENT_STATE.md`
 before selecting a tool. Use `<script> --help` for exact parameters.
 
@@ -25,7 +25,8 @@ current monitoring-scope SKU/day fact is unavailable.
 
 | Script | Use | Current limitation |
 |---|---|---|
-| `scripts/python/forecast_direct_pick_history.py` | Build annual strict DirectPick SKU/day history and its manifest. | Saved shards currently end 2026-06-25. |
+| `scripts/python/forecast_direct_pick_history.py` | Build annual strict DirectPick SKU/day history and its manifest. | Saved shards currently end 2026-07-22. |
+| `scripts/python/extract_category_crosswalk.py` | Mirror the ingestion-owned SKU ledger into `sku_category_crosswalk.parquet` and `sku_category_crosswalk_manifest.json`, including source/output hashes. | Current-value mirror, not an as-of/SCD category history. |
 | `scripts/python/forecast_history_dataset.py` | Build selected historical corporate forecast facts and legacy actual mirrors. | Its actual contract is broader than the current monitoring closeout target. |
 | `scripts/python/forecast_accuracy.py` | Rebuild/query the legacy forecast-accuracy SQLite workflow. | Not the current closeout scorer. |
 | `scripts/python/forecast_sales_orders.py` | Extract order/price/discount research facts. | Orders are not fulfilled DirectPick demand. |
@@ -68,11 +69,14 @@ one; do not browse the whole family by default.
 
 New two-stage category-pool candidate. Research only; not a promoted champion.
 See `Docs/operations/forecast_accuracy/FORECAST_HANDOFF_2026-07-22.md`.
+The tracked July 21-August 3 output under `category_pool_shadow/` was generated
+on July 22 and is late-origin diagnostic evidence, not a frozen July 21
+contestant.
 
 | Script | Use |
 |---|---|
 | `scripts/python/forecast_model_category_pool.py` | Build category-pool candidates (independent lift or corporate anchor; optional `--activation`). Preserves category/daily totals with largest-remainder rounding. |
-| `scripts/python/forecast_backtest_category_pool.py` | Frozen 2026-07-07 backtest vs saved closeout actuals; reproduces published corporate numbers as a check. |
+| `scripts/python/forecast_backtest_category_pool.py` | Origin-safe post-close 2026-07-07 diagnostic vs saved closeout actuals; reproduces published corporate numbers as a check. |
 | `scripts/python/forecast_validate_category_pool.py` | Guardrail assertions + multi-window oracle-total allocation and activation backtests (offline, no AX). |
 
 ## Shared Helpers

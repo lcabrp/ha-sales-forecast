@@ -9,7 +9,7 @@ Current useful pick artifacts found on disk:
 
 | File | Grain | Date Span | Use |
 |---|---|---:|---|
-| `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2022.parquet` through `..._2026.parquet` | SKU/day DirectPick totals by pick-line modified date | 2022-01-02 through 2026-06-25 | Canonical strict fulfilled-demand history for event/category learning and backtests. |
+| `Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_2022.parquet` through `..._2026.parquet` | SKU/day DirectPick totals by pick-line modified date | 2022-01-02 through 2026-07-22 | Canonical strict fulfilled-demand history for event/category learning and backtests. |
 | `Output/ForecastAccuracy/history/parquet/actual_sku_day_modified.parquet` | SKU/day DirectPick totals by pick-line modified date | 2025-11-01 through 2026-07-09 | Recent model target/scorecard mirror; refresh when the requested closeout extends past its max date. |
 | `../ha-kydc-monitoring/Output/Monitoring/Monitoring_History.db` | Date/activity aggregate | Current completed Pick day through 2026-07-19 at the 2026-07-20 audit | Primary completed-day/aggregate check, but not an SKU allocation fact. |
 | `../ha-warehouse-layout/Output/MarketBasket/Market_Basket_Data_12mo.parquet` | Pick line/order/SKU | Historical layout-analysis window | Co-purchase/pathing analysis, not needed for forecast target training. |
@@ -76,12 +76,12 @@ Output/ForecastAccuracy/direct_pick_history/direct_pick_history_year_summary.csv
 ```powershell
 uv run python scripts/python/forecast_direct_pick_history.py `
   --start-date 2022-01-01 `
-  --end-date 2026-06-26 `
+  --end-date 2026-07-23 `
   --overwrite
 ```
 
-Use an end date that is exclusive. For example, `2026-06-26` includes picks
-through `2026-06-25`.
+Use an end date that is exclusive. For example, `2026-07-23` includes picks
+through `2026-07-22`.
 
 ## Scope Decision - 2026-06-18
 
@@ -123,10 +123,10 @@ Output/ForecastAccuracy/direct_pick_history/direct_pick_top_14d_windows_by_year.
 Output/ForecastAccuracy/direct_pick_history/direct_pick_october_top_14d_windows.csv
 ```
 
-## Current Collection Result - 2026-06-25
+## Current Collection Result - 2026-07-22
 
-The current manifest was refreshed on 2026-06-25 with an exclusive end date of
-2026-06-26. Collection scope:
+The current manifest was refreshed on 2026-07-22 with an exclusive end date of
+2026-07-23. Collection scope:
 
 | Year | Date span | SKU/day rows | Distinct SKUs | Pick units |
 |---:|---|---:|---:|---:|
@@ -134,11 +134,11 @@ The current manifest was refreshed on 2026-06-25 with an exclusive end date of
 | 2023 | 2023-01-02 through 2023-12-31 | 2,154,543 | 32,348 | 9,021,926 |
 | 2024 | 2024-01-02 through 2024-12-31 | 2,289,654 | 36,340 | 9,085,238 |
 | 2025 | 2025-01-02 through 2025-12-31 | 2,366,162 | 36,963 | 8,440,037 |
-| 2026 | 2026-01-02 through 2026-06-25 | 1,031,435 | 24,794 | 2,908,823 |
-| **Total** | 2022-01-02 through 2026-06-25 | **9,960,972** |  | **38,754,405** |
+| 2026 | 2026-01-02 through 2026-07-22 | 1,192,152 | 28,978 | 3,497,867 |
+| **Total** | 2022-01-02 through 2026-07-22 | **10,121,689** |  | **39,343,449** |
 
-AX archive boundary during the current run was `2026-06-20`; rows before that
-came from `DAX_Archive.arc`, and rows from `2026-06-20` forward came from
+AX archive boundary during the current run was `2026-07-18`; rows before that
+came from `DAX_Archive.arc`, and rows from `2026-07-18` forward came from
 `DAX_PROD.dbo`.
 
 Quick event checks:
@@ -171,11 +171,24 @@ The yearly facts do **not** embed `Division`, `Department`, `Class`,
 Category is a dimension and should be joined separately so a corrected mapping
 does not require rewriting every demand shard.
 
-The active crosswalk currently lives in:
+The ingestion-owned source ledger lives in:
 
 ```text
 ../ha-ingestion-pipeline/Output/Ingestion/sku_ledger.db
 ```
+
+The tracked forecast-facing mirror and its provenance manifest are:
+
+```text
+Output/ForecastAccuracy/product_attributes/sku_category_crosswalk.parquet
+Output/ForecastAccuracy/product_attributes/sku_category_crosswalk_manifest.json
+```
+
+The mirror was refreshed on 2026-07-22 and contains 113,824 normalized SKUs
+across 83 `ProductGroupCode + SizeGroupCode` cells. The manifest records both
+the source database and Parquet SHA-256 hashes. It is a current-value mirror,
+not an as-of/SCD category history; ingestion retains ownership of the source
+ledger.
 
 At the 2026-07-20 audit it mapped `99.7%` of 2024 DirectPick units and `99.9%`
 of 2025 units. The current model-panel category map covers only `62.9%` of 2024

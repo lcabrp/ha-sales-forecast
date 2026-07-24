@@ -20,34 +20,40 @@ champion):
 | Script | Purpose |
 |---|---|
 | `forecast_model_category_pool.py` | Two-stage category-pool model + CLI. Stage 1 category volume (independent lift or corporate anchor); Stage 2 largest-remainder allocation to current SKUs; optional `--activation` season-transition layer. |
-| `forecast_backtest_category_pool.py` | Frozen backtest at the 2026-07-07 origin vs the saved closeout actuals; reproduces published corporate numbers as a correctness check. |
+| `forecast_backtest_category_pool.py` | Origin-safe post-close diagnostic at the 2026-07-07 origin vs the saved closeout actuals; reproduces published corporate numbers as a correctness check. |
 | `forecast_validate_category_pool.py` | Guardrail assertions + 11-window oracle-total allocation backtest + 7-window offline activation backtest. |
 
 Key results (full detail in the validation doc):
 
-- **Flagship (July 7-20, real corporate + real actuals):**
-  `catpool_corporate_anchor_activation` beats the current champion on every
-  axis — **SKU WAPE 1.05→0.89** (sub-0.90 achieved for the first time), coverage **0.67→0.77**,
-  precision **0.83**, zero-demand wasted units preserved at **0.09**, corporate total preserved exactly (204,654 units).
+- **Flagship diagnostic (July 7-20, real corporate + real actuals):**
+  `catpool_corporate_anchor_activation` improves the allocation tradeoff:
+  **SKU WAPE 1.05→0.89** (sub-0.90 achieved for the first time) and coverage
+  **0.67→0.77**, while SKU-use precision declines **0.86→0.83** and zero-demand
+  unit share rises slightly **0.088→0.091**. Corporate volume is preserved
+  exactly at 204,654 units. This is strong post-close research evidence, not a
+  retroactive frozen contestant.
 - **Guardrails all pass:** no-leakage, exact Hamilton total-preservation,
   determinism, corporate daily-total preserved.
 - **Completed today with live AX SQL (`prodaxsql2`):**
   1. Extended `direct_pick_sku_day_modified_2026.parquet` from 2026-06-25 through **2026-07-22** (1,192,152 rows, 3.49M units).
   2. Mirrored canonical `sku_category_crosswalk.parquet` (113,824 SKUs, 83 category-size cells) into `Output/ForecastAccuracy/product_attributes/`.
   3. Implemented assortment-turnover gating for activation layer and promotional run-rate spike clipping.
-- **New frozen July 21-Aug 3 shadow** built beside (not replacing) the Aug 4
-  model: `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`.
+- **New July 21-Aug 3 late-origin diagnostic** built on July 22 beside (not
+  replacing) the two legitimate July 21 forward contestants:
+  `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`.
+  It may be scored on August 4 for learning, but it cannot win the prospective
+  July 21 contest.
 
 ---
 
 ## B. Data available NOW (offline, already tracked) — use this first
 
-The environment has no live-AX. But these tracked facts already support a lot of
-offline work, and are the reason we could multi-window-test at all:
+On a PC without live AX, these tracked facts already support substantial
+offline work and are the reason the multi-window tests are reproducible:
 
 | Fact | Path | Coverage | Enables |
 |---|---|---|---|
-| Strict DirectPick SKU/day | `Output/ForecastAccuracy/direct_pick_history/parquet/` | 2022-01 → **2026-06-25** | training history + horizon actuals for any origin whose 14d horizon ends ≤ 06-25 |
+| Strict DirectPick SKU/day | `Output/ForecastAccuracy/direct_pick_history/parquet/` | 2022-01 → **2026-07-22** | training history and offline diagnostics; operational closeouts still follow the actual-source precedence in `FORECAST_CURRENT_STATE.md` |
 | Saved July 7-20 closeout actuals | `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/actual_sku_day.parquet` | 14 days | the one real corporate-anchored frozen comparison |
 | Saved July-7 corporate feed | `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_challenger/forward_daily_forecasts.parquet` | July 7 origin | corporate anchor for that window |
 | **AX inventory history (daily)** | `Output/ForecastAccuracy/inventory/ax_inventory_history_sku_day.parquet` | **2026-04-01 → 06-14, 75 days** | origin-safe activation evidence for **Apr–Jun origins** (this is how §3b was run) |
@@ -56,7 +62,8 @@ offline work, and are the reason we could multi-window-test at all:
 | Product Info inbound (sparse) | `Output/ForecastAccuracy/inbound/product_info_inbound_snapshots.parquet` | 2024-03 → 2026-06-01 | activation inbound signal (Apr–Jun) |
 | Model feature panel (parts) | `Output/ForecastAccuracy/model/model_sku_day_panel_parts/` | 2025-01 → **2026-06-08** | ready-made ML feature matrix (target, corporate qty, category, inventory/inbound lags, promo, rolling baselines) for the future ML occurrence/residual layer |
 | Promotion SKU/day features | `Output/ForecastAccuracy/promotions/pdl_sku_day_features.parquet` | → 2026-07-21 | promotion eligibility/discount features |
-| Category crosswalk (handoff ledgers) | `Output/ForecastAccuracy/**/ingestion_output/sku_ledger.db` | Jul-6 / Jul-11 snapshots | SKU → ProductGroup+SizeGroup (98.6% of closeout units) |
+| Canonical category crosswalk | `Output/ForecastAccuracy/product_attributes/sku_category_crosswalk.parquet` | mirrored 2026-07-22 | 113,824 SKUs → 83 ProductGroup+SizeGroup cells |
+| Historical handoff ledgers | `Output/ForecastAccuracy/**/ingestion_output/sku_ledger.db` | Jul-6 / Jul-11 snapshots | immutable crosswalk snapshots retained for exact historical reproduction |
 
 **Takeaway:** you do NOT need new data to (a) keep tuning the allocation, (b)
 multi-window the *category-mix* lever, (c) multi-window the *activation* lever
@@ -77,7 +84,7 @@ These will **not** reach GitHub on push (they are in `.gitignore`). If one is th
 
 If the big untracked file is something **else** (e.g. a fresh multi-year
 inventory export, a BigQuery dump, or a rebuilt panel that extends past
-2026-06-25), that WOULD be valuable — see §C. To check what it is, run:
+2026-07-22), that WOULD be valuable — see §C. To check what it is, run:
 `python -c "import pandas as pd; df=pd.read_parquet(PATH); print(df.shape); print(list(df.columns)); print(df.filter(regex='(?i)date').head())"`
 and share the columns + date range. **Because it exceeds GitHub's 90 MB ceiling,
 do not push it**; instead split it into <90 MB Parquet parts (per the tracked-
@@ -112,19 +119,7 @@ Ordered by value. Each item lists WHY and HOW.
      `forward_daily_forecasts.parquet` that was valid at that origin. Feed via
      `forecast_model_category_pool.py --corporate-daily …`.
 
-3. **Full ingestion-ledger category crosswalk mirrored into this repo (open
-   item #1 in `FORECAST_CURRENT_STATE.md`).**
-   - WHY: current crosswalk is a Jul-6 handoff subset (98.6% coverage, good but
-     not authoritative; weak for 2022).
-   - HOW: produce `Output/ForecastAccuracy/product_attributes/sku_category_crosswalk.parquet`
-     from `ha-ingestion-pipeline/Output/Ingestion/sku_ledger.db` with the fields
-     listed in `FORECAST_DATA_LANDSCAPE_2026-07-20.md` §"Required category
-     artifact contract".
-
-4. **Refreshed strict DirectPick shards past 2026-06-25** (`forecast_direct_pick_history.py`, AX) —
-   extends both training history and available offline actuals.
-
-5. **BigQuery inventory history** — only when its schema/coverage is confirmed
+3. **BigQuery inventory history** — only when its schema/coverage is confirmed
    (see the data-landscape doc). Needed to mark stockout-censored SKU/days in
    the 2024/2025 analog sale windows and separate weak demand from no inventory.
 
@@ -132,14 +127,13 @@ Ordered by value. Each item lists WHY and HOW.
 
 ## D. Recommended next steps (in order)
 
-1. **Gate the activation layer** on a season-transition / assortment-turnover
-   signal (e.g., share of horizon-eligible SKUs that are newly active vs the
-   trailing lookback). Re-run §3b: it should become neutral-or-positive
-   mid-season and keep the July-7 gain. This is the single highest-value fix and
-   is fully doable offline with tracked data.
-2. **De-spike the run-rate** (calendar-aware baseline excluding prior in-window
-   sale days) so the independent Stage-1 total and lift-mix stop over-weighting
-   recently-promoted categories.
+1. **Refine the implemented assortment-turnover gate.** The current gate keeps
+   the July-7 gain but remains too permissive in the Apr-Jun oracle tests
+   (activation mean WAPE 0.925 versus 0.630 base). Require neutral-or-positive
+   mid-season behavior before promotion.
+2. **Validate the implemented run-rate de-spiking across additional event and
+   non-event origins.** The independent Stage-1 total remains unsafe as a
+   production volume owner.
 3. Once items in §C.1 land, **multi-window the corporate-anchored candidate** and
    only then consider promoting a champion (with a new frozen evaluation, per the
    Frozen Evaluation Rules).
@@ -155,9 +149,9 @@ Ordered by value. Each item lists WHY and HOW.
 
 ```bash
 uv sync
-uv run python scripts/python/forecast_backtest_category_pool.py        # July-7 frozen + ablation
+uv run python scripts/python/forecast_backtest_category_pool.py        # July-7 origin-safe post-close diagnostic + ablation
 uv run python scripts/python/forecast_validate_category_pool.py        # guardrails + 11-window + activation (few min)
-# Rebuild the frozen July 21-Aug 3 shadow (evaluate on/after Aug 4):
+# Rebuild the July 22 late-origin diagnostic (score for learning on/after Aug 4):
 uv run python scripts/python/forecast_model_category_pool.py \
   --origin 2026-07-21 \
   --ledger-db Output/ForecastAccuracy/handoff_eval/independent_hybrid_absolute_log_2026-07-07/ingestion_output/sku_ledger.db \
@@ -169,3 +163,52 @@ uv run python scripts/python/forecast_model_category_pool.py \
 Outputs land under `Output/ForecastAccuracy/handoff_eval/category_pool_backtest_2026-07-07/`
 and `…/category_pool_validation/` (leaderboards, category scorecards, guardrail
 results, per-window WAPE tables).
+
+---
+
+## F. Exact August 4 closeout
+
+The authoritative prospective contest covers **2026-07-21 through 2026-08-03**.
+Run this on or after August 4, only after all 14 Eastern days are complete.
+Do **not** rebuild either saved forecast Parquet before scoring; their scoreable
+state is preserved at Git commit `b0a252a`. The monitoring sync below preserves
+producer evidence only—never feed post-origin inventory/inbound refreshes back
+into the saved candidates.
+
+```powershell
+uv run python scripts/python/sync_monitoring_forecast_artifacts.py
+
+uv run python scripts/python/forecast_actuals_source_audit.py `
+  --start-date 2026-07-21 `
+  --through-date 2026-08-03
+
+uv run python scripts/python/forecast_window_compare.py `
+  --start-date 2026-07-21 `
+  --through-date 2026-08-03 `
+  --daily-forecast Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/recent_shape_shadow/forward_daily_forecasts.parquet `
+  --daily-forecast Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/category_pool_daily_forecasts.parquet `
+  --ledger-db Output/ForecastAccuracy/handoff_eval/independent_hybrid_absolute_log_2026-07-07/ingestion_output/sku_ledger.db `
+  --live-ax `
+  --output-dir Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout
+```
+
+Use `--live-ax` only when the source audit confirms that no complete canonical
+monitoring-scope SKU/day actual is available. If one exists, replace
+`--live-ax` with `--actuals <canonical-actuals.parquet>`. The tracked handoff
+ledger above is intentional: `forecast_window_compare.py` currently reads a
+SQLite ledger, while the new canonical crosswalk is Parquet.
+
+The combined command scores five saved series, but the decision report must keep
+their statuses separate:
+
+- **Prospectively frozen contestants:** `corporate_raw` and
+  `corporate_total_recent_shape`.
+- **Pre-origin volume diagnostic only:** `independent_recent_shape`.
+- **Built July 22 after the origin; late-origin diagnostics only:**
+  `catpool_corporate_anchor_activation` (165,008 units; 9,692 positive SKUs)
+  and `catpool_activation` (150,869 units; 25,039 positive SKUs).
+
+At closeout, retain the exact actual SKU/day Parquet, row/SKU/unit counts,
+monitoring reconciliation, query window and source provenance written under the
+durable output directory. A strong category-pool score is useful evidence for
+the next clean origin; it cannot become the winner of the July 21 contest.

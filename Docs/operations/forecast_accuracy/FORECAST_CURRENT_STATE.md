@@ -1,6 +1,6 @@
 # Forecast Current State
 
-Authoritative as of 2026-07-21. This is the first document to read for forecast
+Authoritative as of 2026-07-23. This is the first document to read for forecast
 work. It replaces the June reset diary, model-input lab notebook, intermediate
 handoffs, and smoke-test champion narratives as active guidance. Git history
 retains those records when provenance is needed.
@@ -83,9 +83,10 @@ roundtrip code here.
   first observed after the origin.
 - In-window actual-demand lags are leakage for a frozen 14-day forecast.
 - Separate total-volume accuracy from SKU allocation accuracy.
-- Distinguish an honestly frozen candidate from a method rebuilt after the
-  horizon. Post-close diagnostics may explain a method but cannot win the
-  historical contest.
+- Distinguish an honestly frozen candidate from any method defined or generated
+  after the origin, even when it uses only pre-origin rows. Late-origin and
+  post-close diagnostics may explain a method but cannot win that prospective
+  contest.
 - Preserve daily totals exactly when redistributing them across SKUs. Use
   deterministic largest-remainder rounding, not independent SKU rounding.
 
@@ -116,9 +117,20 @@ The frozen July 21-August 3 comparison contains:
 - corporate total plus 56-day recent statistical shape: 165,008 units across
   8,389 positive SKUs.
 
+The same July 21 pack also preserves an unconstrained independent recent-shape
+volume diagnostic (280,572.414 units across 19,013 positive SKUs). It is useful
+for diagnosing the volume anchor, not a champion candidate.
+
 It cannot be evaluated until the horizon closes. No hindsight ML candidate was
 created for this origin. The existing model panel ends on 2026-06-08, and the
 July 21 promotion workbook provides only a one-day effective date.
+
+Two category-pool artifacts were generated on July 22 for the same dates:
+`catpool_activation` (150,869 units) and
+`catpool_corporate_anchor_activation` (165,008 units). They use origin-safe
+rows and are useful August 4 diagnostics, but their model definition and
+artifacts were created after the July 21 origin. They are not frozen July 21
+contestants and cannot win that prospective comparison.
 
 ### Season-transition limitation
 
@@ -171,18 +183,62 @@ For the transparent corporate-total/recent-shape forward shadow, use
 `extract_promotions.py` followed by a bounded
 `forecast_promo_sku_features.py --start-date ... --merge-existing` refresh.
 
+### July 21-August 3 closeout (run on or after August 4)
+
+Do not rebuild or modify either saved forecast Parquet before scoring. The
+scoreable artifacts are preserved at Git commit `b0a252a`. First prove that all
+14 Eastern days are complete:
+
+```powershell
+uv run python scripts/python/forecast_actuals_source_audit.py `
+  --start-date 2026-07-21 `
+  --through-date 2026-08-03
+```
+
+If the audit shows no current portable monitoring-scope SKU/day fact, use the
+read-only AX fallback below. It loads both saved packs in one comparison and
+uses a tracked SQLite ledger for portable category scoring:
+
+```powershell
+uv run python scripts/python/forecast_window_compare.py `
+  --start-date 2026-07-21 `
+  --through-date 2026-08-03 `
+  --daily-forecast Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/recent_shape_shadow/forward_daily_forecasts.parquet `
+  --daily-forecast Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/category_pool_daily_forecasts.parquet `
+  --ledger-db Output/ForecastAccuracy/handoff_eval/independent_hybrid_absolute_log_2026-07-07/ingestion_output/sku_ledger.db `
+  --live-ax `
+  --output-dir Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout
+```
+
+When the audit identifies a canonical saved actual, replace `--live-ax` with
+`--actuals <path>`. Reconcile SKU/day actuals to monitoring Pick totals and
+save the exact actual, scorecards, metadata, row counts, and provenance in the
+closeout directory. Report results in three status groups:
+
+1. prospective contestants: `corporate_raw`,
+   `corporate_total_recent_shape`;
+2. origin-frozen volume diagnostic: `independent_recent_shape`;
+3. July 22 late-origin diagnostics: `catpool_activation`,
+   `catpool_corporate_anchor_activation`.
+
 ## Open Work, In Order
 
-1. Mirror the current ingestion-ledger SKU/category crosswalk with provenance.
-2. Implement and evaluate a season-transition-aware category-total to
-   current-SKU allocation using origin-safe lifecycle, inventory, inbound,
-   replenishment-activation, and promotion evidence.
-3. Add an explicit occurrence/selection threshold and precision/coverage
+1. Close the July 21-August 3 window using the saved artifacts and status groups
+   above.
+2. Integrate the tracked canonical
+   `product_attributes/sku_category_crosswalk.parquet` into the closeout scorer;
+   extraction and provenance mirroring are complete, but the scorer currently
+   accepts SQLite ledgers only.
+3. Freeze the gated category-pool method prospectively at a future origin and
+   compare it across multiple corporate-anchored windows. The current July 7
+   result is a post-close diagnostic, and the July 22 forward artifact is a
+   late-origin diagnostic.
+4. Add an explicit occurrence/selection threshold and precision/coverage
    scorecard.
-4. Add the carton-use simulator.
-5. Rebuild a future-safe model panel before testing ML occurrence or residual
+5. Add the carton-use simulator.
+6. Rebuild a future-safe model panel before testing ML occurrence or residual
    challengers.
-6. Use BigQuery inventory history only after its schema and as-of coverage are
+7. Use BigQuery inventory history only after its schema and as-of coverage are
    confirmed; monitoring remains the current operational source.
 
 ## Reading Order
@@ -202,10 +258,13 @@ For continuation start with `FORECAST_HANDOFF_2026-07-22.md`, then
 `FORECAST_MODEL_VALIDATION_2026-07-22.md` (tests, the "why", and honest negative
 results). Scripts: `forecast_model_category_pool.py`,
 `forecast_backtest_category_pool.py`, `forecast_validate_category_pool.py`.
-Headline: corporate-anchored + category-reconciled + activation beats the July
-champion (SKU WAPE 1.05→0.96, coverage 0.67→0.76) but activation is
-season-conditional and must be gated; treat as research until a multi-window
-frozen corporate comparison exists.
+Headline: on the rebuilt July 7 diagnostic, corporate-anchored +
+category-reconciled + gated activation improves SKU WAPE
+`1.0513 → 0.8896` and sold-unit coverage `0.6686 → 0.7731`. The tradeoff is a
+lower forecast-SKU use rate (`0.8601 → 0.8296`) and a slightly higher share of
+forecast units on zero-demand SKUs (`0.0883 → 0.0912`). Activation remains
+season-conditional; treat the method as research until it has a genuinely
+prospective, multi-window corporate comparison.
 
 Older conclusions are not active guidance. Recover them from Git history only
 when a provenance question specifically requires them.

@@ -1,6 +1,6 @@
 # Forecast Data Landscape and Cross-Repo Contract - 2026-07-20
 
-Updated 2026-07-21 after the July 7-20 closeout. Read
+Updated 2026-07-23 after the July 7-20 closeout and portable-fact refresh. Read
 `FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md` for the final corporate versus
 independent scorecard and the frozen July 21-August 3 shadow.
 
@@ -17,21 +17,22 @@ objective lives in `FORECAST_CURRENT_STATE.md`; artifact movement rules live in
 
 ## Executive Finding
 
-The needed pieces mostly exist, but the contracts between them are incomplete.
+The needed pieces mostly exist, but some producer/consumer contracts remain
+incomplete.
 
 - `ha-sales-forecast` has strict SKU/day `DirectPick` history from 2022 through
-  2026, promotion facts, sales orders, model panels, corporate history, and the
-  forecast experiments.
+  2026-07-22, promotion facts, sales orders, model panels, corporate history,
+  and the forecast experiments.
 - `ha-kydc-monitoring` is the live daily producer for completed-day operational
   totals, pick-face inventory snapshots, inbound snapshots, and forecast
   `SlotTier` history.
 - `ha-ingestion-pipeline` owns the current Product Info parsing, production AX
   upload behavior, and the persistent SKU/category ledger.
-- The stable historical category crosswalk did **not** become a formal
-  forecast-owned artifact. The current multi-year sale overlay instead maps
-  history through a model panel that begins in 2025. That map covers only
-  `62.9%` of 2024 DirectPick units, while the active ingestion ledger covers
-  `99.7%`.
+- A formal forecast-facing category mirror now exists under
+  `Output/ForecastAccuracy/product_attributes/`, with source and output hashes
+  in its manifest. The ingestion ledger remains the source owner. The mirror is
+  current-value, not an as-of/SCD history, and 2022 mapping remains weaker than
+  later years.
 - The almost-daily monitoring inventory fact is pick-face-only and contains
   positive physical rows. It is useful for replenishment state, but absence
   from it is not proof of a retail stockout.
@@ -72,7 +73,7 @@ promotion/newness, and residual-ranking jobs.
 |---|---|---|
 | `ha-sales-forecast` | DirectPick history; forecast/actual facts; corporate DB snapshots; promotion extraction; sales-order, inventory, inbound, reservation, and warehouse-supply research facts; backtests and candidates | This repo is the consumer and research owner. |
 | `ha-kydc-monitoring` | Daily completed operational timeline, `Monitoring_History.db`, pick-face inventory, open inbound, confirmed forecast `SlotTier` SCD | Inventory/inbound mirror exists through `scripts/python/sync_monitoring_forecast_artifacts.py`. A canonical current SKU/day DirectPick feed is still missing. |
-| `ha-ingestion-pipeline` | Product Info parsing, production AX `FwdDemandCSV`, `RequiredSlots`, current SKU/category ledger, production guardrails | No formal category-crosswalk mirror exists. Forecast code currently relies on model-panel attributes, source workbooks, or candidate-local ledgers. |
+| `ha-ingestion-pipeline` | Product Info parsing, production AX `FwdDemandCSV`, `RequiredSlots`, current SKU/category ledger, production guardrails | The tracked forecast mirror is produced by `scripts/python/extract_category_crosswalk.py`; ingestion remains the source owner. |
 | `ha-warehouse-layout` | Physical canvas, zoning, market-basket layout inputs, maps and layout QA | Consumes `FwdDemandCSV`/`RequiredSlots`; it does not own the demand target. |
 | `ha-zoning-slotting` | Frozen monorepo-era reference | Compare/recover only. Do not treat its copied outputs as current producers. |
 | `ha-brg-legacy-reference` | Legacy BRG/Ankura workbooks and reverse-engineering evidence | Reference only. |
@@ -87,21 +88,32 @@ promotion/newness, and residual-ranking jobs.
 - Production parity and every upload-facing roundtrip must be validated by the
   active ingestion repo.
 - The monitoring-to-forecast inventory/inbound mirror in this repo was refreshed
-  on `2026-07-21` and now matches the producer through that capture.
+  on `2026-07-22` and now matches the producer through that capture.
+
+### 2026-07-22 portable evidence status
+
+- The canonical crosswalk pair is tracked as
+  `sku_category_crosswalk.parquet` and
+  `sku_category_crosswalk_manifest.json`.
+- The category-pool output under
+  `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`
+  is tracked for diagnostic scoring. It was generated on July 22, after the
+  July 21 origin, so it is not a frozen contestant for that window.
 
 ## Current Data Inventory
 
-Counts below were checked locally on 2026-07-21.
+Counts below were checked locally through 2026-07-22.
 
 | Data | Owner / path | Grain and current coverage | What it can answer | Limitation |
 |---|---|---|---|---|
-| Strict fulfilled demand | `ha-sales-forecast/Output/ForecastAccuracy/direct_pick_history/parquet/` | `9,960,972` SKU/day rows, `38,754,405` units, 2022-01-02 through 2026-06-25 | Historical event/category demand and model training | Fulfilled warehouse work, not unconstrained orders; annual facts do not embed category columns |
+| Strict fulfilled demand | `ha-sales-forecast/Output/ForecastAccuracy/direct_pick_history/parquet/` | `10,121,689` SKU/day rows, `39,343,449` units, 2022-01-02 through 2026-07-22 | Historical event/category demand and model training | Fulfilled warehouse work, not unconstrained orders; annual facts do not embed category columns |
 | Recent actual mirror | `ha-sales-forecast/Output/ForecastAccuracy/history/parquet/actual_sku_day_modified.parquet` | `1,614,433` SKU/day rows, `30,224` SKUs, 2025-11-01 through 2026-07-09 | SKU allocation scoring through its max date | Stale after July 9; query scope is broader than the strict operational DirectPick contract |
-| Monitoring daily picks | `ha-kydc-monitoring/Output/Monitoring/Monitoring_History.db` | Aggregate Pick rows are current through 2026-07-20; July 7-20 totals are `203,347` units over 14/14 days | Completed-day coverage and aggregate-volume check | Activity/date aggregate only; cannot score individual SKU allocation |
-| Monitoring pick-face inventory | Producer and mirror: `Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet` | `322,422` SKU/day rows, `17,354` SKUs, 28 snapshot days from 2026-06-19 through 2026-07-21 | Whether a positive-quantity SKU was present in replenishment-relevant pick profiles | Positive pick-face rows only; not total warehouse or ecommerce availability |
-| Open inbound snapshots | Producer and mirror: `Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet` | `427,014` SKU/day rows, `17,250` SKUs, 28 snapshots from 2026-06-19 through 2026-07-21 | Current/future supply context | Point-in-time state; never join a later snapshot into an earlier holdout |
+| Monitoring daily picks | `ha-kydc-monitoring/Output/Monitoring/Monitoring_History.db` | Aggregate Pick rows were current through 2026-07-21 at the 2026-07-22 audit; July 7-20 totals are `203,347` units over 14/14 days | Completed-day coverage and aggregate-volume check | Activity/date aggregate only; cannot score individual SKU allocation |
+| Monitoring pick-face inventory | Producer and mirror: `Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet` | `335,078` SKU/day rows, `17,505` SKUs, 29 snapshot days from 2026-06-19 through 2026-07-22 | Whether a positive-quantity SKU was present in replenishment-relevant pick profiles | Positive pick-face rows only; not total warehouse or ecommerce availability |
+| Open inbound snapshots | Producer and mirror: `Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet` | `441,080` SKU/day rows, `17,497` SKUs, 29 snapshots from 2026-06-19 through 2026-07-22 | Current/future supply context | Point-in-time state; never join a later snapshot into an earlier holdout |
 | AX saved warehouse inventory history | `ha-sales-forecast/Output/ForecastAccuracy/inventory/ax_inventory_history_sku_day.parquet` | `3,541,676` SKU/day rows, `51,435` SKUs, 75 days from 2026-04-01 through 2026-06-14 | Warehouse-level available, reserved, ordered, and net-available state | Too short for 2024/2025 sale-event stockout correction |
 | Active category ledger | `ha-ingestion-pipeline/Output/Ingestion/sku_ledger.db` | `113,887` raw rows, `113,744` normalized unique SKUs, 83 `ProductGroupCode + SizeGroupCode` cells | Map retired and current SKUs to stable operational families | Current-value ledger, not an as-of/SCD category history; `KeyCategoryView` is not stored |
+| Canonical category mirror | `ha-sales-forecast/Output/ForecastAccuracy/product_attributes/sku_category_crosswalk.parquet` plus `sku_category_crosswalk_manifest.json` | `113,824` normalized SKUs, 83 `CategorySizeCode` cells; refreshed 2026-07-22 | Portable category join with recorded source/output hashes | Current-value consumer mirror, not an as-of/SCD history; ingestion remains the source owner |
 | Model panel | `ha-sales-forecast/Output/ForecastAccuracy/model/model_sku_day_panel_parts/` | `5,457,830` rows, `47,445` raw SKUs, 2025-01-01 through 2026-06-08 | Existing model features/backtests | Stale for July, sparse, and too recent to be the historical category crosswalk |
 | Sales-order demand/discount | `ha-sales-forecast/Output/ForecastAccuracy/sales_orders/sales_order_sku_day.parquet` | `3,317,066` SKU/day rows, 45,400 SKUs, 2025-01-01 through 2026-06-08 | Ordered demand and realized price/discount signal | Not refreshed for July; cancellations/returns need separate treatment |
 | Promotion event rows | `ha-sales-forecast/Output/ForecastAccuracy/promotions/pdl_offer_rows.parquet` | 243,641 rows, 358 events, 88 workbook records, event dates through 2026-07-21 | Promotion calendar and offer/style-color eligibility | Only six raw workbooks are local; 82 older raw files survive only through extracted tables |
@@ -154,7 +166,8 @@ velocity/`SlotTier` after current-SKU allocation.
 The annual DirectPick facts intentionally store only demand columns. Category
 must be joined through a separate crosswalk.
 
-Coverage of DirectPick history using the active ingestion ledger:
+Coverage of DirectPick history using the tracked canonical mirror of the active
+ingestion ledger:
 
 | Year | DirectPick SKUs mapped | DirectPick units mapped |
 |---:|---:|---:|
@@ -162,7 +175,7 @@ Coverage of DirectPick history using the active ingestion ledger:
 | 2023 | 96.7% | 98.6% |
 | 2024 | 98.5% | 99.7% |
 | 2025 | 99.8% | 99.9% |
-| 2026 through June 25 | 99.8% | 99.9% |
+| 2026 through July 22 | 99.8% | 99.9% |
 
 The weaker 2022 coverage is consistent with the ledger beginning on
 2022-09-08. It should be reported or backfilled before treating 2022 as a fully
@@ -177,7 +190,7 @@ By contrast, the latest-category map built from the existing model panel has
 | 2023 | 9.4% | 24.5% |
 | 2024 | 43.3% | 62.9% |
 | 2025 | 100.0% | 100.0% |
-| 2026 through June 25 | 98.6% | 100.0% |
+| 2026 through July 22 | 84.8% | 99.0% |
 
 This exposed the most important error in the retired sale overlay: it mapped
 both 2024 and 2025 history through the 2025-2026 panel. Roughly `37.1%` of 2024
@@ -191,6 +204,7 @@ separate forecast-facing crosswalk produced from the active ingestion ledger:
 
 ```text
 Output/ForecastAccuracy/product_attributes/sku_category_crosswalk.parquet
+Output/ForecastAccuracy/product_attributes/sku_category_crosswalk_manifest.json
 ```
 
 Minimum fields:
@@ -204,11 +218,16 @@ Minimum fields:
 - `Class`
 - `FirstSeen`
 - `LastSeen`
-- source repo/path, source file hash, and extraction timestamp in companion JSON
+- source repo/path, source file hash, output hash, row counts, and extraction
+  timestamp in `sku_category_crosswalk_manifest.json`
 
 If `KeyCategoryView` is required, enrich it from Product Info/AX and record the
 fallback source. A future SCD version should preserve effective dates if
 category reassignment proves material.
+
+The tracked 2026-07-22 mirror satisfies this current-value contract with
+113,824 SKUs and 83 category-size cells. Refresh the Parquet and manifest
+together when the ingestion ledger changes.
 
 ## What Prior July Sales Say
 
@@ -361,20 +380,22 @@ operational source.
 
 ## Priority Fix Order
 
-Completed on 2026-07-21: the frozen July closeout, monitoring inventory/inbound
-refresh, promotion extraction/SKU-day tail refresh, total-preserving rounding
-repair, and the July 21-August 3 statistical shadow.
+Completed through 2026-07-22: the frozen July closeout, monitoring
+inventory/inbound refresh, promotion extraction/SKU-day tail refresh,
+total-preserving rounding repair, the July 21-August 3 statistical shadow, the
+canonical category mirror, and the DirectPick refresh through July 22. The
+tracked July 22 category-pool pack remains late-origin diagnostic evidence.
 
 Remaining order:
 
-1. Produce/mirror the ingestion-ledger category crosswalk into this repo.
-2. Correct the sale overlay's category source and date spine; use the repaired
+1. Correct the sale overlay's category source and date spine; use the repaired
    total-preserving rounding and rebuild old overlay evidence instead of
    quoting 473,431 / 2.13x.
-3. Add the carton-use operational simulator/scorecard and an explicit
+2. Add the carton-use operational simulator/scorecard and an explicit
    precision/coverage selection policy.
-4. Evaluate the two-stage category-total -> current-SKU allocation challenger.
-5. Pull BigQuery history only after its schema/coverage is confirmed, then rerun
+3. Evaluate the two-stage category-total -> current-SKU allocation challenger
+   prospectively under the frozen-origin rules.
+4. Pull BigQuery history only after its schema/coverage is confirmed, then rerun
    historical analog tests with stockout censoring.
 
 This is a correction of the data contracts and objective, not another wholesale

@@ -1,13 +1,17 @@
 # Artifact Rebuild And Restore
 
-Current as of 2026-07-21. Read `FORECAST_CURRENT_STATE.md` for the modeling and
+Current as of 2026-07-23. Read `FORECAST_CURRENT_STATE.md` for the modeling and
 evaluation contract and `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` for Git
 retention rules.
 
 ## Current Durable Facts
 
 - Annual strict DirectPick shards and manifest:
-  `Output/ForecastAccuracy/direct_pick_history/`.
+  `Output/ForecastAccuracy/direct_pick_history/` (currently through
+  2026-07-22).
+- Canonical forecast-facing category mirror and source/hash manifest:
+  `Output/ForecastAccuracy/product_attributes/sku_category_crosswalk.parquet`
+  and `sku_category_crosswalk_manifest.json`.
 - Selected corporate forecast history and historical actual mirrors:
   `Output/ForecastAccuracy/history/parquet/`.
 - Promotion event/offer/SKU-day features:
@@ -17,8 +21,11 @@ retention rules.
   `Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet`.
 - Current completed closeout:
   `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/`.
-- Current forward shadow:
+- Current frozen forward shadow:
   `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/recent_shape_shadow/`.
+- Late-origin category-pool diagnostic for the same dates:
+  `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`.
+  It is durable research evidence, not a frozen July 21 contestant.
 
 The split legacy model panel remains under
 `Output/ForecastAccuracy/model/model_sku_day_panel_parts/`, but it ends on
@@ -54,6 +61,10 @@ uv run python scripts/python/forecast_window_compare.py `
 ```
 
 The scorer saves the exact SKU/day actual and reconciles it to monitoring.
+For the July 21-August 3 closeout, use the fully instantiated two-pack command
+and candidate-status groups in `FORECAST_CURRENT_STATE.md` under
+“July 21-August 3 closeout”; do not substitute this single-input placeholder or
+rebuild either saved forecast pack.
 
 ## Refresh Commands
 
@@ -77,6 +88,12 @@ Historical DirectPick shards:
 uv run python scripts/python/forecast_direct_pick_history.py --overwrite
 ```
 
+Canonical category mirror:
+
+```powershell
+uv run python scripts/python/extract_category_crosswalk.py
+```
+
 Historical corporate forecast facts and legacy actual mirror:
 
 ```powershell
@@ -98,16 +115,20 @@ The active SKU/category ledger belongs to:
 ../ha-ingestion-pipeline/Output/Ingestion/sku_ledger.db
 ```
 
-Until a forecast-owned crosswalk is implemented, record the ledger path, hash,
-and row count used by every category/event analysis. Do not use the stale
-2025-starting model panel as the category map for 2022-2024 events.
-
-The planned portable contract is:
+The forecast repo now carries a compact current-value mirror produced from that
+ledger:
 
 ```text
 Output/ForecastAccuracy/product_attributes/sku_category_crosswalk.parquet
-Output/ForecastAccuracy/product_attributes/sku_category_crosswalk_metadata.json
+Output/ForecastAccuracy/product_attributes/sku_category_crosswalk_manifest.json
 ```
+
+The 2026-07-22 mirror contains 113,824 normalized SKUs across 83 category-size
+cells. Its manifest records the ingestion source path, source database SHA-256,
+extraction timestamp, row counts, output columns, and Parquet SHA-256. Refresh
+the pair together when the ingestion ledger changes. The mirror does not
+transfer source ownership and is not an as-of/SCD category history. Do not use
+the stale 2025-starting model panel as the category map for 2022-2024 events.
 
 ## Local-Only And Historical Items
 

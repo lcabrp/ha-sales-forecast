@@ -1,6 +1,6 @@
 # Forecast Portable Artifact Contract
 
-Current as of 2026-07-21. Read `FORECAST_CURRENT_STATE.md` first. This document
+Current as of 2026-07-23. Read `FORECAST_CURRENT_STATE.md` first. This document
 only governs what forecast evidence should travel with the repository and what
 must remain producer-owned or local.
 
@@ -21,6 +21,9 @@ Keep these current, compact contracts in Git:
 
 - `Output/ForecastAccuracy/direct_pick_history/`: annual strict DirectPick
   SKU/day shards, manifest, and summaries;
+- `Output/ForecastAccuracy/product_attributes/sku_category_crosswalk.parquet`
+  and `sku_category_crosswalk_manifest.json`: the compact forecast mirror of
+  the ingestion-owned category ledger, including source and Parquet hashes;
 - `Output/ForecastAccuracy/history/parquet/`: selected historical corporate
   forecast facts and documented historical actual mirrors;
 - `Output/ForecastAccuracy/promotions/`: compact extracted promotion events,
@@ -29,6 +32,9 @@ Keep these current, compact contracts in Git:
   supply facts that are forecast-owned and expensive to recreate;
 - `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/`;
 - `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/recent_shape_shadow/`;
+- `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`
+  as immutable late-origin diagnostic evidence, not as a frozen July 21
+  contestant;
 - score tables, candidate metadata, manifests, and source hashes required to
   reproduce a documented decision.
 
@@ -36,7 +42,9 @@ The July closeout pack contains the exact 14-day scorecard,
 monitoring-scope evaluation actual, category/SKU diagnostics, and frozen
 pre-rounding-fix evidence. The July 21 forward pack contains the frozen
 corporate benchmark and total-preserving recent-shape shadow. These are current
-decision evidence and belong in Git.
+decision evidence and belong in Git. The category-pool pack was generated on
+July 22 for the same July 21-August 3 dates. Keep it portable so it can be
+scored for learning, while retaining its late-origin diagnostic status.
 
 ## Keep Local Or Producer-Owned
 
@@ -57,9 +65,9 @@ Do not add these to Git:
 
 Known local-only promotion sources:
 
-- `Source/Promotions/6.18.26 Hanna Sale PDL.xlsx`;
+- `Source/Promotions/6.18.26 Hanna Sale PDL.xlsx` (`~95.7 MB`);
 - `Source/Promotions/7.21.26 BTS & Sleep Up to 30% Off + New Markdowns.xlsm`
-  (`~95.7 MB`);
+  (`~59.7 MB`; retained locally as a raw-source workbook);
 - `Output/ForecastAccuracy/promotions/pdl_offer_rows.csv` (`~142.1 MB`).
 
 Their compact derived promotion tables must remain portable. The July 21
