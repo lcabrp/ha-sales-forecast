@@ -38,9 +38,11 @@ Start with the current forecast contract and decision state:
 [Docs/operations/forecast_accuracy/FORECAST_CURRENT_STATE.md](Docs/operations/forecast_accuracy/FORECAST_CURRENT_STATE.md).
 
 Latest completed 14-day evaluation:
-[Docs/operations/forecast_accuracy/FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md](Docs/operations/forecast_accuracy/FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md).
-It records the final corporate-versus-independent scorecard, the rounding fix,
-promotion/legacy audit, and the frozen July 21-August 3 forward shadow.
+[Docs/operations/forecast_accuracy/FORECAST_CLOSEOUT_2026-07-21_TO_2026-08-03.md](Docs/operations/forecast_accuracy/FORECAST_CLOSEOUT_2026-07-21_TO_2026-08-03.md).
+It records the completed corporate-versus-recent-shape forward contest, the
+live-AX/monitoring reconciliation, and the separately labeled category-pool
+late-origin diagnostics. The prior [July 7-20 closeout](Docs/operations/forecast_accuracy/FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md)
+remains the earlier benchmark and rounding-fix evidence.
 
 Cross-repo forecast data map:
 [Docs/operations/forecast_accuracy/FORECAST_DATA_LANDSCAPE_2026-07-20.md](Docs/operations/forecast_accuracy/FORECAST_DATA_LANDSCAPE_2026-07-20.md).

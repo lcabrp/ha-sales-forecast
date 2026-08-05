@@ -166,13 +166,17 @@ results, per-window WAPE tables).
 
 ---
 
-## F. Exact August 4 closeout
+## F. August 5 closeout outcome
 
-The authoritative prospective contest covers **2026-07-21 through 2026-08-03**.
-Run this on or after August 4, only after all 14 Eastern days are complete.
-Do **not** rebuild either saved forecast Parquet before scoring; their scoreable
-state is preserved at Git commit `b0a252a`. The monitoring sync below preserves
-producer evidence only—never feed post-origin inventory/inbound refreshes back
+The authoritative prospective contest covered **2026-07-21 through 2026-08-03**
+and was closed on 2026-08-05. Read
+`FORECAST_CLOSEOUT_2026-07-21_TO_2026-08-03.md` for the scorecard, source
+contract, and decision. Do **not** rebuild either saved forecast Parquet; their
+scoreable state is preserved at Git commit `b0a252a` and the completed evidence
+is under `Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout/`.
+
+The command below is retained only to reproduce the saved closeout on a machine
+with live AX access. Never feed post-origin inventory/inbound refreshes back
 into the saved candidates.
 
 ```powershell

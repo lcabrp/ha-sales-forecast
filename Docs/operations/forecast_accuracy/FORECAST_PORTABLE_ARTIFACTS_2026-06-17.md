@@ -1,6 +1,6 @@
 # Forecast Portable Artifact Contract
 
-Current as of 2026-07-23. Read `FORECAST_CURRENT_STATE.md` first. This document
+Current as of 2026-08-05. Read `FORECAST_CURRENT_STATE.md` first. This document
 only governs what forecast evidence should travel with the repository and what
 must remain producer-owned or local.
 
@@ -31,6 +31,7 @@ Keep these current, compact contracts in Git:
 - compact planner, sales-order, inventory, inbound, reservation, and warehouse
   supply facts that are forecast-owned and expensive to recreate;
 - `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/`;
+- `Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout/`;
 - `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/recent_shape_shadow/`;
 - `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`
   as immutable late-origin diagnostic evidence, not as a frozen July 21
@@ -38,13 +39,14 @@ Keep these current, compact contracts in Git:
 - score tables, candidate metadata, manifests, and source hashes required to
   reproduce a documented decision.
 
-The July closeout pack contains the exact 14-day scorecard,
+The July 7 closeout pack contains the exact 14-day scorecard,
 monitoring-scope evaluation actual, category/SKU diagnostics, and frozen
-pre-rounding-fix evidence. The July 21 forward pack contains the frozen
-corporate benchmark and total-preserving recent-shape shadow. These are current
-decision evidence and belong in Git. The category-pool pack was generated on
-July 22 for the same July 21-August 3 dates. Keep it portable so it can be
-scored for learning, while retaining its late-origin diagnostic status.
+pre-rounding-fix evidence. The August 5 closeout pack contains the July 21-
+August 3 live-AX actual, monitoring reconciliation, all five scorecards, and
+category/SKU evidence. These are current decision evidence and belong in Git.
+The category-pool pack was generated on July 22 for the same dates. Keep it
+portable so it can be scored for learning, while retaining its late-origin
+diagnostic status.
 
 ## Keep Local Or Producer-Owned
 

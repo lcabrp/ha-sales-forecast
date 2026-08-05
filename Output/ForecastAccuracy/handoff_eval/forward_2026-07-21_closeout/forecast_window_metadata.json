@@ -1,0 +1,58 @@
+{
+  "generated_at_utc": "2026-08-05T14:15:20+00:00",
+  "window": {
+    "start_date": "2026-07-21",
+    "through_date": "2026-08-03",
+    "days": 14
+  },
+  "forecast_sources": [
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\forward_tests\\2026-07-21_corporate_2026-07-20\\recent_shape_shadow\\forward_daily_forecasts.parquet",
+      "assigned_candidate": null,
+      "window_rows": 409359,
+      "window_units": 610588.4142857143
+    },
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\forward_tests\\2026-07-21_corporate_2026-07-20\\category_pool_shadow\\category_pool_daily_forecasts.parquet",
+      "assigned_candidate": null,
+      "window_rows": 219958,
+      "window_units": 315877.0
+    }
+  ],
+  "actual_source": {
+    "kind": "live_ax_monitoring_scope_fallback",
+    "server": "prodaxsql2",
+    "database": "DAX_PROD"
+  },
+  "actuals": {
+    "rows": 77522,
+    "distinct_skus": 14900,
+    "sold_units": 187644.0
+  },
+  "monitoring_validation": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-kydc-monitoring\\Output\\Monitoring\\Monitoring_History.db",
+    "exists": true,
+    "start_date": "2026-07-21",
+    "through_date": "2026-08-03",
+    "days": 14,
+    "expected_days": 14,
+    "pick_units": 187647.0,
+    "complete": true,
+    "ax_or_portable_minus_monitoring_units": -3.0
+  },
+  "category_crosswalk": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\ingestion_output\\sku_ledger.db",
+    "rows": 20449
+  },
+  "outputs": {
+    "actual_sku_day": "actual_sku_day.parquet",
+    "scores": "forecast_window_scores.csv",
+    "daily_totals": "forecast_daily_totals.csv",
+    "category_scores": "forecast_category_scores.csv",
+    "sku_comparison": "forecast_sku_comparison.parquet"
+  },
+  "metric_notes": {
+    "ForecastSKUUseRatePct": "Share of forecast-positive SKUs that had positive DirectPick demand; this is a SKU/box-avoidance proxy, not a physical carton measurement.",
+    "ZeroDemandForecastUnitPct": "Share of forecast units assigned to SKUs with zero DirectPick demand in the window."
+  }
+}

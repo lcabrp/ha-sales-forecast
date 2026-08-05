@@ -1,6 +1,6 @@
 # Artifact Rebuild And Restore
 
-Current as of 2026-07-23. Read `FORECAST_CURRENT_STATE.md` for the modeling and
+Current as of 2026-08-05. Read `FORECAST_CURRENT_STATE.md` for the modeling and
 evaluation contract and `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` for Git
 retention rules.
 
@@ -19,9 +19,11 @@ retention rules.
 - Current monitoring consumer facts:
   `Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet` and
   `Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet`.
-- Current completed closeout:
+- Prior completed closeout:
   `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/`.
-- Current frozen forward shadow:
+- Current completed closeout:
+  `Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout/`.
+- Saved prospectively frozen July 21 forward pack:
   `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/recent_shape_shadow/`.
 - Late-origin category-pool diagnostic for the same dates:
   `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`.
@@ -60,11 +62,10 @@ uv run python scripts/python/forecast_window_compare.py `
   --live-ax --output-dir <closeout-output-dir>
 ```
 
-The scorer saves the exact SKU/day actual and reconciles it to monitoring.
-For the July 21-August 3 closeout, use the fully instantiated two-pack command
-and candidate-status groups in `FORECAST_CURRENT_STATE.md` under
-“July 21-August 3 closeout”; do not substitute this single-input placeholder or
-rebuild either saved forecast pack.
+The scorer saves the exact SKU/day actual and reconciles it to monitoring. The
+July 21-August 3 closeout is complete under
+`handoff_eval/forward_2026-07-21_closeout/`; use its saved actual and metadata
+for any repeated analysis. Do not rebuild either saved forecast pack.
 
 ## Refresh Commands
 

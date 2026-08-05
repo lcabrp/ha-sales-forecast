@@ -700,6 +700,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--activation", action="store_true")
     parser.add_argument("--no-gate", action="store_true", help="Disable assortment turnover gating for activation layer.")
     parser.add_argument("--no-despike", action="store_true", help="Disable run-rate promotional spike clipping.")
+    parser.add_argument(
+        "--direct-pick-dir",
+        type=Path,
+        help="Optional frozen DirectPick-history shard directory; defaults to the rolling portable history.",
+    )
+    parser.add_argument(
+        "--inventory-path",
+        type=Path,
+        help="Optional frozen pick-face inventory Parquet; defaults to the rolling portable artifact.",
+    )
+    parser.add_argument(
+        "--inbound-path",
+        type=Path,
+        help="Optional frozen open-inbound Parquet; defaults to the rolling portable artifact.",
+    )
     parser.add_argument("--output-dir", required=True, type=Path)
     return parser.parse_args()
 
@@ -734,6 +749,9 @@ def main() -> int:
         use_activation=args.activation,
         gated_activation=not args.no_gate,
         despike_runrate=not args.no_despike,
+        direct_pick_dir=args.direct_pick_dir or DIRECT_PICK_DIR,
+        inventory_path=args.inventory_path or PICKFACE_INVENTORY_PATH,
+        inbound_path=args.inbound_path or OPEN_INBOUND_PATH,
     )
     combined, metadata = build_candidates(config, crosswalk, corporate)
     output_dir = args.output_dir.resolve()

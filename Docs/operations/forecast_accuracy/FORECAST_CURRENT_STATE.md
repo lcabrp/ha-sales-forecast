@@ -1,6 +1,6 @@
 # Forecast Current State
 
-Authoritative as of 2026-07-23. This is the first document to read for forecast
+Authoritative as of 2026-08-05. This is the first document to read for forecast
 work. It replaces the June reset diary, model-input lab notebook, intermediate
 handoffs, and smoke-test champion narratives as active guidance. Git history
 retains those records when provenance is needed.
@@ -90,9 +90,33 @@ roundtrip code here.
 - Preserve daily totals exactly when redistributing them across SKUs. Use
   deterministic largest-remainder rounding, not independent SKU rounding.
 
-## Latest Completed Evidence
+## Completed Evidence
 
-The authoritative completed comparison is July 7-20, 2026:
+### July 21-August 3, closed August 5
+
+The newest completed forward closeout contains 187,644 monitoring-scope
+DirectPick units across 77,522 SKU/day rows and reconciles within three units of
+the 187,647-unit monitoring aggregate. It shows that the two prospectively
+frozen corporate-volume contestants are a precision/coverage tradeoff:
+
+| Candidate | Bias | SKU WAPE | SKU use rate | Sold-unit coverage | Zero-demand forecast units |
+|---|---:|---:|---:|---:|---:|
+| Corporate raw | -12.06% | 129.07% | 82.72% | 53.48% | 6.25% |
+| Corporate total + recent shape | -12.06% | 115.45% | 79.21% | 59.90% | 15.47% |
+
+Neither is promoted as an unqualified champion. The July 22
+corporate-anchored category-pool method is a late-origin diagnostic, but its
+98.09% WAPE, 84.40% SKU use, and 72.23% coverage motivate freezing that
+architecture at the next clean origin. The independent category-pool method
+has 91.44% WAPE and 96.73% coverage but underforecasts total demand by 19.60%
+and remains a volume diagnostic.
+
+Read `FORECAST_CLOSEOUT_2026-07-21_TO_2026-08-03.md` for the status-separated
+scorecard and durable evidence paths.
+
+### July 7-20, prior evidence
+
+The prior completed comparison is July 7-20, 2026:
 
 | Candidate | Units | Bias | SKU WAPE | SKU use rate | Sold-unit coverage | Units on zero-demand SKUs |
 |---|---:|---:|---:|---:|---:|---:|
@@ -109,9 +133,9 @@ engineering diagnostic, not a retroactive contestant.
 Read `FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md` for the full scorecard and
 category evidence.
 
-## Current Forward Shadow
+## July 21-August 3 Forward Pack and Closeout Status
 
-The frozen July 21-August 3 comparison contains:
+The July 21 pack was frozen before the origin and evaluated on August 5:
 
 - corporate raw: 165,008 units across 5,792 positive SKUs;
 - corporate total plus 56-day recent statistical shape: 165,008 units across
@@ -121,9 +145,9 @@ The same July 21 pack also preserves an unconstrained independent recent-shape
 volume diagnostic (280,572.414 units across 19,013 positive SKUs). It is useful
 for diagnosing the volume anchor, not a champion candidate.
 
-It cannot be evaluated until the horizon closes. No hindsight ML candidate was
-created for this origin. The existing model panel ends on 2026-06-08, and the
-July 21 promotion workbook provides only a one-day effective date.
+No hindsight ML candidate was created for this origin. The existing model panel
+ends on 2026-06-08, and the July 21 promotion workbook provides only a one-day
+effective date.
 
 Two category-pool artifacts were generated on July 22 for the same dates:
 `catpool_activation` (150,869 units) and
@@ -183,11 +207,14 @@ For the transparent corporate-total/recent-shape forward shadow, use
 `extract_promotions.py` followed by a bounded
 `forecast_promo_sku_features.py --start-date ... --merge-existing` refresh.
 
-### July 21-August 3 closeout (run on or after August 4)
+### July 21-August 3 closeout (completed 2026-08-05)
 
-Do not rebuild or modify either saved forecast Parquet before scoring. The
-scoreable artifacts are preserved at Git commit `b0a252a`. First prove that all
-14 Eastern days are complete:
+Do not rebuild or modify either saved forecast Parquet. The scoreable artifacts
+are preserved at Git commit `b0a252a`, and the completed closeout is under
+`Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout/`. The
+commands below are retained for reproduction only. The completed audit found all
+14 Eastern days and required the read-only live-AX fallback because no canonical
+SKU/day fact covered the window:
 
 ```powershell
 uv run python scripts/python/forecast_actuals_source_audit.py `
@@ -211,9 +238,9 @@ uv run python scripts/python/forecast_window_compare.py `
 ```
 
 When the audit identifies a canonical saved actual, replace `--live-ax` with
-`--actuals <path>`. Reconcile SKU/day actuals to monitoring Pick totals and
-save the exact actual, scorecards, metadata, row counts, and provenance in the
-closeout directory. Report results in three status groups:
+`--actuals <path>`. For a repeated analysis, use the saved
+`actual_sku_day.parquet`, scorecards, and metadata in the completed closeout
+directory. Results remain separated into three status groups:
 
 1. prospective contestants: `corporate_raw`,
    `corporate_total_recent_shape`;
@@ -223,31 +250,30 @@ closeout directory. Report results in three status groups:
 
 ## Open Work, In Order
 
-1. Close the July 21-August 3 window using the saved artifacts and status groups
-   above.
+1. Freeze the category-pool architecture prospectively at the next clean origin
+   and compare it across multiple corporate-anchored windows. The pre-registered
+   execution contract is `FORECAST_NEXT_PROSPECTIVE_TEST_2026-08-05.md`; do not
+   retrofit the candidate into the already running August 4-17 corporate window.
 2. Integrate the tracked canonical
    `product_attributes/sku_category_crosswalk.parquet` into the closeout scorer;
    extraction and provenance mirroring are complete, but the scorer currently
    accepts SQLite ledgers only.
-3. Freeze the gated category-pool method prospectively at a future origin and
-   compare it across multiple corporate-anchored windows. The current July 7
-   result is a post-close diagnostic, and the July 22 forward artifact is a
-   late-origin diagnostic.
-4. Add an explicit occurrence/selection threshold and precision/coverage
+3. Add an explicit occurrence/selection threshold and precision/coverage
    scorecard.
-5. Add the carton-use simulator.
-6. Rebuild a future-safe model panel before testing ML occurrence or residual
+4. Add the carton-use simulator.
+5. Rebuild a future-safe model panel before testing ML occurrence or residual
    challengers.
-7. Use BigQuery inventory history only after its schema and as-of coverage are
+6. Use BigQuery inventory history only after its schema and as-of coverage are
    confirmed; monitoring remains the current operational source.
 
 ## Reading Order
 
 1. This file.
-2. `FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md` for current evidence.
-3. `FORECAST_DATA_LANDSCAPE_2026-07-20.md` for detailed ownership and data
+2. `FORECAST_CLOSEOUT_2026-07-21_TO_2026-08-03.md` for current evidence.
+3. `FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md` for prior evidence.
+4. `FORECAST_DATA_LANDSCAPE_2026-07-20.md` for detailed ownership and data
    contracts.
-4. `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` only when moving, rebuilding, or
+5. `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` only when moving, rebuilding, or
    committing artifacts.
 
 ### Active research candidate (2026-07-22, not yet champion)
