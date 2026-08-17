@@ -63,7 +63,8 @@ not the default current closeout source.
 Other ownership boundaries:
 
 - `ha-ingestion-pipeline` owns Product Info parsing, production AX-shaped
-  outputs, and the current SKU/category ledger.
+  outputs, creation and upload of the weekly corporate forecast to AX, and the
+  current SKU/category ledger.
 - `ha-kydc-monitoring` owns daily monitoring, pick-face inventory, open inbound,
   and confirmed operational forecast timelines.
 - `ha-sales-forecast` owns forecast research, portable research facts,
@@ -89,6 +90,23 @@ roundtrip code here.
   contest.
 - Preserve daily totals exactly when redistributing them across SKUs. Use
   deterministic largest-remainder rounding, not independent SKU rounding.
+
+### Weekly corporate forecast vintages
+
+Corporate forecasts are uploaded from `ha-ingestion-pipeline` weekly and their
+14-day windows can overlap. Preserve every uploaded version as a dated,
+immutable forecast vintage; never let a later upload overwrite the source used
+by an earlier closeout. When an overlay occurs, report both:
+
+1. the original-vintage 14-day score, which measures the forecast frozen at
+   the initial origin; and
+2. the operational-vintage score, which uses the forecast actually in force on
+   each date (for example, the first weekly upload through its overlay date,
+   then the replacement weekly upload).
+
+Also report the overlay's change in accuracy on its overlapping dates. An
+overlay may improve operations' active forecast, but it cannot retroactively
+replace the original frozen baseline or become a prospective challenger.
 
 ## Completed Evidence
 

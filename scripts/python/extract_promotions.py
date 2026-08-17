@@ -32,10 +32,12 @@ from output_paths import PROJECT_ROOT  # noqa: E402
 DEFAULT_SOURCE_DIR = PROJECT_ROOT / "Source" / "Promotions"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "Output" / "ForecastAccuracy" / "promotions"
 DEFAULT_DB_PATH = DEFAULT_OUTPUT_DIR / "promotions.db"
+MANUAL_EVENT_FILENAME = "manual_promotion_calendar.csv"
 
 TEXT_NA = {"", "nan", "nat", "none", "<na>"}
 DATE_TOKEN_RE = re.compile(r"(?<!\d)(\d{1,2})[./-](\d{1,2})(?:[./](\d{2,4}))?(?!\d)")
 FILENAME_DATE_RE = re.compile(r"(?<!\d)(\d{1,2})[.](\d{1,2})(?:[.](\d{2,4}))?(?!\d)")
+SNAPSHOT_DATE_RE = re.compile(r"(?<!\d)((?:19|20)\d{6})(?!\d)")
 DISCOUNT_RE = re.compile(r"(?<!\d)(\d{1,3})(?:\.\d+)?\s*%")
 
 HEADER_ALIASES = {
@@ -320,6 +322,21 @@ def source_file_date(path: Path) -> date | None:
     year = normalize_year(match.group(3), month)
     try:
         return date(year, month, day)
+    except ValueError:
+        return None
+
+
+def coupon_snapshot_date(path: Path) -> date | None:
+    """Return the as-of date embedded in a Coupon Tracker snapshot filename.
+
+    Coupon Tracker workbooks are complete snapshots, not incremental campaign
+    files.  Dated copies are named like ``COUPON TRACKER_20260817.xlsx``.
+    """
+    match = SNAPSHOT_DATE_RE.search(path.name)
+    if not match:
+        return None
+    try:
+        return datetime.strptime(match.group(1), "%Y%m%d").date()
     except ValueError:
         return None
 
@@ -1107,6 +1124,34 @@ def max_discount_percent(text: str) -> float | None:
     return max(values) if values else None
 
 
+def load_manual_promotion_events(source_dir: Path) -> pd.DataFrame:
+    """Load explicitly supplied calendar events that have no PDL workbook.
+
+    These rows provide date-level promotion visibility only.  They deliberately
+    carry no style or offer eligibility, so they cannot create SKU/day flags.
+    """
+    path = source_dir / MANUAL_EVENT_FILENAME
+    if not path.exists():
+        return pd.DataFrame()
+    events = pd.read_csv(path, dtype=str).fillna("")
+    required = {"event_name", "start_date", "end_date", "promo_scope", "notes"}
+    missing = required - set(events.columns)
+    if missing:
+        raise ValueError(f"Manual promotion calendar missing columns: {sorted(missing)}")
+    file_id = stable_file_id(path)
+    events["file_id"] = file_id
+    events["source_file"] = path.name
+    events["sheet_name"] = events["event_name"]
+    events["sheet_type"] = "promo_detail"
+    events["effective_date_text"] = events["start_date"] + " to " + events["end_date"]
+    events["source_file_date"] = ""
+    events["row_count"] = 0
+    events["distinct_style_count"] = 0
+    events["distinct_offer_cc_count"] = 0
+    events["total_avail_inv"] = 0.0
+    return events
+
+
 def date_range_rows(start: str, end: str) -> Iterable[str]:
     """Generate calendar date strings between start and end inclusive.
 
@@ -1400,6 +1445,11 @@ def merge_existing_source_tables(
     for name in source_table_names:
         path = output_dir / f"{name}.parquet"
         fresh = fresh_tables[name]
+        # Coupon Tracker workbooks are complete snapshots.  Unlike PDLs, a
+        # newer tracker supersedes the prior source rather than adding rows.
+        if name == "coupon_tracker_rows" and not fresh.empty:
+            merged_tables[name] = sort_table(name, fresh)
+            continue
         if not path.exists():
             merged_tables[name] = sort_table(name, fresh)
             continue
@@ -1487,7 +1537,6 @@ def main() -> None:
     sheet_rows = []
     event_rows = []
     offer_frames = []
-    coupon_frames = []
 
     for path in paths:
         workbook_row, workbook_sheets, workbook_events, workbook_offers = extract_workbook(path)
@@ -1495,8 +1544,6 @@ def main() -> None:
         sheet_rows.extend(workbook_sheets)
         event_rows.extend(workbook_events)
         offer_frames.extend(workbook_offers)
-        if workbook_row["workbook_type"] == "coupon":
-            coupon_frames.append(extract_coupon_rows(path))
         print(
             f"{workbook_row['workbook_type']:10} {path.name} "
             f"sheets={len(workbook_sheets):3d} events={len(workbook_events):3d}"
@@ -1505,15 +1552,27 @@ def main() -> None:
     workbook_files = pd.DataFrame(workbook_rows).sort_values("source_file").reset_index(drop=True)
     workbook_sheets = pd.DataFrame(sheet_rows).sort_values(["source_file", "sheet_name"]).reset_index(drop=True)
     pdl_events = pd.DataFrame(event_rows)
+    manual_promotion_events = load_manual_promotion_events(source_dir)
+    if not manual_promotion_events.empty:
+        pdl_events = pd.concat([pdl_events, manual_promotion_events], ignore_index=True)
     if not pdl_events.empty:
         pdl_events = pdl_events.sort_values(["start_date", "source_file", "sheet_name"]).reset_index(drop=True)
 
     pdl_offer_rows = pd.concat(offer_frames, ignore_index=True) if offer_frames else pd.DataFrame()
     pdl_offer_rows = order_columns(pdl_offer_rows, EXPECTED_OFFER_COLUMNS)
     pdl_tier1_recommendations = pd.DataFrame({"_empty_marker": []})
-    coupon_tracker_rows = (
-        pd.concat(coupon_frames, ignore_index=True) if coupon_frames else pd.DataFrame(columns=COUPON_OUTPUT_COLUMNS)
-    )
+    # A Coupon Tracker is a full campaign snapshot.  Keep only the newest
+    # dated snapshot so that renamed/updated copies do not double-count the
+    # same campaigns in the daily coupon features.
+    coupon_paths = [path for path in paths if "coupon" in path.name.lower()]
+    if coupon_paths:
+        latest_coupon_path = max(
+            coupon_paths,
+            key=lambda path: (coupon_snapshot_date(path) or date.min, path.name.lower()),
+        )
+        coupon_tracker_rows = extract_coupon_rows(latest_coupon_path)
+    else:
+        coupon_tracker_rows = pd.DataFrame(columns=COUPON_OUTPUT_COLUMNS)
     coupon_tracker_rows = order_columns(coupon_tracker_rows, COUPON_OUTPUT_COLUMNS)
 
     source_tables = {
@@ -1566,6 +1625,8 @@ def main() -> None:
         "workbooks": int(len(workbook_files)),
         "pdl_workbooks": int((workbook_files["workbook_type"] == "pdl").sum()),
         "coupon_workbooks": int((workbook_files["workbook_type"] == "coupon").sum()),
+        "coupon_tracker_snapshot": latest_coupon_path.name if coupon_paths else "",
+        "manual_promotion_events": int(len(manual_promotion_events)),
         "other_workbooks": int((workbook_files["workbook_type"] == "other").sum()),
         "mode": "replace_existing" if args.replace_existing else "merge_existing",
         "current_source_workbooks": int(len(paths)),

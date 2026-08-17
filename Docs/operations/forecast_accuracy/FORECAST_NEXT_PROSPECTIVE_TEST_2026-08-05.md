@@ -7,15 +7,23 @@ Read `FORECAST_CURRENT_STATE.md` first.
 ## Current Waiting State
 
 The corporate file uploaded on 2026-08-03 has `ForecastStartDate` 2026-08-04
-and covers 2026-08-04 through 2026-08-17. It remains the operational forecast
-in AX. No category-pool artifact was generated before that horizon began, so a
+and covers 2026-08-04 through 2026-08-17. A later weekly corporate upload may
+overlay part of that window in AX; preserve both uploads as distinct vintages.
+No category-pool artifact was generated before that horizon began, so a
 category-pool output built now would be a late-origin diagnostic only. Do not
 generate or compare one as a prospective August 4 contestant.
 
-Close the corporate-only Aug 4-17 baseline on or after August 18 using the
-normal source audit and `forecast_window_compare.py`. That closeout measures
-the current corporate upload; it cannot establish a winner over a challenger
-that was not frozen before August 4.
+On or after August 18, close the original-vintage Aug 4-17 corporate baseline
+using the normal source audit and `forecast_window_compare.py`. Separately,
+score the operational weekly-vintage forecast by using the Aug 3/4 upload for
+the dates it was in force and the later overlay for its active dates. The
+available later artifact is dated 2026-08-12 with `ForecastStartDate`
+2026-08-11; determine its operational cutoff from the actual AX upload time,
+not merely its planned start date. Keep the overlay-impact score separate from
+the original frozen baseline: it cannot establish a winner over a challenger
+that was not frozen before August 4. See
+`FORECAST_OVERLAY_COMPARISON_2026-08-03_TO_2026-08-12.md` for the saved
+forecast-to-forecast comparison.
 
 ## Objective Of The Next Clean-Origin Test
 
@@ -122,6 +130,11 @@ saved SKU/day actual to monitoring. Score the raw corporate, recent-shape, and
 category-pool packs on the same actuals. Report daily totals, 14-day bias, SKU
 WAPE, sold-unit coverage, forecast-positive SKU use rate, zero-forecast sold
 units, and forecast units assigned to zero-demand SKUs.
+
+If a weekly corporate upload overlays this horizon, retain its dated source
+file and score it separately as the operational-vintage forecast for the dates
+it controlled. Do not overwrite the original frozen corporate pack; also
+report the overlay's change in accuracy over only the overlapping dates.
 
 Retain the actual, score tables, category scorecard, source metadata, candidate
 metadata, input hashes, row/SKU/unit counts, and individual file sizes. Compact
