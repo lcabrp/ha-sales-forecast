@@ -1,0 +1,144 @@
+{
+  "generated_at_utc": "2026-08-19T15:22:29+00:00",
+  "status": "late_origin_reconstructed_as_of_pre_ax_upload",
+  "forecast_origin": "2026-08-18",
+  "horizon_end": "2026-08-31",
+  "captured_and_built_date": "2026-08-19",
+  "timing": {
+    "corporate_forecast_available_date": "2026-08-17",
+    "availability_source": "user_reported_not_independently_verified",
+    "ingestion_pipeline_generated_local_file": "2026-08-19T10:25:36-04:00",
+    "days_after_origin": 1,
+    "ax_upload_state_at_capture": "not_yet_uploaded_user_reported",
+    "clean_prospective_freeze": false
+  },
+  "corporate": {
+    "copied_path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/corporate_velocity_frozen_captured_2026-08-19.csv",
+    "copied_sha256": "0937f03aeb7c923bf027d53c297921d526e889de9f2827019ed17b42968e2152",
+    "normal_source_sha256": "473220cdff992d1e0005f7a7d23e316bbf445820b1ad924540ef896f3c93df58",
+    "velocity_frozen_source_sha256": "0937f03aeb7c923bf027d53c297921d526e889de9f2827019ed17b42968e2152",
+    "normal_and_velocity_frozen_sku_fd_values_equal": true,
+    "rows": 29624,
+    "distinct_skus": 29624,
+    "positive_skus": 8434,
+    "forecast_units": 282204.0
+  },
+  "origin_safety": {
+    "direct_pick_end_date_inclusive": "2026-08-17",
+    "direct_pick_end_date_exclusive_requested": "2026-08-18",
+    "in_horizon_actual_rows_used": 0,
+    "category_crosswalk_snapshot_utc": "2026-07-22T16:49:31.765295+00:00",
+    "inventory_snapshot": "2026-07-22",
+    "inbound_snapshot": "2026-07-22",
+    "latest_supply_snapshot_days_behind_pre_origin_cutoff": 26
+  },
+  "candidates": [
+    {
+      "Candidate": "catpool_corporate_anchor",
+      "ForecastUnits": 282204.0,
+      "ForecastedSKUs": 12915,
+      "ForecastDays": 14,
+      "PositiveSKUDays": 143481
+    },
+    {
+      "Candidate": "catpool_corporate_anchor_activation",
+      "ForecastUnits": 282204.0,
+      "ForecastedSKUs": 16537,
+      "ForecastDays": 14,
+      "PositiveSKUDays": 162568
+    },
+    {
+      "Candidate": "corporate_raw",
+      "ForecastUnits": 282204.0,
+      "ForecastedSKUs": 8434,
+      "ForecastDays": 14,
+      "PositiveSKUDays": 78969
+    },
+    {
+      "Candidate": "corporate_total_recent_shape",
+      "ForecastUnits": 282204.0,
+      "ForecastedSKUs": 12990,
+      "ForecastDays": 14,
+      "PositiveSKUDays": 143167
+    }
+  ],
+  "daily_corporate_total_preserved_exactly_by_all_three_challengers": true,
+  "model_blobs": {
+    "category_pool": "58ca4c2b79ab606cf7be98e57533e867aed3caa0",
+    "recent_shape": "b45deac0805ec665dbe951fdb5637113f5b50ede"
+  },
+  "repo_commit_at_build": "2fea5947fb5d48aa650c71abcad3d3fd127e6e5b",
+  "input_files": [
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/ax_open_inbound_metadata_through_2026-07-22.json",
+      "bytes": 827,
+      "sha256": "aa0eb5d25edad76ead2d434d1a3d15b0d7500ea404370c4469fd049c07a975a5"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/ax_open_inbound_sku_day_through_2026-07-22.parquet",
+      "bytes": 2348152,
+      "sha256": "0201f67954ccd37d40587dca3185ad8d8016ffdc02a8b213aa400b09f5c5673f"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/corporate_velocity_frozen_captured_2026-08-19.csv",
+      "bytes": 5433143,
+      "sha256": "0937f03aeb7c923bf027d53c297921d526e889de9f2827019ed17b42968e2152"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/direct_pick_history/direct_pick_history_manifest.json",
+      "bytes": 3995,
+      "sha256": "b822ab1ce2cf5f9b611f89dc034ae38257a08d4585b8ae59e4d86098d079306f"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/direct_pick_history/direct_pick_history_year_summary.csv",
+      "bytes": 1205,
+      "sha256": "da6a967c858310f537bdce486d16acdbc75a7cf2259f369069479ffe09b4bab2"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/direct_pick_history/parquet/direct_pick_sku_day_modified_2023.parquet",
+      "bytes": 7132792,
+      "sha256": "8fe74ecdb1be7d977badfa5dc4f17a9fd2ddc1d76ac80877026b755b9215b1cb"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/direct_pick_history/parquet/direct_pick_sku_day_modified_2024.parquet",
+      "bytes": 7493913,
+      "sha256": "1cf85bace815307bf345f1cec2c269fa2d00749c42a14c267e85525b8b341f6c"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/direct_pick_history/parquet/direct_pick_sku_day_modified_2025.parquet",
+      "bytes": 7580333,
+      "sha256": "c630a3ac63ab13b1e1f5beeb5242728b0d7be74eab98cef846e3109275ef8923"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/direct_pick_history/parquet/direct_pick_sku_day_modified_2026.parquet",
+      "bytes": 4617876,
+      "sha256": "ce3bfcb364868a7cb0fa210e9e469a57ca6d34e052fee552f263835d63b97091"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/pickface_inventory_metadata_through_2026-07-22.json",
+      "bytes": 703,
+      "sha256": "a8c350f14f74a9417e3f3bda0be411501598c6690a83551d748abb158bad6c98"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/pickface_inventory_sku_day_through_2026-07-22.parquet",
+      "bytes": 1651144,
+      "sha256": "381dfee0eea2a4761f801c3b755e9d257c93421b776eea5e19ad9ffdd3a32613"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/sku_category_crosswalk_asof_2026-07-22.parquet",
+      "bytes": 478015,
+      "sha256": "c88cbaa0f99731786ad3120c1349e4ead3be3a324b873ffb55a6b7b1a474e464"
+    },
+    {
+      "path": "Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/inputs/sku_category_crosswalk_manifest_asof_2026-07-22.json",
+      "bytes": 929,
+      "sha256": "eb311d7fd884ded76704dcc6cc3cf9fa563becc5a2359ec67f8dde6f9f45d479"
+    }
+  ],
+  "notes": [
+    "This pack was captured before the user uploaded the corporate forecast to AX, but one day after the forecast origin.",
+    "All demand history was forced to end before 2026-08-18; the pack is a valid as-of reconstruction but not a clean prospective contestant.",
+    "Independent-volume candidates were generated as diagnostics but are excluded from the four-arm corporate-anchored decision matrix.",
+    "No file in this pack is an AX upload instruction or evidence that a challenger was uploaded."
+  ]
+}

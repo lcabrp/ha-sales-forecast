@@ -1,0 +1,105 @@
+{
+  "generated_at_utc": "2026-08-19T15:10:13.541135+00:00",
+  "mode": "forecast_training_direct_pick_history",
+  "source": "DAX_Archive.arc/DAX_PROD.dbo WHSWORKTABLE/WHSWORKLINE/INVENTDIM",
+  "date_basis": "modified",
+  "window": {
+    "start_date": "2023-01-01",
+    "end_date_exclusive": "2026-08-18"
+  },
+  "archive_boundary": "2026-08-15",
+  "filters": {
+    "DATAAREAID": "ha",
+    "PARTITION": 5637144576,
+    "INVENTLOCATIONID": "4010",
+    "WHSWORKTABLE.WORKTRANSTYPE": 2,
+    "WHSWORKTABLE.WORKSTATUS": 4,
+    "WHSWORKLINE.WORKSTATUS": 4,
+    "WHSWORKLINE.WORKTYPE": 1,
+    "WHSWORKLINE.WORKCLASSID": "DirectPick",
+    "Included.WMSLOCATION.LOCPROFILEID": [
+      "Picking",
+      "Picking A",
+      "PalletPicking",
+      "Picking D",
+      "invalid"
+    ],
+    "Excluded.WMSLOCATION.LOCPROFILEID": [
+      "W001",
+      "No LP Track"
+    ],
+    "Excluded.WHSWORKLINE.WMSLOCATIONID": [
+      "Bander",
+      "AutoBagger"
+    ]
+  },
+  "location_profile_source": "DAX_PROD.dbo.WMSLOCATION",
+  "location_profile_assumption": "Location profiles are treated as stable enough to classify archived picks.",
+  "grain": "SKU/day",
+  "privacy_scope": [
+    "No work IDs persisted.",
+    "No sales-order IDs persisted.",
+    "No operator/user fields persisted.",
+    "DistinctOrders is distinct within SKU/day and is not additive across SKUs."
+  ],
+  "shards": [
+    {
+      "path": "Output\\ForecastAccuracy\\forward_tests\\2026-08-19_corporate_2026-08-18\\inputs\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2023.parquet",
+      "bytes": 7132792,
+      "sha256": "8fe74ecdb1be7d977badfa5dc4f17a9fd2ddc1d76ac80877026b755b9215b1cb",
+      "rows": 2154543,
+      "distinct_skus": 32348,
+      "pick_units": 9021926.0,
+      "pick_lines": 8669791,
+      "start_date": "2023-01-02",
+      "end_date": "2023-12-31",
+      "year": 2023
+    },
+    {
+      "path": "Output\\ForecastAccuracy\\forward_tests\\2026-08-19_corporate_2026-08-18\\inputs\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2024.parquet",
+      "bytes": 7493913,
+      "sha256": "1cf85bace815307bf345f1cec2c269fa2d00749c42a14c267e85525b8b341f6c",
+      "rows": 2289654,
+      "distinct_skus": 36340,
+      "pick_units": 9085238.0,
+      "pick_lines": 8812646,
+      "start_date": "2024-01-02",
+      "end_date": "2024-12-31",
+      "year": 2024
+    },
+    {
+      "path": "Output\\ForecastAccuracy\\forward_tests\\2026-08-19_corporate_2026-08-18\\inputs\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2025.parquet",
+      "bytes": 7580333,
+      "sha256": "c630a3ac63ab13b1e1f5beeb5242728b0d7be74eab98cef846e3109275ef8923",
+      "rows": 2366162,
+      "distinct_skus": 36963,
+      "pick_units": 8440037.0,
+      "pick_lines": 8210558,
+      "start_date": "2025-01-02",
+      "end_date": "2025-12-31",
+      "year": 2025
+    },
+    {
+      "path": "Output\\ForecastAccuracy\\forward_tests\\2026-08-19_corporate_2026-08-18\\inputs\\direct_pick_history\\parquet\\direct_pick_sku_day_modified_2026.parquet",
+      "bytes": 4617876,
+      "sha256": "ce3bfcb364868a7cb0fa210e9e469a57ca6d34e052fee552f263835d63b97091",
+      "rows": 1347296,
+      "distinct_skus": 30162,
+      "pick_units": 3897664.0,
+      "pick_lines": 3826775,
+      "start_date": "2026-01-02",
+      "end_date": "2026-08-17",
+      "year": 2026
+    }
+  ],
+  "totals": {
+    "rows": 8157655,
+    "pick_units": 30444865.0,
+    "pick_lines": 29519770
+  },
+  "outputs": {
+    "manifest": "Output\\ForecastAccuracy\\forward_tests\\2026-08-19_corporate_2026-08-18\\inputs\\direct_pick_history\\direct_pick_history_manifest.json",
+    "summary": "Output\\ForecastAccuracy\\forward_tests\\2026-08-19_corporate_2026-08-18\\inputs\\direct_pick_history\\direct_pick_history_year_summary.csv",
+    "parquet_dir": "Output\\ForecastAccuracy\\forward_tests\\2026-08-19_corporate_2026-08-18\\inputs\\direct_pick_history\\parquet"
+  }
+}

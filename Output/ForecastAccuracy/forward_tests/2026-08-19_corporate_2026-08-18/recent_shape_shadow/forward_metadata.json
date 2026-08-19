@@ -1,0 +1,63 @@
+{
+  "generated_at_utc": "2026-08-19T15:05:30+00:00",
+  "status": "forward_shadow_not_yet_evaluable",
+  "corporate": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\forward_tests\\2026-08-19_corporate_2026-08-18\\inputs\\corporate_velocity_frozen_captured_2026-08-19.csv",
+    "rows": 29624,
+    "distinct_skus": 29624,
+    "forecast_start": "2026-08-18",
+    "forecast_end": "2026-08-31",
+    "forecast_units": 282204.0,
+    "daily_units": {
+      "FD1": 13608.0,
+      "FD2": 13608.0,
+      "FD3": 13608.0,
+      "FD4": 13608.0,
+      "FD5": 14182.0,
+      "FD6": 14475.0,
+      "FD7": 15120.0,
+      "FD8": 13576.0,
+      "FD9": 31357.0,
+      "FD10": 26081.0,
+      "FD11": 23421.0,
+      "FD12": 28274.0,
+      "FD13": 35662.0,
+      "FD14": 25624.0
+    }
+  },
+  "lookback": {
+    "start_date": "2026-06-23",
+    "through_date": "2026-08-17",
+    "days": 56,
+    "rows": 334667,
+    "distinct_skus": 19490,
+    "sold_units": 1065724.0,
+    "source": {
+      "kind": "live_ax_monitoring_scope_fallback",
+      "server": "prodaxsql2",
+      "database": "DAX_PROD"
+    },
+    "recent_shape_metadata": {
+      "window_start": "2026-06-23",
+      "window_end_exclusive": "2026-08-18",
+      "rows": 334667,
+      "distinct_skus": 19490,
+      "sold_units": 1065724.0
+    }
+  },
+  "generated_candidates": [
+    {
+      "kind": "generated_daily_anchor",
+      "candidate": "corporate_total_recent_shape",
+      "shape_candidate": "independent_recent_shape",
+      "total_candidate": "corporate_raw",
+      "window_rows": 143167,
+      "window_units": 282204.0
+    }
+  ],
+  "notes": [
+    "Corporate daily totals are preserved exactly.",
+    "SKU allocation uses only DirectPick history before the forecast start.",
+    "This statistical shadow is not the independent ML hybrid and must not be scored until the horizon closes."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "updated_at_utc": "2026-07-22T16:44:32.101515+00:00",
+  "source": "DAX_PROD.dbo.PURCHLINE/PURCHTABLE/INVENTDIM",
+  "snapshot_count": 29,
+  "latest_snapshot_date": "2026-07-22",
+  "outputs": {
+    "dated_detail": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
+    "detail_fact": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
+    "sku_day": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
+    "summary": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv"
+  },
+  "notes": [
+    "Paths are repo-relative when output_dir is under this repo root.",
+    "Open PO/inbound state is current as of SnapshotDate.",
+    "Use daily snapshots for historical model features; do not use current open PO state for older holdouts."
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "generated_at_utc": "2026-08-19T15:22:28+00:00",
+  "status": "retrospective_as_of_diagnostic_not_prospective_promotion_evidence",
+  "windows": [
+    "2026-07-07_to_2026-07-20",
+    "2026-07-21_to_2026-08-03",
+    "2026-08-04_to_2026-08-17"
+  ],
+  "candidates": [
+    "corporate_raw",
+    "corporate_total_recent_shape",
+    "catpool_corporate_anchor",
+    "catpool_corporate_anchor_activation"
+  ],
+  "actual_sources": {
+    "2026-07-07": "Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/actual_sku_day.parquet",
+    "2026-07-21": "Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout/actual_sku_day.parquet",
+    "2026-08-04": "Output/ForecastAccuracy/handoff_eval/forward_2026-08-04_closeout/original_and_operational/actual_sku_day.parquet"
+  },
+  "limitations": [
+    "Category challengers were reconstructed after their horizons from code locked before the August 18 pack; they are diagnostics, not frozen contestants.",
+    "The July 22 category crosswalk is current-value rather than an as-of/SCD category history, so the July 7 and July 21 category reconstructions retain a point-in-time mapping limitation.",
+    "Every DirectPick history loader filters out rows on or after each origin; inventory and inbound loaders select the latest snapshot on or before origin minus one day.",
+    "The August 4 category reconstruction uses the July 22 inventory and inbound snapshots, which are pre-origin but stale."
+  ],
+  "model_blobs": {
+    "category_pool": "58ca4c2b79ab606cf7be98e57533e867aed3caa0",
+    "recent_shape": "b45deac0805ec665dbe951fdb5637113f5b50ede"
+  },
+  "repo_commit_at_build": "2fea5947fb5d48aa650c71abcad3d3fd127e6e5b"
+}

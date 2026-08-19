@@ -1,0 +1,22 @@
+{
+  "generated_at_utc": "2026-08-19T15:16:45+00:00",
+  "origin": "2026-07-21",
+  "horizon_end": "2026-08-03",
+  "lookback_days": 56,
+  "seasonal_years": 3,
+  "history_rows": 1087000,
+  "categories_modeled": 60,
+  "independent_category_units": 150871.6270897964,
+  "activation": {
+    "status": "disabled"
+  },
+  "corporate_anchor": {
+    "status": "ok",
+    "corporate_total_units": 165008.0,
+    "reconciled_categories": 59
+  },
+  "candidate_units": {
+    "catpool_corporate_anchor": 165008.0,
+    "catpool_independent": 150869.0
+  }
+}

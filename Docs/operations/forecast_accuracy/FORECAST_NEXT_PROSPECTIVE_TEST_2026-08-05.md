@@ -4,6 +4,25 @@ Prepared 2026-08-05, before the next corporate forecast origin. This is a
 pre-registered execution protocol, not a forecast artifact or an AX upload.
 Read `FORECAST_CURRENT_STATE.md` first.
 
+## Execution Update: 2026-08-19
+
+The next corporate file was reported available August 17 with an August 18
+forecast start, but the local ingestion and research freeze ran August 19
+before the file was uploaded to AX. The full four-arm pack was built with
+DirectPick forced to end August 17 and zero in-horizon actual rows. It is a
+valid as-of reconstruction and operational shadow, but it missed this
+protocol's before-origin timing rule by one day.
+
+Do not discard it and do not mislabel it. Close the August 18-31 pack after the
+horizon, while also applying this protocol to the next corporate file before
+that file's own start date. The next freeze is event-driven by source arrival;
+it does not need to wait for August 31.
+
+The August 19 work also completed a three-vintage retrospective comparison.
+`catpool_corporate_anchor_activation` has the best SKU WAPE in all three
+completed windows and is now the sole primary challenger. Read
+`FORECAST_FREEZE_2026-08-18_TO_2026-08-31.md` for the evidence and limitations.
+
 ## Current Waiting State
 
 The August 4-17 window is closed; see
@@ -13,9 +32,10 @@ No category-pool artifact was generated before either forecast start, so neither
 completed window can be a prospective category-pool contest. Do not retrofit a
 challenger into them.
 
-No later corporate vintage is available as of this closeout. The next valid
-test begins only when the next corporate `FwdDemandCSV` is available and the
-complete candidate pack can be frozen before its `ForecastStartDate`.
+The August 18-start corporate vintage is now preserved, but its candidate pack
+was built August 19 and is late-origin. The next valid clean test begins when
+the following corporate `FwdDemandCSV` is available and the complete candidate
+pack is frozen before its `ForecastStartDate`.
 
 ## Objective Of The Next Clean-Origin Test
 

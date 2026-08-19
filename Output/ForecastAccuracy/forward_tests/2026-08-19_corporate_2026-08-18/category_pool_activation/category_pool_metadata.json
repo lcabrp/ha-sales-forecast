@@ -1,0 +1,30 @@
+{
+  "generated_at_utc": "2026-08-19T15:14:03+00:00",
+  "origin": "2026-08-18",
+  "horizon_end": "2026-08-31",
+  "lookback_days": 56,
+  "seasonal_years": 3,
+  "history_rows": 1063760,
+  "categories_modeled": 61,
+  "independent_category_units": 406947.84843117924,
+  "activation": {
+    "inventory_snapshot": "2026-07-22",
+    "inbound_snapshot": "2026-07-22",
+    "skus_with_pickable_inventory": 12647,
+    "skus_with_open_inbound": 14066,
+    "turnover_ratio": 0.47737456101400716,
+    "gate_factor": 1.0,
+    "activated_brand_new_skus": 11826,
+    "boosted_low_history_active_skus": 13272,
+    "downweighted_ending_season_skus": 6550
+  },
+  "corporate_anchor": {
+    "status": "ok",
+    "corporate_total_units": 282204.0,
+    "reconciled_categories": 59
+  },
+  "candidate_units": {
+    "catpool_activation": 406952.0,
+    "catpool_corporate_anchor_activation": 282204.0
+  }
+}

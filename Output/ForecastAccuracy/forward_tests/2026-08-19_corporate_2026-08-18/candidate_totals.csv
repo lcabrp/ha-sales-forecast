@@ -1,0 +1,5 @@
+Candidate,ForecastUnits,ForecastedSKUs,ForecastDays,PositiveSKUDays
+catpool_corporate_anchor,282204.0,12915,14,143481
+catpool_corporate_anchor_activation,282204.0,16537,14,162568
+corporate_raw,282204.0,8434,14,78969
+corporate_total_recent_shape,282204.0,12990,14,143167

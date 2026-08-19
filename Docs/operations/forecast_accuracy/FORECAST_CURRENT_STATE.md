@@ -30,6 +30,14 @@ The independent ML hybrid is not the current champion. No model should be called
 a champion from a smoke test, a leaky rolling-origin score, a partial horizon,
 or a rebuilt-after-close diagnostic.
 
+The primary research challenger is now
+`catpool_corporate_anchor_activation`. Across the July 7, July 21, and August 4
+completed corporate-vintage reconstructions it has the lowest SKU WAPE in all
+three windows (0.890, 0.981, and 0.939). This is strong multi-vintage
+retrospective evidence, not a prospective production promotion. Corporate
+remains the AX baseline until the same locked challenger is frozen before a
+clean origin and survives that closeout.
+
 ## Operational Target
 
 - Warehouse/company/partition: `4010` / `ha` / `5637144576`.
@@ -110,6 +118,41 @@ Also report the overlay's change in accuracy on its overlapping dates. An
 overlay may improve operations' active forecast, but it cannot retroactively
 replace the original frozen baseline or become a prospective challenger.
 
+## Active August 18-31 Pack
+
+The August 19 ingestion output contains one `ForecastStartDate`, August 18,
+and 282,204 corporate units across 14 dates. The corporate source was reported
+available August 17, but the local ingestion pipeline and candidate build ran
+August 19 before the AX upload. The resulting four-arm pack is therefore
+classified as a one-day-late, pre-AX, as-of reconstruction—not a clean
+prospective contestant.
+
+All DirectPick inputs end August 17 and all four corporate-anchored arms retain
+the exact daily corporate totals. The pack preserves `corporate_raw` (8,434
+positive SKUs), `corporate_total_recent_shape` (12,990),
+`catpool_corporate_anchor` (12,915), and
+`catpool_corporate_anchor_activation` (16,537). Inventory and inbound use the
+latest eligible July 22 snapshot and are 26 days stale relative to the
+pre-origin cutoff.
+
+Read `FORECAST_FREEZE_2026-08-18_TO_2026-08-31.md` and the pack manifest under
+`Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/`.
+Close it after all dates through August 31 are complete. Separately, freeze the
+next corporate vintage before its own start rather than waiting for this
+horizon to finish.
+
+### Retrospective three-vintage allocation result
+
+The same four corporate-total arms were compared over the completed July 7,
+July 21, and August 4 starts. Mean SKU WAPE is 1.344 for corporate raw, 1.093
+for global recent shape, 1.095 for category reconciliation without activation,
+and 0.937 for category reconciliation with activation. The activation arm wins
+all three windows and raises mean sold-unit coverage from 47.56% to 74.62%, at
+the cost of lower forecast-SKU use and slightly more zero-demand forecast
+units. Category reconstruction status and the current-value crosswalk
+limitation remain explicit; this selects the primary challenger but does not
+retroactively make it prospective.
+
 ## Completed Evidence
 
 ### August 4-17, closed August 19
@@ -129,8 +172,9 @@ model candidate. The closeout reconciles exactly to monitoring and is recorded
 in `FORECAST_CLOSEOUT_2026-08-04_TO_2026-08-17.md`.
 
 No category-pool challenger was frozen before either August forecast start.
-Freeze the already pre-registered challenger only at the next clean corporate
-origin; do not retrofit it to these completed windows.
+The later origin-safe reconstruction is retained for multi-vintage learning,
+but it cannot win the August 4 prospective contest. Freeze the already
+pre-registered challenger only at the next clean corporate origin.
 
 ### July 21-August 3, closed August 5
 
@@ -290,10 +334,11 @@ directory. Results remain separated into three status groups:
 
 ## Open Work, In Order
 
-1. Freeze the category-pool architecture prospectively at the next clean origin
-   and compare it across multiple corporate-anchored windows. The pre-registered
-   execution contract is `FORECAST_NEXT_PROSPECTIVE_TEST_2026-08-05.md`; do not
-   retrofit the candidate into the already running August 4-17 corporate window.
+1. Freeze the locked category-pool architecture before the next clean corporate
+   origin. The August 18 pack was built one day late and is an as-of operational
+   shadow, not the needed prospective confirmation. Follow
+   `FORECAST_NEXT_PROSPECTIVE_TEST_2026-08-05.md` immediately when the source
+   arrives; do not wait for the prior 14-day horizon to close.
 2. Integrate the tracked canonical
    `product_attributes/sku_category_crosswalk.parquet` into the closeout scorer;
    extraction and provenance mirroring are complete, but the scorer currently
@@ -309,11 +354,14 @@ directory. Results remain separated into three status groups:
 ## Reading Order
 
 1. This file.
-2. `FORECAST_CLOSEOUT_2026-07-21_TO_2026-08-03.md` for current evidence.
-3. `FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md` for prior evidence.
-4. `FORECAST_DATA_LANDSCAPE_2026-07-20.md` for detailed ownership and data
+2. `FORECAST_FREEZE_2026-08-18_TO_2026-08-31.md` for the active pack and
+   three-vintage challenger comparison.
+3. `FORECAST_CLOSEOUT_2026-08-04_TO_2026-08-17.md` for the latest closeout.
+4. `FORECAST_CLOSEOUT_2026-07-21_TO_2026-08-03.md` for prior evidence.
+5. `FORECAST_CLOSEOUT_2026-07-07_TO_2026-07-20.md` for earlier evidence.
+6. `FORECAST_DATA_LANDSCAPE_2026-07-20.md` for detailed ownership and data
    contracts.
-5. `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` only when moving, rebuilding, or
+7. `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` only when moving, rebuilding, or
    committing artifacts.
 
 ### Active research candidate (2026-07-22, not yet champion)

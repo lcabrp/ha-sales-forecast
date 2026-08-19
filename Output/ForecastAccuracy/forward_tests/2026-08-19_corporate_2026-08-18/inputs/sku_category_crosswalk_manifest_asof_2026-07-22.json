@@ -1,0 +1,24 @@
+{
+  "generated_at_utc": "2026-07-22T16:49:31.765295+00:00",
+  "source_repo": "C:\\Users\\labreu\\Documents\\Projects\\ha-ingestion-pipeline",
+  "source_db": "C:\\Users\\labreu\\Documents\\Projects\\ha-ingestion-pipeline\\Output\\Ingestion\\sku_ledger.db",
+  "source_db_sha256": "6b25fbab102ff32122a859fce8f76c68bc035728507fea675655292657b029c7",
+  "rows": 113824,
+  "distinct_skus": 113824,
+  "distinct_product_groups": 16,
+  "distinct_category_size_codes": 83,
+  "parquet_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\product_attributes\\sku_category_crosswalk.parquet",
+  "parquet_sha256": "c88cbaa0f99731786ad3120c1349e4ead3be3a324b873ffb55a6b7b1a474e464",
+  "columns": [
+    "SKU",
+    "ProductGroupCode",
+    "SizeGroupCode",
+    "Division",
+    "Department",
+    "Class",
+    "FirstSeen",
+    "LastSeen",
+    "SourceFile",
+    "CategorySizeCode"
+  ]
+}

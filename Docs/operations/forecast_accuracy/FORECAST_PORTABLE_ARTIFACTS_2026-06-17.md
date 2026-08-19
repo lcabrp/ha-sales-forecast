@@ -37,6 +37,11 @@ Keep these current, compact contracts in Git:
 - `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`
   as immutable late-origin diagnostic evidence, not as a frozen July 21
   contestant;
+- `Output/ForecastAccuracy/forward_tests/2026-08-19_corporate_2026-08-18/`
+  as the immutable one-day-late, pre-AX four-arm pack, including its exact
+  origin-safe inputs and manifest;
+- `Output/ForecastAccuracy/handoff_eval/multivintage_corporate_anchored_2026-08-19/`
+  as the compact three-window retrospective comparison;
 - score tables, candidate metadata, manifests, and source hashes required to
   reproduce a documented decision.
 
@@ -45,10 +50,10 @@ monitoring-scope evaluation actual, category/SKU diagnostics, and frozen
 pre-rounding-fix evidence. The August 5 closeout pack contains the July 21-
 August 3 live-AX actual, monitoring reconciliation, all five scorecards, and
 category/SKU evidence. These are current decision evidence and belong in Git.
-The August 19 pack contains the original and operational corporate vintages,
-their source hashes and AX cutoff evidence, the exact live-AX actual, and the
-scheduled-overlap scorecards. It is current decision evidence and belongs in
-Git.
+The August 4-17 closeout completed on August 19 contains the original and
+operational corporate vintages, their source hashes and AX cutoff evidence,
+the exact live-AX actual, and the scheduled-overlap scorecards. It is current
+decision evidence and belongs in Git.
 The category-pool pack was generated on July 22 for the same dates. Keep it
 portable so it can be scored for learning, while retaining its late-origin
 diagnostic status.
