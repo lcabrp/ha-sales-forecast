@@ -6,24 +6,16 @@ Read `FORECAST_CURRENT_STATE.md` first.
 
 ## Current Waiting State
 
-The corporate file uploaded on 2026-08-03 has `ForecastStartDate` 2026-08-04
-and covers 2026-08-04 through 2026-08-17. A later weekly corporate upload may
-overlay part of that window in AX; preserve both uploads as distinct vintages.
-No category-pool artifact was generated before that horizon began, so a
-category-pool output built now would be a late-origin diagnostic only. Do not
-generate or compare one as a prospective August 4 contestant.
+The August 4-17 window is closed; see
+`FORECAST_CLOSEOUT_2026-08-04_TO_2026-08-17.md`. The original August 3
+corporate baseline and the August 12 AX overlay were both preserved and scored.
+No category-pool artifact was generated before either forecast start, so neither
+completed window can be a prospective category-pool contest. Do not retrofit a
+challenger into them.
 
-On or after August 18, close the original-vintage Aug 4-17 corporate baseline
-using the normal source audit and `forecast_window_compare.py`. Separately,
-score the operational weekly-vintage forecast by using the Aug 3/4 upload for
-the dates it was in force and the later overlay for its active dates. The
-available later artifact is dated 2026-08-12 with `ForecastStartDate`
-2026-08-11; determine its operational cutoff from the actual AX upload time,
-not merely its planned start date. Keep the overlay-impact score separate from
-the original frozen baseline: it cannot establish a winner over a challenger
-that was not frozen before August 4. See
-`FORECAST_OVERLAY_COMPARISON_2026-08-03_TO_2026-08-12.md` for the saved
-forecast-to-forecast comparison.
+No later corporate vintage is available as of this closeout. The next valid
+test begins only when the next corporate `FwdDemandCSV` is available and the
+complete candidate pack can be frozen before its `ForecastStartDate`.
 
 ## Objective Of The Next Clean-Origin Test
 

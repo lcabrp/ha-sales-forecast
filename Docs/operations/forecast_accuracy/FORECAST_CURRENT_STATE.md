@@ -1,6 +1,6 @@
 # Forecast Current State
 
-Authoritative as of 2026-08-05. This is the first document to read for forecast
+Authoritative as of 2026-08-19. This is the first document to read for forecast
 work. It replaces the June reset diary, model-input lab notebook, intermediate
 handoffs, and smoke-test champion narratives as active guidance. Git history
 retains those records when provenance is needed.
@@ -9,10 +9,12 @@ retains those records when provenance is needed.
 
 Do not reset the project again. Narrow the architecture:
 
-1. Use the best future-known daily and 14-day volume signal. The completed July
-   closeout supports using the corporate total as the current anchor because it
-   contains promotion and commercial knowledge that the warehouse model does
-   not yet reproduce reliably.
+1. Preserve the corporate weekly forecast as the current operational anchor,
+   but score total-volume accuracy separately. The August 4-17 original vintage
+   underforecast by 36.86%, and its actual weekly overlay underforecast by even
+   more. Corporate retains commercial/promotion knowledge that the warehouse
+   model does not yet reproduce, but it is not an unqualified total-volume
+   champion.
 2. Forecast stable category-size pools, such as `GIRM` and `BOYM`, before
    allocating to current SKUs. Do not use a velocity suffix such as the `A` in
    `GIRMA` as a stable year-over-year category identity.
@@ -110,9 +112,29 @@ replace the original frozen baseline or become a prospective challenger.
 
 ## Completed Evidence
 
+### August 4-17, closed August 19
+
+The August 3 corporate vintage produced 144,405 forecast units against 228,715
+monitoring-scope DirectPick units (85,638 SKU/day rows and 14,085 SKUs), a
+36.86% total underforecast. Its SKU WAPE was 119.37%, forecast-SKU use rate
+85.87%, sold-unit coverage 54.04%, and zero-demand forecast-unit share 12.34%.
+
+AX received an August 12 overlay for an August 11 start; AX modification times
+show it arrived at 15:35-15:41 Eastern on August 12. Applying the overlay from
+August 13, its first full operational day, improves WAPE to 105.25%, SKU use to
+88.10%, coverage to 62.31%, and zero-demand units to 8.47%, while worsening
+total bias to -38.05%. The overlay's scheduled August 11-17 comparison also
+improves allocation but lowers planned volume. Neither series is a replacement
+model candidate. The closeout reconciles exactly to monitoring and is recorded
+in `FORECAST_CLOSEOUT_2026-08-04_TO_2026-08-17.md`.
+
+No category-pool challenger was frozen before either August forecast start.
+Freeze the already pre-registered challenger only at the next clean corporate
+origin; do not retrofit it to these completed windows.
+
 ### July 21-August 3, closed August 5
 
-The newest completed forward closeout contains 187,644 monitoring-scope
+The July 21-August 3 forward closeout contains 187,644 monitoring-scope
 DirectPick units across 77,522 SKU/day rows and reconciles within three units of
 the 187,647-unit monitoring aggregate. It shows that the two prospectively
 frozen corporate-volume contestants are a precision/coverage tradeoff:

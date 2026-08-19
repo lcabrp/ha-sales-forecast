@@ -1,0 +1,51 @@
+{
+  "generated_at_utc": "2026-08-19T14:27:01+00:00",
+  "window": {
+    "start_date": "2026-08-11",
+    "through_date": "2026-08-17",
+    "days": 7
+  },
+  "forecast_sources": [
+    {
+      "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\handoff_eval\\forward_2026-08-04_closeout\\input_vintages\\original_and_operational_daily_forecasts.parquet",
+      "assigned_candidate": null,
+      "window_rows": 50926,
+      "window_units": 195869.0
+    }
+  ],
+  "actual_source": {
+    "kind": "portable_sku_day",
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\handoff_eval\\forward_2026-08-04_closeout\\original_and_operational\\actual_sku_day.parquet"
+  },
+  "actuals": {
+    "rows": 41400,
+    "distinct_skus": 12074,
+    "sold_units": 119173.0
+  },
+  "monitoring_validation": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-kydc-monitoring\\Output\\Monitoring\\Monitoring_History.db",
+    "exists": true,
+    "start_date": "2026-08-11",
+    "through_date": "2026-08-17",
+    "days": 7,
+    "expected_days": 7,
+    "pick_units": 119173.0,
+    "complete": true,
+    "ax_or_portable_minus_monitoring_units": 0.0
+  },
+  "category_crosswalk": {
+    "path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\handoff_eval\\independent_hybrid_absolute_log_2026-07-07\\ingestion_output\\sku_ledger.db",
+    "rows": 20449
+  },
+  "outputs": {
+    "actual_sku_day": "actual_sku_day.parquet",
+    "scores": "forecast_window_scores.csv",
+    "daily_totals": "forecast_daily_totals.csv",
+    "category_scores": "forecast_category_scores.csv",
+    "sku_comparison": "forecast_sku_comparison.parquet"
+  },
+  "metric_notes": {
+    "ForecastSKUUseRatePct": "Share of forecast-positive SKUs that had positive DirectPick demand; this is a SKU/box-avoidance proxy, not a physical carton measurement.",
+    "ZeroDemandForecastUnitPct": "Share of forecast units assigned to SKUs with zero DirectPick demand in the window."
+  }
+}

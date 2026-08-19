@@ -1,0 +1,15 @@
+Candidate,ForecastDate,ForecastUnits,SoldUnits,ErrorUnitsForecastMinusActual
+corporate_operational_vintage,2026-08-11,13136,22210.0,-9074.0
+corporate_operational_vintage,2026-08-12,13492,21429.0,-7937.0
+corporate_operational_vintage,2026-08-13,13097,20402.0,-7305.0
+corporate_operational_vintage,2026-08-14,13097,10439.0,2658.0
+corporate_operational_vintage,2026-08-15,14494,12039.0,2455.0
+corporate_operational_vintage,2026-08-16,15994,817.0,15177.0
+corporate_operational_vintage,2026-08-17,13271,31837.0,-18566.0
+corporate_original_aug03,2026-08-11,13136,22210.0,-9074.0
+corporate_original_aug03,2026-08-12,13492,21429.0,-7937.0
+corporate_original_aug03,2026-08-13,12810,20402.0,-7592.0
+corporate_original_aug03,2026-08-14,12810,10439.0,2371.0
+corporate_original_aug03,2026-08-15,16777,12039.0,4738.0
+corporate_original_aug03,2026-08-16,16777,817.0,15960.0
+corporate_original_aug03,2026-08-17,13486,31837.0,-18351.0

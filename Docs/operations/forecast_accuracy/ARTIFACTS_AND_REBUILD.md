@@ -1,6 +1,6 @@
 # Artifact Rebuild And Restore
 
-Current as of 2026-08-05. Read `FORECAST_CURRENT_STATE.md` for the modeling and
+Current as of 2026-08-19. Read `FORECAST_CURRENT_STATE.md` for the modeling and
 evaluation contract and `FORECAST_PORTABLE_ARTIFACTS_2026-06-17.md` for Git
 retention rules.
 
@@ -22,6 +22,8 @@ retention rules.
 - Prior completed closeout:
   `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/`.
 - Current completed closeout:
+  `Output/ForecastAccuracy/handoff_eval/forward_2026-08-04_closeout/`.
+- Prior completed closeout:
   `Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout/`.
 - Saved prospectively frozen July 21 forward pack:
   `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/recent_shape_shadow/`.

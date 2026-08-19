@@ -38,8 +38,9 @@ widens its SKU footprint:
 | Newly positive distinct SKUs | — | 3,241 |
 | Removed distinct SKUs | — | 975 |
 
-This is evidence of a materially revised allocation, not evidence that the
-overlay was better. On or after August 18, score both versions against the same
-actuals: preserve the original-vintage 14-day score, score the active forecast
-by actual AX-vintage cutoff, and report the overlay's accuracy change only on
-the dates controlled by it.
+This is evidence of a materially revised allocation, not evidence by itself that
+the overlay was better. The completed closeout is
+`FORECAST_CLOSEOUT_2026-08-04_TO_2026-08-17.md`: it preserves the original
+14-day score, applies the overlay from August 13 (the first full day after its
+August 12 15:35-15:41 Eastern AX import), and reports this scheduled-overlap
+impact against the same actuals.

@@ -1,6 +1,6 @@
 # Forecast Portable Artifact Contract
 
-Current as of 2026-08-05. Read `FORECAST_CURRENT_STATE.md` first. This document
+Current as of 2026-08-19. Read `FORECAST_CURRENT_STATE.md` first. This document
 only governs what forecast evidence should travel with the repository and what
 must remain producer-owned or local.
 
@@ -32,6 +32,7 @@ Keep these current, compact contracts in Git:
   supply facts that are forecast-owned and expensive to recreate;
 - `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/`;
 - `Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout/`;
+- `Output/ForecastAccuracy/handoff_eval/forward_2026-08-04_closeout/`;
 - `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/recent_shape_shadow/`;
 - `Output/ForecastAccuracy/forward_tests/2026-07-21_corporate_2026-07-20/category_pool_shadow/`
   as immutable late-origin diagnostic evidence, not as a frozen July 21
@@ -44,6 +45,10 @@ monitoring-scope evaluation actual, category/SKU diagnostics, and frozen
 pre-rounding-fix evidence. The August 5 closeout pack contains the July 21-
 August 3 live-AX actual, monitoring reconciliation, all five scorecards, and
 category/SKU evidence. These are current decision evidence and belong in Git.
+The August 19 pack contains the original and operational corporate vintages,
+their source hashes and AX cutoff evidence, the exact live-AX actual, and the
+scheduled-overlap scorecards. It is current decision evidence and belongs in
+Git.
 The category-pool pack was generated on July 22 for the same dates. Keep it
 portable so it can be scored for learning, while retaining its late-origin
 diagnostic status.
