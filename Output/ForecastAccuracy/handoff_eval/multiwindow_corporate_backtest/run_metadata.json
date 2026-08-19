@@ -1,0 +1,17 @@
+{
+  "windows_scored": 146,
+  "windows_skipped": 0,
+  "lookback_days": 56,
+  "seasonal_years": 3,
+  "min_start": "2023-01-01",
+  "max_start": null,
+  "min_category_coverage": 0.9,
+  "frozen_vintage": "earliest_upload_per_forecast_start_date",
+  "corporate_archive": "Output/ForecastAccuracy/history/parquet/forecast_sku_day.parquet",
+  "candidates": [
+    "corporate_raw",
+    "corporate_total_recent_shape",
+    "catpool_corporate_anchor",
+    "catpool_corporate_anchor_activation"
+  ]
+}

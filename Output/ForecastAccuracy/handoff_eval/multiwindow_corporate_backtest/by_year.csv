@@ -1,0 +1,17 @@
+Year,Candidate,Windows,MeanWAPE,MeanCoveragePct,WinRateVsRaw
+2023,catpool_corporate_anchor,33,1.027,89.8,0.0
+2023,catpool_corporate_anchor_activation,33,1.027,89.8,0.0
+2023,corporate_raw,33,0.635,92.7,0.0
+2023,corporate_total_recent_shape,33,1.039,89.8,0.0
+2024,catpool_corporate_anchor,45,1.028,87.5,8.9
+2024,catpool_corporate_anchor_activation,45,1.028,87.5,8.9
+2024,corporate_raw,45,0.767,88.2,0.0
+2024,corporate_total_recent_shape,45,1.036,87.4,8.9
+2025,catpool_corporate_anchor,46,0.969,89.0,17.4
+2025,catpool_corporate_anchor_activation,46,0.969,89.0,17.4
+2025,corporate_raw,46,0.782,85.9,0.0
+2025,corporate_total_recent_shape,46,0.977,88.8,17.4
+2026,catpool_corporate_anchor,22,0.906,81.6,81.8
+2026,catpool_corporate_anchor_activation,22,0.906,81.6,81.8
+2026,corporate_raw,22,1.413,33.2,0.0
+2026,corporate_total_recent_shape,22,0.911,81.5,81.8

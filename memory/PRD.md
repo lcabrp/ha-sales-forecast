@@ -56,6 +56,37 @@ current SKUs; ML stays narrow (occurrence/residual). Optimize precision/coverage
 - Docs: `Docs/operations/forecast_accuracy/FORECAST_MODEL_PROPOSALS_2026-07-22.md`
   and `FORECAST_MODEL_VALIDATION_2026-07-22.md` (explains the why for next LLM).
 
+## Direction review + multi-window backtest (added, direction-review session)
+- KEY UNLOCK: the "wait 2 weeks -> 1 noisy window -> no conclusion" loop was NOT
+  a data gap. The repo already stores the historical corporate uploads
+  (`Output/ForecastAccuracy/history/parquet/forecast_sku_day.parquet`: ~157
+  snapshots / ~152 ForecastStartDate origins, per-SKU per-day, 2022-08->2026-06)
+  AND matching SKU/day actuals (`direct_pick_history/parquet/*`). The corporate
+  anchor can be replayed offline at every historical origin. The July-22 note's
+  claim of "only one window" is superseded.
+- NEW `scripts/python/forecast_multiwindow_corporate_backtest.py`: replays the
+  frozen corporate vintage at every origin (earliest upload per start date),
+  reuses production `build_candidates`/`load_history`/`score_candidate`
+  (harness, not a re-impl), scores corporate_raw / recent_shape /
+  catpool_corporate_anchor(+activation) on real actuals. Emits summary.csv,
+  by_year.csv, by_regime.csv, per_window.csv, leaderboard.md.
+- FIRST FULL RUN (146 windows, 2023-2026), see
+  `Output/ForecastAccuracy/handoff_eval/multiwindow_corporate_backtest/RESULTS_SUMMARY.md`:
+  the category-pool re-allocation is a REGIME-SPECIFIC RESCUE, not a universal
+  champion. Degraded regime (corp coverage <75%, 31 windows, ~all 2026):
+  catpool WAPE 1.358->0.986, coverage 40.8%->79.8%, beats raw 71% of windows.
+  Healthy regime (115 windows, 2023-2025): raw is better (0.699 vs 0.992),
+  catpool wins only ~7%. The single July-7 win was a degraded-regime window.
+- IMPLICATION: do NOT pre-register catpool as an unconditional corporate
+  replacement (would hurt ~79% of windows). Direction = a REGIME-GATED policy:
+  apply catpool only when a coverage-collapse signal is present.
+- Caveat: regime label uses realized (hindsight) corporate coverage; need an
+  ORIGIN-SAFE collapse proxy (e.g. trailing-28d sold-unit share on SKUs
+  absent/zero in the new corporate upload). Activation still only testable from
+  ~2026-04 (no historical inventory) so activation==anchor on 143/146 windows.
+- Docs: `Docs/operations/forecast_accuracy/FORECAST_MULTIWINDOW_CORPORATE_BACKTEST.md`.
+
+
 ## Known limitations
 - Independent volume anchor over-forecasts (+47%): 56d run-rate is
   sale-spike-contaminated (June 21–Jul 4 inside lookback) → over-weights GIRM.
