@@ -1,0 +1,5 @@
+Policy,Windows,PooledWAPE,MeanWAPE,ImprovedVsRaw,WorsenedVsRaw,TriggeredCatpool
+always_corporate_raw,106,0.7923,0.9029,0,0,
+always_catpool,106,0.9021,0.9524,29,77,
+walkforward_gated,106,0.7232,0.8126,12,0,12.0
+oracle_perfect_gate(ceiling),106,0.693,0.7607,29,0,

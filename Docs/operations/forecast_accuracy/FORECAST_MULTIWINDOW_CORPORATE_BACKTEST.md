@@ -132,10 +132,19 @@ by a hindsight regime split, not by category identity.
 
 ## Next steps (in priority order)
 
-1. **Read the leaderboard, then split it by regime.** Add a per-year / by-
-   corporate-WAPE-bucket breakdown to `summarize()` so the "helps when corporate
-   coverage is bad, hurts when it's good" hypothesis is quantified, not eyeballed.
-   This directly informs whether the candidate should be applied *selectively*.
+0. **DONE — out-of-time gate validation.** `scripts/python/forecast_gate_validation.py`
+   tunes the origin-safe gate only on the past and tests on the future
+   (single time split, expanding walk-forward, moving-block bootstrap CI,
+   clean_frozen slice). Result: walk-forward pooled WAPE 0.792 → 0.723 (~9%),
+   95% CI on (gated − raw) = [−0.158, −0.006] (excludes 0), **0 windows
+   worsened**. See `multiwindow_corporate_backtest/gate_validation/`. The gate is
+   now validated enough to pre-register for a prospective clean-origin trial —
+   but its gain is concentrated in the 2026 collapse episode, so it is a
+   collapse-regime rescue, not an unconditional corporate replacement.
+1. **Pre-register the gate prospectively** per `FORECAST_NEXT_PROSPECTIVE_TEST_*.md`:
+   freeze the proxy signal + the walk-forward tau before the next clean corporate
+   origin, apply catpool only when the gate fires, and score on the clean-frozen
+   closeout. Keep corporate as the AX baseline.
 2. **Unlock historical activation.** The biggest lever (activation) can only be
    tested from ~2026-04 today. If BigQuery or an AX inventory-history export can
    supply as-of pick-face/inventory snapshots for 2024–2025 season resets, split

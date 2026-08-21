@@ -1,5 +1,48 @@
 # Multi-Window Corporate-Anchored Backtest — Results (contract-repaired v2)
 
+## UPDATE — origin-safe regime gate PASSES out-of-time validation
+
+Run `scripts/python/forecast_gate_validation.py`; artifacts under
+`gate_validation/` (`GATE_VALIDATION.md`, `walk_forward_windows.csv`,
+`walk_forward_summary.csv`, `single_split_test.csv`, `bootstrap_ci.json`).
+
+The gate = "use `catpool_corporate_anchor` when the pre-origin proxy
+(trailing-28d demand share on corporate-positive SKUs) < tau, else
+`corporate_raw`." Tuned **only on the past**, evaluated on the **future**.
+Metric = unit-weighted pooled SKU WAPE (lower better).
+
+| Evaluation | corporate_raw | gated | oracle ceiling | improved / worsened |
+|---|---:|---:|---:|---:|
+| Single split (train ≤2025-06 → test 46 win) | 0.904 | **0.728** (~19% better) | 0.703 | 14 / **0** |
+| Expanding walk-forward (leakage-free, 106 win) | 0.792 | **0.723** (~9% better) | 0.693 | 12 / **0** |
+| clean_frozen slice (14 truly-prospective) | 1.100 | **0.839** | — | 4 / **0** |
+
+Moving-block bootstrap (block=4, 2000 resamples) 95% CI on (gated − raw) pooled
+WAPE = **[−0.158, −0.006], excludes 0**; P(gated better) = 0.98.
+
+**Verdict:** this is a real, statistically-supported, and *safe* improvement —
+**0 windows worsened** in every cut, because the gate is conservative (fires on
+only ~12/106 windows) and, when it fires, it is right. It nearly reaches the
+oracle ceiling. This UPGRADES the gate from "in-sample / negligible" to
+"validated enough to pre-register for a prospective clean-origin trial."
+
+**Honest limitations (still not an unconditional champion):**
+- The aggregate gain is concentrated in the **2026 coverage-collapse episode**;
+  the test period is dominated by that single regime shift. It is validated as
+  *future-relative-to-training*, but durability rests largely on one episode.
+- `same_day`/`late` corporate vintages are operational, not strictly
+  prospective; the 14-window `clean_frozen` slice mitigates but is small.
+- Gap to oracle (0.723 vs 0.693) => a better origin-safe signal could add more.
+
+**Recommendation:** graduate from exploratory to a **pre-registered prospective
+trial** — freeze the proxy + tau (from expanding walk-forward) before the next
+clean corporate origin per `FORECAST_NEXT_PROSPECTIVE_TEST_*.md`, apply catpool
+only when the gate fires, and score on the clean-frozen closeout. Keep corporate
+as the AX baseline; the gate is a collapse-regime rescue with a safe no-op
+elsewhere.
+
+---
+
 **Exploratory retrospective evidence. NOT grounds to change the champion.**
 This supersedes the first cut after a peer review flagged over-claiming. The
 harness now uses as-of category attributes, origin-safe window inclusion,

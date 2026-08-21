@@ -111,6 +111,26 @@ repair (v2)" below). Read v2 as authoritative.
 - Note: platform auto-commit added .gitconfig + env/cron metadata unrelated to
   forecasting; the user should keep those out of the forecast repo.
 
+## Out-of-time gate validation (v3, advance-the-work session)
+- NEW `scripts/python/forecast_gate_validation.py`: validates the origin-safe
+  regime gate (use catpool when trailing-28d demand-share-on-corporate-positive
+  proxy < tau, else corporate_raw) with time-separated tuning — single time
+  split, expanding leakage-free walk-forward, moving-block bootstrap CI, and a
+  clean_frozen slice. Reads per_window.csv (no model rebuild). Metric =
+  unit-weighted pooled SKU WAPE.
+- RESULT (validated OUT OF TIME): walk-forward (106 win) pooled WAPE
+  0.792 -> 0.723 (~9%), 12 improved / 0 worsened, fires on only 12/106 windows;
+  single split test (46 win) 0.904 -> 0.728 (~19%); clean_frozen (14) 1.100 ->
+  0.839. Moving-block bootstrap 95% CI on (gated - raw) = [-0.158, -0.006]
+  (excludes 0), P(better)=0.98. Near the oracle ceiling (0.723 vs 0.693).
+- KEY: 0 windows worsened in every cut (conservative + correct when it fires).
+  This UPGRADES the gate from exploratory to "pre-register for a prospective
+  clean-origin trial." STILL not an unconditional champion: the gain is
+  concentrated in the 2026 collapse episode (one regime shift); corporate stays
+  the AX baseline; the gate is a collapse-regime rescue with safe no-op elsewhere.
+- Artifacts: `multiwindow_corporate_backtest/gate_validation/` (GATE_VALIDATION.md,
+  walk_forward_*.csv, single_split_test.csv, bootstrap_ci.json, metadata.json).
+
 ## Known limitations
 - Independent volume anchor over-forecasts (+47%): 56d run-rate is
   sale-spike-contaminated (June 21–Jul 4 inside lookback) → over-weights GIRM.

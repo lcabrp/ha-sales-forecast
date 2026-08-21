@@ -1,0 +1,9 @@
+{
+  "n": 106,
+  "block": 4,
+  "n_boot": 2000,
+  "point_diff_pooled_wape": -0.0691,
+  "ci95_low": -0.1582,
+  "ci95_high": -0.0056,
+  "prob_gated_better": 0.982
+}
