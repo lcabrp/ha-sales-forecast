@@ -57,6 +57,9 @@ current SKUs; ML stays narrow (occurrence/residual). Optimize precision/coverage
   and `FORECAST_MODEL_VALIDATION_2026-07-22.md` (explains the why for next LLM).
 
 ## Direction review + multi-window backtest (added, direction-review session)
+NOTE: the v1 claims in this block (regime-rescue headline, "143/146") were
+CORRECTED by the peer-review + contract-repair (see "peer review + contract
+repair (v2)" below). Read v2 as authoritative.
 - KEY UNLOCK: the "wait 2 weeks -> 1 noisy window -> no conclusion" loop was NOT
   a data gap. The repo already stores the historical corporate uploads
   (`Output/ForecastAccuracy/history/parquet/forecast_sku_day.parquet`: ~157
@@ -86,6 +89,27 @@ current SKUs; ML stays narrow (occurrence/residual). Optimize precision/coverage
   ~2026-04 (no historical inventory) so activation==anchor on 143/146 windows.
 - Docs: `Docs/operations/forecast_accuracy/FORECAST_MULTIWINDOW_CORPORATE_BACKTEST.md`.
 
+
+## Working memory: peer review + contract repair (v2)
+- A peer review correctly flagged the first cut as over-claimed. Fixes applied
+  in `forecast_multiwindow_corporate_backtest.py`: as-of category mapping
+  (snapshot-specific PGC+SGC), origin-safe window inclusion (never actuals),
+  corporate-file freeze classification (only 14/146 are clean_frozen; 78
+  same_day; 54 late), activation arm removed (no origin-safe inventory covers
+  the archive), plus a non-overlapping subset (70) and an origin-safe gate grid.
+- Corrected conclusion: aggregate unchanged (corp_raw ~0.84 best overall);
+  catpool only helps in the 2026 coverage-collapse regime; as-of mapping did
+  NOT move the aggregate (the old headline was a hindsight-regime artifact).
+  Origin-safe deployable gate: best IN-SAMPLE threshold ~6% aggregate gain
+  (0.839->0.786, 19 improved / 9 worsened) — modest, unvalidated. => exploratory
+  evidence only; does NOT change the champion. catpool stays a research
+  challenger per FORECAST_CURRENT_STATE.md.
+- Next (repair-the-contract, not more model): time-separated gate tuning/test +
+  block-bootstrap CIs on non-overlapping origins; clean-frozen-only prospective
+  track; wire as-of historical inventory before ANY activation claim; add source
+  hashes to per-window provenance.
+- Note: platform auto-commit added .gitconfig + env/cron metadata unrelated to
+  forecasting; the user should keep those out of the forecast repo.
 
 ## Known limitations
 - Independent volume anchor over-forecasts (+47%): 56d run-rate is

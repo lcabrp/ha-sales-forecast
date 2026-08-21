@@ -104,14 +104,31 @@ Outputs (under `Output/ForecastAccuracy/handoff_eval/multiwindow_corporate_backt
 
 ## Results
 
-See the generated `leaderboard.md` and `summary.csv` for the current numbers.
-A `RESULTS_SUMMARY.md` snapshot of the first full run is written beside this
-doc. The headline pattern to read for: the re-allocation candidates should help
-most in the **2026 coverage-collapse** windows (corporate WAPE ~1.4+, zero-
-forecast sold units 70–83%) and can *hurt* in **healthy** windows (2023,
-corporate WAPE ~0.6) where the corporate SKU forecast is already well targeted.
-That conditionality is the real, actionable signal — and it is only visible with
-many windows.
+See `Output/ForecastAccuracy/handoff_eval/multiwindow_corporate_backtest/RESULTS_SUMMARY.md`
+(**contract-repaired v2**) and the CSVs (`summary.csv`, `by_freeze_class.csv`,
+`by_year.csv`, `origin_safe_gate.csv`, `non_overlapping_summary.csv`,
+`per_window.csv`).
+
+Honest headline after a peer review and contract repair: the aggregate is
+unchanged (corporate_raw best overall, ~0.84 WAPE); the category-pool
+re-allocation only helps in the 2026 coverage-collapse regime and hurts in
+2023-2025; only **14 of 146** windows are genuinely `clean_frozen`; and an
+**origin-safe** gate gives at best a modest, **in-sample**, unvalidated ~6%
+aggregate improvement. This is **exploratory retrospective evidence — it does
+NOT change the champion decision.** The category-pool candidate remains a
+research challenger per `FORECAST_CURRENT_STATE.md`.
+
+### Contract-repair notes (v2)
+
+The harness now: (a) maps categories **as-of** each corporate vintage using
+`forecast_sku_snapshot.parquet` (no look-ahead); (b) includes windows on an
+**origin-safe** corporate-side mapping coverage, never horizon actuals;
+(c) **classifies** each window `clean_frozen` / `same_day` / `late` by
+corporate-file availability and records `SnapshotId`; (d) **excludes** the
+activation arm (no origin-safe inventory covers the archive); (e) reports a
+**non-overlapping** subset and an **origin-safe gate** grid. Verified: as-of
+mapping did NOT move the aggregate, confirming the earlier headline was driven
+by a hindsight regime split, not by category identity.
 
 ## Next steps (in priority order)
 

@@ -1,57 +1,40 @@
-"""Multi-window historical corporate-anchored backtest harness.
+"""Multi-window historical corporate-anchored backtest harness (contract-repaired).
 
 WHY THIS EXISTS
 ---------------
-Until now, the corporate-anchored category-pool candidate could only be scored
-on the single July 7-20 live window, because the project treated the corporate
-anchor as a *live* feed that arrives once every two weeks. That forced every
-promotion decision onto a "wait two weeks -> one noisy datapoint -> no
-conclusion -> repeat" loop.
+The repo already stores the historical corporate uploads
+(``Output/ForecastAccuracy/history/parquet/forecast_sku_day.parquet`` and the
+attribute companion ``forecast_sku_snapshot.parquet``) plus cached SKU/day
+DirectPick actuals. That is enough to replay historical corporate vintages
+offline and score allocation candidates against real actuals in one run, instead
+of waiting two weeks per observation.
 
-But the repo already stores a deep archive of historical corporate forecast
-uploads:
+WHAT THIS VERSION FIXES (relative to the first cut)
+---------------------------------------------------
+This is *exploratory retrospective evidence*, not a champion decision. To keep
+it honest the harness now:
 
-  Output/ForecastAccuracy/history/parquet/forecast_sku_day.parquet
-    -> ~157 corporate snapshots / ~152 distinct ForecastStartDate origins,
-       per-SKU, per-day, 2022-08 -> 2026-06  (columns: SnapshotId,
-       InferredFileDate, SKU, ForecastStartDate, ForecastDayOffset,
-       ForecastDate, ForecastQty)
+1. CLASSIFIES each window by corporate-file availability instead of calling
+   everything "frozen": ``clean_frozen`` (file date < origin), ``same_day``
+   (== origin), ``late`` (> origin). Records SnapshotId and availability date.
+2. Uses AS-OF category attributes per corporate vintage from
+   ``forecast_sku_snapshot.parquet`` (snapshot-specific ProductGroupCode +
+   SizeGroupCode), NOT the current 2026 crosswalk -> removes look-ahead in
+   category identity.
+3. Uses an ORIGIN-SAFE inclusion coverage (fraction of the *corporate forecast*
+   units that map to a category), never horizon actuals, for window inclusion.
+   Realized (actuals-based) coverage is still recorded, but only as a diagnostic.
+4. DROPS the activation arm: pick-face inventory starts 2026-06-19, after the
+   last archive origin (2026-06-02), so activation evaluated nothing here. It
+   needs a separate inventory-covered harness (see the doc).
+5. Adds an ORIGIN-SAFE regime gate evaluation (trailing-28d demand share on
+   corporate-positive SKUs) over a threshold grid, and a NON-OVERLAPPING origin
+   subset, so aggregate claims are not driven by hindsight or by ~weekly
+   overlapping 14-day windows.
 
-and matching SKU/day actuals for every one of those windows:
-
-  Output/ForecastAccuracy/direct_pick_history/parquet/direct_pick_sku_day_modified_<year>.parquet
-
-So we can replay the *frozen* corporate forecast at every historical origin,
-run the corporate-anchored category-pool candidate on origin-safe history only,
-and score all of them against real DirectPick actuals -- in a single run,
-across ~130 clean windows instead of one.
-
-WHAT IT SCORES  (all anchored to the same frozen corporate daily totals)
-------------------------------------------------------------------------
-* corporate_raw                         - the frozen corporate SKU/day upload, as-is (baseline).
-* corporate_total_recent_shape          - corporate daily total re-split across SKUs by
-                                          56-day global recent DirectPick share (Hamilton).
-* catpool_corporate_anchor              - corporate daily total reconciled by category, then
-                                          split within category by recent share (no activation).
-* catpool_corporate_anchor_activation   - same + season-transition activation layer. NOTE:
-                                          activation needs origin-safe inventory/inbound
-                                          snapshots, which only exist from ~2026-04 onward. For
-                                          earlier origins the activation layer has no evidence,
-                                          the turnover gate collapses to 0, and this candidate is
-                                          identical to catpool_corporate_anchor (reported as such).
-
-FROZEN-ORIGIN DISCIPLINE
-------------------------
-* For each ForecastStartDate we use the EARLIEST-uploaded snapshot (min
-  InferredFileDate) as the frozen vintage -- the forecast a planner would have
-  had at the origin, before any later weekly overlay. (An operational-vintage
-  variant is listed as a next step in the runbook.)
-* The candidate build reads DirectPick history strictly before the origin
-  (load_history is origin-safe by construction).
-* Corporate daily totals are preserved exactly by every anchored candidate.
-
-This harness only READS tracked portable facts. No live-AX, no writes to any
-frozen forecast pack.
+Reuses the production model code (``build_candidates``/``load_history``/
+``hamilton_round``) and the closeout metric (``score_candidate``); it is a
+harness, not a re-implementation. Read-only on all tracked facts.
 """
 
 from __future__ import annotations
@@ -76,7 +59,6 @@ from forecast_model_category_pool import (  # noqa: E402
     ModelConfig,
     build_candidates,
     hamilton_round,
-    load_crosswalk,
     load_history,
     sku_recent_weights,
 )
@@ -86,22 +68,21 @@ from output_paths import PROJECT_ROOT  # noqa: E402
 
 FA_ROOT = PROJECT_ROOT / "Output" / "ForecastAccuracy"
 CORPORATE_ARCHIVE = FA_ROOT / "history" / "parquet" / "forecast_sku_day.parquet"
+SNAPSHOT_ARCHIVE = FA_ROOT / "history" / "parquet" / "forecast_sku_snapshot.parquet"
 DIRECT_PICK_DIR = FA_ROOT / "direct_pick_history" / "parquet"
-DEFAULT_CROSSWALK = FA_ROOT / "product_attributes" / "sku_category_crosswalk.parquet"
 DEFAULT_OUTPUT = FA_ROOT / "handoff_eval" / "multiwindow_corporate_backtest"
 
+# Activation intentionally excluded: no origin-safe inventory covers the archive.
 ANCHORED_CANDIDATES = [
     "corporate_raw",
     "corporate_total_recent_shape",
     "catpool_corporate_anchor",
-    "catpool_corporate_anchor_activation",
 ]
+GATE_THRESHOLDS = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80]
 
 
 # --------------------------------------------------------------------------- #
-# Speed: cache the per-year DirectPick reads so 100+ origins do not re-read the
-# same year Parquet files. We wrap the model module's own reader so the exact
-# same origin-safe loading logic is used -- only cached.
+# Speed: cache per-year DirectPick reads (uses the model's own origin-safe reader)
 # --------------------------------------------------------------------------- #
 _ORIGINAL_READ_YEAR = cp._read_direct_pick_year
 
@@ -133,22 +114,27 @@ def _actual_year(year: int) -> pd.DataFrame:
     return frame
 
 
-def actual_sku_for_window(origin: pd.Timestamp, through: pd.Timestamp) -> pd.DataFrame:
-    frames = [_actual_year(y) for y in range(origin.year, through.year + 1)]
+def actual_sku_between(start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
+    frames = [_actual_year(y) for y in range(start.year, end.year + 1)]
     frames = [f for f in frames if not f.empty]
     if not frames:
         return pd.DataFrame(columns=["SKU", "SoldUnits"])
     allrows = pd.concat(frames, ignore_index=True)
-    win = allrows.loc[allrows["PickDate"].between(origin, through)]
+    win = allrows.loc[allrows["PickDate"].between(start, end)]
     out = win.groupby("SKU", as_index=False)["PickUnits"].sum().rename(columns={"PickUnits": "SoldUnits"})
     return out.loc[out["SoldUnits"].gt(0)].reset_index(drop=True)
 
 
 # --------------------------------------------------------------------------- #
-# Corporate archive
+# Corporate archive + as-of category attributes
 # --------------------------------------------------------------------------- #
-def load_frozen_corporate_map() -> pd.DataFrame:
-    """One frozen corporate vintage per ForecastStartDate (earliest upload)."""
+def load_frozen_corporate_map() -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Return (daily archive rows, per-origin provenance).
+
+    Frozen vintage per ForecastStartDate = earliest uploaded snapshot.
+    Provenance records SnapshotId and InferredFileDate (availability date) so
+    each window can be classified clean_frozen / same_day / late.
+    """
     arc = pd.read_parquet(
         CORPORATE_ARCHIVE,
         columns=["SnapshotId", "InferredFileDate", "SKU", "ForecastStartDate", "ForecastDate", "ForecastQty"],
@@ -157,17 +143,41 @@ def load_frozen_corporate_map() -> pd.DataFrame:
     arc["ForecastDate"] = pd.to_datetime(arc["ForecastDate"], errors="coerce").dt.normalize()
     arc["InferredFileDate"] = pd.to_datetime(arc["InferredFileDate"], errors="coerce").dt.normalize()
     arc = arc.dropna(subset=["ForecastStartDate", "ForecastDate"])
-    # earliest uploaded snapshot per start date
-    order = (
+
+    provenance = (
         arc[["ForecastStartDate", "SnapshotId", "InferredFileDate"]]
         .drop_duplicates()
         .sort_values(["ForecastStartDate", "InferredFileDate", "SnapshotId"])
+        .drop_duplicates("ForecastStartDate", keep="first")
+        .reset_index(drop=True)
     )
-    frozen = order.drop_duplicates("ForecastStartDate", keep="first")[["ForecastStartDate", "SnapshotId"]]
-    arc = arc.merge(frozen, on=["ForecastStartDate", "SnapshotId"], how="inner")
+    arc = arc.merge(provenance[["ForecastStartDate", "SnapshotId"]], on=["ForecastStartDate", "SnapshotId"], how="inner")
     arc["SKU"] = normalize_sku_series(arc["SKU"])
     arc["ForecastQty"] = pd.to_numeric(arc["ForecastQty"], errors="coerce").fillna(0.0)
-    return arc
+
+    days = (provenance["InferredFileDate"] - provenance["ForecastStartDate"]).dt.days
+    provenance["AvailabilityDays"] = days
+    provenance["FreezeClass"] = np.select(
+        [days < 0, days == 0, days > 0], ["clean_frozen", "same_day", "late"], default="unknown"
+    )
+    return arc, provenance
+
+
+@functools.lru_cache(maxsize=256)
+def _asof_crosswalk(snapshot_id: str) -> pd.DataFrame:
+    """SKU -> category (ProductGroupCode+SizeGroupCode) as recorded in THAT vintage."""
+    df = pd.read_parquet(
+        SNAPSHOT_ARCHIVE,
+        columns=["SnapshotId", "SKU", "ProductGroupCode", "SizeGroupCode"],
+        filters=[("SnapshotId", "==", snapshot_id)],
+    )
+    df["SKU"] = normalize_sku_series(df["SKU"])
+    cat = (
+        df["ProductGroupCode"].fillna("").astype(str).str.strip().str.upper()
+        + df["SizeGroupCode"].fillna("").astype(str).str.strip().str.upper()
+    )
+    df["Category"] = cat.replace("", "UNKNOWN")
+    return df.loc[df["SKU"].ne(""), ["SKU", "Category"]].drop_duplicates("SKU").reset_index(drop=True)
 
 
 def corporate_daily_for_origin(arc: pd.DataFrame, origin: pd.Timestamp) -> pd.DataFrame:
@@ -183,10 +193,7 @@ def corporate_daily_for_origin(arc: pd.DataFrame, origin: pd.Timestamp) -> pd.Da
 # --------------------------------------------------------------------------- #
 # Baseline: corporate total re-split by global recent share
 # --------------------------------------------------------------------------- #
-def recent_shape_candidate(
-    corporate_daily: pd.DataFrame, history: pd.DataFrame, config: ModelConfig
-) -> pd.DataFrame:
-    """Allocate each corporate daily total across SKUs by 56d global recent share."""
+def recent_shape_candidate(corporate_daily: pd.DataFrame, history: pd.DataFrame, config: ModelConfig) -> pd.DataFrame:
     weights = sku_recent_weights(history, pd.DataFrame({"SKU": [], "Category": []}), config)
     weights = weights.loc[weights["RecentUnits"].gt(0)]
     if weights.empty:
@@ -204,41 +211,50 @@ def recent_shape_candidate(
 # --------------------------------------------------------------------------- #
 # One window
 # --------------------------------------------------------------------------- #
-def run_window(arc: pd.DataFrame, crosswalk: pd.DataFrame, origin: pd.Timestamp,
-               lookback_days: int, seasonal_years: int) -> list[dict[str, Any]]:
+def run_window(arc: pd.DataFrame, origin: pd.Timestamp, snapshot_id: str,
+               lookback_days: int, seasonal_years: int, min_cov: float) -> list[dict[str, Any]]:
     through = origin + pd.Timedelta(days=HORIZON_DAYS - 1)
     corporate = corporate_daily_for_origin(arc, origin)
     if corporate.empty:
         return []
-    actual = actual_sku_for_window(origin, through)
+
+    crosswalk = _asof_crosswalk(snapshot_id)  # AS-OF category identity
+
+    # ORIGIN-SAFE inclusion coverage: share of corporate forecast units that map
+    # to a known category in this vintage. Never uses horizon actuals.
+    corp_sku = corporate.groupby("SKU", as_index=False)["ForecastUnits"].sum().merge(
+        crosswalk, on="SKU", how="left")
+    corp_sku["Category"] = corp_sku["Category"].fillna("UNKNOWN")
+    mapped = float(corp_sku.loc[corp_sku["Category"].ne("UNKNOWN"), "ForecastUnits"].sum())
+    corp_total = float(corp_sku["ForecastUnits"].sum())
+    origin_safe_cov = mapped / corp_total if corp_total else 0.0
+    if origin_safe_cov < min_cov:
+        return []
+
+    actual = actual_sku_between(origin, through)
     if actual.empty or actual["SoldUnits"].sum() <= 0:
         return []
 
-    cw_skus = set(crosswalk["SKU"])
-    mapped_units = float(actual.loc[actual["SKU"].isin(cw_skus), "SoldUnits"].sum())
-    cat_coverage = mapped_units / float(actual["SoldUnits"].sum())
+    # Diagnostic-only (hindsight): realized category coverage of actuals.
+    cw_skus = set(crosswalk.loc[crosswalk["Category"].ne("UNKNOWN"), "SKU"])
+    realized_cov = float(actual.loc[actual["SKU"].isin(cw_skus), "SoldUnits"].sum()) / float(actual["SoldUnits"].sum())
 
-    cfg_base = ModelConfig(origin=origin, lookback_days=lookback_days,
-                           seasonal_years=seasonal_years, use_activation=False)
-    history = load_history(cfg_base)
+    # Origin-safe regime proxy: trailing-28d demand share on corporate-positive SKUs.
+    recent28 = actual_sku_between(origin - pd.Timedelta(days=28), origin - pd.Timedelta(days=1))
+    corp_pos = set(corp_sku.loc[corp_sku["ForecastUnits"].gt(0), "SKU"])
+    r_total = float(recent28["SoldUnits"].sum())
+    proxy = (float(recent28.loc[recent28["SKU"].isin(corp_pos), "SoldUnits"].sum()) / r_total) if r_total else np.nan
 
-    per_candidate: dict[str, pd.DataFrame] = {}
+    cfg = ModelConfig(origin=origin, lookback_days=lookback_days, seasonal_years=seasonal_years, use_activation=False)
+    history = load_history(cfg)
 
-    # corporate_raw
-    per_candidate["corporate_raw"] = (
-        corporate.groupby("SKU", as_index=False)["ForecastUnits"].sum()
-    )
-    # recent shape
-    per_candidate["corporate_total_recent_shape"] = recent_shape_candidate(corporate, history, cfg_base)
-
-    # category-pool anchored (base + activation)
-    for activation in (False, True):
-        cfg = ModelConfig(origin=origin, lookback_days=lookback_days,
-                          seasonal_years=seasonal_years, use_activation=activation)
-        combined, _meta = build_candidates(cfg, crosswalk, corporate)
-        name = "catpool_corporate_anchor_activation" if activation else "catpool_corporate_anchor"
-        grp = combined.loc[combined["Candidate"].eq(name)]
-        per_candidate[name] = grp.groupby("SKU", as_index=False)["ForecastUnits"].sum()
+    per_candidate: dict[str, pd.DataFrame] = {
+        "corporate_raw": corp_sku[["SKU", "ForecastUnits"]],
+        "corporate_total_recent_shape": recent_shape_candidate(corporate, history, cfg),
+    }
+    combined, _meta = build_candidates(cfg, crosswalk, corporate)
+    grp = combined.loc[combined["Candidate"].eq("catpool_corporate_anchor")]
+    per_candidate["catpool_corporate_anchor"] = grp.groupby("SKU", as_index=False)["ForecastUnits"].sum()
 
     rows = []
     for name in ANCHORED_CANDIDATES:
@@ -249,16 +265,19 @@ def run_window(arc: pd.DataFrame, crosswalk: pd.DataFrame, origin: pd.Timestamp,
         s.update({
             "Origin": origin.date().isoformat(),
             "Through": through.date().isoformat(),
+            "SnapshotId": snapshot_id,
             "SoldUnits": float(actual["SoldUnits"].sum()),
-            "CorporateUnits": float(corporate["ForecastUnits"].sum()),
-            "CategoryCoveragePct": cat_coverage,
+            "CorporateUnits": corp_total,
+            "OriginSafeMappingCovPct": origin_safe_cov,
+            "RealizedCategoryCovPct": realized_cov,
+            "ProxyCorpPositiveShare": proxy,
         })
         rows.append(s)
     return rows
 
 
 # --------------------------------------------------------------------------- #
-# Aggregation
+# Aggregation / reporting
 # --------------------------------------------------------------------------- #
 def summarize(per_window: pd.DataFrame) -> pd.DataFrame:
     ref = per_window.loc[per_window["Candidate"].eq("corporate_raw"),
@@ -273,9 +292,7 @@ def summarize(per_window: pd.DataFrame) -> pd.DataFrame:
             "MeanWAPE": float(grp["SKU_WAPE"].mean()),
             "MedianWAPE": float(grp["SKU_WAPE"].median()),
             "MeanCoveragePct": float(grp["SoldUnitCoveragePct"].mean()),
-            "MeanSKUUsePct": float(grp["SKUUseRatePct"].mean()),
             "MeanBiasPct": float(grp["BiasPct"].mean()),
-            "MeanZeroDemandPct": float(grp["ZeroDemandUnitPct"].mean()),
             "WinsVsCorporateRaw": int(grp["BeatsCorporateRaw"].sum()),
             "WinRateVsCorporateRaw": float(grp["BeatsCorporateRaw"].mean()),
         })
@@ -283,58 +300,17 @@ def summarize(per_window: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(out).sort_values("Candidate", key=lambda s: s.map(order)).reset_index(drop=True)
 
 
-def write_markdown(summary: pd.DataFrame, per_window: pd.DataFrame, args, out_dir: Path) -> None:
-    origins = sorted(per_window["Origin"].unique())
-    lines = []
-    lines.append("# Multi-Window Historical Corporate-Anchored Backtest — Results\n")
-    lines.append(f"Generated by `scripts/python/forecast_multiwindow_corporate_backtest.py`.\n")
-    lines.append(
-        f"- Windows scored: **{len(origins)}** frozen corporate origins "
-        f"({origins[0]} → {origins[-1]}).\n"
-        f"- Frozen vintage per origin: earliest-uploaded snapshot.\n"
-        f"- Lookback {args.lookback_days}d, seasonal years {args.seasonal_years}, "
-        f"min ForecastStartDate {args.min_start}, min category coverage "
-        f"{args.min_category_coverage:.0%}.\n"
-        f"- Horizon: {HORIZON_DAYS} days. Metric: SKU WAPE (lower is better) vs DirectPick actuals.\n"
-    )
-    lines.append("\n## Leaderboard (mean across all scored windows)\n")
-    disp = summary.copy()
-    for c in ["MeanWAPE", "MedianWAPE"]:
-        disp[c] = disp[c].map(lambda v: f"{v:.3f}")
-    for c in ["MeanCoveragePct", "MeanSKUUsePct", "MeanBiasPct", "MeanZeroDemandPct", "WinRateVsCorporateRaw"]:
-        disp[c] = disp[c].map(lambda v: f"{v*100:.1f}%")
-    cols = list(disp.columns)
-    lines.append("| " + " | ".join(cols) + " |\n")
-    lines.append("| " + " | ".join("---" for _ in cols) + " |\n")
-    for _, r in disp.iterrows():
-        lines.append("| " + " | ".join(str(r[c]) for c in cols) + " |\n")
-    lines.append("\n\n## Notes\n")
-    lines.append(
-        "- `catpool_corporate_anchor_activation` equals `catpool_corporate_anchor` on any "
-        "origin without an origin-safe inventory/inbound snapshot (pre-~2026-04). The "
-        "activation delta is only meaningful on recent windows; see per_window.csv.\n"
-        "- All anchored candidates preserve the corporate daily totals exactly, so "
-        "`BiasPct` is identical across them within a window; they differ only in SKU allocation.\n"
-        "- `corporate_raw` bias is the corporate total-volume miss and is the same figure the "
-        "closeout docs track separately from allocation.\n"
-    )
-    (out_dir / "leaderboard.md").write_text("".join(lines), encoding="utf-8")
-
-
-def regime_breakdowns(per_window: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """By-year and by-corporate-coverage-regime breakdowns.
-
-    NOTE: the regime label uses each window's *realized* corporate coverage,
-    which is hindsight. It is an analysis lens, not an origin-safe deployment
-    gate. Building an origin-safe collapse proxy is a documented next step.
-    """
+def breakdowns(per_window: pd.DataFrame, provenance: pd.DataFrame) -> dict[str, pd.DataFrame]:
     pw = per_window.copy()
     pw["Year"] = pw["Origin"].str[:4]
+    prov = provenance.copy()
+    prov["Origin"] = prov["ForecastStartDate"].dt.date.astype(str)
+    pw = pw.merge(prov[["Origin", "FreezeClass", "AvailabilityDays"]], on="Origin", how="left")
     raw = pw.loc[pw["Candidate"].eq("corporate_raw"),
                  ["Origin", "SoldUnitCoveragePct", "SKU_WAPE"]].rename(
         columns={"SoldUnitCoveragePct": "RawCov", "SKU_WAPE": "RawWAPE"})
     pw = pw.merge(raw, on="Origin", how="left")
-    pw["Regime"] = np.where(pw["RawCov"] >= 0.75, "healthy_corp(cov>=75%)", "degraded_corp(cov<75%)")
+    pw["Regime(hindsight)"] = np.where(pw["RawCov"] >= 0.75, "healthy(cov>=75%)", "degraded(cov<75%)")
     pw["BeatsRaw"] = pw["SKU_WAPE"] < pw["RawWAPE"]
 
     def agg(df: pd.DataFrame, key: str) -> pd.DataFrame:
@@ -349,53 +325,143 @@ def regime_breakdowns(per_window: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFr
         g["WinRateVsRaw"] = (g["WinRateVsRaw"] * 100).round(1)
         return g
 
-    return agg(pw, "Year"), agg(pw, "Regime")
+    return {
+        "by_year": agg(pw, "Year"),
+        "by_regime_hindsight": agg(pw, "Regime(hindsight)"),
+        "by_freeze_class": agg(pw, "FreezeClass"),
+        "_augmented": pw,
+    }
+
+
+def origin_safe_gate_eval(pw_aug: pd.DataFrame) -> pd.DataFrame:
+    """Deployable policy: use catpool when trailing-28d proxy < threshold, else corporate_raw.
+
+    Reports aggregate WAPE and #windows-improved vs always-corporate_raw. This is
+    the honest, origin-safe counterpart to the hindsight regime split.
+    """
+    wide = pw_aug.pivot_table(index="Origin", columns="Candidate", values="SKU_WAPE", aggfunc="first")
+    proxy = pw_aug.drop_duplicates("Origin").set_index("Origin")["ProxyCorpPositiveShare"]
+    base = wide["corporate_raw"]
+    rows = []
+    for thr in GATE_THRESHOLDS:
+        use_catpool = proxy < thr
+        gated = np.where(use_catpool, wide["catpool_corporate_anchor"], wide["corporate_raw"])
+        gated = pd.Series(gated, index=wide.index)
+        rows.append({
+            "ProxyThreshold": thr,
+            "WindowsTriggered": int(use_catpool.sum()),
+            "GatedMeanWAPE": round(float(gated.mean()), 4),
+            "CorporateRawMeanWAPE": round(float(base.mean()), 4),
+            "AlwaysCatpoolMeanWAPE": round(float(wide["catpool_corporate_anchor"].mean()), 4),
+            "WindowsImprovedVsRaw": int((gated < base - 1e-9).sum()),
+            "WindowsWorsenedVsRaw": int((gated > base + 1e-9).sum()),
+        })
+    return pd.DataFrame(rows)
+
+
+def non_overlapping_origins(origins: list[str]) -> list[str]:
+    picked: list[str] = []
+    last = None
+    for o in sorted(origins):
+        d = pd.Timestamp(o)
+        if last is None or (d - last).days >= HORIZON_DAYS:
+            picked.append(o)
+            last = d
+    return picked
+
+
+def write_markdown(summary: pd.DataFrame, br: dict, gate: pd.DataFrame,
+                   non_overlap_summary: pd.DataFrame, per_window: pd.DataFrame, args, out_dir: Path) -> None:
+    origins = sorted(per_window["Origin"].unique())
+
+    def table(df: pd.DataFrame) -> str:
+        cols = list(df.columns)
+        lines = ["| " + " | ".join(cols) + " |", "| " + " | ".join("---" for _ in cols) + " |"]
+        for _, r in df.iterrows():
+            lines.append("| " + " | ".join(str(r[c]) for c in cols) + " |")
+        return "\n".join(lines) + "\n"
+
+    disp = summary.copy()
+    for c in ["MeanWAPE", "MedianWAPE"]:
+        disp[c] = disp[c].map(lambda v: f"{v:.3f}")
+    for c in ["MeanCoveragePct", "MeanBiasPct", "WinRateVsCorporateRaw"]:
+        disp[c] = disp[c].map(lambda v: f"{v * 100:.1f}%")
+
+    md = []
+    md.append("# Multi-Window Corporate-Anchored Backtest — Results (contract-repaired)\n\n")
+    md.append("**Exploratory retrospective evidence, not a champion decision.**\n\n")
+    md.append(
+        f"- Windows scored: **{len(origins)}** ({origins[0]} -> {origins[-1]}).\n"
+        "- As-of category attributes per corporate vintage (snapshot-specific).\n"
+        f"- Origin-safe inclusion coverage >= {args.min_category_coverage:.0%} "
+        "(corporate-forecast side; NOT actuals).\n"
+        "- Activation arm excluded (no origin-safe inventory covers the archive).\n"
+        "- Metric: SKU WAPE (lower better).\n\n"
+    )
+    md.append("## Overall leaderboard (mean over all scored windows)\n\n")
+    md.append(table(disp))
+    md.append("\n## By corporate-file freeze class (availability vs origin)\n\n")
+    md.append(table(br["by_freeze_class"]))
+    md.append("\n## By year\n\n")
+    md.append(table(br["by_year"]))
+    md.append("\n## By hindsight regime (DIAGNOSTIC ONLY — uses realized coverage)\n\n")
+    md.append(table(br["by_regime_hindsight"]))
+    md.append("\n## Origin-safe gate (DEPLOYABLE policy: catpool when trailing-28d proxy < threshold)\n\n")
+    md.append(table(gate))
+    md.append(
+        "\nIf the best row barely beats `CorporateRawMeanWAPE`, the deployable gate is not yet "
+        "effective — the hindsight regime split overstates the opportunity.\n"
+    )
+    md.append("\n## Non-overlapping origins (>=14 days apart) — independence check\n\n")
+    md.append(table(non_overlap_summary))
+    md.append(
+        "\n## Honest limitations\n"
+        "- The hindsight regime split near-tautologically favors reallocation and must not drive promotion.\n"
+        "- Even non-overlapping origins are not i.i.d.; add block-bootstrap CIs before any significance claim.\n"
+        "- `late`/`same_day` corporate files are operational-vintage, not clean prospective forecasts.\n"
+        "- Activation is unevaluated here; wire origin-safe inventory history separately before any activation claim.\n"
+    )
+    (out_dir / "leaderboard.md").write_text("".join(md), encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--crosswalk", type=Path, default=DEFAULT_CROSSWALK)
     p.add_argument("--lookback-days", type=int, default=56)
     p.add_argument("--seasonal-years", type=int, default=3)
-    p.add_argument("--min-start", default="2023-01-01",
-                   help="Ignore corporate origins before this date (2022 crosswalk coverage is weak).")
-    p.add_argument("--max-start", default=None, help="Optional upper bound on ForecastStartDate.")
+    p.add_argument("--min-start", default="2023-01-01")
+    p.add_argument("--max-start", default=None)
     p.add_argument("--min-category-coverage", type=float, default=0.90,
-                   help="Skip windows where < this fraction of sold units map to a category.")
-    p.add_argument("--limit", type=int, default=0, help="Smoke test: only run the first N windows.")
+                   help="Origin-safe (corporate-side) mapping coverage threshold for inclusion.")
+    p.add_argument("--freeze-classes", default="clean_frozen,same_day,late",
+                   help="Comma list of freeze classes to include.")
+    p.add_argument("--limit", type=int, default=0)
     p.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     return p.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    crosswalk = load_crosswalk(args.crosswalk)
+    keep_classes = {c.strip() for c in args.freeze_classes.split(",") if c.strip()}
 
-    arc = load_frozen_corporate_map()
-    starts = sorted(pd.Timestamp(d) for d in arc["ForecastStartDate"].unique())
-    min_start = pd.Timestamp(args.min_start)
-    starts = [d for d in starts if d >= min_start]
+    arc, provenance = load_frozen_corporate_map()
+    prov = provenance.copy()
+    prov = prov.loc[prov["ForecastStartDate"] >= pd.Timestamp(args.min_start)]
     if args.max_start:
-        starts = [d for d in starts if d <= pd.Timestamp(args.max_start)]
+        prov = prov.loc[prov["ForecastStartDate"] <= pd.Timestamp(args.max_start)]
+    prov = prov.loc[prov["FreezeClass"].isin(keep_classes)].sort_values("ForecastStartDate")
     if args.limit:
-        starts = starts[: args.limit]
+        prov = prov.head(args.limit)
 
-    print(f"Scoring {len(starts)} corporate origins ({starts[0].date()} .. {starts[-1].date()})")
+    print(f"Scoring {len(prov)} corporate origins "
+          f"({prov['ForecastStartDate'].min().date()} .. {prov['ForecastStartDate'].max().date()})")
     all_rows: list[dict[str, Any]] = []
-    skipped: list[dict[str, Any]] = []
-    for i, origin in enumerate(starts, 1):
-        rows = run_window(arc, crosswalk, origin, args.lookback_days, args.seasonal_years)
-        if not rows:
-            skipped.append({"Origin": origin.date().isoformat(), "reason": "no corporate/actuals"})
-            continue
-        cov = rows[0]["CategoryCoveragePct"]
-        if cov < args.min_category_coverage:
-            skipped.append({"Origin": origin.date().isoformat(),
-                            "reason": f"category coverage {cov:.2%} < {args.min_category_coverage:.0%}"})
-            continue
+    for i, (_, prow) in enumerate(prov.iterrows(), 1):
+        origin = prow["ForecastStartDate"]
+        rows = run_window(arc, origin, prow["SnapshotId"], args.lookback_days,
+                          args.seasonal_years, args.min_category_coverage)
         all_rows.extend(rows)
-        if i % 10 == 0 or i == len(starts):
-            print(f"  [{i}/{len(starts)}] {origin.date()}  scored")
+        if i % 10 == 0 or i == len(prov):
+            print(f"  [{i}/{len(prov)}] {origin.date()}")
 
     per_window = pd.DataFrame(all_rows)
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -404,33 +470,44 @@ def main() -> int:
         return 1
 
     summary = summarize(per_window)
-    by_year, by_regime = regime_breakdowns(per_window)
+    br = breakdowns(per_window, provenance)
+    gate = origin_safe_gate_eval(br["_augmented"])
+
+    no_origins = non_overlapping_origins(list(per_window["Origin"].unique()))
+    no_pw = per_window.loc[per_window["Origin"].isin(no_origins)]
+    non_overlap_summary = summarize(no_pw)
 
     per_window.to_csv(args.output_dir / "per_window.csv", index=False)
     summary.to_csv(args.output_dir / "summary.csv", index=False)
-    by_year.to_csv(args.output_dir / "by_year.csv", index=False)
-    by_regime.to_csv(args.output_dir / "by_regime.csv", index=False)
-    pd.DataFrame(skipped).to_csv(args.output_dir / "skipped_windows.csv", index=False)
+    br["by_year"].to_csv(args.output_dir / "by_year.csv", index=False)
+    br["by_regime_hindsight"].to_csv(args.output_dir / "by_regime_hindsight.csv", index=False)
+    br["by_freeze_class"].to_csv(args.output_dir / "by_freeze_class.csv", index=False)
+    gate.to_csv(args.output_dir / "origin_safe_gate.csv", index=False)
+    non_overlap_summary.to_csv(args.output_dir / "non_overlapping_summary.csv", index=False)
     (args.output_dir / "run_metadata.json").write_text(json.dumps({
         "windows_scored": int(per_window["Origin"].nunique()),
-        "windows_skipped": len(skipped),
+        "non_overlapping_windows": len(no_origins),
         "lookback_days": args.lookback_days,
         "seasonal_years": args.seasonal_years,
         "min_start": args.min_start,
         "max_start": args.max_start,
-        "min_category_coverage": args.min_category_coverage,
-        "frozen_vintage": "earliest_upload_per_forecast_start_date",
-        "corporate_archive": str(CORPORATE_ARCHIVE.relative_to(PROJECT_ROOT)),
+        "min_category_coverage_origin_safe": args.min_category_coverage,
+        "freeze_classes_included": sorted(keep_classes),
+        "as_of_category_mapping": True,
+        "activation_arm": "excluded (no origin-safe inventory covers archive)",
         "candidates": ANCHORED_CANDIDATES,
     }, indent=2), encoding="utf-8")
-    write_markdown(summary, per_window, args, args.output_dir)
+    write_markdown(summary, br, gate, non_overlap_summary, per_window, args, args.output_dir)
 
     pd.set_option("display.width", 220)
     pd.set_option("display.max_columns", 30)
-    print(f"\nScored {per_window['Origin'].nunique()} windows; skipped {len(skipped)}.\n")
+    print(f"\nScored {per_window['Origin'].nunique()} windows "
+          f"({len(no_origins)} non-overlapping).\n")
     print(summary.to_string(index=False))
-    print("\nBy corporate-coverage regime:")
-    print(by_regime.to_string(index=False))
+    print("\nBy freeze class:")
+    print(br["by_freeze_class"].to_string(index=False))
+    print("\nOrigin-safe deployable gate:")
+    print(gate.to_string(index=False))
     print(f"\nWrote {args.output_dir}")
     return 0
 

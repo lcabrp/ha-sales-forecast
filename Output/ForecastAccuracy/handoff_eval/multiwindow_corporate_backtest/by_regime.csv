@@ -1,9 +1,0 @@
-Regime,Candidate,Windows,MeanWAPE,MeanCoveragePct,WinRateVsRaw
-degraded_corp(cov<75%),catpool_corporate_anchor,31,0.986,79.8,71.0
-degraded_corp(cov<75%),catpool_corporate_anchor_activation,31,0.986,79.8,71.0
-degraded_corp(cov<75%),corporate_raw,31,1.358,40.8,0.0
-degraded_corp(cov<75%),corporate_total_recent_shape,31,0.994,79.5,67.7
-healthy_corp(cov>=75%),catpool_corporate_anchor,115,0.992,89.7,7.0
-healthy_corp(cov>=75%),catpool_corporate_anchor_activation,115,0.992,89.7,7.0
-healthy_corp(cov>=75%),corporate_raw,115,0.699,90.8,0.0
-healthy_corp(cov>=75%),corporate_total_recent_shape,115,1.001,89.6,7.8

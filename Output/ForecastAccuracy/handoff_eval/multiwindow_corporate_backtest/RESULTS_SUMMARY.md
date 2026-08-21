@@ -1,91 +1,91 @@
-# Multi-Window Corporate-Anchored Backtest — First Full Run
+# Multi-Window Corporate-Anchored Backtest — Results (contract-repaired v2)
 
-**146 frozen corporate origins, 2023-05-30 → 2026-06-02.** Frozen vintage =
-earliest upload per `ForecastStartDate`. Origin-safe history. Windows with
-< 90% category coverage skipped (removes 2022). Metric = SKU WAPE, lower better.
-All anchored candidates preserve the corporate daily totals exactly.
+**Exploratory retrospective evidence. NOT grounds to change the champion.**
+This supersedes the first cut after a peer review flagged over-claiming. The
+harness now uses as-of category attributes, origin-safe window inclusion,
+corporate-file freeze classification, drops the (unevaluable) activation arm,
+and adds an origin-safe gate + non-overlapping check.
 
-## 1. Overall leaderboard (mean over all 146 windows)
+146 origins, 2023-05-30 → 2026-06-02. Metric = SKU WAPE (lower better).
 
-| Candidate | Mean WAPE | Median WAPE | Mean Coverage | Mean SKU-use | Win-rate vs corporate_raw |
+## What the review changed, and what it did not
+
+| Fix applied | Effect on the conclusion |
+|---|---|
+| **As-of category mapping** (snapshot-specific PGC+SGC, not the 2026 crosswalk) | Aggregate essentially **unchanged** (corp_raw 0.839, catpool 0.993). The look-ahead in category identity was a real flaw but **not** what drove the headline. |
+| **Origin-safe inclusion** (corporate-side mapping coverage, never horizon actuals) | Same window set qualifies; removed the hindsight inclusion filter. |
+| **Freeze classification** | Only **14 / 146** windows are genuinely `clean_frozen` (file < origin). 78 `same_day`, 54 `late`. "146 frozen origins" was wrong. |
+| **Activation arm dropped** | It evaluated nothing (pick-face inventory starts 2026-06-19, after the last origin 2026-06-02). Removed, not reported. |
+| **Non-overlapping subset (70)** | Mirrors the full set → overlap was **not** inflating the aggregate. |
+| **Hindsight regime split** | Retained as DIAGNOSTIC ONLY; no longer the headline. |
+
+## Overall (146 windows)
+
+| Candidate | Mean WAPE | Median | Mean Coverage | Win-rate vs raw |
+|---|---:|---:|---:|---:|
+| corporate_raw | **0.839** | 0.706 | 80.2% | — |
+| catpool_corporate_anchor | 0.993 | 0.938 | 87.6% | 19.9% |
+| corporate_total_recent_shape | 0.999 | 0.915 | 87.5% | 20.5% |
+
+Non-overlapping (70 windows): corp_raw 0.842 vs catpool 0.977 — same story.
+
+## By corporate-file freeze class (the honest cut)
+
+| Freeze class | corp_raw WAPE | catpool WAPE | corp_raw cov | catpool cov | catpool win-rate |
 |---|---:|---:|---:|---:|---:|
-| corporate_raw | **0.839** | 0.706 | 80.2% | 91.6% | — |
-| catpool_corporate_anchor | 0.991 | 0.923 | 87.6% | 84.2% | 20.5% |
-| corporate_total_recent_shape | 0.999 | 0.915 | 87.5% | 84.1% | 20.5% |
-| catpool_corporate_anchor_activation | 0.991 | 0.923 | 87.6% | 84.2% | 20.5% |
+| **clean_frozen (14)** | 1.164 | **0.910** | 57.2% | 87.1% | 50% |
+| same_day (78) | **0.868** | 1.004 | 80.8% | 88.3% | 19% |
+| late (54) | **0.713** | 0.999 | 85.3% | 86.7% | 13% |
 
-On the raw average, **corporate_raw wins** and the re-allocation candidates look
-*worse*. That average is misleading — see the regime split below.
-(`activation == anchor` here because no origin-safe inventory snapshot exists
-before ~2026-04, so the activation layer has no evidence on 143 of 146 windows.)
+The only genuinely prospective subset (14 clean-frozen windows) happens to be
+skewed toward low-coverage periods, where catpool ties/wins half. Suggestive,
+but **14 windows cannot promote a champion.**
 
-## 2. The finding — it is a regime-specific rescue, not a universal model
-
-### By year (mean SKU WAPE)
+## By year (allocation is conditional)
 
 | Candidate | 2023 | 2024 | 2025 | 2026 |
 |---|---:|---:|---:|---:|
 | corporate_raw | **0.635** | **0.767** | **0.782** | 1.413 |
-| catpool_corporate_anchor | 1.027 | 1.028 | 0.969 | **0.906** |
+| catpool_corporate_anchor | 1.025 | 1.033 | 0.967 | **0.916** |
 
-### By year (mean sold-unit coverage)
+catpool only helps in **2026** (corporate coverage collapsed 90%→33%; catpool
+restores it to 81% and wins 82% of 2026 windows). It hurts in 2023-2025.
 
-| Candidate | 2023 | 2024 | 2025 | 2026 |
-|---|---:|---:|---:|---:|
-| corporate_raw | 92.7% | 88.2% | 85.9% | **33.2%** |
-| catpool_corporate_anchor | 89.8% | 87.5% | 89.0% | **81.6%** |
+## Origin-safe deployable gate (trailing-28d demand share on corporate-positive SKUs)
 
-### By corporate-coverage regime
+Policy: use catpool when the proxy < threshold, else corporate_raw.
 
-| Regime | Candidate | Windows | Mean WAPE | Mean Coverage | Win-rate vs raw |
-|---|---|---:|---:|---:|---:|
-| degraded (corp cov < 75%) | corporate_raw | 31 | 1.358 | 40.8% | — |
-| degraded (corp cov < 75%) | **catpool_corporate_anchor** | 31 | **0.986** | **79.8%** | **71.0%** |
-| healthy (corp cov ≥ 75%) | corporate_raw | 115 | **0.699** | 90.8% | — |
-| healthy (corp cov ≥ 75%) | catpool_corporate_anchor | 115 | 0.992 | 89.7% | 7.0% |
+| Proxy threshold | Windows triggered | Gated mean WAPE | corp_raw mean WAPE | Improved / Worsened |
+|---:|---:|---:|---:|---:|
+| 0.55 | 28 | **0.786** | 0.839 | 19 / 9 |
+| 0.60 | 34 | 0.797 | 0.839 | 20 / 14 |
+| 0.70 | 41 | 0.809 | 0.839 | 21 / 20 |
+| 0.75 | 57 | 0.839 | 0.839 | 23 / 34 |
 
-## 3. What this means (and why it matters for direction)
+At the best **in-sample** threshold (0.55) the gate cuts aggregate WAPE ~6%
+(0.839 → 0.786) with a favorable 19:9 improved:worsened ratio. That is more
+encouraging than "negligible" — **but it is in-sample threshold selection on
+overlapping windows**, so it is not validated and must not drive promotion.
+(A prior review using a different proxy found ~zero aggregate gain; both are
+exploratory and proxy-dependent.)
 
-1. **The category-pool re-allocation is a rescue for the coverage-collapse
-   regime, not a general-purpose replacement.** When the corporate SKU forecast
-   has collapsed (2026 / coverage < 75%) it cuts WAPE **1.36 → 0.99** and nearly
-   **doubles sold-unit coverage (40.8% → 79.8%)**, winning **71%** of those
-   windows. When corporate is healthy (2023–2025) it *hurts* (WAPE 0.70 → 0.99)
-   and wins only ~7% of the time.
+## Bottom line
 
-2. **The single July-7 window that anointed `catpool_corporate_anchor_activation`
-   the champion was a 2026 season-onset window — i.e. the degraded regime.** That
-   is why it looked like a clean win. Across 146 windows it is revealed as
-   **conditional**. Pre-registering it as an unconditional replacement for the
-   corporate forecast would have *degraded* accuracy in ~79% of historical
-   windows.
+- **Keep the architecture and the harness. Do not change the champion.**
+- The corrected evidence still says the category-pool re-allocation is a
+  **coverage-collapse rescue**, not a general replacement — but the *promotable*
+  version (an origin-safe gate) is only a modest, unvalidated aggregate gain.
+- Real value was the **data/evaluation unlock**: this is producible offline in
+  ~12 minutes across 146 windows, not one live window per fortnight.
 
-3. **The right direction is a regime-GATED policy**, not "catpool vs corporate":
-   detect the coverage-collapse regime and apply category-pool re-allocation only
-   then; otherwise trust `corporate_raw`. The 2026 collapse (corporate coverage
-   ~90% → ~33%) is the real, persistent business problem, and this candidate
-   demonstrably addresses exactly that regime.
+## Next work (repair-the-contract order, not another model layer)
 
-4. **Honest caveat — the regime label here is hindsight.** It uses each window's
-   *realized* corporate coverage, which is not known at the origin. To deploy the
-   gate you need an **origin-safe proxy** for "corporate is about to under-cover",
-   e.g. the share of trailing-28d sold units whose SKU is absent/zero in the new
-   corporate upload, assortment-turnover, or forecast-positive-SKU count vs
-   recent-active-SKU count. Building and validating that proxy across these same
-   146 windows is the immediate next step.
-
-5. **Activation is still only tested on recent windows** (no historical
-   inventory). Adding as-of inventory/inbound history for 2024–2025 season resets
-   is the highest-value data unlock left.
-
-## 4. Bottom line for the direction review
-
-- The architecture is sound and aimed at the correct problem. **Keep it.**
-- Stop framing it as "beat corporate everywhere." Frame it as **"detect and
-  rescue the coverage-collapse regime."** The evidence for that framing is now
-  quantified across 146 windows instead of one.
-- This entire result was produced offline, in one run, from data already in the
-  repo — the two-week live loop was never necessary to get here.
-
-Artifacts: `summary.csv`, `by_year.csv`, `by_regime.csv`, `per_window.csv`,
-`skipped_windows.csv`, `run_metadata.json`, `leaderboard.md`.
+1. **Time-separated gate validation.** Tune the proxy threshold on an early time
+   block, test on a held-out later block; add block-bootstrap CIs on
+   non-overlapping origins. Only then consider a prospective freeze.
+2. **Clean-frozen-only track.** Report and pre-register on `clean_frozen`
+   windows; treat `same_day`/`late` as operational-vintage analysis only.
+3. **Historical inventory/inbound** (as-of) for 2024-2025 season resets, so the
+   activation layer can finally be evaluated. Until then it stays out.
+4. **Record full provenance per window** (SnapshotId, availability, source hash,
+   mapping coverage) — SnapshotId + freeze class are now emitted; add hashes.
