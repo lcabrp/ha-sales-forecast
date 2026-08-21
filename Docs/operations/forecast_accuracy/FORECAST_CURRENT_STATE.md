@@ -1,6 +1,6 @@
 # Forecast Current State
 
-Authoritative as of 2026-08-19. This is the first document to read for forecast
+Authoritative as of 2026-08-21. This is the first document to read for forecast
 work. It replaces the June reset diary, model-input lab notebook, intermediate
 handoffs, and smoke-test champion narratives as active guidance. Git history
 retains those records when provenance is needed.
@@ -152,6 +152,26 @@ the cost of lower forecast-SKU use and slightly more zero-demand forecast
 units. Category reconstruction status and the current-value crosswalk
 limitation remain explicit; this selects the primary challenger but does not
 retroactively make it prospective.
+
+### Historical inventory review, August 21
+
+Live AX warehouse history, saved monitoring pick-face history, open inbound,
+and Forecast DB weekly inventory are now preserved as compact, origin-safe
+facts. The broad AX and pick-face sensitivities reject the old unioned supply
+activation rule: both raise coverage but worsen WAPE.
+
+The isolated Forecast DB DIRECT inventory signal is narrowly positive over 16
+origins from February 18 through June 2. It improves the category-pool anchor's
+mean WAPE from 0.8268 to 0.8183 and coverage from 86.69% to 87.09%, with the same
+direction on all 16 paired origins and on the eight non-overlapping origins.
+This is not a promotion: global recent shape remains better at 0.8078, the gain
+is small, and the work is retrospective.
+
+Combining DIRECT inventory with unrestricted historical Product Info inbound
+worsens WAPE to 0.8435 because early origins reuse a 2024 inbound snapshot and
+force the activation gate fully open. The next design must keep warehouse,
+pick-face, and inbound evidence separate and impose explicit snapshot-age
+limits. See `FORECAST_INVENTORY_HISTORY_REVIEW_2026-08-21.md`.
 
 ## Completed Evidence
 
@@ -379,6 +399,17 @@ lower forecast-SKU use rate (`0.8601 → 0.8296`) and a slightly higher share of
 forecast units on zero-demand SKUs (`0.0883 → 0.0912`). Activation remains
 season-conditional; treat the method as research until it has a genuinely
 prospective, multi-window corporate comparison.
+
+### Historical inventory review (2026-08-21; no champion change)
+
+The rolling AX warehouse history is now append-preserved through 2026-08-21,
+and the monitoring pick-face fact is backfilled to 2026-05-13. Origin-safe
+multi-window tests rejected the current activation rule: versus the category-
+pool anchor, warehouse activation worsened mean WAPE `0.7272 -> 0.7884` over
+nine origins, and pick-face activation worsened it `0.6412 -> 0.7124` over the
+three covered origins. Coverage improved in both tests, so inventory remains
+important for occurrence/assortment research, but the existing turnover gate is
+not selective enough. See `FORECAST_INVENTORY_HISTORY_REVIEW_2026-08-21.md`.
 
 Older conclusions are not active guidance. Recover them from Git history only
 when a provenance question specifically requires them.

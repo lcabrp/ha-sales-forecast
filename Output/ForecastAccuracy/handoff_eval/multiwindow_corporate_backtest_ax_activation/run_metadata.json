@@ -1,0 +1,25 @@
+{
+  "windows_scored": 9,
+  "non_overlapping_windows": 5,
+  "lookback_days": 56,
+  "seasonal_years": 3,
+  "min_start": "2026-04-01",
+  "max_start": "2026-06-02",
+  "min_category_coverage_origin_safe": 0.9,
+  "freeze_classes_included": [
+    "clean_frozen",
+    "late",
+    "same_day"
+  ],
+  "as_of_category_mapping": true,
+  "activation_arm": "origin-safe evidence dates only",
+  "activation_inventory_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\inventory\\ax_inventory_history_sku_day.parquet",
+  "activation_inbound_path": "C:\\Users\\labreu\\Documents\\Projects\\ha-sales-forecast\\Output\\ForecastAccuracy\\inbound\\product_info_inbound_snapshots.parquet",
+  "activation_windows_scored": 9,
+  "candidates": [
+    "corporate_raw",
+    "corporate_total_recent_shape",
+    "catpool_corporate_anchor",
+    "catpool_corporate_anchor_activation"
+  ]
+}

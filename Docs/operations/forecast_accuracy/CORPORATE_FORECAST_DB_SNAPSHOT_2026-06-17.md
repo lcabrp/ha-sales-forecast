@@ -11,7 +11,8 @@ Captured: 2026-06-17
 
 - Server: `azprodfcast01.572f3811ca67.database.windows.net`
 - Database: `Forecast`
-- Auth used: Microsoft Entra interactive auth
+- Auth used for the original snapshot: Microsoft Entra interactive auth
+- Current default: cached Azure CLI token via `scripts/python/forecast_db_auth.py`
 - Local extractor: `scripts/python/forecast_corporate_db_extract.py`
 
 The Azure SQL server also exposes `Forecast_DEV`. The production-looking
@@ -67,16 +68,18 @@ sku_forecast = pd.read_parquet(
 )
 ```
 
-Using these local files avoids the Azure SQL connection and Microsoft Entra
-prompt for normal exploration. A refresh still requires one authenticated Azure
-SQL run.
+Using these local files avoids the Azure SQL connection for normal exploration.
+A refresh requires a valid cached Azure CLI tenant login. See
+`FORECAST_DB_AUTHENTICATION.md`.
 
 ## Refresh Command
 
-Set the user once in the shell session:
+Create or refresh the cached Hanna tenant login when needed:
 
 ```powershell
-$env:ZS_FORECAST_DB_USER = "labreu@hannaandersson.com"
+az login `
+  --tenant d977da7e-372a-4369-b692-487f0d0adbe2 `
+  --allow-no-subscriptions
 ```
 
 Then refresh the core snapshot:
@@ -84,6 +87,9 @@ Then refresh the core snapshot:
 ```powershell
 uv run python scripts/python/forecast_corporate_db_extract.py
 ```
+
+The extractor obtains an Azure SQL access token from the CLI cache. It does not
+store the token or user credentials in this repository.
 
 Useful variants:
 
@@ -103,9 +109,28 @@ uv run python scripts/python/forecast_corporate_db_extract.py --group archive
 
 ## Notes
 
+### Compact inventory refresh (2026-08-21)
+
+The 666 MB June core snapshot was not regenerated. Instead, the two relevant
+support tables were extracted live into the tracked compact family under
+`Output/ForecastAccuracy/inventory/forecast_db/`:
+
+- 451,358 clean channel/SKU weekly rows (2.06 MB Parquet);
+- 394,860 DIRECT-only rows (1.68 MB Parquet) for activation sensitivities;
+- 22,161 aggregate channel/category/season inventory rows (89 KB Parquet);
+- 78 billion-plus pseudo-SKU rows quarantined in a separate audit Parquet;
+- compact snapshot summaries and SHA-256 provenance in `metadata.json`.
+
+Rebuild this family with:
+
+```powershell
+uv run python scripts/python/forecast_corporate_inventory_history.py
+```
+
 - The schema has no declared foreign keys. Relationships appear to be by
   business keys such as `Channel`, `OfferID`, `SKU`, and `CalendarDate`.
 - Archive, frozen, backup, and test tables were not included in the core local
   snapshot.
-- Generated Parquet snapshots are local artifacts under `Output/ForecastAccuracy`
-  and should not be treated as source-controlled code.
+- Monolithic generated database snapshots are local artifacts. Compact,
+  forecast-owned facts and their provenance remain trackable under the portable
+  artifact contract.

@@ -47,3 +47,8 @@ tmp/
 # Keep forecast artifacts trackable by default, including Parquet/CSV/JSON/MD outputs,
 # as long as individual files remain below the practical 90 MB push ceiling.
 
+# Producer-owned monitoring detail shards are mirrored locally for rebuilds.
+# Track the consolidated forecast facts and metadata instead of these duplicates.
+Output/ForecastAccuracy/inbound/ax_open_inbound_detail_20*.parquet
+Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_20*.parquet
+

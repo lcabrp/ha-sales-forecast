@@ -1,0 +1,25 @@
+{
+  "windows_scored": 16,
+  "non_overlapping_windows": 8,
+  "lookback_days": 56,
+  "seasonal_years": 3,
+  "min_start": "2026-02-15",
+  "max_start": "2026-06-02",
+  "min_category_coverage_origin_safe": 0.9,
+  "freeze_classes_included": [
+    "clean_frozen",
+    "late",
+    "same_day"
+  ],
+  "as_of_category_mapping": true,
+  "activation_arm": "origin-safe evidence dates only",
+  "activation_inventory_path": "Output\\ForecastAccuracy\\inventory\\forecast_db\\direct_sku_inventory_weekly.parquet",
+  "activation_inbound_path": "Output\\ForecastAccuracy\\inbound\\product_info_inbound_snapshots.parquet",
+  "activation_windows_scored": 16,
+  "candidates": [
+    "corporate_raw",
+    "corporate_total_recent_shape",
+    "catpool_corporate_anchor",
+    "catpool_corporate_anchor_activation"
+  ]
+}

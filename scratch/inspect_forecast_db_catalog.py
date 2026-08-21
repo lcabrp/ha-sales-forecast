@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -15,11 +16,20 @@ from typing import Any
 
 import pyodbc
 
+PYTHON_DIR = Path(__file__).resolve().parents[1] / "scripts" / "python"
+if str(PYTHON_DIR) not in sys.path:
+    sys.path.insert(0, str(PYTHON_DIR))
 
-DEFAULT_SERVER = "azprodfcast01.572f3811ca67.database.windows.net"
-DEFAULT_DATABASE = "Forecast"
-DEFAULT_USER = "labreu@hannaandersson.com"
-DEFAULT_DRIVER = "ODBC Driver 18 for SQL Server"
+from forecast_db_auth import (  # noqa: E402
+    DEFAULT_AUTH,
+    DEFAULT_DATABASE,
+    DEFAULT_DRIVER,
+    DEFAULT_SERVER,
+    DEFAULT_TENANT_ID,
+    DEFAULT_USER,
+    build_connection_string as build_forecast_db_connection_string,
+    connect_forecast_db,
+)
 
 
 TABLES_SQL = """
@@ -244,29 +254,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--database", default=DEFAULT_DATABASE)
     parser.add_argument("--user", default=DEFAULT_USER)
     parser.add_argument("--driver", default=DEFAULT_DRIVER)
-    parser.add_argument("--auth", default="ActiveDirectoryInteractive")
+    parser.add_argument("--auth", default=DEFAULT_AUTH)
+    parser.add_argument("--tenant-id", default=DEFAULT_TENANT_ID)
     parser.add_argument("--timeout", type=int, default=60)
     parser.add_argument("--output-dir", type=Path, default=Path("scratch"))
     return parser.parse_args()
 
 
 def connection_string(args: argparse.Namespace) -> str:
-    server = args.server
-    if not server.lower().startswith("tcp:"):
-        server = f"tcp:{server},1433"
-
-    parts = [
-        f"DRIVER={{{args.driver}}}",
-        f"SERVER={server}",
-        f"DATABASE={args.database}",
-        "Encrypt=yes",
-        "TrustServerCertificate=no",
-        f"Authentication={args.auth}",
-        f"Connection Timeout={args.timeout}",
-    ]
-    if args.user:
-        parts.append(f"UID={args.user}")
-    return ";".join(parts)
+    return build_forecast_db_connection_string(
+        server=args.server,
+        database=args.database,
+        driver=args.driver,
+        auth=args.auth,
+        user=args.user,
+        timeout=args.timeout,
+    )
 
 
 def fetch_dicts(cursor: pyodbc.Cursor, sql: str) -> list[dict[str, Any]]:
@@ -458,7 +461,15 @@ def main() -> None:
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     prefix = f"forecast_db_catalog_{stamp}"
 
-    with pyodbc.connect(connection_string(args)) as conn:
+    with connect_forecast_db(
+        server=args.server,
+        database=args.database,
+        driver=args.driver,
+        auth=args.auth,
+        user=args.user,
+        tenant_id=args.tenant_id,
+        timeout=args.timeout,
+    ) as conn:
         cursor = conn.cursor()
         cursor.execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
         connection_info = fetch_dicts(

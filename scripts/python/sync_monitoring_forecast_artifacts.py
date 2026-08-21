@@ -53,6 +53,53 @@ CONTRACT_FILES = {
     },
 }
 
+MERGE_KEYS = {
+    "pickface_inventory_snapshot_detail.parquet": ["SnapshotDate", "SKU", "Location"],
+    "pickface_inventory_sku_day.parquet": ["SnapshotDate", "SKU"],
+    "ax_open_inbound_detail.parquet": ["SnapshotDate", "PurchLineRecID"],
+    "ax_open_inbound_sku_day.parquet": ["SnapshotDate", "SKU"],
+    "ax_open_inbound_snapshot_summary.csv": ["SnapshotDate"],
+}
+
+
+def normalize_merge_types(
+    existing: pd.DataFrame,
+    fresh: pd.DataFrame,
+    filename: str,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Normalize known cross-snapshot schema drift before retention merges."""
+    if filename != "pickface_inventory_snapshot_detail.parquet":
+        return existing, fresh
+    text_columns = [
+        "InventorySource",
+        "SnapshotDate",
+        "SKU",
+        "Item",
+        "Color",
+        "Size_",
+        "Location",
+        "LocProfile",
+        "CurrentZoneId",
+        "CurrentCategoryCode",
+        "CurrentCategoryName",
+        "ForecastSlotTier",
+        "ForecastCategoryCode",
+        "ForecastCategoryName",
+        "ForecastStartDate",
+        "ForecastModifiedDateTime",
+    ]
+    for frame in (existing, fresh):
+        for column in text_columns:
+            if column in frame:
+                frame[column] = frame[column].fillna("").astype(str).str.strip()
+        if "AisleId" in frame:
+            frame["AisleId"] = pd.to_numeric(frame["AisleId"], errors="coerce").astype("Int64")
+        if "PhysicalQty" in frame:
+            frame["PhysicalQty"] = pd.to_numeric(
+                frame["PhysicalQty"], errors="coerce"
+            ).fillna(0.0)
+    return existing, fresh
+
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments for the monitoring mirror sync script.
@@ -229,7 +276,35 @@ def copy_one(
 
     if not dry_run and action != "unchanged":
         destination_path.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source_path, destination_path)
+        merge_keys = MERGE_KEYS.get(source_path.name)
+        if destination_path.exists() and merge_keys:
+            if source_path.suffix.lower() == ".parquet":
+                existing = pd.read_parquet(destination_path)
+                fresh = pd.read_parquet(source_path)
+            else:
+                existing = pd.read_csv(destination_path)
+                fresh = pd.read_csv(source_path)
+            existing, fresh = normalize_merge_types(existing, fresh, source_path.name)
+            missing = [key for key in merge_keys if key not in existing or key not in fresh]
+            if missing:
+                raise ValueError(
+                    f"Cannot retention-merge {source_path.name}; missing keys: {missing}"
+                )
+            merged = (
+                pd.concat([existing, fresh], ignore_index=True)
+                .drop_duplicates(merge_keys, keep="last")
+                .sort_values(merge_keys, kind="mergesort")
+                .reset_index(drop=True)
+            )
+            temp_path = destination_path.with_suffix(destination_path.suffix + ".tmp")
+            if source_path.suffix.lower() == ".parquet":
+                merged.to_parquet(temp_path, index=False, compression="zstd")
+            else:
+                merged.to_csv(temp_path, index=False)
+            temp_path.replace(destination_path)
+            action = "merge"
+        else:
+            shutil.copy2(source_path, destination_path)
 
     destination_for_counts = destination_path if destination_path.exists() and not dry_run else source_path
 
@@ -293,6 +368,7 @@ def main() -> None:
             "files_seen": len(copied),
             "created": sum(1 for item in copied if item["action"] == "create"),
             "updated": sum(1 for item in copied if item["action"] == "update"),
+            "merged": sum(1 for item in copied if item["action"] == "merge"),
             "unchanged": sum(1 for item in copied if item["action"] == "unchanged"),
             "bytes_seen": sum(int(item["bytes"]) for item in copied),
         },
@@ -300,6 +376,7 @@ def main() -> None:
             "ha-kydc-monitoring remains the daily producer for these contract artifacts.",
             "ha-sales-forecast keeps this mirrored copy for forecast modeling and GitHub/cloud LLM review.",
             "Dated Parquet files are immutable as-of snapshots; rolling facts should not be used for older holdouts without checking SnapshotDate.",
+            "Rolling inventory/inbound facts are retention-merged by their natural snapshot keys so producer refreshes do not discard older consumer-only dates.",
         ],
     }
 

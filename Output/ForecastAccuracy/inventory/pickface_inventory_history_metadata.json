@@ -1,0 +1,39 @@
+{
+  "updated_at_utc": "2026-08-21T15:28:14+00:00",
+  "source": "KYDC monitoring immutable inventory_zone_compliance detail reports; live source DAX_PROD.dbo.INVENTSUM/INVENTDIM/WMSLOCATION",
+  "reports_directory": "ha-kydc-monitoring/Output/Monitoring/reports",
+  "report_snapshots_read": 55,
+  "report_start_date": "2026-05-13",
+  "report_end_date": "2026-08-21",
+  "dated_files_created": 0,
+  "dated_files_preserved": 55,
+  "combined_start_date": "2026-05-13",
+  "combined_end_date": "2026-08-21",
+  "combined_snapshot_days": 55,
+  "detail_rows": 753746,
+  "sku_day_rows": 669049,
+  "distinct_skus": 20941,
+  "retention_merge": {
+    "previous_detail_rows": 753746,
+    "previous_sku_day_rows": 669049,
+    "keys": {
+      "detail": [
+        "SnapshotDate",
+        "SKU",
+        "Location"
+      ],
+      "sku_day": [
+        "SnapshotDate",
+        "SKU"
+      ]
+    }
+  },
+  "outputs": {
+    "detail_fact": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail.parquet",
+    "sku_day": "Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet"
+  },
+  "notes": [
+    "Snapshot dates are capture dates; missing calendar dates were not synthesized.",
+    "This is pick-face/location inventory and remains distinct from broad AX warehouse availability history."
+  ]
+}

@@ -30,6 +30,9 @@ Keep these current, compact contracts in Git:
   offer Parquet, SKU/day features, and extraction summaries;
 - compact planner, sales-order, inventory, inbound, reservation, and warehouse
   supply facts that are forecast-owned and expensive to recreate;
+- `Output/ForecastAccuracy/inventory/forecast_db/`: compact weekly corporate
+  channel/SKU inventory, DIRECT activation view, macro history, sentinel audit,
+  snapshot summaries, hashes, and live-query provenance;
 - `Output/ForecastAccuracy/handoff_eval/forward_2026-07-07_closeout/`;
 - `Output/ForecastAccuracy/handoff_eval/forward_2026-07-21_closeout/`;
 - `Output/ForecastAccuracy/handoff_eval/forward_2026-08-04_closeout/`;

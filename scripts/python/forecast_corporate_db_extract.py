@@ -25,6 +25,15 @@ PYTHON_DIR = Path(__file__).resolve().parent
 if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
 
+from forecast_db_auth import (  # noqa: E402
+    DEFAULT_AUTH,
+    DEFAULT_DATABASE,
+    DEFAULT_DRIVER,
+    DEFAULT_SERVER,
+    DEFAULT_TENANT_ID,
+    build_connection_string as build_forecast_db_connection_string,
+    connect_forecast_db,
+)
 from output_paths import PROJECT_ROOT  # noqa: E402
 
 
@@ -33,10 +42,6 @@ PYODBC_PANDAS_WARNING = (
     "(engine/connection) or database string URI or sqlite3 DBAPI2 connection."
 )
 
-DEFAULT_SERVER = "azprodfcast01.572f3811ca67.database.windows.net"
-DEFAULT_DATABASE = "Forecast"
-DEFAULT_DRIVER = "ODBC Driver 18 for SQL Server"
-DEFAULT_AUTH = "ActiveDirectoryInteractive"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "Output" / "ForecastAccuracy" / "corporate_forecast"
 
 # List of key Forecast tables grouped by their usage/size categories
@@ -186,6 +191,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--driver", default=os.getenv("ZS_FORECAST_DB_DRIVER", DEFAULT_DRIVER))
     parser.add_argument("--auth", default=os.getenv("ZS_FORECAST_DB_AUTH", DEFAULT_AUTH))
     parser.add_argument(
+        "--tenant-id",
+        default=os.getenv("ZS_FORECAST_DB_TENANT_ID", DEFAULT_TENANT_ID),
+        help="Microsoft Entra tenant used by cached Azure CLI authentication.",
+    )
+    parser.add_argument(
         "--user",
         default=os.getenv("ZS_FORECAST_DB_USER"),
         help="Entra user principal name. Can also be set as ZS_FORECAST_DB_USER.",
@@ -323,22 +333,14 @@ def connection_string(args: argparse.Namespace) -> str:
     Returns:
         str: Full ODBC driver connection string.
     """
-    server = args.server
-    if not server.lower().startswith("tcp:"):
-        server = f"tcp:{server},1433"
-
-    parts = [
-        f"DRIVER={{{args.driver}}}",
-        f"SERVER={server}",
-        f"DATABASE={args.database}",
-        "Encrypt=yes",
-        "TrustServerCertificate=no",
-        f"Authentication={args.auth}",
-        f"Connection Timeout={args.timeout}",
-    ]
-    if args.user:
-        parts.append(f"UID={args.user}")
-    return ";".join(parts)
+    return build_forecast_db_connection_string(
+        server=args.server,
+        database=args.database,
+        driver=args.driver,
+        auth=args.auth,
+        user=args.user,
+        timeout=args.timeout,
+    )
 
 
 def fetch_dicts(cursor: pyodbc.Cursor, sql: str, params: list[Any] | None = None) -> list[dict[str, Any]]:
@@ -582,7 +584,15 @@ def main() -> None:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     snapshot_dir = args.output_dir / "snapshots" / timestamp
 
-    with pyodbc.connect(connection_string(args)) as conn:
+    with connect_forecast_db(
+        server=args.server,
+        database=args.database,
+        driver=args.driver,
+        auth=args.auth,
+        user=args.user,
+        tenant_id=args.tenant_id,
+        timeout=args.timeout,
+    ) as conn:
         cursor = conn.cursor()
         cursor.execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
         connection_info = fetch_dicts(

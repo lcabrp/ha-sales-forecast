@@ -1,0 +1,13 @@
+FreezeClass,Candidate,Windows,MeanWAPE,MeanCoveragePct,WinRateVsRaw
+clean_frozen,catpool_corporate_anchor,6,0.807,90.3,100.0
+clean_frozen,catpool_corporate_anchor_activation,6,0.799,90.7,100.0
+clean_frozen,corporate_raw,6,1.581,27.2,0.0
+clean_frozen,corporate_total_recent_shape,6,0.785,90.7,100.0
+late,catpool_corporate_anchor,4,0.767,87.9,100.0
+late,catpool_corporate_anchor_activation,4,0.759,88.2,100.0
+late,corporate_raw,4,1.244,33.2,0.0
+late,corporate_total_recent_shape,4,0.755,88.6,100.0
+same_day,catpool_corporate_anchor,6,0.886,82.3,100.0
+same_day,catpool_corporate_anchor_activation,6,0.877,82.7,100.0
+same_day,corporate_raw,6,1.692,20.5,0.0
+same_day,corporate_total_recent_shape,6,0.866,83.0,100.0

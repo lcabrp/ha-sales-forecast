@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-07-22T16:47:03+00:00",
+  "generated_at_utc": "2026-08-21T16:02:52+00:00",
   "mode": "mirror",
   "producer_repo": "C:\\Users\\labreu\\Documents\\Projects\\ha-kydc-monitoring",
   "producer_contract_root": "Output/ForecastAccuracy",
@@ -7,17 +7,31 @@
   "consumer_output_root": "Output/ForecastAccuracy",
   "max_file_mb": 90.0,
   "families": [
-    "inbound",
-    "inventory"
+    "inventory",
+    "inbound"
   ],
   "source_metadata": {
-    "inbound": {
-      "updated_at_utc": "2026-07-22T16:44:32.101515+00:00",
-      "source": "DAX_PROD.dbo.PURCHLINE/PURCHTABLE/INVENTDIM",
-      "snapshot_count": 29,
-      "latest_snapshot_date": "2026-07-22",
+    "inventory": {
+      "updated_at_utc": "2026-08-21T12:42:57.227424+00:00",
+      "source": "DAX_PROD.dbo.INVENTSUM/INVENTDIM/WMSLOCATION + HAFORECASTREPLENISHMENTTABLE",
+      "latest_snapshot_date": "2026-08-21",
       "outputs": {
-        "dated_detail": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
+        "dated_detail": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-21.parquet",
+        "detail_fact": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail.parquet",
+        "sku_day": "Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet"
+      },
+      "notes": [
+        "Paths are repo-relative when output_dir is under this repo root.",
+        "Use dated_detail for immutable holdout snapshots and sku_day for compact model features."
+      ]
+    },
+    "inbound": {
+      "updated_at_utc": "2026-08-21T12:43:04.566343+00:00",
+      "source": "DAX_PROD.dbo.PURCHLINE/PURCHTABLE/INVENTDIM",
+      "snapshot_count": 40,
+      "latest_snapshot_date": "2026-08-21",
+      "outputs": {
+        "dated_detail": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-21.parquet",
         "detail_fact": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
         "sku_day": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
         "summary": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv"
@@ -27,346 +41,35 @@
         "Open PO/inbound state is current as of SnapshotDate.",
         "Use daily snapshots for historical model features; do not use current open PO state for older holdouts."
       ]
-    },
-    "inventory": {
-      "updated_at_utc": "2026-07-22T16:44:26.542714+00:00",
-      "source": "DAX_PROD.dbo.INVENTSUM/INVENTDIM/WMSLOCATION + HAFORECASTREPLENISHMENTTABLE",
-      "latest_snapshot_date": "2026-07-22",
-      "outputs": {
-        "dated_detail": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-22.parquet",
-        "detail_fact": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail.parquet",
-        "sku_day": "Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet"
-      },
-      "notes": [
-        "Paths are repo-relative when output_dir is under this repo root.",
-        "Use dated_detail for immutable holdout snapshots and sku_day for compact model features."
-      ]
     }
   },
   "files": [
     {
-      "family": "inbound",
-      "action": "update",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_metadata.json",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_metadata.json",
-      "bytes": 827,
-      "sha256": "aa0eb5d25edad76ead2d434d1a3d15b0d7500ea404370c4469fd049c07a975a5",
-      "row_count": null
-    },
-    {
-      "family": "inbound",
-      "action": "update",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
-      "bytes": 10222776,
-      "sha256": "ad2110556e99e65f0c39db29c7934d172d14256ae5a9053fb15ce08fee1619f0",
-      "row_count": 679294
-    },
-    {
-      "family": "inbound",
-      "action": "update",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
-      "bytes": 2348152,
-      "sha256": "0201f67954ccd37d40587dca3185ad8d8016ffdc02a8b213aa400b09f5c5673f",
-      "row_count": 441080
-    },
-    {
-      "family": "inbound",
-      "action": "update",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv",
-      "bytes": 3569,
-      "sha256": "5453de170e8c079fd798bee3ed1eaa87d182230b342da07ad455125446947e88",
-      "row_count": 29
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-19.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-19.parquet",
-      "bytes": 539840,
-      "sha256": "78333f35e0daa61ee8499d4b7cd09f8bf6ba55d0a9e747d267f1f7560ae03290",
-      "row_count": 24711
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-20.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-20.parquet",
-      "bytes": 535702,
-      "sha256": "5a4f92d5e0a8d14acee29b0e986a237d1ea41e3e7ae87fe6bd2e3a115a32e543",
-      "row_count": 24392
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-21.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-21.parquet",
-      "bytes": 535697,
-      "sha256": "427de061b8465c4f211e1097fa5984b0cfcf0565102d825ea4ace5a40e49f19b",
-      "row_count": 24392
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-22.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-22.parquet",
-      "bytes": 534937,
-      "sha256": "69177e6ad23bf1bc2850d7557d4cc487ba69287529dbde29f30ce281bc50ae5a",
-      "row_count": 24390
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-23.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-23.parquet",
-      "bytes": 534995,
-      "sha256": "60f51f929edb38fc84a3d5442f2b55ee72e20c9a38c1a92c91104365ec0a23e5",
-      "row_count": 24391
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-24.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-24.parquet",
-      "bytes": 535433,
-      "sha256": "a1876cbc5a46a7cd3abad620e0710b5775c6db008b170fa9a1374ed21149738c",
-      "row_count": 24371
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-25.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-25.parquet",
-      "bytes": 533491,
-      "sha256": "d4cf00bf7d7b3ef36e34b650ed0bf2dec5ba7971f2ac45b4a6249874dada528b",
-      "row_count": 24400
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-26.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-26.parquet",
-      "bytes": 530103,
-      "sha256": "103ff3e85206cb8756c09bfddde574d78a7508f008f0dce39b4ec36812bbb65b",
-      "row_count": 24243
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-27.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-27.parquet",
-      "bytes": 532008,
-      "sha256": "3cd841d3937b7d4db6746796f624ff60324d300c456ca9fb9e3e357012197fe4",
-      "row_count": 24211
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-28.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-28.parquet",
-      "bytes": 526277,
-      "sha256": "5750cadf6adca9dba06fb6f9d302c12072f406fc24380ac2f7bdf943df86c9af",
-      "row_count": 23970
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-29.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-29.parquet",
-      "bytes": 527774,
-      "sha256": "b0aa2d50743abf75faab82b0ed99819bffde8efbbae0fa790cbd52c52b97b0cf",
-      "row_count": 23941
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-30.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-30.parquet",
-      "bytes": 533430,
-      "sha256": "f27f5d5d8bd80b26384bb7448ea83eeeda0a2aab4ed0e7a879fb873a75594673",
-      "row_count": 24167
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-02.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-02.parquet",
-      "bytes": 531630,
-      "sha256": "ec8dae277b40b7cac9a9498bbe029211fa524d532447c61430c1a6d5f6226471",
-      "row_count": 24002
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-03.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-03.parquet",
-      "bytes": 529350,
-      "sha256": "1f2289e73fdcf4163d306621296205e9d43d2c44e291ff920889c112b05ce8cb",
-      "row_count": 23848
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-04.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-04.parquet",
-      "bytes": 529258,
-      "sha256": "89069cca460acb43f50b832c1a1a5f513649abbc5741c110d7f2f6abb1e76bef",
-      "row_count": 23848
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-05.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-05.parquet",
-      "bytes": 529292,
-      "sha256": "ce8433db3ab64a18667ee7718c0037e0c1944b0df472738c203b5f2ac377ce14",
-      "row_count": 23848
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-06.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-06.parquet",
-      "bytes": 520819,
-      "sha256": "08c2dd91237f71aed7c65d9f629c9d94c6cdab6b5ca45cf6a03234dac111a3cb",
-      "row_count": 23360
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-07.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-07.parquet",
-      "bytes": 516763,
-      "sha256": "0dd1f5e464caa58884fea3b850ed33e4423c82bd990e6d2e0813e00c36e257c5",
-      "row_count": 23136
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-08.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-08.parquet",
-      "bytes": 518372,
-      "sha256": "d6e429149bf0510539c74faf237bab74f6de8a45ac7a246b2dc0d53507e7b19e",
-      "row_count": 23189
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-09.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-09.parquet",
-      "bytes": 508896,
-      "sha256": "b712df9b9adf1989c03b642664abb4f22654b9fe76ae57d3ca4bcd599b7433ef",
-      "row_count": 22760
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-10.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-10.parquet",
-      "bytes": 511685,
-      "sha256": "7dfd23e1181528a33139614b35e7ac610de49e187e4eada5c0a24e79f17704cf",
-      "row_count": 22775
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-11.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-11.parquet",
-      "bytes": 512196,
-      "sha256": "a61be4e41249d2b4804c388bb0957c67b0548f12904aa0af11d0c9f81feb014d",
-      "row_count": 22775
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-13.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-13.parquet",
-      "bytes": 504681,
-      "sha256": "1255e97c2d1e2b6465a4c1158b1087b11bb89f51be3aba41b72d4b357cb8247f",
-      "row_count": 22451
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-14.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-14.parquet",
-      "bytes": 502438,
-      "sha256": "5283de455b0d601f3cd9b783e095a31770c9b1126ef9d0a6f25a64fe5ce3d9e7",
-      "row_count": 22241
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-16.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-16.parquet",
-      "bytes": 494695,
-      "sha256": "4e5282ca67c2d6b23faee17bae612e397e8a988d36f4709c1cb898d7a35cf98b",
-      "row_count": 21818
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-17.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-17.parquet",
-      "bytes": 491631,
-      "sha256": "693f1546dc3a38e825a75149be3760ee56af61cbc1528954761d3d0e0c9fb6a1",
-      "row_count": 21711
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-20.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-20.parquet",
-      "bytes": 481710,
-      "sha256": "560b76e90a8ea88f19732c1fbdecc0e73afa7d0d313e8e106a1ce25f4b3681f4",
-      "row_count": 21427
-    },
-    {
-      "family": "inbound",
-      "action": "unchanged",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-21.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-21.parquet",
-      "bytes": 499160,
-      "sha256": "76c5f8648be9b8fc5be4a223432386339e4428922110649c6766092923a421bf",
-      "row_count": 22145
-    },
-    {
-      "family": "inbound",
-      "action": "create",
-      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
-      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
-      "bytes": 502606,
-      "sha256": "1d99a02c1061ace29306942315427027293ecc4a493c99aa2ff9396439c59154",
-      "row_count": 22381
-    },
-    {
       "family": "inventory",
-      "action": "update",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_metadata.json",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_metadata.json",
       "bytes": 703,
-      "sha256": "a8c350f14f74a9417e3f3bda0be411501598c6690a83551d748abb158bad6c98",
+      "sha256": "21a1953ba7f4dbe2e4080bc0bcddaf9068867598dcbc1088f1d04c223842e055",
       "row_count": null
     },
     {
       "family": "inventory",
-      "action": "update",
+      "action": "merge",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail.parquet",
-      "bytes": 3721705,
-      "sha256": "3b8526e068368f069ddf39fcc0e539c5e2cf018f2db0497d554bbe95d4660805",
-      "row_count": 380594
+      "bytes": 5391237,
+      "sha256": "0feb622897fbcaa29f922badabb126a1b7b75a188d4a0dd3d41a54a7d225cebe",
+      "row_count": 753746
     },
     {
       "family": "inventory",
-      "action": "update",
+      "action": "merge",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_sku_day.parquet",
-      "bytes": 1651144,
-      "sha256": "381dfee0eea2a4761f801c3b755e9d257c93421b776eea5e19ad9ffdd3a32613",
-      "row_count": 335078
+      "bytes": 2326795,
+      "sha256": "723daf5484354a4bedf4dd08250cccf5c0b41ee45e706a7356014f87232f6401",
+      "row_count": 669049
     },
     {
       "family": "inventory",
@@ -622,24 +325,548 @@
     },
     {
       "family": "inventory",
-      "action": "create",
+      "action": "unchanged",
       "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-22.parquet",
       "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-22.parquet",
       "bytes": 254960,
       "sha256": "b46436af0e9ef5fbc0a2003377beaa1181b352c93a16d46bd405be62e07d1f8b",
       "row_count": 13946
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-27.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-27.parquet",
+      "bytes": 252902,
+      "sha256": "819f2dc4f149408e9329107f6bbad92a8a45d3301419bd6190b8d4bdea7f8dfe",
+      "row_count": 14055
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-29.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-29.parquet",
+      "bytes": 258103,
+      "sha256": "885cb5a88316b60693d0e949d2cc15cf980bd92847827d9fff606fc20d8c7a40",
+      "row_count": 14778
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-30.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-30.parquet",
+      "bytes": 251406,
+      "sha256": "7d6949afdf8c980d8306156a7fb4f1a10e52683fe266627f3dbbdf57e890613b",
+      "row_count": 14404
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-31.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-07-31.parquet",
+      "bytes": 250384,
+      "sha256": "e94f759b71e40ff80154007db1f1ddc47fda829f0ff769a6351a348a446dca1f",
+      "row_count": 14363
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-01.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-01.parquet",
+      "bytes": 246031,
+      "sha256": "513a8f754404a9ace1965ab54d185dff50e394f6a16d65ba45e9ec363064afe1",
+      "row_count": 14163
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-03.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-03.parquet",
+      "bytes": 244109,
+      "sha256": "5bb4b7b73c291a11e67bc9ca7ace6d1af2dacc3db4a6afad33a16a135de7093c",
+      "row_count": 14041
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-05.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-05.parquet",
+      "bytes": 238886,
+      "sha256": "62f7e5bbb8dc7a43a34586f99c3735518848770e126beed15b982f0c1c479488",
+      "row_count": 14026
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-07.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-07.parquet",
+      "bytes": 237769,
+      "sha256": "16549167e347a9d3b076d865b39dfb115682c846ccf8003b2670843ada131b65",
+      "row_count": 14058
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-10.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-10.parquet",
+      "bytes": 236168,
+      "sha256": "8f5596295f700d9ad56227c8f02fae2b2440fa37592203a8c740f6cc0df52aa6",
+      "row_count": 14026
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-12.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-12.parquet",
+      "bytes": 234060,
+      "sha256": "dd8397e6bbc9f47421a9ebec4b3da0eff489bbe79d2f2a0e254e8d73ef87335b",
+      "row_count": 13972
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-17.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-17.parquet",
+      "bytes": 232850,
+      "sha256": "6fe462cd218d75e0f51aa3355a26d5da68dc7414b23474ff66856a53c5692ef2",
+      "row_count": 13954
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-19.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-19.parquet",
+      "bytes": 230212,
+      "sha256": "ec8af8221ef7af68538d76e0e9e80f57c7014a43f591fb3fb55a127ae81d44a8",
+      "row_count": 13709
+    },
+    {
+      "family": "inventory",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-21.parquet",
+      "destination_path": "Output/ForecastAccuracy/inventory/pickface_inventory_snapshot_detail_2026-08-21.parquet",
+      "bytes": 231004,
+      "sha256": "9b4639e4246d70e2ddae7fdad57efaf81503bff5dd0e6903ac1421f890060753",
+      "row_count": 13662
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_metadata.json",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_metadata.json",
+      "bytes": 827,
+      "sha256": "46f36191e2e05c560e233df5bac7470a22a042dec52d5891dade660e2daddb98",
+      "row_count": null
+    },
+    {
+      "family": "inbound",
+      "action": "merge",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail.parquet",
+      "bytes": 14245774,
+      "sha256": "b825bee5217d72d94d49961e4aabb0b76769b4d0448fee0f6194740fc9f7d145",
+      "row_count": 954579
+    },
+    {
+      "family": "inbound",
+      "action": "merge",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_sku_day.parquet",
+      "bytes": 3238238,
+      "sha256": "1429e39b203d5fe272fc34a6807045966a9f96d8a718b3d8724d409b348448b1",
+      "row_count": 607871
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_snapshot_summary.csv",
+      "bytes": 4814,
+      "sha256": "5319e36ce41c0cb85251a6f936df4d049de4edb70ad0dd7e2f931bf6b0006405",
+      "row_count": 40
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-19.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-19.parquet",
+      "bytes": 539840,
+      "sha256": "78333f35e0daa61ee8499d4b7cd09f8bf6ba55d0a9e747d267f1f7560ae03290",
+      "row_count": 24711
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-20.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-20.parquet",
+      "bytes": 535702,
+      "sha256": "5a4f92d5e0a8d14acee29b0e986a237d1ea41e3e7ae87fe6bd2e3a115a32e543",
+      "row_count": 24392
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-21.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-21.parquet",
+      "bytes": 535697,
+      "sha256": "427de061b8465c4f211e1097fa5984b0cfcf0565102d825ea4ace5a40e49f19b",
+      "row_count": 24392
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-22.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-22.parquet",
+      "bytes": 534937,
+      "sha256": "69177e6ad23bf1bc2850d7557d4cc487ba69287529dbde29f30ce281bc50ae5a",
+      "row_count": 24390
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-23.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-23.parquet",
+      "bytes": 534995,
+      "sha256": "60f51f929edb38fc84a3d5442f2b55ee72e20c9a38c1a92c91104365ec0a23e5",
+      "row_count": 24391
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-24.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-24.parquet",
+      "bytes": 535433,
+      "sha256": "a1876cbc5a46a7cd3abad620e0710b5775c6db008b170fa9a1374ed21149738c",
+      "row_count": 24371
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-25.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-25.parquet",
+      "bytes": 533491,
+      "sha256": "d4cf00bf7d7b3ef36e34b650ed0bf2dec5ba7971f2ac45b4a6249874dada528b",
+      "row_count": 24400
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-26.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-26.parquet",
+      "bytes": 530103,
+      "sha256": "103ff3e85206cb8756c09bfddde574d78a7508f008f0dce39b4ec36812bbb65b",
+      "row_count": 24243
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-27.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-27.parquet",
+      "bytes": 532008,
+      "sha256": "3cd841d3937b7d4db6746796f624ff60324d300c456ca9fb9e3e357012197fe4",
+      "row_count": 24211
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-28.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-28.parquet",
+      "bytes": 526277,
+      "sha256": "5750cadf6adca9dba06fb6f9d302c12072f406fc24380ac2f7bdf943df86c9af",
+      "row_count": 23970
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-29.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-29.parquet",
+      "bytes": 527774,
+      "sha256": "b0aa2d50743abf75faab82b0ed99819bffde8efbbae0fa790cbd52c52b97b0cf",
+      "row_count": 23941
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-30.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-06-30.parquet",
+      "bytes": 533430,
+      "sha256": "f27f5d5d8bd80b26384bb7448ea83eeeda0a2aab4ed0e7a879fb873a75594673",
+      "row_count": 24167
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-02.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-02.parquet",
+      "bytes": 531630,
+      "sha256": "ec8dae277b40b7cac9a9498bbe029211fa524d532447c61430c1a6d5f6226471",
+      "row_count": 24002
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-03.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-03.parquet",
+      "bytes": 529350,
+      "sha256": "1f2289e73fdcf4163d306621296205e9d43d2c44e291ff920889c112b05ce8cb",
+      "row_count": 23848
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-04.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-04.parquet",
+      "bytes": 529258,
+      "sha256": "89069cca460acb43f50b832c1a1a5f513649abbc5741c110d7f2f6abb1e76bef",
+      "row_count": 23848
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-05.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-05.parquet",
+      "bytes": 529292,
+      "sha256": "ce8433db3ab64a18667ee7718c0037e0c1944b0df472738c203b5f2ac377ce14",
+      "row_count": 23848
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-06.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-06.parquet",
+      "bytes": 520819,
+      "sha256": "08c2dd91237f71aed7c65d9f629c9d94c6cdab6b5ca45cf6a03234dac111a3cb",
+      "row_count": 23360
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-07.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-07.parquet",
+      "bytes": 516763,
+      "sha256": "0dd1f5e464caa58884fea3b850ed33e4423c82bd990e6d2e0813e00c36e257c5",
+      "row_count": 23136
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-08.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-08.parquet",
+      "bytes": 518372,
+      "sha256": "d6e429149bf0510539c74faf237bab74f6de8a45ac7a246b2dc0d53507e7b19e",
+      "row_count": 23189
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-09.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-09.parquet",
+      "bytes": 508896,
+      "sha256": "b712df9b9adf1989c03b642664abb4f22654b9fe76ae57d3ca4bcd599b7433ef",
+      "row_count": 22760
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-10.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-10.parquet",
+      "bytes": 511685,
+      "sha256": "7dfd23e1181528a33139614b35e7ac610de49e187e4eada5c0a24e79f17704cf",
+      "row_count": 22775
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-11.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-11.parquet",
+      "bytes": 512196,
+      "sha256": "a61be4e41249d2b4804c388bb0957c67b0548f12904aa0af11d0c9f81feb014d",
+      "row_count": 22775
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-13.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-13.parquet",
+      "bytes": 504681,
+      "sha256": "1255e97c2d1e2b6465a4c1158b1087b11bb89f51be3aba41b72d4b357cb8247f",
+      "row_count": 22451
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-14.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-14.parquet",
+      "bytes": 502438,
+      "sha256": "5283de455b0d601f3cd9b783e095a31770c9b1126ef9d0a6f25a64fe5ce3d9e7",
+      "row_count": 22241
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-16.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-16.parquet",
+      "bytes": 494695,
+      "sha256": "4e5282ca67c2d6b23faee17bae612e397e8a988d36f4709c1cb898d7a35cf98b",
+      "row_count": 21818
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-17.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-17.parquet",
+      "bytes": 491631,
+      "sha256": "693f1546dc3a38e825a75149be3760ee56af61cbc1528954761d3d0e0c9fb6a1",
+      "row_count": 21711
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-20.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-20.parquet",
+      "bytes": 481710,
+      "sha256": "560b76e90a8ea88f19732c1fbdecc0e73afa7d0d313e8e106a1ce25f4b3681f4",
+      "row_count": 21427
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-21.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-21.parquet",
+      "bytes": 499160,
+      "sha256": "76c5f8648be9b8fc5be4a223432386339e4428922110649c6766092923a421bf",
+      "row_count": 22145
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-22.parquet",
+      "bytes": 502606,
+      "sha256": "1d99a02c1061ace29306942315427027293ecc4a493c99aa2ff9396439c59154",
+      "row_count": 22381
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-27.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-27.parquet",
+      "bytes": 482983,
+      "sha256": "25eb36aa349c9761176e9f65b6e0e34c6be98150afd2a09f8e305436e8dbfb12",
+      "row_count": 21465
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-29.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-29.parquet",
+      "bytes": 495121,
+      "sha256": "b9a567bb488c02e2f2c24a52fa9375d0d7cba93d8d59ba8dbdabbd28fc98689a",
+      "row_count": 22019
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-31.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-07-31.parquet",
+      "bytes": 506384,
+      "sha256": "eba89f6f2f7cef86a8c19e5f5e0fc53fb07e3004f26f94319963c507cce9bf52",
+      "row_count": 22533
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-01.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-01.parquet",
+      "bytes": 515455,
+      "sha256": "a932307600299a37ae5340235c65507ee32c51902f78ff6453e08e655f1eb0b0",
+      "row_count": 22904
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-03.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-03.parquet",
+      "bytes": 511621,
+      "sha256": "bdea9a12d216dd8eb5732493af15bc91245cdaa84d77c55c852d21ad32d1e897",
+      "row_count": 22773
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-05.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-05.parquet",
+      "bytes": 498134,
+      "sha256": "7b2f066732bdcf5174e26c11e0e9d0a00d6879d8fbebf801ad1e68eda4399440",
+      "row_count": 22133
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-07.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-07.parquet",
+      "bytes": 504144,
+      "sha256": "7b8688eda77d8def0a5e7c32c9c2e12e83963590ada9238bc45159fd3ff96ba3",
+      "row_count": 22216
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-10.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-10.parquet",
+      "bytes": 494779,
+      "sha256": "8bfd3af66d516938b7df76321954f81b9b016218343d8f757b30ec8fd6184ec7",
+      "row_count": 22048
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-12.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-12.parquet",
+      "bytes": 530367,
+      "sha256": "a040281c3159940b62f910a7b6208fd68f006c904b96361ed7ab2c561f51c9c3",
+      "row_count": 23250
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-17.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-17.parquet",
+      "bytes": 552035,
+      "sha256": "a86fff18a905d137dae2636653dda858cfbfa2f40929a583ed5d13f80a05bce9",
+      "row_count": 24871
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-19.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-19.parquet",
+      "bytes": 551855,
+      "sha256": "db45b96dae47aee9a1e687400e44dc7193cc1ed74ad6aaafe73c06089a257b34",
+      "row_count": 24694
+    },
+    {
+      "family": "inbound",
+      "action": "unchanged",
+      "source_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-21.parquet",
+      "destination_path": "Output/ForecastAccuracy/inbound/ax_open_inbound_detail_2026-08-21.parquet",
+      "bytes": 545197,
+      "sha256": "7a1c517c0ef44cf70cc7bdf4b21fe9b5b13f01180f47eb9d35338a15f4e2dd30",
+      "row_count": 24379
     }
   ],
   "summary": {
-    "files_seen": 65,
-    "created": 2,
-    "updated": 7,
-    "unchanged": 56,
-    "bytes_seen": 40132126
+    "files_seen": 90,
+    "created": 0,
+    "updated": 0,
+    "merged": 4,
+    "unchanged": 86,
+    "bytes_seen": 56723597
   },
   "notes": [
     "ha-kydc-monitoring remains the daily producer for these contract artifacts.",
     "ha-sales-forecast keeps this mirrored copy for forecast modeling and GitHub/cloud LLM review.",
-    "Dated Parquet files are immutable as-of snapshots; rolling facts should not be used for older holdouts without checking SnapshotDate."
+    "Dated Parquet files are immutable as-of snapshots; rolling facts should not be used for older holdouts without checking SnapshotDate.",
+    "Rolling inventory/inbound facts are retention-merged by their natural snapshot keys so producer refreshes do not discard older consumer-only dates."
   ]
 }

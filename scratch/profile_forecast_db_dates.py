@@ -15,11 +15,13 @@ from typing import Any
 import pyodbc
 
 from inspect_forecast_db_catalog import (
+    DEFAULT_AUTH,
     DEFAULT_DATABASE,
     DEFAULT_DRIVER,
     DEFAULT_SERVER,
+    DEFAULT_TENANT_ID,
     DEFAULT_USER,
-    connection_string,
+    connect_forecast_db,
 )
 
 
@@ -36,6 +38,8 @@ DATE_CHECKS = [
     ("dbo", "Offer_Inventory_Forecast_Frozen", "Frozen_Date"),
     ("dbo", "Channel_Offer_Demand_History", "CalendarDate"),
     ("dbo", "Channel_SKU_SIZE_Weekly_Demand_History", "FISCALWEEKSTARTDATE"),
+    ("dbo", "Channel_Offer_SKU_Inventory_History", "CalendarDate"),
+    ("dbo", "Inventory_History", "AsOfDate"),
     ("dbo", "Product_Dimensions_Hierarchy_Attributes", "dbt_loaded_at"),
     ("dbo", "Current_SKU_Available_DC_Inventory", "LastUpdatedDate"),
     ("dbo", "Current_Offer_Inventory", "LastUpdatedDate"),
@@ -50,7 +54,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--database", default=DEFAULT_DATABASE)
     parser.add_argument("--user", default=DEFAULT_USER)
     parser.add_argument("--driver", default=DEFAULT_DRIVER)
-    parser.add_argument("--auth", default="ActiveDirectoryInteractive")
+    parser.add_argument("--auth", default=DEFAULT_AUTH)
+    parser.add_argument("--tenant-id", default=DEFAULT_TENANT_ID)
     parser.add_argument("--timeout", type=int, default=60)
     parser.add_argument("--output-dir", type=Path, default=Path("scratch"))
     return parser.parse_args()
@@ -97,7 +102,15 @@ def main() -> None:
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     date_profiles: list[dict[str, Any]] = []
-    with pyodbc.connect(connection_string(args)) as conn:
+    with connect_forecast_db(
+        server=args.server,
+        database=args.database,
+        driver=args.driver,
+        auth=args.auth,
+        user=args.user,
+        tenant_id=args.tenant_id,
+        timeout=args.timeout,
+    ) as conn:
         cursor = conn.cursor()
         cursor.execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;")
 

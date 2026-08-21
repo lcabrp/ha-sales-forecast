@@ -1,0 +1,5 @@
+Year,Candidate,Windows,MeanWAPE,MeanCoveragePct,WinRateVsRaw
+2026,catpool_corporate_anchor,16,0.827,86.7,100.0
+2026,catpool_corporate_anchor_activation,16,0.818,87.1,100.0
+2026,corporate_raw,16,1.538,26.2,0.0
+2026,corporate_total_recent_shape,16,0.808,87.3,100.0

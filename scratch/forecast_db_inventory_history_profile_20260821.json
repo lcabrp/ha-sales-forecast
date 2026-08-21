@@ -1,0 +1,595 @@
+{
+  "generated_at_utc": "2026-08-21T17:30:30+00:00",
+  "identity": {
+    "LoginName": "labreu@hannaandersson.com",
+    "DatabaseName": "Forecast",
+    "CapturedAt": "2026-08-21T17:30:27.2112928Z"
+  },
+  "channel_offer_sku_inventory_history": {
+    "summary": {
+      "Rows": 451436,
+      "SnapshotDates": 26,
+      "DistinctSKUs": 29238,
+      "DistinctChannels": 2,
+      "DistinctOffers": 6115,
+      "FirstDate": "2026-02-15",
+      "LastDate": "2026-08-16",
+      "PositiveRows": 451436,
+      "ZeroRows": 0,
+      "NegativeRows": 0,
+      "TotalAvailOH": 54600076072456.0
+    },
+    "natural_key_duplicates": {
+      "DuplicateNaturalKeyRows": 0
+    },
+    "sku_day_multiplicity": {
+      "SKUDateKeys": 446171,
+      "MultiOfferChannelSKUDateKeys": 5265,
+      "MaxRowsPerSKUDate": 2
+    },
+    "value_quality": {
+      "MinAvailOH": 1.0,
+      "MaxAvailOH": 999999953474.0,
+      "BillionPlusRows": 78,
+      "TotalAvailOHBelowBillion": 78683745.0
+    },
+    "top_values": [
+      {
+        "CalendarDate": "2026-03-29",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-03-15",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-04-19",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-04-26",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-04-12",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-02-22",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-02-15",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-03-22",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-07-12",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-05-03",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-05-24",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-05-31",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-08-16",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-05-10",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-03-08",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-04-05",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-06-28",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-06-07",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-05-17",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      },
+      {
+        "CalendarDate": "2026-06-21",
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Avail_OH": 999999953474.0
+      }
+    ],
+    "sentinel_profile": [
+      {
+        "CHANNEL": "DIRECT",
+        "OFFERID": "30991",
+        "SKU": "30991",
+        "Rows": 26,
+        "FirstDate": "2026-02-15",
+        "LastDate": "2026-08-16",
+        "MinAvailOH": 999999952367.0,
+        "MaxAvailOH": 999999952859.0
+      },
+      {
+        "CHANNEL": "DIRECT",
+        "OFFERID": "3333",
+        "SKU": "3333",
+        "Rows": 26,
+        "FirstDate": "2026-02-15",
+        "LastDate": "2026-08-16",
+        "MinAvailOH": 99999993455.0,
+        "MaxAvailOH": 99999993517.0
+      },
+      {
+        "CHANNEL": "DIRECT",
+        "OFFERID": "9999",
+        "SKU": "9999",
+        "Rows": 26,
+        "FirstDate": "2026-02-15",
+        "LastDate": "2026-08-16",
+        "MinAvailOH": 999999953474.0,
+        "MaxAvailOH": 999999953474.0
+      }
+    ],
+    "channel_profile": [
+      {
+        "CHANNEL": "DIRECT",
+        "Rows": 394938,
+        "DistinctSKUs": 27364,
+        "DistinctOffers": 5016,
+        "FirstDate": "2026-02-15",
+        "LastDate": "2026-08-16"
+      },
+      {
+        "CHANNEL": "RETAIL",
+        "Rows": 56498,
+        "DistinctSKUs": 2173,
+        "DistinctOffers": 1427,
+        "FirstDate": "2026-02-15",
+        "LastDate": "2026-08-16"
+      }
+    ],
+    "multi_value_consistency": {
+      "MultiRowSKUDateKeys": 5265,
+      "SameValueKeys": 194,
+      "DifferentValueKeys": 5071
+    },
+    "sku_channel_day_multiplicity": {
+      "SKUChannelDateKeys": 451436,
+      "MultiOfferKeys": 0,
+      "MaxOffersPerSKUChannelDate": 1
+    },
+    "date_profile": [
+      {
+        "CalendarDate": "2026-02-15",
+        "Rows": 17363,
+        "DistinctSKUs": 17093,
+        "PositiveRows": 17363,
+        "TotalAvailOH": 2100002936956.0
+      },
+      {
+        "CalendarDate": "2026-02-22",
+        "Rows": 17179,
+        "DistinctSKUs": 16927,
+        "PositiveRows": 17179,
+        "TotalAvailOH": 2100002873339.0
+      },
+      {
+        "CalendarDate": "2026-03-08",
+        "Rows": 16898,
+        "DistinctSKUs": 16662,
+        "PositiveRows": 16898,
+        "TotalAvailOH": 2100002849079.0
+      },
+      {
+        "CalendarDate": "2026-03-15",
+        "Rows": 17512,
+        "DistinctSKUs": 17278,
+        "PositiveRows": 17512,
+        "TotalAvailOH": 2100002992530.0
+      },
+      {
+        "CalendarDate": "2026-03-22",
+        "Rows": 17882,
+        "DistinctSKUs": 17656,
+        "PositiveRows": 17882,
+        "TotalAvailOH": 2100003071049.0
+      },
+      {
+        "CalendarDate": "2026-03-29",
+        "Rows": 18906,
+        "DistinctSKUs": 18678,
+        "PositiveRows": 18906,
+        "TotalAvailOH": 2100003343622.0
+      },
+      {
+        "CalendarDate": "2026-04-05",
+        "Rows": 19039,
+        "DistinctSKUs": 18822,
+        "PositiveRows": 19039,
+        "TotalAvailOH": 2100003410446.0
+      },
+      {
+        "CalendarDate": "2026-04-12",
+        "Rows": 18986,
+        "DistinctSKUs": 18771,
+        "PositiveRows": 18986,
+        "TotalAvailOH": 2100003373585.0
+      },
+      {
+        "CalendarDate": "2026-04-19",
+        "Rows": 18758,
+        "DistinctSKUs": 18548,
+        "PositiveRows": 18758,
+        "TotalAvailOH": 2100003290042.0
+      },
+      {
+        "CalendarDate": "2026-04-26",
+        "Rows": 18416,
+        "DistinctSKUs": 18210,
+        "PositiveRows": 18416,
+        "TotalAvailOH": 2100003140914.0
+      },
+      {
+        "CalendarDate": "2026-05-03",
+        "Rows": 17917,
+        "DistinctSKUs": 17718,
+        "PositiveRows": 17917,
+        "TotalAvailOH": 2100002938202.0
+      },
+      {
+        "CalendarDate": "2026-05-10",
+        "Rows": 18003,
+        "DistinctSKUs": 17804,
+        "PositiveRows": 18003,
+        "TotalAvailOH": 2100002927379.0
+      },
+      {
+        "CalendarDate": "2026-05-17",
+        "Rows": 17674,
+        "DistinctSKUs": 17475,
+        "PositiveRows": 17674,
+        "TotalAvailOH": 2100002864721.0
+      },
+      {
+        "CalendarDate": "2026-05-24",
+        "Rows": 16898,
+        "DistinctSKUs": 16706,
+        "PositiveRows": 16898,
+        "TotalAvailOH": 2100002598393.0
+      },
+      {
+        "CalendarDate": "2026-05-31",
+        "Rows": 16615,
+        "DistinctSKUs": 16424,
+        "PositiveRows": 16615,
+        "TotalAvailOH": 2100002449008.0
+      },
+      {
+        "CalendarDate": "2026-06-07",
+        "Rows": 16396,
+        "DistinctSKUs": 16203,
+        "PositiveRows": 16396,
+        "TotalAvailOH": 2100002406606.0
+      },
+      {
+        "CalendarDate": "2026-06-14",
+        "Rows": 16442,
+        "DistinctSKUs": 16249,
+        "PositiveRows": 16442,
+        "TotalAvailOH": 2100002404178.0
+      },
+      {
+        "CalendarDate": "2026-06-21",
+        "Rows": 16247,
+        "DistinctSKUs": 16052,
+        "PositiveRows": 16247,
+        "TotalAvailOH": 2100002432617.0
+      },
+      {
+        "CalendarDate": "2026-06-28",
+        "Rows": 15768,
+        "DistinctSKUs": 15579,
+        "PositiveRows": 15768,
+        "TotalAvailOH": 2100002431893.0
+      },
+      {
+        "CalendarDate": "2026-07-05",
+        "Rows": 15653,
+        "DistinctSKUs": 15476,
+        "PositiveRows": 15653,
+        "TotalAvailOH": 2100002581121.0
+      },
+      {
+        "CalendarDate": "2026-07-12",
+        "Rows": 16358,
+        "DistinctSKUs": 16180,
+        "PositiveRows": 16358,
+        "TotalAvailOH": 2100002817153.0
+      },
+      {
+        "CalendarDate": "2026-07-19",
+        "Rows": 17055,
+        "DistinctSKUs": 16878,
+        "PositiveRows": 17055,
+        "TotalAvailOH": 2100003028003.0
+      },
+      {
+        "CalendarDate": "2026-07-26",
+        "Rows": 16974,
+        "DistinctSKUs": 16801,
+        "PositiveRows": 16974,
+        "TotalAvailOH": 2100003232240.0
+      },
+      {
+        "CalendarDate": "2026-08-02",
+        "Rows": 16918,
+        "DistinctSKUs": 16748,
+        "PositiveRows": 16918,
+        "TotalAvailOH": 2100003243235.0
+      },
+      {
+        "CalendarDate": "2026-08-09",
+        "Rows": 17750,
+        "DistinctSKUs": 17576,
+        "PositiveRows": 17750,
+        "TotalAvailOH": 2100003244010.0
+      },
+      {
+        "CalendarDate": "2026-08-16",
+        "Rows": 17829,
+        "DistinctSKUs": 17657,
+        "PositiveRows": 17829,
+        "TotalAvailOH": 2100003192135.0
+      }
+    ]
+  },
+  "inventory_history": {
+    "summary": {
+      "Rows": 22161,
+      "SnapshotDates": 26,
+      "DistinctChannels": 3,
+      "DistinctDivisions": 43,
+      "DistinctDepartments": 209,
+      "DistinctSeasons": 9,
+      "FirstDate": "2019-09-07T00:00:00",
+      "LastDate": "2026-08-01T00:00:00",
+      "TotalAvailOH": 82201821.84,
+      "TotalAvailCostOH": 709794192.9728023
+    },
+    "date_profile": [
+      {
+        "AsOfDate": "2019-09-07",
+        "Rows": 2290,
+        "TotalAvailOH": 3272080.0,
+        "TotalAvailCostOH": 27624899.85000005
+      },
+      {
+        "AsOfDate": "2019-11-02",
+        "Rows": 2386,
+        "TotalAvailOH": 3272874.0,
+        "TotalAvailCostOH": 29397311.61000005
+      },
+      {
+        "AsOfDate": "2024-09-07",
+        "Rows": 730,
+        "TotalAvailOH": 3094319.0,
+        "TotalAvailCostOH": 25955972.010000024
+      },
+      {
+        "AsOfDate": "2024-10-05",
+        "Rows": 731,
+        "TotalAvailOH": 4092735.0,
+        "TotalAvailCostOH": 36564327.38999998
+      },
+      {
+        "AsOfDate": "2024-11-02",
+        "Rows": 731,
+        "TotalAvailOH": 4349803.0,
+        "TotalAvailCostOH": 38601099.54999998
+      },
+      {
+        "AsOfDate": "2024-12-07",
+        "Rows": 731,
+        "TotalAvailOH": 2858923.0,
+        "TotalAvailCostOH": 24234381.949999996
+      },
+      {
+        "AsOfDate": "2025-01-04",
+        "Rows": 731,
+        "TotalAvailOH": 2570005.0,
+        "TotalAvailCostOH": 21112823.649999995
+      },
+      {
+        "AsOfDate": "2025-02-01",
+        "Rows": 724,
+        "TotalAvailOH": 2755191.0,
+        "TotalAvailCostOH": 22458007.68
+      },
+      {
+        "AsOfDate": "2025-03-08",
+        "Rows": 725,
+        "TotalAvailOH": 2740950.0,
+        "TotalAvailCostOH": 22210203.369999986
+      },
+      {
+        "AsOfDate": "2025-04-05",
+        "Rows": 724,
+        "TotalAvailOH": 3041168.0,
+        "TotalAvailCostOH": 23997183.310000006
+      },
+      {
+        "AsOfDate": "2025-05-03",
+        "Rows": 725,
+        "TotalAvailOH": 3076857.0,
+        "TotalAvailCostOH": 23963843.749999996
+      },
+      {
+        "AsOfDate": "2025-06-07",
+        "Rows": 724,
+        "TotalAvailOH": 2773302.0,
+        "TotalAvailCostOH": 22156126.840000004
+      },
+      {
+        "AsOfDate": "2025-07-05",
+        "Rows": 722,
+        "TotalAvailOH": 2670111.0,
+        "TotalAvailCostOH": 21783743.189999994
+      },
+      {
+        "AsOfDate": "2025-08-02",
+        "Rows": 722,
+        "TotalAvailOH": 3415646.0,
+        "TotalAvailCostOH": 27492047.14
+      },
+      {
+        "AsOfDate": "2025-09-06",
+        "Rows": 721,
+        "TotalAvailOH": 3129112.0,
+        "TotalAvailCostOH": 25520754.889999986
+      },
+      {
+        "AsOfDate": "2025-10-04",
+        "Rows": 720,
+        "TotalAvailOH": 4430112.0,
+        "TotalAvailCostOH": 38706179.66000001
+      },
+      {
+        "AsOfDate": "2025-11-01",
+        "Rows": 732,
+        "TotalAvailOH": 3999320.71,
+        "TotalAvailCostOH": 35321396.77819999
+      },
+      {
+        "AsOfDate": "2025-12-06",
+        "Rows": 731,
+        "TotalAvailOH": 2873192.71,
+        "TotalAvailCostOH": 24673849.008199994
+      },
+      {
+        "AsOfDate": "2026-01-03",
+        "Rows": 732,
+        "TotalAvailOH": 2708105.71,
+        "TotalAvailCostOH": 25576129.99820001
+      },
+      {
+        "AsOfDate": "2026-01-31",
+        "Rows": 732,
+        "TotalAvailOH": 3018157.71,
+        "TotalAvailCostOH": 29224684.77819998
+      },
+      {
+        "AsOfDate": "2026-03-07",
+        "Rows": 732,
+        "TotalAvailOH": 2962001.0,
+        "TotalAvailCostOH": 28650904.08
+      },
+      {
+        "AsOfDate": "2026-04-04",
+        "Rows": 732,
+        "TotalAvailOH": 3521860.0,
+        "TotalAvailCostOH": 31867156.39000001
+      },
+      {
+        "AsOfDate": "2026-05-02",
+        "Rows": 732,
+        "TotalAvailOH": 3054906.0,
+        "TotalAvailCostOH": 28018598.860000003
+      },
+      {
+        "AsOfDate": "2026-06-06",
+        "Rows": 732,
+        "TotalAvailOH": 2516646.0,
+        "TotalAvailCostOH": 23175531.619999997
+      },
+      {
+        "AsOfDate": "2026-07-04",
+        "Rows": 732,
+        "TotalAvailOH": 2646920.0,
+        "TotalAvailCostOH": 22805732.179999996
+      },
+      {
+        "AsOfDate": "2026-08-01",
+        "Rows": 737,
+        "TotalAvailOH": 3357524.0,
+        "TotalAvailCostOH": 28701303.440000005
+      }
+    ]
+  }
+}

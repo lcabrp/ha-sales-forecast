@@ -1,0 +1,7 @@
+ProxyThreshold,WindowsTriggered,GatedMeanWAPE,CorporateRawMeanWAPE,AlwaysCatpoolMeanWAPE,WindowsImprovedVsRaw,WindowsWorsenedVsRaw
+0.55,8,0.7804,1.4922,0.7272,8,0
+0.6,9,0.7272,1.4922,0.7272,9,0
+0.65,9,0.7272,1.4922,0.7272,9,0
+0.7,9,0.7272,1.4922,0.7272,9,0
+0.75,9,0.7272,1.4922,0.7272,9,0
+0.8,9,0.7272,1.4922,0.7272,9,0

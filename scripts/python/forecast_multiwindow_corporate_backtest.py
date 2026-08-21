@@ -24,17 +24,18 @@ it honest the harness now:
 3. Uses an ORIGIN-SAFE inclusion coverage (fraction of the *corporate forecast*
    units that map to a category), never horizon actuals, for window inclusion.
    Realized (actuals-based) coverage is still recorded, but only as a diagnostic.
-4. DROPS the activation arm: pick-face inventory starts 2026-06-19, after the
-   last archive origin (2026-06-02), so activation evaluated nothing here. It
-   needs a separate inventory-covered harness (see the doc).
+4. SCORES the activation arm only when a pre-origin inventory or inbound
+   snapshot exists. The default evidence is the preserved AX warehouse history
+   plus Product Info inbound history; pick-face history can be supplied as a
+   separate sensitivity with ``--activation-inventory-path``.
 5. Adds an ORIGIN-SAFE regime gate evaluation (trailing-28d demand share on
    corporate-positive SKUs) over a threshold grid, and a NON-OVERLAPPING origin
    subset, so aggregate claims are not driven by hindsight or by ~weekly
    overlapping 14-day windows.
 
-Reuses the production model code (``build_candidates``/``load_history``/
-``hamilton_round``) and the closeout metric (``score_candidate``); it is a
-harness, not a re-implementation. Read-only on all tracked facts.
+Reuses the production model's stage, activation, allocation, and history
+helpers plus the closeout metric (``score_candidate``); it is a harness, not a
+model re-implementation. Read-only on all tracked facts.
 """
 
 from __future__ import annotations
@@ -57,7 +58,6 @@ import forecast_model_category_pool as cp  # noqa: E402
 from forecast_model_category_pool import (  # noqa: E402
     HORIZON_DAYS,
     ModelConfig,
-    build_candidates,
     hamilton_round,
     load_history,
     sku_recent_weights,
@@ -71,12 +71,14 @@ CORPORATE_ARCHIVE = FA_ROOT / "history" / "parquet" / "forecast_sku_day.parquet"
 SNAPSHOT_ARCHIVE = FA_ROOT / "history" / "parquet" / "forecast_sku_snapshot.parquet"
 DIRECT_PICK_DIR = FA_ROOT / "direct_pick_history" / "parquet"
 DEFAULT_OUTPUT = FA_ROOT / "handoff_eval" / "multiwindow_corporate_backtest"
+DEFAULT_ACTIVATION_INVENTORY = FA_ROOT / "inventory" / "ax_inventory_history_sku_day.parquet"
+DEFAULT_ACTIVATION_INBOUND = FA_ROOT / "inbound" / "product_info_inbound_snapshots.parquet"
 
-# Activation intentionally excluded: no origin-safe inventory covers the archive.
 ANCHORED_CANDIDATES = [
     "corporate_raw",
     "corporate_total_recent_shape",
     "catpool_corporate_anchor",
+    "catpool_corporate_anchor_activation",
 ]
 GATE_THRESHOLDS = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80]
 
@@ -211,8 +213,16 @@ def recent_shape_candidate(corporate_daily: pd.DataFrame, history: pd.DataFrame,
 # --------------------------------------------------------------------------- #
 # One window
 # --------------------------------------------------------------------------- #
-def run_window(arc: pd.DataFrame, origin: pd.Timestamp, snapshot_id: str,
-               lookback_days: int, seasonal_years: int, min_cov: float) -> list[dict[str, Any]]:
+def run_window(
+    arc: pd.DataFrame,
+    origin: pd.Timestamp,
+    snapshot_id: str,
+    lookback_days: int,
+    seasonal_years: int,
+    min_cov: float,
+    activation_inventory_path: Path | None,
+    activation_inbound_path: Path | None,
+) -> list[dict[str, Any]]:
     through = origin + pd.Timedelta(days=HORIZON_DAYS - 1)
     corporate = corporate_daily_for_origin(arc, origin)
     if corporate.empty:
@@ -252,9 +262,56 @@ def run_window(arc: pd.DataFrame, origin: pd.Timestamp, snapshot_id: str,
         "corporate_raw": corp_sku[["SKU", "ForecastUnits"]],
         "corporate_total_recent_shape": recent_shape_candidate(corporate, history, cfg),
     }
-    combined, _meta = build_candidates(cfg, crosswalk, corporate)
-    grp = combined.loc[combined["Candidate"].eq("catpool_corporate_anchor")]
-    per_candidate["catpool_corporate_anchor"] = grp.groupby("SKU", as_index=False)["ForecastUnits"].sum()
+    # Shared production-model stages are computed once for the paired base and
+    # activation arms. Activation changes only the Stage-2 SKU weights.
+    category_targets = cp.stage1_independent_targets(history, crosswalk, cfg)
+    sku_weights = cp.sku_recent_weights(history, crosswalk, cfg)
+    daily_shapes = cp.category_daily_shape(history, crosswalk, cfg)
+    daily_cat_totals = cp._corporate_daily_category_totals(
+        corporate, category_targets, crosswalk, cfg
+    )
+    base_weights = sku_weights.rename(columns={"RecentUnits": "Weight"})[
+        ["SKU", "Category", "Weight"]
+    ]
+    anchored = cp.allocate(
+        category_targets,
+        base_weights,
+        daily_shapes,
+        cfg,
+        daily_category_totals=daily_cat_totals,
+    )
+    per_candidate["catpool_corporate_anchor"] = anchored.groupby(
+        "SKU", as_index=False
+    )["ForecastUnits"].sum()
+
+    activation_meta: dict[str, Any] = {}
+    if activation_inventory_path is not None or activation_inbound_path is not None:
+        act_cfg = ModelConfig(
+            origin=origin,
+            lookback_days=lookback_days,
+            seasonal_years=seasonal_years,
+            use_activation=True,
+            inventory_path=activation_inventory_path,
+            inbound_path=activation_inbound_path,
+        )
+        activated_weights, activation_meta = cp.apply_activation_layer(
+            sku_weights, crosswalk, act_cfg
+        )
+        has_origin_safe_evidence = any(
+            activation_meta.get(key)
+            for key in ("inventory_snapshot", "inbound_snapshot")
+        )
+        if has_origin_safe_evidence:
+            act_grp = cp.allocate(
+                category_targets,
+                activated_weights,
+                daily_shapes,
+                act_cfg,
+                daily_category_totals=daily_cat_totals,
+            )
+            per_candidate["catpool_corporate_anchor_activation"] = (
+                act_grp.groupby("SKU", as_index=False)["ForecastUnits"].sum()
+            )
 
     rows = []
     for name in ANCHORED_CANDIDATES:
@@ -271,6 +328,31 @@ def run_window(arc: pd.DataFrame, origin: pd.Timestamp, snapshot_id: str,
             "OriginSafeMappingCovPct": origin_safe_cov,
             "RealizedCategoryCovPct": realized_cov,
             "ProxyCorpPositiveShare": proxy,
+            "ActivationInventorySnapshot": (
+                activation_meta.get("inventory_snapshot")
+                if name == "catpool_corporate_anchor_activation"
+                else None
+            ),
+            "ActivationInboundSnapshot": (
+                activation_meta.get("inbound_snapshot")
+                if name == "catpool_corporate_anchor_activation"
+                else None
+            ),
+            "ActivationInventoryAgeDays": (
+                activation_meta.get("inventory_snapshot_age_days")
+                if name == "catpool_corporate_anchor_activation"
+                else None
+            ),
+            "ActivationInboundAgeDays": (
+                activation_meta.get("inbound_snapshot_age_days")
+                if name == "catpool_corporate_anchor_activation"
+                else None
+            ),
+            "ActivationGateFactor": (
+                activation_meta.get("gate_factor")
+                if name == "catpool_corporate_anchor_activation"
+                else None
+            ),
         })
         rows.append(s)
     return rows
@@ -395,7 +477,21 @@ def write_markdown(summary: pd.DataFrame, br: dict, gate: pd.DataFrame,
         "- As-of category attributes per corporate vintage (snapshot-specific).\n"
         f"- Origin-safe inclusion coverage >= {args.min_category_coverage:.0%} "
         "(corporate-forecast side; NOT actuals).\n"
-        "- Activation arm excluded (no origin-safe inventory covers the archive).\n"
+    )
+    if args.no_activation:
+        md.append("- Activation arm excluded by `--no-activation`.\n")
+    else:
+        inbound_description = (
+            "disabled (inventory-only sensitivity)"
+            if args.no_activation_inbound
+            else str(args.activation_inbound_path)
+        )
+        md.append(
+            f"- Activation inventory: `{args.activation_inventory_path}`.\n"
+            f"- Activation inbound: `{inbound_description}`.\n"
+            "- Activation is scored only on origins with a pre-origin evidence snapshot.\n"
+        )
+    md.append(
         "- Metric: SKU WAPE (lower better).\n\n"
     )
     md.append("## Overall leaderboard (mean over all scored windows)\n\n")
@@ -419,7 +515,8 @@ def write_markdown(summary: pd.DataFrame, br: dict, gate: pd.DataFrame,
         "- The hindsight regime split near-tautologically favors reallocation and must not drive promotion.\n"
         "- Even non-overlapping origins are not i.i.d.; add block-bootstrap CIs before any significance claim.\n"
         "- `late`/`same_day` corporate files are operational-vintage, not clean prospective forecasts.\n"
-        "- Activation is unevaluated here; wire origin-safe inventory history separately before any activation claim.\n"
+        "- Warehouse inventory and pick-face inventory are different evidence; compare them as separate sensitivities.\n"
+        "- Activation rows cover only origins with pre-origin evidence and must not be compared as if they covered every archive window.\n"
     )
     (out_dir / "leaderboard.md").write_text("".join(md), encoding="utf-8")
 
@@ -436,6 +533,28 @@ def parse_args() -> argparse.Namespace:
                    help="Comma list of freeze classes to include.")
     p.add_argument("--limit", type=int, default=0)
     p.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    p.add_argument(
+        "--activation-inventory-path",
+        type=Path,
+        default=DEFAULT_ACTIVATION_INVENTORY,
+        help="Origin-safe inventory SKU/day Parquet used only by the activation arm.",
+    )
+    p.add_argument(
+        "--activation-inbound-path",
+        type=Path,
+        default=DEFAULT_ACTIVATION_INBOUND,
+        help="Origin-safe inbound SKU/day Parquet used only by the activation arm.",
+    )
+    p.add_argument(
+        "--no-activation",
+        action="store_true",
+        help="Exclude the activation arm entirely.",
+    )
+    p.add_argument(
+        "--no-activation-inbound",
+        action="store_true",
+        help="Run activation from inventory evidence only; useful for source isolation.",
+    )
     return p.parse_args()
 
 
@@ -457,8 +576,15 @@ def main() -> int:
     all_rows: list[dict[str, Any]] = []
     for i, (_, prow) in enumerate(prov.iterrows(), 1):
         origin = prow["ForecastStartDate"]
+        activation_inventory_path = None if args.no_activation else args.activation_inventory_path
+        activation_inbound_path = (
+            None
+            if args.no_activation or args.no_activation_inbound
+            else args.activation_inbound_path
+        )
         rows = run_window(arc, origin, prow["SnapshotId"], args.lookback_days,
-                          args.seasonal_years, args.min_category_coverage)
+                          args.seasonal_years, args.min_category_coverage,
+                          activation_inventory_path, activation_inbound_path)
         all_rows.extend(rows)
         if i % 10 == 0 or i == len(prov):
             print(f"  [{i}/{len(prov)}] {origin.date()}")
@@ -494,8 +620,22 @@ def main() -> int:
         "min_category_coverage_origin_safe": args.min_category_coverage,
         "freeze_classes_included": sorted(keep_classes),
         "as_of_category_mapping": True,
-        "activation_arm": "excluded (no origin-safe inventory covers archive)",
-        "candidates": ANCHORED_CANDIDATES,
+        "activation_arm": "excluded" if args.no_activation else "origin-safe evidence dates only",
+        "activation_inventory_path": (
+            None if args.no_activation else str(args.activation_inventory_path)
+        ),
+        "activation_inbound_path": (
+            None
+            if args.no_activation or args.no_activation_inbound
+            else str(args.activation_inbound_path)
+        ),
+        "activation_windows_scored": int(
+            per_window.loc[
+                per_window["Candidate"].eq("catpool_corporate_anchor_activation"),
+                "Origin",
+            ].nunique()
+        ),
+        "candidates": summary["Candidate"].tolist(),
     }, indent=2), encoding="utf-8")
     write_markdown(summary, br, gate, non_overlap_summary, per_window, args, args.output_dir)
 

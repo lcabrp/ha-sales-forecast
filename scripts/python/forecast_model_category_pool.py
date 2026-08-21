@@ -36,6 +36,7 @@ freezable and reproducible on any PC.
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import sqlite3
 import sys
@@ -88,8 +89,8 @@ class ModelConfig:
     gated_activation: bool = True
     despike_runrate: bool = True
     direct_pick_dir: Path = DIRECT_PICK_DIR
-    inventory_path: Path = PICKFACE_INVENTORY_PATH
-    inbound_path: Path = OPEN_INBOUND_PATH
+    inventory_path: Path | None = PICKFACE_INVENTORY_PATH
+    inbound_path: Path | None = OPEN_INBOUND_PATH
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -180,18 +181,40 @@ def load_crosswalk(ledger_db: Path) -> pd.DataFrame:
     return ledger.loc[ledger["SKU"].ne(""), ["SKU", "Category"]].reset_index(drop=True)
 
 
-def _latest_snapshot(path: Path, origin: pd.Timestamp) -> pd.DataFrame:
-    if not path.exists():
+@functools.lru_cache(maxsize=8)
+def _snapshot_date_index(
+    path_string: str,
+    modified_ns: int,
+) -> tuple[tuple[str, ...], bool]:
+    """Cache the small date index instead of repeatedly loading a full fact."""
+    del modified_ns  # Included in the cache key so refreshed facts invalidate the index.
+    raw_dates = pd.read_parquet(Path(path_string), columns=["SnapshotDate"])["SnapshotDate"]
+    is_datetime = pd.api.types.is_datetime64_any_dtype(raw_dates.dtype)
+    dates = pd.to_datetime(raw_dates, errors="coerce").dropna().dt.normalize()
+    return tuple(sorted(dates.dt.date.astype(str).unique())), bool(is_datetime)
+
+
+def _latest_snapshot(path: Path | None, origin: pd.Timestamp) -> pd.DataFrame:
+    if path is None or not path.exists():
         return pd.DataFrame()
-    frame = pd.read_parquet(path)
+    available_dates, is_datetime = _snapshot_date_index(
+        str(path.resolve()), path.stat().st_mtime_ns
+    )
+    cutoff = (origin - pd.Timedelta(days=1)).date().isoformat()
+    eligible = [value for value in available_dates if value <= cutoff]
+    if not eligible:
+        return pd.DataFrame()
+    latest_value = eligible[-1]
+    filter_value: str | pd.Timestamp = (
+        pd.Timestamp(latest_value) if is_datetime else latest_value
+    )
+    frame = pd.read_parquet(
+        path,
+        filters=[("SnapshotDate", "==", filter_value)],
+    )
     frame["SnapshotDate"] = pd.to_datetime(frame["SnapshotDate"], errors="coerce").dt.normalize()
-    frame = frame.loc[frame["SnapshotDate"].le(origin - pd.Timedelta(days=1))]
-    if frame.empty:
-        return frame
-    latest = frame["SnapshotDate"].max()
-    out = frame.loc[frame["SnapshotDate"].eq(latest)].copy()
-    out["SKU"] = normalize_sku_series(out["SKU"])
-    return out
+    frame["SKU"] = normalize_sku_series(frame["SKU"])
+    return frame
 
 
 # --------------------------------------------------------------------------- #
@@ -449,6 +472,16 @@ def apply_activation_layer(
             None if inventory.empty else str(inventory["SnapshotDate"].max().date())
         ),
         "inbound_snapshot": None if inbound.empty else str(inbound["SnapshotDate"].max().date()),
+        "inventory_snapshot_age_days": (
+            None
+            if inventory.empty
+            else int((config.origin - inventory["SnapshotDate"].max()).days)
+        ),
+        "inbound_snapshot_age_days": (
+            None
+            if inbound.empty
+            else int((config.origin - inbound["SnapshotDate"].max()).days)
+        ),
         "skus_with_pickable_inventory": len(has_inv),
         "skus_with_open_inbound": len(has_inb),
         "turnover_ratio": turnover_ratio,

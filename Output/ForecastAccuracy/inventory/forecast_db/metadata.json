@@ -1,0 +1,96 @@
+{
+  "generated_at_utc": "2026-08-21T17:57:26+00:00",
+  "source": {
+    "system": "Corporate Forecast Azure SQL",
+    "server": "azprodfcast01.572f3811ca67.database.windows.net",
+    "database": "Forecast",
+    "login": "labreu@hannaandersson.com",
+    "captured_at": "2026-08-21T17:57:17.0870726Z",
+    "authentication": "AzureCLI",
+    "isolation": "READ UNCOMMITTED / NOLOCK",
+    "tables": [
+      "dbo.Channel_Offer_SKU_Inventory_History",
+      "dbo.Inventory_History"
+    ]
+  },
+  "sku_history": {
+    "raw_rows": 451436,
+    "clean_rows": 451358,
+    "direct_rows": 394860,
+    "distinct_skus": 29235,
+    "snapshot_dates": 26,
+    "first_snapshot": "2026-02-15",
+    "last_snapshot": "2026-08-16",
+    "missing_expected_sundays": [
+      "2026-03-01"
+    ],
+    "channels": {
+      "DIRECT": 394860,
+      "RETAIL": 56498
+    },
+    "positive_presence_only": true,
+    "natural_key": [
+      "SnapshotDate",
+      "Channel",
+      "SKU"
+    ],
+    "natural_key_duplicate_rows": 0,
+    "sentinel_threshold": 1000000000.0,
+    "sentinel_rows_quarantined": 78,
+    "sentinel_skus": [
+      "30991",
+      "3333",
+      "9999"
+    ]
+  },
+  "macro_history": {
+    "rows": 22161,
+    "snapshot_dates": 26,
+    "first_snapshot": "2019-09-07",
+    "last_snapshot": "2026-08-01"
+  },
+  "outputs": {
+    "channel_sku_weekly": {
+      "path": "Output/ForecastAccuracy/inventory/forecast_db/channel_sku_inventory_weekly.parquet",
+      "rows": 451358,
+      "bytes": 2057349,
+      "sha256": "42f92f7d373b7e8b44c8efa2d88529bff9e4928bcf5eaf8b10ce64413f4df012"
+    },
+    "direct_sku_weekly": {
+      "path": "Output/ForecastAccuracy/inventory/forecast_db/direct_sku_inventory_weekly.parquet",
+      "rows": 394860,
+      "bytes": 1677292,
+      "sha256": "a6ba41ea424ec2d67bde6b04ffb419db5613397b2d6ff79cff6a040c30958f01"
+    },
+    "sku_snapshot_summary": {
+      "path": "Output/ForecastAccuracy/inventory/forecast_db/channel_sku_snapshot_summary.parquet",
+      "rows": 52,
+      "bytes": 4237,
+      "sha256": "be829db8df16ea0fca8f9e29780bab0d804e16050a834ef39f52e3eccd7a6b21"
+    },
+    "macro_history": {
+      "path": "Output/ForecastAccuracy/inventory/forecast_db/inventory_macro_history.parquet",
+      "rows": 22161,
+      "bytes": 88520,
+      "sha256": "5e9b15b5bee93c8d1e89143d4520787ae5a3bedd10f8f49a0e1aa20b27ed96b7"
+    },
+    "macro_snapshot_summary": {
+      "path": "Output/ForecastAccuracy/inventory/forecast_db/inventory_macro_snapshot_summary.parquet",
+      "rows": 64,
+      "bytes": 4677,
+      "sha256": "62d9e07f902fc69b2bee35ebf7346a5e2ce16c2167808194275c775798fd9f26"
+    },
+    "sentinel_audit": {
+      "path": "Output/ForecastAccuracy/inventory/forecast_db/inventory_sentinel_rows.parquet",
+      "rows": 78,
+      "bytes": 3891,
+      "sha256": "0b245cdd88c211b1ae524058a17f8d07261bac2d3d2fe1cd5302c39131908efe"
+    }
+  },
+  "usage_notes": [
+    "The SKU table records positive presence only; absence is not an explicit zero row.",
+    "Preserve DIRECT and RETAIL separately.",
+    "Use direct_sku_inventory_weekly.parquet for KYDC DirectPick activation tests.",
+    "Join the latest snapshot strictly before the forecast origin and retain snapshot age."
+  ]
+}

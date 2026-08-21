@@ -57,6 +57,15 @@ def parse_args() -> argparse.Namespace:
         dest="excluded_skus",
         help="SKU to exclude. Defaults exclude virtual/gift-card SKUs.",
     )
+    parser.add_argument(
+        "--merge-existing",
+        action="store_true",
+        help=(
+            "Merge the queried date range into the existing SKU/day Parquet, "
+            "replacing overlapping SnapshotDate+SKU rows. Use this when AX is "
+            "a rolling-retention source so older local snapshots are preserved."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -151,6 +160,53 @@ def clean_inventory(df: pd.DataFrame) -> pd.DataFrame:
     return output.sort_values(["SnapshotDate", "SKU"], kind="mergesort").reset_index(drop=True)
 
 
+def _merge_existing_history(
+    df: pd.DataFrame,
+    detail_path: Path,
+    merge_existing: bool,
+) -> tuple[pd.DataFrame, dict[str, int | str]]:
+    """Merge a fresh extract with the portable history already on disk."""
+    stats: dict[str, int | str] = {
+        "mode": "replace",
+        "previous_rows": 0,
+        "queried_rows": int(len(df)),
+        "overlapping_keys": 0,
+    }
+    if not merge_existing or not detail_path.exists():
+        return df, stats
+
+    existing = pd.read_parquet(detail_path)
+    existing["SnapshotDate"] = pd.to_datetime(
+        existing["SnapshotDate"], errors="coerce"
+    ).dt.normalize()
+    existing["SKU"] = existing["SKU"].fillna("").astype(str).str.strip()
+    fresh_keys = pd.MultiIndex.from_frame(df[["SnapshotDate", "SKU"]])
+    existing_keys = pd.MultiIndex.from_frame(existing[["SnapshotDate", "SKU"]])
+    stats.update(
+        {
+            "mode": "merge_existing",
+            "previous_rows": int(len(existing)),
+            "overlapping_keys": int(existing_keys.isin(fresh_keys).sum()),
+        }
+    )
+    combined = pd.concat([existing, df], ignore_index=True)
+    combined = (
+        combined.dropna(subset=["SnapshotDate"])
+        .loc[lambda frame: frame["SKU"].ne("")]
+        .drop_duplicates(["SnapshotDate", "SKU"], keep="last")
+        .sort_values(["SnapshotDate", "SKU"], kind="mergesort")
+        .reset_index(drop=True)
+    )
+    return combined, stats
+
+
+def _write_parquet_atomically(df: pd.DataFrame, path: Path) -> None:
+    """Write a Parquet replacement only after the complete temp file exists."""
+    temp_path = path.with_suffix(path.suffix + ".tmp")
+    df.to_parquet(temp_path, index=False, compression="zstd")
+    temp_path.replace(path)
+
+
 def write_outputs(df: pd.DataFrame, args: argparse.Namespace) -> None:
     """Save cleaned snapshot files, daily statistics summaries, and execution manifests.
 
@@ -163,7 +219,8 @@ def write_outputs(df: pd.DataFrame, args: argparse.Namespace) -> None:
     summary_path = args.output_dir / AX_HISTORY_SUMMARY_FILENAME
     metadata_path = args.output_dir / AX_HISTORY_METADATA_FILENAME
 
-    df.to_parquet(detail_path, index=False, compression="zstd")
+    df, merge_stats = _merge_existing_history(df, detail_path, args.merge_existing)
+    _write_parquet_atomically(df, detail_path)
     summary = (
         df.groupby("SnapshotDate", as_index=False)
         .agg(
@@ -193,12 +250,14 @@ def write_outputs(df: pd.DataFrame, args: argparse.Namespace) -> None:
         "rows": int(len(df)),
         "snapshot_days": int(df["SnapshotDate"].nunique()) if not df.empty else 0,
         "distinct_skus": int(df["SKU"].nunique()) if not df.empty else 0,
+        "retention_merge": merge_stats,
         "outputs": {
             "ax_inventory_history_sku_day": str(detail_path),
             "ax_inventory_history_sku_day_summary": str(summary_path),
         },
         "notes": [
             "Limited AX SKU-level snapshot history, not full multi-year BigQuery inventory history.",
+            "When merge_existing is enabled, overlapping SnapshotDate+SKU keys are replaced by the fresh AX extract while older local dates are retained.",
             "Downstream model panel uses these rows as one-day-lagged features to avoid same-day target leakage.",
         ],
     }
